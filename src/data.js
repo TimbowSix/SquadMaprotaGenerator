@@ -1,6 +1,7 @@
 const https = require('https');
 const fs = require('fs')
-const statistics = require("statistics.js")
+const statistics = require("./statistics.js")
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 class Layer_Data{
     initialize_maps(use_map_weights=true){
@@ -32,7 +33,7 @@ class Layer_Data{
             }
             maps.push(map_)
         }
-        return maps      
+        return maps
     }
 }
 
@@ -47,11 +48,6 @@ class Map{
         this.neighbor_count = 0
         this.lock_time = 0
         this.current_lock_time = 0
-        //regulator stuff
-        this.Kp = 0
-        this.Ki = 0
-        this.setValue = 0
-        this.currIntVal = 0
     }
     add_layer(layer){
         if (! layer.mode in this.layers) this.layers[layer.mode] = [layer]
@@ -69,22 +65,12 @@ class Layer{
 }
 
 class Data{
-    async get_layers(){
-        let url = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
-        let options = {hostname: "welovesquad.com", path:"/wp-admin/admin-ajax.php?action=getLayerVotes_req", port: 443, method: "GET"}
-
-        const req = https.request(options, res => {
-            console.log(`statusCode: ${res.statusCode}`);
-            res.on('data', d => {
-                //process.stdout.write(d);
-                let response = JSON.parse(d);
-            });
-        });
-        req.on('error', error => {
-            console.error(error);
-        });
-        
-        req.end(); 
+    get_layers(){
+        let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
+        let xmlHttpReq = new XMLHttpRequest();
+        xmlHttpReq.open("GET", theUrl, false);
+        xmlHttpReq.send(null);
+        return xmlHttpReq.responseText
     }
     read(){
         let file = fs.readFileSync("./data/data")
@@ -92,10 +78,13 @@ class Data{
     }
 }
 
-async function main(){
+function main(){
     let data = new Data()
-    //let d = await data.get_layers()
-    d = data.read()
+    let d = data.get_layers()
+    //todo transform data 
+    if(d == 0){
+        d = data.read()
+    }
     console.log(d)
 }
 
