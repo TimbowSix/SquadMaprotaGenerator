@@ -14,7 +14,7 @@ class Layer_Data{
 
         for (const [map_name, biom_values] of Object.entries(bioms)) {
             // skip map if no layers available
-            if (!(map_name in myObj)) continue
+            if (!(map_name in layers)) continue
             let weight = 0
             if (use_map_weights){
                 // use map_weight_corrction = 0 if map is not in mapweights

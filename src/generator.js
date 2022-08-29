@@ -1,5 +1,5 @@
 let fs = require("fs");
-let config = require("./config.json")
+let config = require("../config.json")
 let utils = require("./utils.js")
 
 latest_modes = []
@@ -33,10 +33,11 @@ class Maprota {
 
 function main(){
     test = []
-    rnd = new Maprota(config).choose_mode()
+    rota = new Maprota(config)
+    rnd = rota.choose_mode()
     test.push(rnd)
     for (let i = 0 ; i<100000; i++){
-        rnd = new Maprota(config).choose_mode(latest_modes=test)
+        rnd = rota.choose_mode(latest_modes=test)
         test.push(rnd)
     }
     //console.log(test)
