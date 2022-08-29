@@ -1,0 +1,100 @@
+\documentclass[a4paper, 11pt]{scrreprt}
+
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+
+%========================================== Dokumentinformationen ===================================================
+
+\title{Squad Maprotagenerator 2.0}
+\subtitle{Für politische Entscheindungsträger}
+\author{timbow, fletschoa, kappakay}
+
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[
+	pdftitle={Squad Maprotagenerator 2.0},
+	pdfsubject={},
+	pdfauthor={timbow, fletschoa, kappakay},
+	pdfkeywords={}
+	pdftex=true, 
+	colorlinks=true,
+ 	breaklinks=true,
+	citecolor=blue,
+	linkcolor=black,	
+	menucolor=black,	
+	urlcolor=blue
+]{hyperref}
+
+%========================================== Klassen ===================================================
+\usepackage{nomentbl}
+\usepackage{siunitx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{dcolumn}
+\usepackage[backend=bibtex,language=german,style=ieee]{biblatex}
+\usepackage{todonotes}
+\usepackage[]{listofsymbols}
+\usepackage{amsmath,amssymb}
+\usepackage[german]{babel}
+\usepackage{bibgerm}
+\usepackage[printonlyused]{acronym}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{graphicx, subfigure}
+\graphicspath{{img/}}
+\usepackage{scrlayer-scrpage}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{pgfplots}
+\usepackage{pdfpages}
+\usepackage{verbatim}
+
+
+\begin{document}
+    
+    \maketitle
+    
+    \tableofcontents
+    \newpage
+
+
+    \newpage
+    \listoffigures
+    \label{sec:abkuerzungverzeichnis}
+    %\addchap{Abkürzungverzeichnis}
+    \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+    \newpage
+    %\listoftables
+    %\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+    %\newpage
+
+    \begin{acronym}[Rota] %in den [] die abkürzung angeben mit der längsten Beschriftung
+        \acro{Rota}{Maprotation}
+    \end{acronym}
+
+
+    \chapter{Übersicht}
+    \section{Problemdarstellung}
+    \section{Ziel}
+    \section{Spezifikationen}
+    \section{Metriken}
+
+
+
+    \chapter{Aufbau}
+    \section{Überliegende Struktur}
+    \section{Abhängigkeiten der Generierung}
+    \subsection{Biome}
+    \subsection{Mapgröße}
+    \subsection{Votes}
+    \subsection{Modes pro Map}
+
+    \chapter{Tests und Auswertung}
+
+    \chapter{Warum dieser Generator besser ist als Andere}
+
+
+
+\end{document}
