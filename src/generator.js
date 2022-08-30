@@ -78,7 +78,7 @@ class Maprota {
         let seed_layers = []
         for(let map of this.all_maps){
             if("Seed" in map.layers){
-                seed_layers.concat(map.layers["Seed"])
+                seed_layers = seed_layers.concat(map.layers["Seed"])
             }
         }
         this.rotation.unshift(this.choose_layer(seed_layers, false))
@@ -115,10 +115,10 @@ class Maprota {
         else return this.rotation
     }
     toString(){
-        console.log(this.rotation)
+        //console.log(this.rotation[3])
         let rota = []
         for(let layer of this.rotation){
-            console.log(layer)
+            //console.log(layer)
             rota.push(layer.name)
         }
         return rota
