@@ -4,37 +4,54 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 
 
-function initialize_maps(use_map_weights=true){
-    let data = new Data()
-    data = data.read()
-    let bioms = data["bioms"]
-    let map_weights = data["map_weights"]
-    let distances = statistics.getAllMapDistances(bioms)
-    let maps = []
-    let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
+class Layer_Data{
 
-    for (const [map_name, biom_values] of Object.entries(bioms)) {
-        // skip map if no layers available
-        if (!(map_name in layers)) continue
-        let weight = 0
-        if (use_map_weights){
-            // use map_weight_corrction = 0 if map is not in mapweights
-            try{
-                weight = map_weights[map_name]
-            }catch(e){
-                console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
+    initialize_maps(use_map_weights=true, cluster_radius){
+        let data = new Data()
+        data = data.read()
+        let bioms = data["bioms"]
+        let map_weights = data["map_weights"]
+        let distances = statistics.getAllMapDistances(bioms)
+        let maps = []
+        let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
+
+        for (const [map_name, biom_values] of Object.entries(bioms)) {
+            // skip map if no layers available
+            if (!(map_name in layers)) continue
+            let weight = 0
+            if (use_map_weights){
+                // use map_weight_corrction = 0 if map is not in mapweights
+                try{
+                    weight = map_weights[map_name]
+                }catch(e){
+                    console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
+                }
+            }
+
+            let map_ = new Map(map_name, biom_values, weight, distances[map_name])
+            for(let mode of Object.keys(layers[map_name])){
+                for(let layer of layers[map_name][mode]){
+                    let l = new Layer(layer["name"], mode, map_, layer["votes"])
+                    map_.add_layer(l)
+                } 
+            }
+            maps.push(map_)
+        }
+
+        //init neighbors 
+        for(let i=0;i<maps.length;i++){
+            maps[i].neighbors = [];
+            maps[i].neighbor_count = 0;
+            for(let j=0;j<maps.length;j++){
+                if(maps[i].distances[maps[j].name] < cluster_radius){
+                    maps[i].neighbors.push(maps[j]);
+                    maps[i].neighbor_count++;
+                }
             }
         }
-        let map_ = new Map(map_name, biom_values, weight, distances[map_name])
-        for(let mode of Object.keys(layers[map_name])){
-            for(let layer of layers[map_name][mode]){
-                let l = new Layer(layer["name"], mode, map_, layer["votes"])
-                map_.add_layer(l)
-            } 
-        }
-        maps.push(map_)
+
+        return maps
     }
-    return maps
 }
 
 class Map{
@@ -54,6 +71,14 @@ class Map{
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
+    }
+    decrease_lock_time(){
+        if(this.current_lock_time >= 1){
+            this.current_lock_time--;
+        }
+    }
+    update_lock_time(){
+        this.current_lock_time = this.lock_time
     }
 
     add_mapvote_weights(){

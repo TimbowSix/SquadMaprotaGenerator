@@ -1,6 +1,32 @@
 const utils = require("./utils.js")
 const fs = require("fs")
 
+function getValidMaps(allMaps, currentMode, lastChosenMap){
+    if(lastChosenMap == null){
+        return allMaps;
+    }
+    if(currentMode == null){
+        throw "no Mode";
+    }
+    for(let i=0;i<allMaps.length;i++){
+        allMaps[i].decrease_lock_time();
+    }
+    for(let i=0;i<allMaps.length;i++){
+        if(lastChosenMap.name == allMaps[i].name){
+            for(let j=0;j<allMaps[i].neighbor_count;j++){
+                allMaps[i].neighbor[j].update_lock_time();
+            }
+        }
+    }
+    let valid_maps = [];
+    for(let i=0;i<allMaps.length;i++){
+        if(allMaps[i].current_lock_time == 0 && currentMode in allMaps[i].layers){
+            valid_maps.push(allMaps[i]);
+        }
+    }
+    return valid_maps;
+}
+
 function getAllMapDistances(allMapsDict){
     let numberOfMaps = Object.keys(allMapsDict).length
     let distancesDict = {}
