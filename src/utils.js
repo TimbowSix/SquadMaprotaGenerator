@@ -1,5 +1,8 @@
-function weightedChoice(arr, weights=[]){
-    let sum = weights.reduce(function(pv, cv) { return pv + cv; }, 0);
+function choice(arr, weights=null){
+    if(!(weights)){
+        return arr[Math.floor(Math.random()*arr.length)];
+    }
+    let sum = sumArr(weights);
     if (sum != 1) throw "weights do not sum to 1"
     if (arr.length != weights.length) throw "arr and weights don't have the same length"
     let w = []
@@ -41,8 +44,8 @@ function multiplyArr(arr1, arr2){
 }
 function formatLayer(layer){
     /**
-     * formats a layer string to preffered readable casing format.\n
-     * If mode or map is not found it only gets to lower case\n
+     * formats a layer string to preffered readable casing format.
+     * If mode or map is not found it only gets to lower case
      * layer string is expected to have following standard format: map_mode_version
     **/
     layer = layer.toLowerCase()
@@ -77,4 +80,4 @@ if (require.main === module) {
     console.log(formatLayer(test))
 }
 
-module.exports = { weightedChoice, normalize, squareArr, sumArr, multiplyArr, formatLayer };
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer };
