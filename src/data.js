@@ -1,7 +1,7 @@
-const https = require('https');
 const fs = require('fs')
 const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const utils = require("./utils.js")
 
 class Layer_Data{
     initialize_maps(use_map_weights=true){
@@ -65,35 +65,62 @@ class Layer{
     }
 }
 
-class Data{
-    get_layers(){
-        let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
-        let xmlHttpReq = new XMLHttpRequest();
-        xmlHttpReq.open("GET", theUrl, false);
-        xmlHttpReq.send(null);
-        return xmlHttpReq.responseText
+function get_layers(){
+    let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
+    let xmlHttpReq = new XMLHttpRequest();
+    xmlHttpReq.open("GET", theUrl, false);
+    xmlHttpReq.send(null);
+
+    let data = JSON.parse(xmlHttpReq.responseText)
+    let layers = data["AxisLabels"]
+    let upvotes = data["DataSet"][0]
+    let downvotes = data["DataSet"][1]
+    let availability = data["DataSet"][2]
+    let maps = {}
+    for(let i=0; i<layers.length; i++){
+        if (availability[i] > 0) continue
+        let layer = utils.formatLayer(layers[i])
+        let layer_values = layer.split("_")
+        let map = layer_values[0]
+        let mode = layer_values[1]
+
+        let data = {"name": layer, "votes": upvotes[i]+downvotes[i]}
+        if (maps.hasOwnProperty(map)){
+            if(maps[map].hasOwnProperty(mode)){
+                maps[map][mode].push(data)
+            }else{
+                maps[map][mode] = [data]
+            }
+        }else maps[map] = {mode: [data]}
     }
-    read(){
-        let file = fs.readFileSync("./data/data")
-        return JSON.parse((atob(file)))
+    return maps
+}
+function read(){
+    let file = fs.readFileSync("./data/data", "ascii")
+    return JSON.parse(Buffer.from(file, "base64").toString('utf8'))
+}
+function write(data){
+    fs.writeFileSync("./data/data", Buffer.from(JSON.stringify(data)).toString("base64"))
+}
+function update_c(data, ch=null){
+    if (!(ch)) ch = read();
+    for (const [k, v] of Object.entries(data)) {
+        ch[k] = v
     }
+    return ch
+}
+function update_section(data, section){
+    let ch = read()
+    ch[section] = data
+    write(ch)
 }
 
 function main(){
-    let data = new Data()
-    let d = data.get_layers()
-    //todo transform data 
-    if(d == 0){
-        d = data.read()
-    }
-    console.log(d)
+    return
 }
 
 if (require.main === module) {
-    //main()
-    let ld = new Layer_Data()
-    let maps = ld.initialize_maps()
-    console.log(maps)
+    get_layers()
 }
 
-module.exports = { Map, Layer, Layer_Data, Data };
+module.exports = { Map, Layer, Layer_Data, get_layers, read, write, update_c, update_section };
