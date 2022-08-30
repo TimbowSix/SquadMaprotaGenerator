@@ -31,6 +31,7 @@ function initialize_maps(config, use_map_weights=true){
                 map_.add_layer(l)
             } 
         }
+        map_.lock_time = config["biom_spacing"]
         maps.push(map_)
     }
 
