@@ -10,7 +10,6 @@ class Maprota {
         this.rotation = []
         this.modes = []
         this.maps = []
-        //this.layers = fs.readFileSync("./data/layers.json")
         this.mode_buffer = ""
 
         this.all_maps = data.initialize_maps(this.config)
@@ -70,7 +69,6 @@ class Maprota {
                 weights.push(map.map_weight)
             }
         }
-        //normalize weights?
         weights = utils.normalize(weights)
         return utils.choice(maps, weights)
     }
@@ -97,9 +95,9 @@ class Maprota {
             maps = this.av_maps(mode)
             if(maps.length === 0){
                 this.mode_buffer = mode
-                mode = this.choose_mode(custom_pool="main")
+                mode = this.choose_mode(null, "main")
             }else this.mode_buffer = ""
-
+            maps = this.av_maps(mode)
             this.modes.push(mode)
             map = this.choose_map(maps, mode)
             this.maps.push(map)
@@ -115,10 +113,8 @@ class Maprota {
         else return this.rotation
     }
     toString(){
-        //console.log(this.rotation[3])
         let rota = []
         for(let layer of this.rotation){
-            //console.log(layer)
             rota.push(layer.name)
         }
         return rota
