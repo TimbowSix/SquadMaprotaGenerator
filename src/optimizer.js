@@ -15,7 +15,7 @@ class Optimizer{
 
         this.generator = new gen.Maprota(this.config);
 
-        this.wUni = 1/this.generator.all_maps.length;
+        this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
 
         //load existing values
         this.mapWeights = fs.readFileSync("../data/mapweights.json"); //TODO umstellen auf drei verschiedenen Weights Typen
@@ -42,7 +42,7 @@ class Optimizer{
         this.generator.all_maps[currentIndex].map_weight[mapWeightKey] += this.delta;
         //this.generator.generate //TODO 
         this.update_dist();
-        cMin = this.calc_current_norm();
+        let cMin = this.calc_current_norm();
         if(this.currentMin > cMin){
             //new min found
             this.currentMin = cMin;
@@ -73,13 +73,13 @@ class Optimizer{
     }
 
     calc_current_norm(){
-        temp = 0
+        let temp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
             wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2)
         }
     }
     update_dist(){
-        tempSum = 0
+        let tempSum = 0
         //reset dist
         for(let i=0;i<this.generator.all_maps.length;i++){
             this.generator.all_maps[i].dist = 0;
