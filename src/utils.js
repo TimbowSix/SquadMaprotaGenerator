@@ -2,9 +2,9 @@ function choice(arr, weights=null){
     if(!(weights)){
         return arr[Math.floor(Math.random()*arr.length)];
     }
-    let sum = sumArr(weights);
-    if (sum != 1) throw "weights do not sum to 1"
-    if (arr.length != weights.length) throw "arr and weights don't have the same length"
+    let sum = round(sumArr(weights), 4);
+    if (sum != 1) throw Error("weights do not sum to 1")
+    if (arr.length != weights.length) throw Error("arr and weights don't have the same length")
     let w = []
     for(let i = 0; i<weights.length; i++){
         if (i == 0) w.push(weights[i])
@@ -23,6 +23,9 @@ function normalize(arr){
         arr[i] = arr[i]/sum
     }
     return arr
+}
+function round(val, digits=2){
+    return Math.round((val + Number.EPSILON) * (Math.pow(10,digits))) / Math.pow(10,digits)
 }
 
 function squareArr(arr){
@@ -87,4 +90,4 @@ if (require.main === module) {
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer };
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round };
