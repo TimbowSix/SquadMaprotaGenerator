@@ -17,12 +17,13 @@ class Maprota {
         //for optimizer
         this.distribution = 0
     }
-    choose_mode(latest_modes = null) {
+    choose_mode(latest_modes = null, custom_pool=null) {
         if (!(latest_modes)) latest_modes = []
         let mode_distribution = structuredClone(this.config["mode_distribution"])
         let pools = Object.keys(mode_distribution["pool_distribution"])
         let weight = Object.values(mode_distribution["pool_distribution"])
-        let pool = utils.choice(pools, weight)
+        let pool = custom_pool ? custom_pool : utils.choice(pools, weight)
+        //let pool = utils.choice(pools, weight)
         if (latest_modes.length != 0){
             let latest = latest_modes.slice(latest_modes.length-mode_distribution["pool_spacing"],latest_modes.length)
             if (latest.some((mode) => !(mode_distribution["pools"]["main"].hasOwnProperty(mode)))){
@@ -46,7 +47,21 @@ class Maprota {
         for(let layer of layers) votes.push(layer.votes)
         return statistics.convert_mapvote_to_weights(votes, 1)
     }
-    choose_map(mode){
+    av_maps(mode){
+        let maps = []
+
+        while (valid_maps.length == 0){
+            maps = statistics.getValidMaps(this.maps)
+        }
+
+        let valid_maps = []
+        for(let map of maps){
+            if(mode in map.layers) valid_maps.push(map)
+        }
+        return valid_maps
+    }
+
+    choose_map(maps, mode){
         let valid_maps = []
 
         while (valid_maps.length == 0){
@@ -63,8 +78,48 @@ class Maprota {
         }
         return utils.choice(maps, weights)
     }
-    generate_rota(){
-        
+    add_seeding(){
+
+    }
+    generate_rota(str_output=true){
+        let mode = this.choose_mode()
+        this.modes.push(mode)
+        let maps = this.av_maps(mode)
+        let map = this.choose_map(mode)
+        let layer = this.choose_layer(map.layers[mode])
+        this.rotation.push(layer)
+        this.maps.push(map)
+        for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
+            if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
+            else mode = this.mode_buffer
+
+            maps = this.av_maps(mode)
+
+            if(maps.length === 0){
+                maps = this.av_maps(this.choose_mode(custom_pool="main"))
+                this.mode_buffer = mode
+            }else this.mode_buffer = ""
+            
+            this.modes.push(mode)
+            map = this.choose_map(mode)
+            this.maps.push(map)
+            layer = this.choose_layer(map.layers[mode])
+            this.rotation.push(layer)
+        }
+        if(this.config["seed_layer"] > 0){
+            for(let i = 0; i<this.config["seed_layer"]; i++){
+                this.add_seeding()
+            }
+        }
+        if(str_output)return this.toString()
+        else return this.rotation
+    }
+    toString(){
+        let rota = []
+        for(let layer of this.rotation){
+            rota.push(layer.name)
+        }
+        return rota
     }
 }
 
