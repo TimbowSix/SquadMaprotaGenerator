@@ -3,7 +3,9 @@ const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 
+
 class Layer_Data{
+
     initialize_maps(use_map_weights=true, cluster_radius){
         let data = new Data()
         data = data.read()
@@ -25,6 +27,7 @@ class Layer_Data{
                     console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
                 }
             }
+
             let map_ = new Map(map_name, biom_values, weight, distances[map_name])
             for(let mode of Object.keys(layers[map_name])){
                 for(let layer of layers[map_name][mode]){
@@ -34,7 +37,7 @@ class Layer_Data{
             }
             maps.push(map_)
         }
-        
+
         //init neighbors 
         for(let i=0;i<maps.length;i++){
             maps[i].neighbors = [];
@@ -175,4 +178,4 @@ if (require.main === module) {
     get_layers()
 }
 
-module.exports = { Map, Layer, Layer_Data, get_layers, read, write, update_c, update_section };
+module.exports = { Map, Layer, initialize_maps, get_layers, read, write, update_c, update_section };
