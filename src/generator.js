@@ -79,7 +79,13 @@ class Maprota {
         return utils.choice(maps, weights)
     }
     add_seeding(){
-
+        let seed_layers = []
+        for(map of this.all_maps){
+            if("Seed" in map.layers){
+                seed_layers.concat(map.layers["Seed"])
+            }
+        }
+        this.rotation.unshift(this.choose_layer(seed_layers, weighted=false))
     }
     generate_rota(str_output=true){
         let mode = this.choose_mode()
@@ -99,7 +105,7 @@ class Maprota {
                 maps = this.av_maps(this.choose_mode(custom_pool="main"))
                 this.mode_buffer = mode
             }else this.mode_buffer = ""
-            
+
             this.modes.push(mode)
             map = this.choose_map(mode)
             this.maps.push(map)
