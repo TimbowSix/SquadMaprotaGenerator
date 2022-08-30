@@ -13,7 +13,7 @@ class Maprota {
         //this.layers = fs.readFileSync("./data/layers.json")
         this.mode_buffer = ""
 
-        this.all_maps = data.initialize_maps()
+        this.all_maps = data.initialize_maps(this.config)
         //for optimizer
         this.distribution = 0
     }
@@ -50,8 +50,8 @@ class Maprota {
     av_maps(mode){
         let maps = []
 
-        while (valid_maps.length == 0){
-            maps = statistics.getValidMaps(this.maps)
+        while (maps.length == 0){
+            maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1))
         }
 
         let valid_maps = []
@@ -60,27 +60,21 @@ class Maprota {
         }
         return valid_maps
     }
-
     choose_map(maps, mode){
-        let valid_maps = []
-
-        while (valid_maps.length == 0){
-            valid_maps = statistics.getValidMaps(this.maps)
-        }
-
-        let maps = []
         let weights = []
-        for(let map of valid_maps){
+        for(let map of maps){
             if(mode in map.layers){
                 maps.push(map)
-                weights.push(map.map_weights[mode])
+                //weights.push(map.map_weight[mode])
+                weights.push(map.map_weight)
             }
         }
+        //normalize weights?
         return utils.choice(maps, weights)
     }
     add_seeding(){
         let seed_layers = []
-        for(map of this.all_maps){
+        for(let map of this.all_maps){
             if("Seed" in map.layers){
                 seed_layers.concat(map.layers["Seed"])
             }
@@ -91,26 +85,28 @@ class Maprota {
         let mode = this.choose_mode()
         this.modes.push(mode)
         let maps = this.av_maps(mode)
-        let map = this.choose_map(mode)
+        let map = this.choose_map(maps, mode)
         let layer = this.choose_layer(map.layers[mode])
         this.rotation.push(layer)
         this.maps.push(map)
+        console.log(`start, ${mode}, ${layer.name}, ${map.name}`)
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
-
+            console.log(`mode: ${mode}`)
             maps = this.av_maps(mode)
-
             if(maps.length === 0){
-                maps = this.av_maps(this.choose_mode(custom_pool="main"))
                 this.mode_buffer = mode
+                mode = this.choose_mode(custom_pool="main")
+                console.log(`mode unavailable, new mode: ${mode}`)
             }else this.mode_buffer = ""
 
             this.modes.push(mode)
-            map = this.choose_map(mode)
+            map = this.choose_map(maps, mode)
             this.maps.push(map)
             layer = this.choose_layer(map.layers[mode])
             this.rotation.push(layer)
+            console.log(`mode: ${mode}, ${map.name}, ${layer.name}`)
         }
         if(this.config["seed_layer"] > 0){
             for(let i = 0; i<this.config["seed_layer"]; i++){
@@ -130,14 +126,10 @@ class Maprota {
 }
 
 function main(){
-    test = []
-    rota = new Maprota(config)
-    rnd = rota.choose_mode()
-    test.push(rnd)
-    for (let i = 0 ; i<100000; i++){
-        rnd = rota.choose_mode(latest_modes=test)
-        test.push(rnd)
-    }
+    let rota = new Maprota(config)
+    let test = rota.generate_rota()
+    //let test = []
+    //for(let i = 0; i<1000; i++) test.push(rota.choose_mode())
     //console.log(test)
     if (fs.existsSync("./test.txt")) {
         fs.unlinkSync("./test.txt")

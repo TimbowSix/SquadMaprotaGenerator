@@ -1,7 +1,7 @@
 const utils = require("./utils.js")
 const fs = require("fs")
 
-function getValidMaps(allMaps, currentMode, lastChosenMap){
+function getValidMaps(allMaps, lastChosenMap){
     if(lastChosenMap == null){
         return allMaps;
     }
@@ -20,7 +20,7 @@ function getValidMaps(allMaps, currentMode, lastChosenMap){
     }
     let valid_maps = [];
     for(let i=0;i<allMaps.length;i++){
-        if(allMaps[i].current_lock_time == 0 && currentMode in allMaps[i].layers){
+        if(allMaps[i].current_lock_time == 0){
             valid_maps.push(allMaps[i]);
         }
     }
