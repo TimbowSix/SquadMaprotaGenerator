@@ -20,6 +20,19 @@ function getAllMapDistances(allMapsDict){
     return distancesDict
 }
 
+function sigmoid(x, slope, shift=0){
+    let arg = slope*(x+shift)
+    return 1/(1+Math.exp(-arg))
+}
+
+function sigmoidArr(x, slope, shift=0){
+    let res = []
+    for(i=0; i<x.length; i++){
+        res.push.apply(res, [sigmoid(x, slope, shift)])
+    }
+    return res
+}
+
 module.exports = { getAllMapDistances };
 
 function main(){
