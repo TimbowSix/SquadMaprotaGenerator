@@ -4,14 +4,12 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 
 
-function initialize_maps(use_map_weights=true, cluster_radius){
-    let data = new Data()
-    data = data.read()
-    let bioms = data["bioms"]
-    let map_weights = data["map_weights"]
+function initialize_maps(config, use_map_weights=true){
+    let bioms = require("../data/bioms.json")
+    let map_weights = require("../data/mapweights.json")
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
-    let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
+    let layers = require("../data/layers.json")
 
     for (const [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
@@ -37,6 +35,7 @@ function initialize_maps(use_map_weights=true, cluster_radius){
     }
 
     //init neighbors 
+    let cluster_radius = config["min_biom_distance"]
     for(let i=0;i<maps.length;i++){
         maps[i].neighbors = [];
         maps[i].neighbor_count = 0;
@@ -47,7 +46,6 @@ function initialize_maps(use_map_weights=true, cluster_radius){
             }
         }
     }
-
     return maps
 }
 
@@ -172,7 +170,9 @@ function main(){
 }
 
 if (require.main === module) {
-    get_layers()
+    let config = require("../config.json")
+    let maps = initialize_maps(config)
+    console.log(maps)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, read, write, update_c, update_section };
