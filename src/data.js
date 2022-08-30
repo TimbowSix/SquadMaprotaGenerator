@@ -39,20 +39,51 @@ class Layer_Data{
 }
 
 class Map{
-    constructor(name, bioms, map_weight, distances, ){
+    constructor(name, bioms, map_weights, distances, ){
         this.name = name
         this.layers = {}
         this.bioms = bioms
-        this.map_weight = map_weight
+        this.map_weight = map_weights
+        this.mapvote_weights = {}
         this.distances = distances
         this.neighbors = []
         this.neighbor_count = 0
         this.lock_time = 0
         this.current_lock_time = 0
+        this.layer_by_pools = {}
     }
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
+    }
+
+    add_mapvote_weights(){
+        votes = {}
+        weights = {}
+        means = {}
+        sum = 0
+        if(this.layers.length != 0){
+            for(let pool in this.layer_by_pools){
+                for(let l in this.layer_by_pools[pool]){
+                    votes[pool].push.apply(votes[pool], [l.votes])
+                }
+                means[pool] = 1/votes[pool].length*utils.sumArr(votes[pool])
+                for(let votes in votes[pool]){
+                    if(weights[pool] != null){
+                        weights[pool] += Math.exp(-Math.pow(means[pool] - votes, 2))
+                    }
+                    else{
+                        weights[pool] = 0
+                    }
+                }
+                for(let w in weights[pool]){
+                    w = w/utils.sumArr(weights)
+                }
+            }
+        }
+        else{
+            console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`)
+        }
     }
 }
 

@@ -53,9 +53,18 @@ class Maprota {
             valid_maps = statistics.getValidMaps(this.maps)
         }
 
+        let maps = []
+        let weights = []
+        for(let map of valid_maps){
+            if(mode in map.layers){
+                maps.push(map)
+                weights.push(map.map_weights[mode])
+            }
+        }
+        return utils.choice(maps, weights)
+    }
+    generate_rota(){
         
-
-
     }
 }
 
