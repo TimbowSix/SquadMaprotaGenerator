@@ -46,6 +46,48 @@ function getAllMapDistances(allMapsDict){
     return distancesDict
 }
 
+function calcMapDistribution(allMaps, weightKeys){
+    //TODO slope sigmoid über config ?
+    for(weight_key of weightKeys){
+        let tempSum = 0;
+        for(map of allMaps){
+            map.target_map_dist[weight_key] = 0;
+            let avgVotes = 0; //mu
+            let layers = []
+            //sum layer votes
+            for(mode of Object.keys(map.layers)){
+                for(layer of mode){
+                    avgVotes += layer.votes;
+                    layers.push(layer);
+                }
+            }
+            if(layersCount == 0){
+                throw "map with no layers";
+            }
+            avgVotes /= layers.length;
+
+            //calc ú
+            let weightSum = 0;
+            let wi = 0;
+            for(layer of layers){
+                //calc wi
+                wi = math.exp(- math.sqrt(avgVotes-layer.votes));
+                //calc W
+                weightSum += wi;
+                map.target_map_dist[weight_key] += wi * layer.votes;
+            }
+            map.target_map_dist[weight_key] /= weightSum;
+            //into sigmoid
+            map.target_map_dist[weight_key] = sigmoid(map.target_map_dist[weightSum], 0.1, 0);
+            tempSum += map.target_map_dist[weight_key];
+        }
+        //normalize
+        for(map of allMaps){
+            map.target_map_dist[weight_key] /= tempSum;
+        }
+    }
+}
+
 function sigmoid(x, slope, shift=0){
     let arg = slope*(x+shift)
     return 1/(1+Math.exp(-arg))

@@ -15,7 +15,7 @@ class Optimizer{
 
         this.generator = new gen.Maprota(this.config);
 
-        this.wUni = 1/this.generator.all_maps.length;
+        this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
 
         //load existing values
         this.mapWeights = fs.readFileSync("../data/mapweights.json"); //TODO umstellen auf drei verschiedenen Weights Typen
@@ -29,30 +29,57 @@ class Optimizer{
         //this.generator. TODO WO function
         this.update_dist();
         this.currentMin = this.calc_current_norm();
+
+        //TODO vielleicht über config
+        this.deltaStepSize = 0.01
     }
 
-    optimize_recursive(currentIndex, lowestDelta, minChanged){
+    optimize_recursive(currentIndex, lowestDelta, mapWeightKey, minChanged){
         if(this.delta <= lowestDelta){
             return
         }
         
-        this.generator.all_maps[currentIndex].map_weight += this.delta;
+        this.generator.all_maps[currentIndex].map_weight[mapWeightKey] += this.delta;
         //this.generator.generate //TODO 
         this.update_dist();
-        cMin = this.calc_current_norm();
+        let cMin = this.calc_current_norm();
         if(this.currentMin > cMin){
-            
+            //new min found
+            this.currentMin = cMin;
+
+            console.log("new min: "+cMin);
+            console.group("mapweights");
+            for(let i=0;i<this.generator.all_maps.length;i++){
+                console.log(this.generator.all_maps[i].map_weight[mapWeightKey]);
+            }
+            console.groupEnd();
+
+            this.saveMapWeights();
+            this.optimize_recursive(currentIndex,lowestDelta,mapWeightKey, true)
+        }else{
+            //no new min found
+            this.generator.all_maps[currentIndex].map_weight[mapWeightKey] -= this.delta;
+            currentIndex++
+            if(currentIndex >= this.generator.all_maps.length){
+                currentIndex = 0
+                if(!minChanged){
+                    this.delta -= this.deltaStepSize
+                    console.log("new Delta "+this.delta)
+                    this.saveDelta();
+                }
+            }
+            this.optimize_recursive(currentIndex,lowestDelta,mapWeightKey,false)
         }
     }
 
     calc_current_norm(){
-        temp = 0
+        let temp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
             wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2)
         }
     }
     update_dist(){
-        tempSum = 0
+        let tempSum = 0
         //reset dist
         for(let i=0;i<this.generator.all_maps.length;i++){
             this.generator.all_maps[i].dist = 0;
@@ -68,7 +95,10 @@ class Optimizer{
         }
     }
     saveMapWeights(){
-        fs.writeFileSync("../data/mapweights.json", this.mapWeights)
+        fs.writeFileSync("../data/mapweights.json", this.mapWeights);
+    }
+    saveDelta(){
+        fs.writeFileSync("../data/delta.json", this.delta);
     }
 }
 
