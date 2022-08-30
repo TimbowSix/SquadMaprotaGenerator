@@ -14,6 +14,8 @@ class Maprota {
         this.mode_buffer = ""
 
         this.all_maps = data.initialize_maps()
+        //for optimizer
+        this.distribution = 0
     }
     choose_mode(latest_modes = null) {
         if (!(latest_modes)) latest_modes = []
@@ -87,3 +89,5 @@ if (require.main === module) {
     main()
     console.timeEnd("Execution Time")
 }
+
+module.exports = { Maprota };
