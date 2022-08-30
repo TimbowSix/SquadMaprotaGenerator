@@ -3,39 +3,38 @@ const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 
-class Layer_Data{
-    initialize_maps(use_map_weights=true){
-        let data = new Data()
-        data = data.read()
-        let bioms = data["bioms"]
-        let map_weights = data["map_weights"]
-        let distances = statistics.getAllMapDistances(bioms)
-        let maps = []
-        let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
 
-        for (const [map_name, biom_values] of Object.entries(bioms)) {
-            // skip map if no layers available
-            if (!(map_name in layers)) continue
-            let weight = 0
-            if (use_map_weights){
-                // use map_weight_corrction = 0 if map is not in mapweights
-                try{
-                    weight = map_weights[map_name]
-                }catch(e){
-                    console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
-                }
+function initialize_maps(use_map_weights=true){
+    let data = new Data()
+    data = data.read()
+    let bioms = data["bioms"]
+    let map_weights = data["map_weights"]
+    let distances = statistics.getAllMapDistances(bioms)
+    let maps = []
+    let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
+
+    for (const [map_name, biom_values] of Object.entries(bioms)) {
+        // skip map if no layers available
+        if (!(map_name in layers)) continue
+        let weight = 0
+        if (use_map_weights){
+            // use map_weight_corrction = 0 if map is not in mapweights
+            try{
+                weight = map_weights[map_name]
+            }catch(e){
+                console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
             }
-            let map_ = new Map(map_name, biom_values, weight, distances[map_name])
-            for(let mode of Object.keys(layers[map_name])){
-                for(let layer of layers[map_name][mode]){
-                    let l = new Layer(layer["name"], mode, map_, layer["votes"])
-                    map_.add_layer(l)
-                } 
-            }
-            maps.push(map_)
         }
-        return maps
+        let map_ = new Map(map_name, biom_values, weight, distances[map_name])
+        for(let mode of Object.keys(layers[map_name])){
+            for(let layer of layers[map_name][mode]){
+                let l = new Layer(layer["name"], mode, map_, layer["votes"])
+                map_.add_layer(l)
+            } 
+        }
+        maps.push(map_)
     }
+    return maps
 }
 
 class Map{
@@ -154,4 +153,4 @@ if (require.main === module) {
     get_layers()
 }
 
-module.exports = { Map, Layer, Layer_Data, get_layers, read, write, update_c, update_section };
+module.exports = { Map, Layer, initialize_maps, get_layers, read, write, update_c, update_section };
