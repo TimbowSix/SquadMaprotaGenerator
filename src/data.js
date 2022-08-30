@@ -5,12 +5,13 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 class Layer_Data{
     initialize_maps(use_map_weights=true){
-        let data = new Data.read()
+        let data = new Data()
+        data = data.read()
         let bioms = data["bioms"]
         let map_weights = data["map_weights"]
         let distances = statistics.getAllMapDistances(bioms)
         let maps = []
-        let layers = JSON.parse(fs.readFileSync("../data/layers.json", 'utf8'));
+        let layers = JSON.parse(fs.readFileSync("./data/layers.json", 'utf8'));
 
         for (const [map_name, biom_values] of Object.entries(bioms)) {
             // skip map if no layers available
@@ -25,9 +26,9 @@ class Layer_Data{
                 }
             }
             let map_ = new Map(map_name, biom_values, weight, distances[map_name])
-            for(let mode of layers[map_name]){
+            for(let mode of Object.keys(layers[map_name])){
                 for(let layer of layers[map_name][mode]){
-                    l = new Layer(layer["name"], mode, map_, layer["votes"])
+                    let l = new Layer(layer["name"], mode, map_, layer["votes"])
                     map_.add_layer(l)
                 } 
             }
@@ -50,7 +51,7 @@ class Map{
         this.current_lock_time = 0
     }
     add_layer(layer){
-        if (! layer.mode in this.layers) this.layers[layer.mode] = [layer]
+        if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
     }
 }
@@ -89,7 +90,10 @@ function main(){
 }
 
 if (require.main === module) {
-    main()
+    //main()
+    let ld = new Layer_Data()
+    let maps = ld.initialize_maps()
+    console.log(maps)
 }
 
 module.exports = { Map, Layer, Layer_Data, Data };
