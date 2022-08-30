@@ -59,7 +59,7 @@ function sigmoidArr(x, slope, shift=0){
     return res
 }
 
-module.exports = { getAllMapDistances };
+module.exports = { getAllMapDistances, getValidMaps };
 
 function main(){
     let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
