@@ -4,7 +4,7 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 
 class Layer_Data{
-    initialize_maps(use_map_weights=true){
+    initialize_maps(use_map_weights=true, cluster_radius){
         let data = new Data()
         data = data.read()
         let bioms = data["bioms"]
@@ -34,6 +34,19 @@ class Layer_Data{
             }
             maps.push(map_)
         }
+        
+        //init neighbors 
+        for(let i=0;i<maps.length;i++){
+            maps[i].neighbors = [];
+            maps[i].neighbor_count = 0;
+            for(let j=0;j<maps.length;j++){
+                if(maps[i].distances[maps[j].name] < cluster_radius){
+                    maps[i].neighbors.push(maps[j]);
+                    maps[i].neighbor_count++;
+                }
+            }
+        }
+
         return maps
     }
 }
