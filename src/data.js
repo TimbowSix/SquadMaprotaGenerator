@@ -56,6 +56,14 @@ class Map{
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
     }
+    decrease_lock_time(){
+        if(this.current_lock_time >= 1){
+            this.current_lock_time--;
+        }
+    }
+    update_lock_time(){
+        this.current_lock_time = this.lock_time
+    }
 
     add_mapvote_weights(){
         votes = {}
