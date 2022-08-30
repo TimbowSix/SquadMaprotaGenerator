@@ -71,6 +71,7 @@ class Maprota {
             }
         }
         //normalize weights?
+        weights = utils.normalize(weights)
         return utils.choice(maps, weights)
     }
     add_seeding(){
@@ -80,7 +81,7 @@ class Maprota {
                 seed_layers.concat(map.layers["Seed"])
             }
         }
-        this.rotation.unshift(this.choose_layer(seed_layers, weighted=false))
+        this.rotation.unshift(this.choose_layer(seed_layers, false))
     }
     generate_rota(str_output=true){
         let mode = this.choose_mode()
@@ -114,8 +115,10 @@ class Maprota {
         else return this.rotation
     }
     toString(){
+        console.log(this.rotation)
         let rota = []
         for(let layer of this.rotation){
+            console.log(layer)
             rota.push(layer.name)
         }
         return rota
