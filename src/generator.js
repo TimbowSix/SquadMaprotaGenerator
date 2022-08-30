@@ -46,13 +46,16 @@ class Maprota {
         for(let layer of layers) votes.push(layer.votes)
         return statistics.convert_mapvote_to_weights(votes, 1)
     }
-    av_maps(mode){
+    valid_maps(){
         let maps = []
 
         while (maps.length == 0){
             maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1))
         }
 
+        return maps
+    }
+    av_maps(maps, mode){
         let valid_maps = []
         for(let map of maps){
             if(mode in map.layers) valid_maps.push(map)
@@ -84,7 +87,8 @@ class Maprota {
     generate_rota(str_output=true){
         let mode = this.choose_mode()
         this.modes.push(mode)
-        let maps = this.av_maps(mode)
+        let v_maps = this.valid_maps()
+        let maps = this.av_maps(v_maps, mode)
         let map = this.choose_map(maps, mode)
         let layer = this.choose_layer(map.layers[mode])
         this.rotation.push(layer)
@@ -92,12 +96,13 @@ class Maprota {
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
-            maps = this.av_maps(mode)
+            v_maps = this.valid_maps()
+            maps = this.av_maps(v_maps, mode)
             if(maps.length === 0){
                 this.mode_buffer = mode
                 mode = this.choose_mode(null, "main")
             }else this.mode_buffer = ""
-            maps = this.av_maps(mode)
+            maps = this.av_maps(v_maps, mode)
             this.modes.push(mode)
             map = this.choose_map(maps, mode)
             this.maps.push(map)
