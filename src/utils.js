@@ -40,6 +40,13 @@ function multiplyArr(arr1, arr2){
     return n_arr
 }
 
+function arithmeticWeightedMean(weights, data){
+    let temp = 0
+    for(let i = 0; i < data.length; i++){
+        temp += data[i]*weights[i]
+    }
+    return temp
+}
 
 function main(){
     console.log(multiplyArr([1,2,3], [3,2,1]))
