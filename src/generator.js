@@ -62,9 +62,10 @@ class Maprota {
     }
     choose_map(maps, mode){
         let weights = []
+        let valid_maps = []
         for(let map of maps){
             if(mode in map.layers){
-                maps.push(map)
+                valid_maps.push(map)
                 //weights.push(map.map_weight[mode])
                 weights.push(map.map_weight)
             }
@@ -89,16 +90,13 @@ class Maprota {
         let layer = this.choose_layer(map.layers[mode])
         this.rotation.push(layer)
         this.maps.push(map)
-        console.log(`start, ${mode}, ${layer.name}, ${map.name}`)
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
-            console.log(`mode: ${mode}`)
             maps = this.av_maps(mode)
             if(maps.length === 0){
                 this.mode_buffer = mode
                 mode = this.choose_mode(custom_pool="main")
-                console.log(`mode unavailable, new mode: ${mode}`)
             }else this.mode_buffer = ""
 
             this.modes.push(mode)
@@ -106,7 +104,6 @@ class Maprota {
             this.maps.push(map)
             layer = this.choose_layer(map.layers[mode])
             this.rotation.push(layer)
-            console.log(`mode: ${mode}, ${map.name}, ${layer.name}`)
         }
         if(this.config["seed_layer"] > 0){
             for(let i = 0; i<this.config["seed_layer"]; i++){
