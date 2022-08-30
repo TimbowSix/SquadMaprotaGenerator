@@ -30,4 +30,7 @@ function main(){
     for(let i=0; i<1000; i++) getAllMapDistances(bioms)
     console.timeEnd("test")
 }
-main()
+
+if (require.main === module) {
+    main()
+}

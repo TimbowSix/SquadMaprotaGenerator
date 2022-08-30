@@ -41,10 +41,12 @@ function multiplyArr(arr1, arr2){
 }
 
 
-module.exports = { weightedChoice, normalize, squareArr, sumArr, multiplyArr };
-
 function main(){
     console.log(multiplyArr([1,2,3], [3,2,1]))
 }
 
-//main()
+if (require.main === module) {
+    main()
+}
+
+module.exports = { weightedChoice, normalize, squareArr, sumArr, multiplyArr };

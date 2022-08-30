@@ -2,8 +2,6 @@ let fs = require("fs");
 let config = require("../config.json")
 let utils = require("./utils.js")
 
-latest_modes = []
-
 class Maprota {
     constructor(config){
         this.config = config
@@ -11,7 +9,8 @@ class Maprota {
         this.modes = []
         this.layers = fs.readFileSync("./data/layers.json")
     }
-    choose_mode(latest_modes = []) {
+    choose_mode(latest_modes = null) {
+        if (!(latest_modes)) latest_modes = []
         let mode_distribution = structuredClone(this.config["mode_distribution"])
         let pools = Object.keys(mode_distribution["pool_distribution"])
         let weight = Object.values(mode_distribution["pool_distribution"])
@@ -47,6 +46,8 @@ function main(){
     fs.appendFileSync('./test.txt', test.join("\n"))
 }
 
-console.time("Execution Time")
-main()
-console.timeEnd("Execution Time")
+if (require.main === module) {
+    console.time("Execution Time")
+    main()
+    console.timeEnd("Execution Time")
+}

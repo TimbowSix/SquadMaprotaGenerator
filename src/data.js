@@ -88,5 +88,8 @@ function main(){
     console.log(d)
 }
 
-main()
+if (require.main === module) {
+    main()
+}
+
 module.exports = { Map, Layer, Layer_Data, Data };
