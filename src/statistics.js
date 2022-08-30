@@ -5,16 +5,13 @@ function getValidMaps(allMaps, lastChosenMap){
     if(lastChosenMap == null){
         return allMaps;
     }
-    if(currentMode == null){
-        throw "no Mode";
-    }
     for(let i=0;i<allMaps.length;i++){
         allMaps[i].decrease_lock_time();
     }
     for(let i=0;i<allMaps.length;i++){
         if(lastChosenMap.name == allMaps[i].name){
             for(let j=0;j<allMaps[i].neighbor_count;j++){
-                allMaps[i].neighbor[j].update_lock_time();
+                allMaps[i].neighbors[j].update_lock_time();
             }
         }
     }
