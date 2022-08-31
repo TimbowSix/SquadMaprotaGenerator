@@ -1,5 +1,4 @@
 const fs = require("fs");
-const config = require("../config.json")
 const utils = require("./utils.js")
 const data = require("./data.js")
 const statistics = require("./statistics.js")
@@ -59,10 +58,12 @@ class Maprota {
      * @param {Array} layers array of layers
      * @returns {Array}
      */
-    layer_weight(layers){
+    layer_weight(layers, slope=1, shift=1){
         let votes = []
         for(let layer of layers) votes.push(layer.votes)
-        return statistics.convert_mapvote_to_weights(votes, 1)
+        //return statistics.convert_mapvote_to_weights(votes, 1)
+        let weights = sigmoid(votes, slope, shift)
+        return utils.normalize(weights)
     }
     /**
      * returns valid maps for current biom distribution
@@ -101,23 +102,11 @@ class Maprota {
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //weights.push(map.map_weight[mode])
-                weights.push(map.map_weight)
+                weights.push(map.map_weight+1)
             }
         }
         weights = utils.normalize(weights)
         return utils.choice(maps, weights)
-    }
-    /**
-     * Add a seeding mode layer to the top of Maprotation
-     */
-    add_seeding(){
-        let seed_layers = []
-        for(let map of this.all_maps){
-            if("Seed" in map.layers){
-                seed_layers = seed_layers.concat(map.layers["Seed"])
-            }
-        }
-        this.rotation.unshift(this.choose_layer(seed_layers, false))
     }
     /**
      * Creates a new rotation based on the parameters set in the configuration.
@@ -150,9 +139,14 @@ class Maprota {
             layer = this.choose_layer(map.layers[mode])
             this.rotation.push(layer)
         }
+
+        // Add seed layers
         if(this.config["seed_layer"] > 0){
+            let seed_layers = []
+            for(let map of this.all_maps) if("Seed" in map.layers) seed_layers = seed_layers.concat(map.layers["Seed"])
+        
             for(let i = 0; i<this.config["seed_layer"]; i++){
-                this.add_seeding()
+                this.rotation.unshift(this.choose_layer(seed_layers, false))
             }
         }
         if(str_output)return this.toString()
@@ -172,6 +166,7 @@ class Maprota {
 }
 
 function main(){
+    let config = require("../config.json")
     let rota = new Maprota(config)
     let test = rota.generate_rota()
     //let test = []
