@@ -5,6 +5,10 @@ const data = require("./data.js")
 const statistics = require("./statistics.js")
 
 class Maprota {
+    /**
+     * setup for maprota generation
+     * @param {object} config 
+     */
     constructor(config){
         this.config = config
         this.rotation = []
@@ -16,13 +20,18 @@ class Maprota {
         //for optimizer
         this.distribution = 0
     }
-    choose_mode(latest_modes = null, custom_pool=null) {
+    /**
+     * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
+     * @param {Array} latest_modes optional, necessary for correct distributions
+     * @param {string} custom_pool optional, choose which mode pool to use
+     * @returns {string} mode string
+     */
+    choose_mode(latest_modes=null, custom_pool=null) {
         if (!(latest_modes)) latest_modes = []
         let mode_distribution = structuredClone(this.config["mode_distribution"])
         let pools = Object.keys(mode_distribution["pool_distribution"])
         let weight = Object.values(mode_distribution["pool_distribution"])
         let pool = custom_pool ? custom_pool : utils.choice(pools, weight)
-        //let pool = utils.choice(pools, weight)
         if (latest_modes.length != 0){
             let latest = latest_modes.slice(latest_modes.length-mode_distribution["pool_spacing"],latest_modes.length)
             if (latest.some((mode) => !(mode_distribution["pools"]["main"].hasOwnProperty(mode)))){
@@ -36,25 +45,44 @@ class Maprota {
         let chances = utils.normalize(Object.values(mode_distribution["pools"][pool]))
         return utils.choice(modes, chances)
     }
+    /**
+     * Gets a list of layers and returns a random layer from this list.
+     * @param {Array} layers list of layers to choose from
+     * @param {boolean} weighted layers weighted by their votes
+     * @returns {data.Layer} layer object
+     */
     choose_layer(layers, weighted=true){
         let weight = null
         if(weighted && this.config["use_vote_weight"]) weight = this.layer_weight(layers)
         return utils.choice(layers, weight)
     }
+    /**
+     * Gets a array of layers, finds their mapvotes and converts them to a Array of weights
+     * @param {Array} layers array of layers
+     * @returns {Array}
+     */
     layer_weight(layers){
         let votes = []
         for(let layer of layers) votes.push(layer.votes)
         return statistics.convert_mapvote_to_weights(votes, 1)
     }
+    /**
+     * returns valid maps for current biom distribution
+     * @returns {Array}
+     */
     valid_maps(){
         let maps = []
-
         while (maps.length == 0){
             maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1))
         }
-
         return maps
     }
+    /**
+     * gets an array of maps, returns an array with all available maps for given mode
+     * @param {Array} maps 
+     * @param {string} mode 
+     * @returns {Array}
+     */
     av_maps(maps, mode){
         let valid_maps = []
         for(let map of maps){
@@ -62,11 +90,17 @@ class Maprota {
         }
         return valid_maps
     }
+    /**
+     * gets an array of maps, checks if given mode is available for map and draws one map with mapweight probability 
+     * @param {Array} maps 
+     * @param {string} mode 
+     * @returns {data.Map}
+     */
     choose_map(maps, mode){
         let weights = []
         let valid_maps = []
         for(let map of maps){
-            if(mode in map.layers){
+            if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //weights.push(map.map_weight[mode])
                 weights.push(map.map_weight)
@@ -75,6 +109,9 @@ class Maprota {
         weights = utils.normalize(weights)
         return utils.choice(maps, weights)
     }
+    /**
+     * Add a seeding mode layer to the top of Maprotation
+     */
     add_seeding(){
         let seed_layers = []
         for(let map of this.all_maps){
@@ -84,6 +121,12 @@ class Maprota {
         }
         this.rotation.unshift(this.choose_layer(seed_layers, false))
     }
+    /**
+     * Creates a new rotation based on the parameters set in the configuration.
+     * Returns the rotation as a list of layers.
+     * @param {boolean} str_output defines if output should be an array of layer strings or else layer objects
+     * @returns {Array}
+     */
     generate_rota(str_output=true){
         let mode = this.choose_mode()
         this.modes.push(mode)
@@ -117,6 +160,10 @@ class Maprota {
         if(str_output)return this.toString()
         else return this.rotation
     }
+    /**
+     * returns an array of current maprotation as array of strings
+     * @returns {Array}
+     */
     toString(){
         let rota = []
         for(let layer of this.rotation){

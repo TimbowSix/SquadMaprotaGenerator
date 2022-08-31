@@ -6,7 +6,6 @@
     "use_map_weight":true,
     "biom_spacing": 4,
     "min_biom_distance": 0.5,
-    "lockTimeFactor":0,
     "update_layers":false,
     "mode_distribution":
     {

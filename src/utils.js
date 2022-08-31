@@ -1,3 +1,10 @@
+
+/**
+ * returns random element from array
+ * @param {Array} arr 
+ * @param {[number]} weights chances for every element, defaults to 1/arr.length
+ * @returns 
+ */
 function choice(arr, weights=null){
     if(!(weights)){
         return arr[Math.floor(Math.random()*arr.length)];
@@ -17,6 +24,12 @@ function choice(arr, weights=null){
 }
 
 // Math kram
+
+/**
+ * normalizes an array of numbers
+ * @param {[number]} arr 
+ * @returns {[number]}
+ */
 function normalize(arr){
     let sum = arr.reduce(function(pv, cv) { return pv + cv; }, 0);
     for (let i = 0; i<arr.length; i++){
@@ -24,20 +37,43 @@ function normalize(arr){
     }
     return arr
 }
+
+/**
+ * rounds number to x decimal places
+ * @param {number} val number
+ * @param {int} digits decimal places
+ * @returns 
+ */
 function round(val, digits=2){
     return Math.round((val + Number.EPSILON) * (Math.pow(10,digits))) / Math.pow(10,digits)
 }
 
+/**
+ * squares every element of an array
+ * @param {[number]} arr 
+ * @returns {[number]}
+ */
 function squareArr(arr){
     let n_arr = []
     for(let ele of arr) n_arr.push(Math.pow(ele, 2))
     return n_arr
 }
 
+/**
+ * returns sum of an array of numbers
+ * @param {[number]} arr 
+ * @returns {number}
+ */
 function sumArr(arr){
     return arr.reduce(function(pv, cv) { return pv + cv; }, 0)
 }
 
+/**
+ * multiplies two arrays element wise
+ * @param {[number]} arr1 
+ * @param {[number]} arr2 
+ * @returns {[number]}
+ */
 function multiplyArr(arr1, arr2){
     let n_arr = []
     arr1.forEach((ele, ind) => {
@@ -45,12 +81,14 @@ function multiplyArr(arr1, arr2){
       })
     return n_arr
 }
+
+/**
+ * formats a layer string to preffered readable casing format.
+ * If mode or map is not found it only gets to lower case
+ * @param {string} layer is expected to have the standard format: map_mode_version
+ * @returns {string} formatet Map_Mode_version
+ */
 function formatLayer(layer){
-    /**
-     * formats a layer string to preffered readable casing format.
-     * If mode or map is not found it only gets to lower case
-     * layer string is expected to have following standard format: map_mode_version
-    **/
     layer = layer.toLowerCase()
     let values = layer.split("_")
     let map =  values[0]
@@ -70,19 +108,12 @@ function formatLayer(layer){
     return `${map}_${mode}_${ver}`
 }
 
-
-
-
 function arithmeticWeightedMean(weights, data){
     let temp = 0
     for(let i = 0; i < data.length; i++){
         temp += data[i]*weights[i]
     }
     return temp
-}
-
-function main(){
-    console.log(multiplyArr([1,2,3], [3,2,1]))
 }
 
 if (require.main === module) {

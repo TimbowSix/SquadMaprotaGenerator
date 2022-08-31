@@ -147,34 +147,12 @@ function get_layers(){
     }
     return maps
 }
-function read(){
-    let file = fs.readFileSync("./data/data", "ascii")
-    return JSON.parse(Buffer.from(file, "base64").toString('utf8'))
-}
-function write(data){
-    fs.writeFileSync("./data/data", Buffer.from(JSON.stringify(data)).toString("base64"))
-}
-function update_c(data, ch=null){
-    if (!(ch)) ch = read();
-    for (const [k, v] of Object.entries(data)) {
-        ch[k] = v
-    }
-    return ch
-}
-function update_section(data, section){
-    let ch = read()
-    ch[section] = data
-    write(ch)
-}
 
-function main(){
-    return
-}
-
+// Test Stuff here
 if (require.main === module) {
     let config = require("../config.json")
     let maps = initialize_maps(config)
     console.log(maps)
 }
 
-module.exports = { Map, Layer, initialize_maps, get_layers, read, write, update_c, update_section };
+module.exports = { Map, Layer, initialize_maps, get_layers };
