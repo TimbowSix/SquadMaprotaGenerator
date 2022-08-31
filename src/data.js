@@ -77,7 +77,8 @@ class Map{
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
-
+    
+    // ??
     add_mapvote_weights(){
         votes = {}
         weights = {}
@@ -152,7 +153,9 @@ function get_layers(){
 if (require.main === module) {
     let config = require("../config.json")
     let maps = initialize_maps(config)
-    console.log(maps)
+    console.log(maps[0])
+    maps[0].add_mapvote_weights()
+    console.log(maps[0])
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };

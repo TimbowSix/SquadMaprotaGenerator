@@ -103,8 +103,8 @@ class Maprota {
         for(let map of maps){
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
-                //weights.push(map.map_weight[mode])
-                weights.push(map.map_weight+1)
+                weights.push(map.map_weight[mode]+1)
+                //weights.push(map.map_weight+1)
             }
         }
         weights = utils.normalize(weights)

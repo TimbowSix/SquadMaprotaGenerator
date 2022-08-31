@@ -1,24 +1,169 @@
 {
-  "Sumari": 1.9899999999999993,
-  "Logar": 1.1399999999999997,
-  "Kokan": 0.8599999999999993,
-  "Chora": 0.27999999999999947,
-  "Mestia": 0.17999999999999938,
-  "FoolsRoad": 0.24999999999999944,
-  "Narva": 0.0,
-  "Fallujah": 4.560000000000002,
-  "Belaya": 0.4299999999999988,
-  "Anvil": 0.26999999999999946,
-  "Mutaha": 3.4400000000000013,
-  "Kamdesh": 0.0,
-  "AlBasrah": 1.0599999999999992,
-  "Kohat": 0.26999999999999946,
-  "Skorpo": 5.860000000000003,
-  "GooseBay": 0.26999999999999946,
-  "Manic": 1.1099999999999994,
-  "LashkarValley": 0.0,
-  "Gorodok": 2.9599999999999986,
-  "BlackCoast": 6.089999999999999,
-  "Tallil": 0.0,
-  "Yehorivka": 3.4099999999999993
+  "Sumari": {
+    "Insurgency": 0,
+    "TC": 0,
+    "Invasion": 0,
+    "Seed": 0,
+    "skirmish": 0,
+    "AAS": 0,
+    "RAAS": 0
+  },
+  "Logar": {
+    "Seed": 0,
+    "skirmish": 0,
+    "Insurgency": 0,
+    "RAAS": 0,
+    "TC": 0,
+    "AAS": 0
+  },
+  "Kokan": {
+    "Invasion": 0,
+    "Insurgency": 0,
+    "skirmish": 0,
+    "RAAS": 0,
+    "AAS": 0
+  },
+  "Chora": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "Insurgency": 0,
+    "AAS": 0
+  },
+  "Mestia": {
+    "AAS": 0,
+    "skirmish": 0,
+    "Invasion": 0,
+    "RAAS": 0,
+    "TC": 0
+  },
+  "FoolsRoad": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "Destruction": 0,
+    "AAS": 0
+  },
+  "Narva": {
+    "RAAS": 0,
+    "AAS": 0,
+    "Invasion": 0,
+    "Destruction": 0,
+    "skirmish": 0,
+    "TA": 0,
+    "TC": 0
+  },
+  "Fallujah": {
+    "RAAS": 0,
+    "Insurgency": 0,
+    "Invasion": 0,
+    "Seed": 0,
+    "skirmish": 0,
+    "AAS": 0
+  },
+  "Belaya": {
+    "RAAS": 0,
+    "AAS": 0,
+    "Invasion": 0,
+    "skirmish": 0
+  },
+  "Anvil": {
+    "RAAS": 0,
+    "skirmish": 0,
+    "Invasion": 0,
+    "AAS": 0
+  },
+  "Mutaha": {
+    "RAAS": 0,
+    "AAS": 0,
+    "TC": 0,
+    "Invasion": 0,
+    "skirmish": 0
+  },
+  "Kamdesh": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "AAS": 0,
+    "skirmish": 0,
+    "Insurgency": 0,
+    "TC": 0
+  },
+  "AlBasrah": {
+    "Insurgency": 0,
+    "AAS": 0,
+    "Invasion": 0,
+    "Seed": 0,
+    "skirmish": 0,
+    "TA": 0,
+    "RAAS": 0
+  },
+  "Kohat": {
+    "RAAS": 0,
+    "Insurgency": 0,
+    "AAS": 0,
+    "skirmish": 0,
+    "Invasion": 0
+  },
+  "Skorpo": {
+    "RAAS": 0,
+    "skirmish": 0,
+    "TC": 0,
+    "Invasion": 0,
+    "AAS": 0
+  },
+  "GooseBay": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "AAS": 0,
+    "skirmish": 0
+  },
+  "Manic": {
+    "RAAS": 0,
+    "AAS": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "TC": 0
+  },
+  "LashkarValley": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "TC": 0,
+    "AAS": 0,
+    "Insurgency": 0
+  },
+  "Gorodok": {
+    "RAAS": 0,
+    "AAS": 0,
+    "Insurgency": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "Destruction": 0
+  },
+  "BlackCoast": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "AAS": 0,
+    "Seed": 0,
+    "skirmish": 0
+  },
+  "Tallil": {
+    "RAAS": 0,
+    "Invasion": 0,
+    "Seed": 0,
+    "skirmish": 0,
+    "TA": 0,
+    "TC": 0,
+    "tanks": 0,
+    "AAS": 0
+  },
+  "Yehorivka": {
+    "RAAS": 0,
+    "AAS": 0,
+    "TC": 0,
+    "Destruction": 0,
+    "Invasion": 0,
+    "skirmish": 0,
+    "TA": 0
+  }
 }
