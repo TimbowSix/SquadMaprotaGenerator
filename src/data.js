@@ -64,6 +64,8 @@ class Map{
         this.current_lock_time = 0
         this.layer_by_pools = {}
         this.target_map_dist = {}
+        //for optimizer
+        this.distribution = 0
     }
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]

@@ -6,25 +6,52 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config){
+    constructor(config, mode){
+        this.current_mode = mode
         this.config = config;
         this.config['seed_layer'] = 0;
         this.config['number_of_rotas'] = 1;
         this.config['number_of_layers'] = 50000;
         this.config['use_vote_weight'] = false;
 
+        this.config["mode_distribution"]["pool_distribution"]["main"] = 0
+        this.config["mode_distribution"]["pool_distribution"]["intermediate"] = 0
+        this.config["mode_distribution"]["pool_distribution"]["rest"] = 0
+
+        this.config["mode_distribution"]["pool_distribution"][mode] = 1
+        
+
         this.generator = new gen.Maprota(this.config);
 
         this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
 
         //load existing values
-        this.mapWeights = JSON.parse(fs.readFileSync("../data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
-        this.delta = JSON.parse(fs.readFileSync("../data/delta.json"));
+        try{
+            this.mapWeights = JSON.parse(fs.readFileSync("./data/mapweights1.json")); //TODO umstellen auf drei verschiedenen Weights Typen
+        }catch(err){
+            this.mapWeights = {"main":[],"intermediate":[],"rest":[]}
+            //let temp = 1/this.generator.all_maps.length
+            for(let i=0;i<this.generator.all_maps.length;i++){
+                for(let mode of Object.keys(this.mapWeights)){
+                    this.mapWeights[mode].push(0)
+                }
+            }
+            this.saveMapWeights()
+        }
+
+        try{
+            this.delta = JSON.parse(fs.readFileSync("./data/delta1.json"));
+        }catch(err){
+            this.delta = 1
+            this.saveDelta()
+        }
         
         //init maps
         for(let i=0;i<this.generator.all_maps.length;i++){
             this.generator.all_maps[i].distribution = 0;
+            this.generator.all_maps[i].map_weight = this.mapWeights[this.current_mode][i]; //TODO überarbeiten wenn mapweights dicts sind
         }
+        this.normalize_map_weights();
         //generate rota
         this.generator.generate_rota();
         this.update_dist();
@@ -40,6 +67,7 @@ class Optimizer{
         }
         
         this.generator.all_maps[currentIndex].map_weight[mapWeightKey] += this.delta;
+        this.normalize_map_weights(1 + this.delta)
         this.generator.generate_rota();
         this.update_dist();
         let cMin = this.calc_current_norm();
@@ -60,6 +88,7 @@ class Optimizer{
             //no new min in plus direction found
             //TODO minus direction
             this.generator.all_maps[currentIndex].map_weight[mapWeightKey] -= this.delta;
+            this.normalize_map_weights(1 - this.delta)
             currentIndex++
             if(currentIndex >= this.generator.all_maps.length){
                 currentIndex = 0
@@ -74,11 +103,23 @@ class Optimizer{
     }
 
     calc_current_norm(){
-        let temp = 0
+        let wTemp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
-            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2)
+            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2);
+        }
+        return Math.sqrt(wTemp);
+    }
+    normalize_map_weights(sum = 0){
+        if(sum == 0){
+            for(let map of this.generator.all_maps){
+                sum += map.map_weight;
+            }
+        }
+        for(let map of this.generator.all_maps){
+            map.map_weight /= sum;
         }
     }
+
     update_dist(){
         let tempSum = 0
         //reset dist
@@ -96,11 +137,20 @@ class Optimizer{
         }
     }
     saveMapWeights(){
-        fs.writeFileSync("../data/mapweights.json", this.mapWeights);
+        fs.writeFileSync("./data/mapweights1.json", JSON.stringify(this.mapWeights));
     }
     saveDelta(){
-        fs.writeFileSync("../data/delta.json", this.delta);
+        fs.writeFileSync("./data/delta1.json", JSON.stringify(this.delta));
+    }
+
+    start_optimizer(){
+        this.optimize_recursive(0, 0.1, this.current_mode, false)
     }
 }
 
-op = new Optimizer(config)
+op = new Optimizer(config, "main")
+for(let map of op.generator.all_maps){
+    console.log(map.name)
+    console.log(map.map_weight)
+}
+//op.start_optimizer()
