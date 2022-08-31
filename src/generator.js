@@ -16,8 +16,6 @@ class Maprota {
         this.mode_buffer = ""
 
         this.all_maps = data.initialize_maps(this.config)
-        //for optimizer
-        this.distribution = 0
     }
     /**
      * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
