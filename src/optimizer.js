@@ -18,20 +18,20 @@ class Optimizer{
         this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
 
         //load existing values
-        this.mapWeights = fs.readFileSync("../data/mapweights.json"); //TODO umstellen auf drei verschiedenen Weights Typen
-        this.delta = fs.readFileSync("../data/delta.json")
+        this.mapWeights = JSON.parse(fs.readFileSync("../data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
+        this.delta = JSON.parse(fs.readFileSync("../data/delta.json"));
         
         //init maps
         for(let i=0;i<this.generator.all_maps.length;i++){
             this.generator.all_maps[i].distribution = 0;
         }
         //generate rota
-        //this.generator. TODO WO function
+        this.generator.generate_rota();
         this.update_dist();
         this.currentMin = this.calc_current_norm();
 
         //TODO vielleicht über config
-        this.deltaStepSize = 0.01
+        this.deltaStepSize = 0.01;
     }
 
     optimize_recursive(currentIndex, lowestDelta, mapWeightKey, minChanged){
@@ -40,7 +40,7 @@ class Optimizer{
         }
         
         this.generator.all_maps[currentIndex].map_weight[mapWeightKey] += this.delta;
-        //this.generator.generate //TODO 
+        this.generator.generate_rota();
         this.update_dist();
         let cMin = this.calc_current_norm();
         if(this.currentMin > cMin){
