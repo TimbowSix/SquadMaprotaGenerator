@@ -57,7 +57,8 @@ class Optimizer{
             this.saveMapWeights();
             this.optimize_recursive(currentIndex,lowestDelta,mapWeightKey, true)
         }else{
-            //no new min found
+            //no new min in plus direction found
+            //TODO minus direction
             this.generator.all_maps[currentIndex].map_weight[mapWeightKey] -= this.delta;
             currentIndex++
             if(currentIndex >= this.generator.all_maps.length){
