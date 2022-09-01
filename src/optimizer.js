@@ -6,7 +6,7 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group, reset_map_weights = false){
+    constructor(config, mode_group, reset = false){
         this.current_mode_group = mode_group
         this.config = config;
         this.config['seed_layer'] = 0;
@@ -49,7 +49,7 @@ class Optimizer{
         for(let map  of this.generator.all_maps){
             map.distribution = 0;
 
-            if(reset_map_weights){
+            if(reset){
                 for(let mode of Object.keys(map.map_weight)){
                     map.map_weight[mode] = 0;
                 }
@@ -63,7 +63,9 @@ class Optimizer{
             }
 
         }
-        if(reset_map_weights){
+        if(reset){
+            this.delta = 1;
+            this.saveDelta();
             this.saveMapWeights();
         }
 
@@ -177,7 +179,11 @@ class Optimizer{
         this.generator.layers = []
     }
     saveMapWeights(){
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(this.mapWeights));
+        let temp = {};
+        for(let map of this.generator.all_maps){
+            temp[map.name] = map.map_weight;
+        }
+        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp));
     }
     saveDelta(){
         fs.writeFileSync("./data/delta1.json", JSON.stringify(this.delta));
@@ -190,5 +196,5 @@ class Optimizer{
     }
 }
 
-op = new Optimizer(config, "main")
+op = new Optimizer(config, "main", reset=true)
 op.start_optimizer()
