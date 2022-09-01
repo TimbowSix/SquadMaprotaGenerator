@@ -32,6 +32,7 @@ function initialize_maps(config, use_map_weights=true){
             } 
         }
         map_.lock_time = config["biom_spacing"]
+        map_.calculate_vote_weights_by_mode()
         maps.push(map_)
     }
 
@@ -66,6 +67,7 @@ class Map{
         this.target_map_dist = {}
         //for optimizer
         this.distribution = 0
+        this.vote_weights_by_mode = {}
     }
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
@@ -107,6 +109,17 @@ class Map{
         }
         else{
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`)
+        }
+    }
+
+    calculate_vote_weights_by_mode(){
+        if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
+
+        for(let mode of this.layers){
+            let votes = []
+            for(let layer of this.layers[mode]) votes.push(layer.votes)
+            let weights = utils.normalize(statistics.sigmoidArr(votes))
+            this.vote_weights_by_mode[mode] = weights
         }
     }
 }
