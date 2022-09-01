@@ -11,7 +11,7 @@ class Optimizer{
         this.config = config;
 
         if(this.config["min_biom_distance"] != 0.5){
-            throw "Der Optimizer ist nicht auf den min_biom_distance getrimmt";
+            throw error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
         }
 
         this.config['seed_layer'] = 0;
@@ -35,7 +35,7 @@ class Optimizer{
         this.mapWeights = JSON.parse(fs.readFileSync("./data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
         
         try{
-            this.delta = JSON.parse(fs.readFileSync("./data/delta1.json"));
+            this.delta = JSON.parse(fs.readFileSync("./data/delta.json"));
         }catch(err){
             this.delta = 0.15
             this.saveDelta()
@@ -95,7 +95,7 @@ class Optimizer{
                 currentIndex = 0
             }
             if(currentIndex == start_index){
-                throw "mode group not in maps"
+                throw error("mode group not in maps");
             }
         }
         
@@ -103,15 +103,6 @@ class Optimizer{
         this.generator.generate_rota();
         this.update_dist();
         let cMin = this.calc_current_norm();
-        /*console.log(cMin);
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.map_weight["RAAS"]+" ")
-        }
-        console.log()
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.distribution+" ")
-        }
-        console.log()*/
 
         if(this.currentMin > cMin){
             //new min found
@@ -220,7 +211,7 @@ class Optimizer{
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp));
     }
     saveDelta(){
-        fs.writeFileSync("./data/delta1.json", JSON.stringify(this.delta));
+        fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
     }
 
     estimate_map_weight_even_dist(map){
@@ -235,4 +226,6 @@ class Optimizer{
 }
 
 op = new Optimizer(config, "main", reset=true)
+console.time("Execution Time")
 op.start_optimizer()
+console.timeEnd("Execution Time")
