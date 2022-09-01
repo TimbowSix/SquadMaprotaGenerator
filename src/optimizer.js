@@ -11,7 +11,7 @@ class Optimizer{
         this.config = config;
 
         if(this.config["min_biom_distance"] != 0.5){
-            throw error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
+            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
         }
 
         this.config['seed_layer'] = 0;
