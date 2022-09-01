@@ -93,12 +93,12 @@ function sigmoid(x, slope, shift=0){
 function sigmoidArr(x, slope, shift=0){
     let res = []
     for(i=0; i<x.length; i++){
-        res.push.apply(res, [sigmoid(x, slope, shift)])
+        res.push(sigmoid(x[i], slope, shift))
     }
     return res
 }
 
-module.exports = { getAllMapDistances, getValidMaps, sigmoidArr };
+module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid };
 
 function main(){
     let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
