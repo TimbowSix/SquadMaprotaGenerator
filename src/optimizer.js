@@ -6,7 +6,7 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group, reset = true){
+    constructor(config, mode_group, reset = true, distribution = null){
         this.current_mode_group = mode_group
         this.config = config;
 
@@ -28,7 +28,21 @@ class Optimizer{
 
         this.generator = new gen.Maprota(this.config);
 
-        this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
+        this.wUni = {};
+        if(distribution == null){
+            let temp = 1/this.generator.all_maps.length;
+            for(let map of this.generator.all_maps){
+                this.wUni[map.name] = temp;
+            }
+        }else{
+            this.wUni = distribution;
+            let temp = Object.keys(this.wUni);
+            for(let map of this.generator.all_maps){
+                if(!temp.includes(map.name)){
+                    throw error("distribution has not all maps");
+                }
+            }
+        }
 
         //load existing values
         
@@ -180,7 +194,7 @@ class Optimizer{
     calc_current_norm(){
         let wTemp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
-            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2);
+            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni[this.generator.all_maps[i].name], 2);
         }
         return Math.sqrt(wTemp);
     }
