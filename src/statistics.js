@@ -59,7 +59,9 @@ function calcMapDistribution(maps){
     //normalize
     for(let map of maps){
         for(let pool of Object.keys(map.mapvote_weights)){
-            map.total_probabilities[pool] /= tempSum[pool];
+            if(map.total_probabilities[pool]){
+                map.total_probabilities[pool] /= tempSum[pool];
+            }
         }
     }
 }
