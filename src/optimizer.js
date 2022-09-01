@@ -39,7 +39,7 @@ class Optimizer{
             let temp = Object.keys(this.wUni);
             for(let map of this.generator.all_maps){
                 if(!temp.includes(map.name)){
-                    throw error("distribution has not all maps");
+                    throw Error("distribution has not all maps");
                 }
             }
         }
@@ -109,7 +109,7 @@ class Optimizer{
                 currentIndex = 0
             }
             if(currentIndex == start_index){
-                throw error("mode group not in maps");
+                throw Error("mode group not in maps");
             }
         }
         
@@ -130,6 +130,7 @@ class Optimizer{
             console.log();
 
             this.saveMapWeights();
+            this.save_maps();
             this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
         }else{
             let counted_down = false;
@@ -156,6 +157,7 @@ class Optimizer{
                 console.log();
 
                 this.saveMapWeights();
+                this.save_maps();
                 this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
             }else{
                 if(counted_down){
@@ -230,6 +232,20 @@ class Optimizer{
 
     estimate_map_weight_even_dist(map){
         return Math.pow(0.265*map.neighbor_count, 2.209)
+    }
+
+    save_maps(){
+        try {
+            let history = require("./optimizer_maps_history.json")
+        }catch(e) {
+            let history = [] 
+        }
+        let counts = {};
+        for (let map of this.generator.maps) {
+            counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
+        }
+        history.push(counts)
+        fs.writeFileSync("./optimizer_maps_history.json", JSON.stringify(history))
     }
 
     start_optimizer(){
