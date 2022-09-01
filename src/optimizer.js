@@ -6,12 +6,12 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group, reset = true){
+    constructor(config, mode_group, reset = true, distribution = null){
         this.current_mode_group = mode_group
         this.config = config;
 
         if(this.config["min_biom_distance"] != 0.5){
-            throw "Der Optimizer ist nicht auf den min_biom_distance getrimmt";
+            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
         }
 
         this.config['seed_layer'] = 0;
@@ -28,14 +28,28 @@ class Optimizer{
 
         this.generator = new gen.Maprota(this.config);
 
-        this.wUni = 1/this.generator.all_maps.length; //TODO nicht mehr richtig muss dann tartet mapvote dist sein
+        this.wUni = {};
+        if(distribution == null){
+            let temp = 1/this.generator.all_maps.length;
+            for(let map of this.generator.all_maps){
+                this.wUni[map.name] = temp;
+            }
+        }else{
+            this.wUni = distribution;
+            let temp = Object.keys(this.wUni);
+            for(let map of this.generator.all_maps){
+                if(!temp.includes(map.name)){
+                    throw Error("distribution has not all maps");
+                }
+            }
+        }
 
         //load existing values
         
         this.mapWeights = JSON.parse(fs.readFileSync("./data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
         
         try{
-            this.delta = JSON.parse(fs.readFileSync("./data/delta1.json"));
+            this.delta = JSON.parse(fs.readFileSync("./data/delta.json"));
         }catch(err){
             this.delta = 0.15
             this.saveDelta()
@@ -95,7 +109,7 @@ class Optimizer{
                 currentIndex = 0
             }
             if(currentIndex == start_index){
-                throw "mode group not in maps"
+                throw Error("mode group not in maps");
             }
         }
         
@@ -103,15 +117,6 @@ class Optimizer{
         this.generator.generate_rota();
         this.update_dist();
         let cMin = this.calc_current_norm();
-        /*console.log(cMin);
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.map_weight["RAAS"]+" ")
-        }
-        console.log()
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.distribution+" ")
-        }
-        console.log()*/
 
         if(this.currentMin > cMin){
             //new min found
@@ -125,6 +130,7 @@ class Optimizer{
             console.log();
 
             this.saveMapWeights();
+            this.save_maps();
             this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
         }else{
             let counted_down = false;
@@ -151,6 +157,7 @@ class Optimizer{
                 console.log();
 
                 this.saveMapWeights();
+                this.save_maps();
                 this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
             }else{
                 if(counted_down){
@@ -189,7 +196,7 @@ class Optimizer{
     calc_current_norm(){
         let wTemp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
-            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni, 2);
+            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni[this.generator.all_maps[i].name], 2);
         }
         return Math.sqrt(wTemp);
     }
@@ -217,14 +224,28 @@ class Optimizer{
         for(let map of this.generator.all_maps){
             temp[map.name] = map.map_weight;
         }
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp));
+        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
     }
     saveDelta(){
-        fs.writeFileSync("./data/delta1.json", JSON.stringify(this.delta));
+        fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
     }
 
     estimate_map_weight_even_dist(map){
         return Math.pow(0.265*map.neighbor_count, 2.209)
+    }
+
+    save_maps(){
+        try {
+            let history = require("./optimizer_maps_history.json")
+        }catch(e) {
+            let history = [] 
+        }
+        let counts = {};
+        for (let map of this.generator.maps) {
+            counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
+        }
+        history.push(counts)
+        fs.writeFileSync("./optimizer_maps_history.json", JSON.stringify(history))
     }
 
     start_optimizer(){
@@ -235,4 +256,6 @@ class Optimizer{
 }
 
 op = new Optimizer(config, "main", reset=true)
+console.time("Execution Time")
 op.start_optimizer()
+console.timeEnd("Execution Time")
