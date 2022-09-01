@@ -63,7 +63,7 @@ class Maprota {
     choose_layer_from_map(map, mode, weighted=true){
         let weight = null
         if(weighted && this.config["use_vote_weight"]) weight = map.vote_weights_by_mode[mode]
-        return utils.choice(layers, weight)
+        return utils.choice(map.layers[mode], weight)
     }
     /**
      * Gets a array of layers, finds their mapvotes and converts them to a Array of weights
