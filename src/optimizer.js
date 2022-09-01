@@ -208,7 +208,7 @@ class Optimizer{
         for(let map of this.generator.all_maps){
             temp[map.name] = map.map_weight;
         }
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp));
+        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
     }
     saveDelta(){
         fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
