@@ -54,11 +54,23 @@ class Maprota {
         return utils.choice(layers, weight)
     }
     /**
+     * randomly chooses a layer of a mode from a specific map
+     * @param {data.Map} map map to be chosen from
+     * @param {string} mode mode to be chosen from
+     * @param {boolean} weighted if random layer probability should be weighted by their layervotes 
+     * @returns {data.Layer}
+     */
+    choose_layer_from_map(map, mode, weighted=true){
+        let weight = null
+        if(weighted && this.config["use_vote_weight"]) weight = map.vote_weights_by_mode[mode]
+        return utils.choice(layers, weight)
+    }
+    /**
      * Gets a array of layers, finds their mapvotes and converts them to a Array of weights
      * @param {Array} layers array of layers
      * @returns {Array}
      */
-    layer_weight(layers, slope=1, shift=1){
+    layer_weight(layers, slope=1, shift=0){
         let votes = []
         for(let layer of layers) votes.push(layer.votes)
         //return statistics.convert_mapvote_to_weights(votes, 1)
@@ -120,7 +132,8 @@ class Maprota {
         let v_maps = this.valid_maps()
         let maps = this.av_maps(v_maps, mode)
         let map = this.choose_map(maps, mode)
-        let layer = this.choose_layer(map.layers[mode])
+        //let layer = this.choose_layer(map.layers[mode])
+        let layer = this.choose_layer_from_map(map, mode)
         this.rotation.push(layer)
         this.maps.push(map)
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
@@ -136,7 +149,8 @@ class Maprota {
             this.modes.push(mode)
             map = this.choose_map(maps, mode)
             this.maps.push(map)
-            layer = this.choose_layer(map.layers[mode])
+            //layer = this.choose_layer(map.layers[mode])
+            layer = this.choose_layer_from_map(map, mode)
             this.rotation.push(layer)
         }
 

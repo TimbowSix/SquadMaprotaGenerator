@@ -115,7 +115,7 @@ class Map{
     calculate_vote_weights_by_mode(){
         if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
 
-        for(let mode of this.layers){
+        for(let mode of Object.keys(this.layers)){
             let votes = []
             for(let layer of this.layers[mode]) votes.push(layer.votes)
             let weights = utils.normalize(statistics.sigmoidArr(votes))
