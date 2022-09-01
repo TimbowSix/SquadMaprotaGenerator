@@ -17,6 +17,12 @@ class Maprota {
 
         this.all_maps = data.initialize_maps(this.config)
     }
+    reset(){
+        this.rotation = []
+        this.modes = []
+        this.maps = []
+        this.mode_buffer = ""
+    }
     /**
      * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
      * @param {Array} latest_modes optional, necessary for correct distributions
@@ -126,7 +132,8 @@ class Maprota {
      * @param {boolean} str_output defines if output should be an array of layer strings or else layer objects
      * @returns {Array}
      */
-    generate_rota(str_output=true){
+    generate_rota(str_output=true, reset=true){
+        if(reset) this.reset()
         let mode = this.choose_mode()
         this.modes.push(mode)
         let v_maps = this.valid_maps()
@@ -179,22 +186,12 @@ class Maprota {
     }
 }
 
-function main(){
-    let config = require("../config.json")
-    let rota = new Maprota(config)
-    let test = rota.generate_rota()
-    //let test = []
-    //for(let i = 0; i<1000; i++) test.push(rota.choose_mode())
-    //console.log(test)
-    if (fs.existsSync("./test.txt")) {
-        fs.unlinkSync("./test.txt")
-    }
-    fs.appendFileSync('./test.txt', test.join("\n"))
-}
 
 if (require.main === module) {
+    let config = require("../config.json")
+    let rota = new Maprota(config)
     console.time("Execution Time")
-    main()
+    let test = rota.generate_rota()
     console.timeEnd("Execution Time")
 }
 
