@@ -208,8 +208,10 @@ if (require.main === module) {
     statistics.calcMapDistribution(maps)
     let müll = 0
     for(let i=0; i<maps.length; i++){
-        müll += maps[i].total_probabilities["main"]
-        console.log(`Main mode sum: ${müll}`)
+        if(maps[i].total_probabilities["rest"]){
+            müll += maps[i].total_probabilities["rest"]
+            console.log(`Rest mode sum: ${müll}`)
+        }
     }
 }
 
