@@ -97,8 +97,6 @@ class Optimizer{
         this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, true);
         this.generator.generate_rota();
         this.update_dist();
-
-
         let cMin = this.calc_current_norm();
         /*console.log(cMin);
         for(let map of this.generator.all_maps){
@@ -114,7 +112,7 @@ class Optimizer{
             //new min found
             this.currentMin = cMin;
 
-            console.log("new min: "+cMin);
+            console.log("new min by + delta : "+cMin);
             console.log("mapweights for "+ mode_group);
             for(let map of this.generator.all_maps){
                 process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
@@ -124,19 +122,45 @@ class Optimizer{
             this.saveMapWeights();
             this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
         }else{
+            let counted_down = false;
             //no new min in plus direction found
-            //TODO minus direction
             this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
-            currentIndex++
-            if(currentIndex >= this.generator.all_maps.length){
-                currentIndex = 0
-                if(!minChanged){
-                    this.delta -= this.deltaStepSize
-                    console.log("new Delta "+this.delta)
-                    this.saveDelta();
-                }
+            //check negative direction
+            let cMin = this.currentMin;
+            if((this.generator.all_maps[currentIndex].map_weight[this.get_modes_of_mode_group(mode_group)[0]] - this.delta) > 0){
+                counted_down = true;
+                this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
+                this.generator.generate_rota();
+                this.update_dist();
+                cMin = this.calc_current_norm();
             }
-            this.optimize_recursive(currentIndex,lowestDelta,mode_group,false)
+
+            if(cMin < this.currentMin){
+                //new min found
+                console.log("new min by - delta : "+cMin);
+                console.log("mapweights for "+ mode_group);
+                for(let map of this.generator.all_maps){
+                    process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                }
+                console.log();
+
+                this.saveMapWeights();
+                this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
+            }else{
+                if(counted_down){
+                    this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, true);
+                }
+                currentIndex++
+                if(currentIndex >= this.generator.all_maps.length){
+                    currentIndex = 0
+                    if(!minChanged){
+                        this.delta -= this.deltaStepSize
+                        console.log("new Delta "+this.delta)
+                        this.saveDelta();
+                    }
+                }
+                this.optimize_recursive(currentIndex,lowestDelta,mode_group,false)
+            }
         }
     }
 
@@ -150,6 +174,10 @@ class Optimizer{
                 }
             }
         }
+    }
+
+    get_modes_of_mode_group(mode_group){
+        return Object.keys(this.config["mode_distribution"]["pools"][mode_group]).keys();
     }
 
     calc_current_norm(){
