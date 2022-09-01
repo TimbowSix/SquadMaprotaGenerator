@@ -6,7 +6,7 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group){
+    constructor(config, mode_group, reset_map_weights = false){
         this.current_mode_group = mode_group
         this.config = config;
         this.config['seed_layer'] = 0;
@@ -29,18 +29,44 @@ class Optimizer{
         
         this.mapWeights = JSON.parse(fs.readFileSync("./data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
         
-
         try{
             this.delta = JSON.parse(fs.readFileSync("./data/delta1.json"));
         }catch(err){
             this.delta = 1
             this.saveDelta()
         }
-        
-        //init maps
-        for(let i=0;i<this.generator.all_maps.length;i++){
-            this.generator.all_maps[i].distribution = 0;
+
+        this.mode_to_modeGroup = {}
+        for(let mode_group of Object.keys(this.config["mode_distribution"]["pools"])){
+            if(mode_group != null){
+                for (let mode of Object.keys(this.config["mode_distribution"]["pools"][mode_group])){
+                    this.mode_to_modeGroup[mode] = mode_group;
+                }
+            }
         }
+
+        //init maps
+        for(let map  of this.generator.all_maps){
+            map.distribution = 0;
+
+            if(reset_map_weights){
+                for(let mode of Object.keys(map.map_weight)){
+                    map.map_weight[mode] = 0;
+                }
+            }
+
+            for(let mode of Object.keys(map.layers)){
+                let mg = this.mode_to_modeGroup[mode];
+                if(!map.mode_groups.includes(mg)){
+                    map.mode_groups.push(mg);
+                }
+            }
+
+        }
+        if(reset_map_weights){
+            this.saveMapWeights();
+        }
+
         //generate rota
         this.generator.generate_rota();
         this.update_dist();
@@ -50,32 +76,55 @@ class Optimizer{
         this.deltaStepSize = 0.01;
     }
 
-    optimize_recursive(currentIndex, lowestDelta, map_weight_group, minChanged){ //TODO map weight group umsetzten
+    optimize_recursive(currentIndex, lowestDelta, mode_group, minChanged){ //TODO map weight group umsetzten
         if(this.delta <= lowestDelta){
             return
         }
+        //check if map has mode
+        let start_index = currentIndex
+        while(!this.generator.all_maps[currentIndex].mode_groups.includes(mode_group)){
+            currentIndex++
+            if(currentIndex >= this.generator.all_maps.length){
+                currentIndex = 0
+            }
+            if(currentIndex == start_index){
+                throw "mode group not in maps"
+            }
+        }
         
-        this.generator.all_maps[currentIndex].map_weight[mapWeightKey] += this.delta;
+        this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, true);
         this.generator.generate_rota();
         this.update_dist();
+
+
         let cMin = this.calc_current_norm();
+        /*console.log(cMin);
+        for(let map of this.generator.all_maps){
+            process.stdout.write(map.name+" "+map.map_weight["RAAS"]+" ")
+        }
+        console.log()
+        for(let map of this.generator.all_maps){
+            process.stdout.write(map.name+" "+map.distribution+" ")
+        }
+        console.log()*/
+
         if(this.currentMin > cMin){
             //new min found
             this.currentMin = cMin;
 
             console.log("new min: "+cMin);
-            console.group("mapweights");
-            for(let i=0;i<this.generator.all_maps.length;i++){
-                console.log(this.generator.all_maps[i].map_weight[mapWeightKey]);
+            console.log("mapweights for "+ mode_group);
+            for(let map of this.generator.all_maps){
+                process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
             }
-            console.groupEnd();
+            console.log();
 
             this.saveMapWeights();
-            this.optimize_recursive(currentIndex,lowestDelta,mapWeightKey, true)
+            this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
         }else{
             //no new min in plus direction found
             //TODO minus direction
-            this.generator.all_maps[currentIndex].map_weight[mapWeightKey] -= this.delta;
+            this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
             currentIndex++
             if(currentIndex >= this.generator.all_maps.length){
                 currentIndex = 0
@@ -85,7 +134,19 @@ class Optimizer{
                     this.saveDelta();
                 }
             }
-            this.optimize_recursive(currentIndex,lowestDelta,mapWeightKey,false)
+            this.optimize_recursive(currentIndex,lowestDelta,mode_group,false)
+        }
+    }
+
+    update_mode_key_group(map, mode_group, up){
+        for(let mode of Object.keys(this.config["mode_distribution"]["pools"][mode_group])){
+            if(mode in map.map_weight){
+                if(up){
+                    map.map_weight[mode] += this.delta;
+                }else{
+                    map.map_weight[mode] -= this.delta;
+                }
+            }
         }
     }
 
@@ -101,17 +162,19 @@ class Optimizer{
         let tempSum = 0
         //reset dist
         for(let i=0;i<this.generator.all_maps.length;i++){
-            this.generator.all_maps[i].dist = 0;
+            this.generator.all_maps[i].distribution = 0;
         }
         //update
         for(let i=0;i<this.generator.maps.length;i++){
-            this.generator.maps[i].dist++;
+            this.generator.maps[i].distribution++;
             tempSum++;
         }
         //normalize
         for(let i=0;i<this.generator.all_maps.length;i++){
-            this.generator.all_maps[i].dist /= tempSum;
+            this.generator.all_maps[i].distribution /= tempSum;
         }
+        this.generator.maps = []
+        this.generator.layers = []
     }
     saveMapWeights(){
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(this.mapWeights));
@@ -121,13 +184,11 @@ class Optimizer{
     }
 
     start_optimizer(){
-        this.optimize_recursive(0, 0.1, this.current_mode, false)
+        console.log("Starte Optimizer for "+this.current_mode_group);
+        console.log("start min "+this.currentMin);
+        this.optimize_recursive(0, 0.1, this.current_mode_group, false);
     }
 }
 
 op = new Optimizer(config, "main")
-for(let map of op.generator.all_maps){
-    console.log(map.name)
-    console.log(map.map_weight)
-}
-//op.start_optimizer()
+op.start_optimizer()

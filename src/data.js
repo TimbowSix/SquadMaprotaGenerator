@@ -66,6 +66,7 @@ class Map{
         this.target_map_dist = {}
         //for optimizer
         this.distribution = 0
+        this.mode_groups = []
     }
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
