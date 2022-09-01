@@ -235,11 +235,10 @@ class Optimizer{
     }
 
     save_maps(){
+        let history = [] 
         try {
             let history = require("./optimizer_maps_history.json")
-        }catch(e) {
-            let history = [] 
-        }
+        }catch(e) {}
         let counts = {};
         for (let map of this.generator.maps) {
             counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
