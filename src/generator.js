@@ -62,7 +62,7 @@ class Maprota {
         let votes = []
         for(let layer of layers) votes.push(layer.votes)
         //return statistics.convert_mapvote_to_weights(votes, 1)
-        let weights = sigmoid(votes, slope, shift)
+        let weights = statistics.sigmoidArr(votes, slope, shift)
         return utils.normalize(weights)
     }
     /**
