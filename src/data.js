@@ -86,10 +86,9 @@ class Map{
     
     // ??
     add_mapvote_weights(){
-        votes = {}
-        weights = {}
-        means = {}
-        sum = 0
+        let votes = {}
+        let weights = {}
+        let means = {}
         if(this.layers.length != 0){
             for(let pool in this.layer_by_pools){
                 for(let l in this.layer_by_pools[pool]){
@@ -108,6 +107,7 @@ class Map{
                     w = w/utils.sumArr(weights)
                 }
             }
+            this.mapvote_weights = w
         }
         else{
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`)
