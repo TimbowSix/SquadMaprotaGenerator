@@ -48,6 +48,10 @@ function initialize_maps(config, use_map_weights=true){
             }
         }
     }
+    for(let map of maps){
+        map.set_layer_by_pools(config)
+        map.add_mapvote_weights()
+    }
     return maps
 }
 
@@ -58,6 +62,7 @@ class Map{
         this.bioms = bioms
         this.map_weight = map_weights
         this.mapvote_weights = {}
+        this.total_probabilities = {}
         this.distances = distances
         this.neighbors = []
         this.neighbor_count = 0
@@ -83,37 +88,54 @@ class Map{
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
-    
-    // ??
     add_mapvote_weights(){
-        let votes = {}
+        let votesum = {}
         let weights = {}
         let means = {}
+        let sum = 0
         if(this.layers.length != 0){
-            for(let pool in this.layer_by_pools){
-                for(let l in this.layer_by_pools[pool]){
-                    votes[pool].push.apply(votes[pool], [l.votes])
-                }
-                means[pool] = 1/votes[pool].length*utils.sumArr(votes[pool])
-                for(let votes in votes[pool]){
-                    if(weights[pool] != null){
-                        weights[pool] += Math.exp(-Math.pow(means[pool] - votes, 2))
+            for(let l of Object.keys(this.layers)){
+                if(this.layer_by_pools[l]){
+                    for(let layer of Object.values(this.layers[l])){
+                        if(votesum[this.layer_by_pools[l]]){
+                            votesum[this.layer_by_pools[l]].push(layer.votes)
+                        }
+                        else{
+                            votesum[this.layer_by_pools[l]] = [layer.votes]
+                        }
                     }
-                    else{
-                        weights[pool] = 0
-                    }
-                }
-                for(let w in weights[pool]){
-                    w = w/utils.sumArr(weights)
                 }
             }
-            this.mapvote_weights = w
+            let temp = {}
+            for(let pool of Object.keys(votesum)){
+                means[pool] = 1/votesum[pool].length*utils.sumArr(votesum[pool])
+                for(let v of Object.values(votesum[pool])){
+                    if(weights[pool]){
+                        weights[pool].push(Math.exp(-Math.pow(means[pool] - v, 2)))
+                    }
+                    else{
+                        weights[pool] = [Math.exp(-Math.pow(means[pool] - v, 2))]
+                    }
+                }
+                let sum = utils.sumArr(weights[pool]) 
+                for(let w of Object.keys(weights[pool])){
+                    weights[pool][w] = weights[pool][w]/sum
+                }
+                for(let i=0; i<votesum[pool].length; i++){
+                    weights[pool][i] *= votesum[pool][i]
+                }
+                temp[pool] = utils.sumArr(weights[pool])
+            }
+            this.mapvote_weights = temp
         }
         else{
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`)
         }
     }
 
+    set_layer_by_pools(config){
+        this.layer_by_pools = get_mode_to_pools_dict(config)
+    }
     calculate_vote_weights_by_mode(sigmoid_slope=1, sigmoid_shift=0){
         if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
 
@@ -133,6 +155,18 @@ class Layer{
         this.map = map
         this.votes = votes
     }
+}
+
+function get_mode_to_pools_dict(config){
+    let temp = {}
+    for(let mode_group of Object.keys(config["mode_distribution"]["pools"])){
+        if(mode_group != null){
+            for(let mode of Object.keys(config["mode_distribution"]["pools"][mode_group])){               
+                temp[mode] = mode_group 
+            }
+        }
+    }
+    return temp
 }
 
 function get_layers(){
@@ -171,8 +205,12 @@ if (require.main === module) {
     let config = require("../config.json")
     let maps = initialize_maps(config)
     console.log(maps[0])
-    maps[0].add_mapvote_weights()
-    console.log(maps[0])
+    statistics.calcMapDistribution(maps)
+    let müll = 0
+    for(let i=0; i<maps.length; i++){
+        müll += maps[i].total_probabilities["main"]
+        console.log(`Main mode sum: ${müll}`)
+    }
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };

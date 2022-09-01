@@ -43,44 +43,23 @@ function getAllMapDistances(allMapsDict){
     return distancesDict
 }
 
-function calcMapDistribution(allMaps, weightKeys){
-    //TODO slope sigmoid über config ?
-    for(weight_key of weightKeys){
-        let tempSum = 0;
-        for(map of allMaps){
-            map.target_map_dist[weight_key] = 0;
-            let avgVotes = 0; //mu
-            let layers = []
-            //sum layer votes
-            for(mode of Object.keys(map.layers)){
-                for(layer of mode){
-                    avgVotes += layer.votes;
-                    layers.push(layer);
-                }
+function calcMapDistribution(maps){
+    let tempSum = {}
+    for(let map of maps){
+        for(let pool of Object.keys(map.mapvote_weights)){
+            map.total_probabilities[pool] = sigmoid(map.mapvote_weights[pool], 0.1, 0)  // TWEAK SHIFT AND SLOPE!! -> config
+            if(tempSum[pool]){
+                tempSum[pool] += map.total_probabilities[pool]
             }
-            if(layersCount == 0){
-                throw "map with no layers";
+            else{
+                tempSum[pool] = map.total_probabilities[pool]
             }
-            avgVotes /= layers.length;
-
-            //calc ú
-            let weightSum = 0;
-            let wi = 0;
-            for(layer of layers){
-                //calc wi
-                wi = math.exp(- math.sqrt(avgVotes-layer.votes));
-                //calc W
-                weightSum += wi;
-                map.target_map_dist[weight_key] += wi * layer.votes;
-            }
-            map.target_map_dist[weight_key] /= weightSum;
-            //into sigmoid
-            map.target_map_dist[weight_key] = sigmoid(map.target_map_dist[weightSum], 0.1, 0);
-            tempSum += map.target_map_dist[weight_key];
         }
-        //normalize
-        for(map of allMaps){
-            map.target_map_dist[weight_key] /= tempSum;
+    }
+    //normalize
+    for(let map of maps){
+        for(let pool of Object.keys(map.mapvote_weights)){
+            map.total_probabilities[pool] /= tempSum[pool];
         }
     }
 }
@@ -98,7 +77,7 @@ function sigmoidArr(x, slope, shift=0){
     return res
 }
 
-module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid };
+module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid, calcMapDistribution };
 
 function main(){
     let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
