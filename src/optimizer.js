@@ -127,9 +127,7 @@ class Optimizer{
             this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
             //check negative direction
             let cMin = this.currentMin;
-            console.log(this.generator.all_maps[currentIndex].map_weight[this.get_modes_of_mode_group(mode_group)[0]])
             if((this.generator.all_maps[currentIndex].map_weight[this.get_modes_of_mode_group(mode_group)[0]] + 1  - this.delta) > 0){
-                console.log("try min")
                 counted_down = true;
                 this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
                 this.generator.generate_rota();
