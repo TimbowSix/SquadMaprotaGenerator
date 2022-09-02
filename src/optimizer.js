@@ -6,8 +6,10 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group, reset = true, distribution = null){
-        this.current_mode_group = mode_group
+    constructor(config, mode_group, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15){
+        this.console_output = console_output;
+        this.use_save_maps = save_maps;
+        this.current_mode_group = mode_group;
         this.config = config;
 
         if(this.config["min_biom_distance"] != 0.5){
@@ -45,14 +47,16 @@ class Optimizer{
         }
 
         //load existing values
-        
-        this.mapWeights = JSON.parse(fs.readFileSync("./data/mapweights.json")); //TODO umstellen auf drei verschiedenen Weights Typen
-        
-        try{
-            this.delta = JSON.parse(fs.readFileSync("./data/delta.json"));
-        }catch(err){
-            this.delta = 0.15
-            this.saveDelta()
+        this.use_extern_map_weights_and_delta = use_extern_map_weights_and_delta;
+        if(use_extern_map_weights_and_delta){
+            try{
+                this.delta = JSON.parse(fs.readFileSync("./data/delta.json"));
+            }catch(err){
+                this.delta = start_delta;
+                this.saveDelta()
+            }
+        }else{
+            this.data = start_delta;
         }
 
         this.mode_to_modeGroup = {}
@@ -83,7 +87,7 @@ class Optimizer{
 
         }
         if(reset){
-            this.delta = 0.15;
+            this.delta = start_delta;
             this.saveDelta();
             this.saveMapWeights();
         }
@@ -121,17 +125,20 @@ class Optimizer{
         if(this.currentMin > cMin){
             //new min found
             this.currentMin = cMin;
-
-            console.log("new min by +: "+cMin);
-            console.log("mapweights for "+ mode_group);
-            for(let map of this.generator.all_maps){
-                process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+            if(this.console_output){
+                console.log("new min by +: "+cMin);
+                console.log("mapweights for "+ mode_group);
+                for(let map of this.generator.all_maps){
+                    if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]){
+                        process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                    }
+                }
+                console.log();
             }
-            console.log();
 
             this.saveMapWeights();
             this.save_maps();
-            this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
+            this.optimize_recursive(currentIndex,lowestDelta,mode_group, true);
         }else{
             let counted_down = false;
             //no new min in plus direction found
@@ -149,13 +156,16 @@ class Optimizer{
             if(cMinM < this.currentMin){
                 this.currentMin = cMinM
                 //new min found
-                console.log("new min by -: "+cMinM);
-                console.log("mapweights for "+ mode_group);
-                for(let map of this.generator.all_maps){
-                    process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                if(this.console_output){
+                    console.log("new min by -: "+cMinM);
+                    console.log("mapweights for "+ mode_group);
+                    for(let map of this.generator.all_maps){
+                        if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]){
+                            process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                        }
+                    }
+                    console.log();
                 }
-                console.log();
-
                 this.saveMapWeights();
                 this.save_maps();
                 this.optimize_recursive(currentIndex,lowestDelta,mode_group, true)
@@ -168,7 +178,9 @@ class Optimizer{
                     currentIndex = 0
                     if(!minChanged){
                         this.delta -= this.deltaStepSize
-                        console.log("new Delta "+this.delta)
+                        if(this.console_output){
+                            console.log("new Delta "+this.delta)
+                        }
                         this.saveDelta();
                     }
                 }
@@ -218,14 +230,18 @@ class Optimizer{
         }
     }
     saveMapWeights(){
-        let temp = {};
-        for(let map of this.generator.all_maps){
-            temp[map.name] = map.map_weight;
+        if(this.use_extern_map_weights_and_delta){
+            let temp = {};
+            for(let map of this.generator.all_maps){
+                temp[map.name] = map.map_weight;
+            }
+            fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
         }
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
     }
     saveDelta(){
-        fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
+        if(this.use_extern_map_weights_and_delta){
+            fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
+        }
     }
 
     estimate_map_weight_even_dist(map){
@@ -233,28 +249,36 @@ class Optimizer{
     }
 
     save_maps(){
-        let history = [] 
-        try {
-            history = JSON.parse(fs.readFileSync("./optimizer_maps_history.json"))
-        }catch(e) {
-            //console.log(e)
+        if(this.use_save_maps){
+            let path = "./optimizer_maps_history_"+this.current_mode_group+".json";
+            let history = [] 
+            try {
+                history = JSON.parse(fs.readFileSync(path))
+            }catch(e) {
+                //console.log(e)
+            }
+            let counts = {};
+            for (let map of this.generator.maps) {
+                counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
+            }
+            history.push(counts)
+            fs.writeFileSync(path, JSON.stringify(history, null, 2))
         }
-        let counts = {};
-        for (let map of this.generator.maps) {
-            counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
-        }
-        history.push(counts)
-        fs.writeFileSync("./optimizer_maps_history.json", JSON.stringify(history, null, 2))
     }
 
     start_optimizer(){
-        console.log("Starte Optimizer for "+this.current_mode_group);
-        console.log("start min "+this.currentMin);
+        if(this.console_output){
+            console.log("Starte Optimizer for "+this.current_mode_group);
+            console.log("start min "+this.currentMin);
+        }
         this.optimize_recursive(0, 0.1, this.current_mode_group, false);
     }
 }
 
-op = new Optimizer(config, "main", reset=true)
+module.exports = { Optimizer };
+
+/*
+op = new Optimizer(config, "rest", reset=true)
 console.time("Execution Time")
 op.start_optimizer()
-console.timeEnd("Execution Time")
+console.timeEnd("Execution Time")*/
