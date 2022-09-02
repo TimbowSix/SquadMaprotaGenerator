@@ -114,7 +114,7 @@ class Optimizer{
         }
         
         this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, true);
-        this.generator.generate_rota();
+        this.generator.generate_rota(reset=true);
         this.update_dist();
         let cMin = this.calc_current_norm();
 
@@ -141,7 +141,7 @@ class Optimizer{
             if((this.generator.all_maps[currentIndex].map_weight[this.get_modes_of_mode_group(mode_group)[0]] + 1  - this.delta) > 0){
                 counted_down = true;
                 this.update_mode_key_group(this.generator.all_maps[currentIndex], mode_group, false);
-                this.generator.generate_rota();
+                this.generator.generate_rota(reset=true);
                 this.update_dist();
                 cMinM = this.calc_current_norm();
             }
@@ -216,8 +216,6 @@ class Optimizer{
         for(let i=0;i<this.generator.all_maps.length;i++){
             this.generator.all_maps[i].distribution /= tempSum;
         }
-        this.generator.maps = []
-        this.generator.layers = []
     }
     saveMapWeights(){
         let temp = {};
@@ -237,14 +235,16 @@ class Optimizer{
     save_maps(){
         let history = [] 
         try {
-            let history = require("./optimizer_maps_history.json")
-        }catch(e) {}
+            history = JSON.parse(fs.readFileSync("./optimizer_maps_history.json"))
+        }catch(e) {
+            //console.log(e)
+        }
         let counts = {};
         for (let map of this.generator.maps) {
             counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
         }
         history.push(counts)
-        fs.writeFileSync("./optimizer_maps_history.json", JSON.stringify(history))
+        fs.writeFileSync("./optimizer_maps_history.json", JSON.stringify(history, null, 2))
     }
 
     start_optimizer(){
