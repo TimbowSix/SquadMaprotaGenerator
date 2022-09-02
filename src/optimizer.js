@@ -6,7 +6,8 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode_group, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15){
+    constructor(config, mode_group, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true){
+        this.estimate = estimate;
         this.console_output = console_output;
         this.use_save_maps = save_maps;
         this.current_mode_group = mode_group;
@@ -26,14 +27,30 @@ class Optimizer{
         this.config["mode_distribution"]["pool_distribution"]["rest"] = 0
 
         this.config["mode_distribution"]["pool_distribution"][mode_group] = 1
-        
+        this.config["mode_distribution"]["pool_spacing"] = 0
 
+        // todo all modes auf 1/modes count 
+
+    
         this.generator = new gen.Maprota(this.config);
 
         this.wUni = {};
         if(distribution == null){
-            let temp = 1/this.generator.all_maps.length;
+
+            let maps = [];
             for(let map of this.generator.all_maps){
+                if(this.map_has_mode_group(map, this.current_mode_group)){
+                    maps.push(maps);
+                }else{
+                    for(let mode of this.get_modes_of_mode_group(this.current_mode_group)){
+                        map.map_weight[mode] = 0;
+                    }
+                    this.wUni[map.name] = 0;
+                }
+            }
+
+            let temp = 1/maps.length;
+            for(let map of maps){
                 this.wUni[map.name] = temp;
             }
         }else{
@@ -73,8 +90,8 @@ class Optimizer{
             map.distribution = 0;
 
             if(reset){
-                for(let mode of Object.keys(map.map_weight)){
-                    map.map_weight[mode] = this.estimate_map_weight_even_dist(map);
+                for(let mode of this.get_modes_of_mode_group(this.current_mode_group)){
+                    map.map_weight[mode] = this.estimate_map_weight_even_dist(map, this.current_mode_group);
                 }
             }
 
@@ -129,8 +146,10 @@ class Optimizer{
                 console.log("new min by +: "+cMin);
                 console.log("mapweights for "+ mode_group);
                 for(let map of this.generator.all_maps){
-                    if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]){
+                    if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]] != null){
                         process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                    }else if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[1]] != null){
+                        process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[1]]+" ");
                     }
                 }
                 console.log();
@@ -160,8 +179,10 @@ class Optimizer{
                     console.log("new min by -: "+cMinM);
                     console.log("mapweights for "+ mode_group);
                     for(let map of this.generator.all_maps){
-                        if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]){
+                        if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]] != null){
                             process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[0]]+" ");
+                        }else if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[1]] != null){
+                            process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][mode_group])[1]]+" ");
                         }
                     }
                     console.log();
@@ -186,6 +207,7 @@ class Optimizer{
                 }
                 this.optimize_recursive(currentIndex,lowestDelta,mode_group,false)
             }
+            return this.generator;
         }
     }
 
@@ -201,6 +223,10 @@ class Optimizer{
         }
     }
 
+    map_has_mode_group(map, mode_group){
+        return mode_group in map.mode_groups
+    }
+
     get_modes_of_mode_group(mode_group){
         return Object.keys(this.config["mode_distribution"]["pools"][mode_group]);
     }
@@ -208,7 +234,8 @@ class Optimizer{
     calc_current_norm(){
         let wTemp = 0
         for(let i=0;i<this.generator.all_maps.length;i++){
-            wTemp += Math.pow(this.generator.all_maps[i].distribution - this.wUni[this.generator.all_maps[i].name], 2);
+            let t = Math.pow(this.generator.all_maps[i].distribution - this.wUni[this.generator.all_maps[i].name], 2);
+            wTemp += t;
         }
         return Math.sqrt(wTemp);
     }
@@ -244,8 +271,12 @@ class Optimizer{
         }
     }
 
-    estimate_map_weight_even_dist(map){
-        return Math.pow(0.265*map.neighbor_count, 2.209)
+    estimate_map_weight_even_dist(map, mode_group){
+        if(mode_group == "main" && this.estimate){
+            return Math.pow(0.265*map.neighbor_count, 2.209)
+        }else{
+            return 0
+        }
     }
 
     save_maps(){
@@ -270,6 +301,12 @@ class Optimizer{
         if(this.console_output){
             console.log("Starte Optimizer for "+this.current_mode_group);
             console.log("start min "+this.currentMin);
+            for(let map of this.generator.all_maps){
+                if(map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][this.current_mode_group])[0]]){
+                    process.stdout.write(map.name+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][this.current_mode_group])[0]]+" "+map.map_weight[Object.keys(this.config["mode_distribution"]["pools"][this.current_mode_group])[1]]+" ");
+                }
+            }
+            console.log();
         }
         this.optimize_recursive(0, 0.1, this.current_mode_group, false);
     }
@@ -277,8 +314,8 @@ class Optimizer{
 
 module.exports = { Optimizer };
 
-/*
-op = new Optimizer(config, "rest", reset=true)
+
+op = new Optimizer(config, "intermediate", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
-console.timeEnd("Execution Time")*/
+console.timeEnd("Execution Time")

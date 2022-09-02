@@ -22,6 +22,9 @@ class Maprota {
         this.modes = []
         this.maps = []
         this.mode_buffer = ""
+        for(let map of this.all_maps){
+            map.current_lock_time = 0
+        }
     }
     /**
      * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration

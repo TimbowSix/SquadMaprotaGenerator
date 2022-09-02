@@ -1,9 +1,12 @@
 const {workerData} = require('node:worker_threads')
 const opt = require('./optimizer.js')
 const config = require("../config.json")
+const { fstat } = require('node:fs')
+const fs = require("fs")
 
 console.log("start optimizer for "+ workerData)
 op = new opt.Optimizer(config, workerData, reset=true)
 console.time("Execution Time")
-op.start_optimizer()
+result = op.start_optimizer()
+fs.writeFile("result_"+workerData+"_"+Date.now()+".json",JSON.stringify(result,null,2))
 console.timeEnd("Execution Time")
