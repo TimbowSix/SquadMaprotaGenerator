@@ -29,7 +29,11 @@ class Optimizer{
         this.config["mode_distribution"]["pool_distribution"][mode_group] = 1
         this.config["mode_distribution"]["pool_spacing"] = 0
 
-        // todo all modes auf 1/modes count 
+        let temp = 1/Object.keys(this.config["mode_distribution"]["pools"][mode_group]).length;
+        for(let mode of Object.keys(this.config["mode_distribution"]["pools"][mode_group])){
+            this.config["mode_distribution"]["pools"][mode_group][mode] = temp;
+        }
+        console.log(this.config["mode_distribution"]["pools"]);
 
     
         this.generator = new gen.Maprota(this.config);
@@ -315,7 +319,7 @@ class Optimizer{
 module.exports = { Optimizer };
 
 
-op = new Optimizer(config, "intermediate", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
+op = new Optimizer(config, "rest", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")
