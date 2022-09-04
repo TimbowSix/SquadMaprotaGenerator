@@ -12,6 +12,7 @@ class Optimizer{
         this.use_save_maps = save_maps;
         this.current_mode_group = mode_group;
         this.config = config;
+        this.stepwidth = start_delta
 
         if(this.config["min_biom_distance"] != 0.5){
             throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
@@ -314,12 +315,118 @@ class Optimizer{
         }
         this.optimize_recursive(0, 0.1, this.current_mode_group, false);
     }
+    
+    
 }
+
+class OptimizationObject{
+    constructor(mode, maps, dx){
+        this.mode = "undefined",
+        this.maps = []
+        this.weights = []
+        this.dx = 0
+        this.distribution = []
+    }
+    generate_rotas(){
+        // MAP ROTA ALG HERE!!!
+        this.distribution = []
+    }
+    // Sets the weights and maps in accordance with the choosen mode
+    set_weights(){
+        let temp = []
+        if(this.mode != "undefined"){
+            for(let map of maps){
+                if(map.mode == this.mode){
+                    this.weights.push(1)
+                    temp.push(map)
+                }
+            }
+            this.maps = temp
+        }
+        else{
+            console.log("Define the mode first!")
+        }
+    }
+}
+
+// opt_object is a class containing the weights, choosen mode to optimize and the maprota-generator
+function main_optimize(opt_object, end_distribution, threshold){
+    currentMin = Infinity
+    while(currentMin > threshold){
+        oldMin = currentMin
+        currentMin = get_next_minimum(opt_object, currentMin, end_distribution)
+        // Abort if the minimum did not change in the last cycle(going over all coordinate axes)
+        if(oldMin == currentMin){
+            threshold = Infinity
+        }
+    }
+}
+
+function get_next_minimum(opt_object, currentMin, end_distribution){
+    let temp = currentMin
+    let minimum_found = false
+    // Do a linesearch for each coordinate axis
+    for(let i=0; i++; i<end_distribution.length){
+        // Stay on the current axis as long as there is no minimum found
+        while(!minimum_found){
+            temp = currentMin
+            currentMin = get_next_minimum_1d(opt_object, end_distribution, i)
+            if(currentMin >= temp){
+                minimum_found = true
+            }
+        }
+    }
+    return currentMin
+}
+
+function get_next_minimum_1d(opt_object, end_distribution, coordinate_index){
+    // Calculate locale derivative and deduce slope from its value, alter the weight of the current axis
+    let stepwidth = get_new_stepwidth(opt_object.weights, opt_object.dx, coordinate_index)
+    opt_object.weights[coordinate_index] += stepwidth
+
+    // Calculate the new optimization value
+    return optimizerValue(opt_object, end_distribution)
+
+}
+
+function get_new_stepwidth(current_weights, dx, direction_index){
+    let newweights = current_weights
+    newweights[direction_index] += dx
+    let f1 = optimizer(newweights)
+    newweights[direction_index] -= 2*dx
+    let f2 = optimizer(newweights)
+    let deriv = derivative_twosided(f1, f2, dx)
+    return stepwidth_from_slope(deriv)
+}
+function derivative_twosided(f1, f2, h){
+    return (f1- f2)/(2*h)
+}
+function stepwidth_from_slope(slope, factor=1, shift=1){
+    return factor/Math.sqrt(slope+shift)
+}
+
+function optimizerValue(opt_object, end_distribution){
+    // Generate Rotas
+    opt_object.generate_rotas()
+    // Get Distribution
+    return optimizationFunction(opt_object.distribution, end_distribution)
+}
+
+function optimizationFunction(current_distribution, end_distribution){
+    let opt = 0
+    let diff = current_distribution - end_distribution
+    for(let i=0; i < current_distribution.length; i++){
+        opt += Math.pow(diff[i],2)
+    }
+    return Math.sqrt(opt)
+}
+
+
 
 module.exports = { Optimizer };
 
-
-op = new Optimizer(config, "rest", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
+console.log(derivative_twosided(testing, 2, 0.001))
+op = new Optimizer(config, "rest", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")
