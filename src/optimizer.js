@@ -13,6 +13,7 @@ class Optimizer{
         this.use_save_maps = save_maps;
         this.current_mode = mode;
         this.current_modeG = this.get_mode_group_from_mode(mode);
+        this.over_run = false;
 
         if(this.config["min_biom_distance"] != 0.5){
             throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
@@ -118,6 +119,7 @@ class Optimizer{
             currentIndex++
             if(currentIndex >= this.generator.all_maps.length){
                 currentIndex = 0
+                this.over_run = true;
             }
             if(currentIndex == start_index){
                 throw Error("mode group not in maps");
@@ -177,8 +179,10 @@ class Optimizer{
                     this.update_mode_key(this.generator.all_maps[currentIndex], true);
                 }
                 currentIndex++
-                if(currentIndex >= this.generator.all_maps.length){
-                    currentIndex = 0
+                if(currentIndex >= this.generator.all_maps.length || this.over_run){
+                    if(!this.over_run){
+                        currentIndex = 0
+                    }
                     if(!minChanged){
                         this.delta -= this.deltaStepSize
                         if(this.console_output){
@@ -186,6 +190,7 @@ class Optimizer{
                         }
                         this.saveDelta();
                     }
+                    this.over_run = false;
                 }
                 this.optimize_recursive(currentIndex,lowestDelta, false)
             }
@@ -311,7 +316,7 @@ class Optimizer{
 module.exports = { Optimizer };
 
 
-op = new Optimizer(config, "Invasion", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
+op = new Optimizer(config, "Insurgency", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")
