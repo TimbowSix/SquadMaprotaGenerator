@@ -30,6 +30,7 @@ class Optimizer{
 
         this.config["mode_distribution"]["pool_distribution"][this.current_modeG] = 1
         this.config["mode_distribution"]["pool_spacing"] = 0
+        this.config["mode_distribution"]["space_main"] = false
 
         //set mode dist
         //TODO maybe inline if 
@@ -316,7 +317,7 @@ class Optimizer{
 module.exports = { Optimizer };
 
 
-op = new Optimizer(config, "Insurgency", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=true,start_delta = 0.5, estimate = false)
+op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")
