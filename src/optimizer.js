@@ -24,26 +24,6 @@ class Optimizer{
         this.config['number_of_layers'] = 50000;
         this.config['use_vote_weight'] = false;
 
-        this.config["mode_distribution"]["pool_distribution"]["main"] = 0
-        this.config["mode_distribution"]["pool_distribution"]["intermediate"] = 0
-        this.config["mode_distribution"]["pool_distribution"]["rest"] = 0
-
-        this.config["mode_distribution"]["pool_distribution"][this.current_modeG] = 1
-        this.config["mode_distribution"]["pool_spacing"] = 0
-        this.config["mode_distribution"]["space_main"] = false
-
-        //set mode dist
-        //TODO maybe inline if 
-        for(let mode of Object.keys(this.config["mode_distribution"]["pools"][this.current_modeG])){
-            if(mode == this.current_mode){
-                this.config["mode_distribution"]["pools"][this.current_modeG][mode] = 1;
-            }else{
-                this.config["mode_distribution"]["pools"][this.current_modeG][mode] = 0;
-            }
-        }
-        //console.log(this.config["mode_distribution"]["pools"]);
-        //console.log(this.config)
-
     
         this.generator = new gen.Maprota(this.config);
 
@@ -244,18 +224,14 @@ class Optimizer{
 
     update_dist(){
         let tempSum = 0
-        //reset dist
-        for(let i=0;i<this.generator.all_maps.length;i++){
-            this.generator.all_maps[i].distribution = 0;
-        }
-        //update
-        for(let i=0;i<this.generator.maps.length;i++){
-            this.generator.maps[i].distribution++;
-            tempSum++;
+        let maps_by_mode = this.generator.maps_by_mode();
+        for(let map of this.generator.all_maps){
+            tempSum += maps_by_mode[this.current_mode][map.name];
+            map.distribution = maps_by_mode[this.current_mode][map.name];
         }
         //normalize
-        for(let i=0;i<this.generator.all_maps.length;i++){
-            this.generator.all_maps[i].distribution /= tempSum;
+        for(let map of this.generator.all_maps){
+            map.distribution /= tempSum;
         }
     }
     saveMapWeights(){
