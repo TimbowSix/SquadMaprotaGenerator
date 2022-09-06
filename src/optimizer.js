@@ -4,6 +4,7 @@ let stat = require("./statistics.js")
 let gen = require("./generator.js")
 let config = require("../config.json")
 let fs = require("fs");
+const { sign } = require("crypto")
 
 class Optimizer{
     constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true){
@@ -317,160 +318,99 @@ class Optimizer{
     
 }
 
-class OptimizationObject{
-    constructor(config, mode, maps, dx){
-        this.mode = "undefined",
-        this.maps = []
-        this.weights = []
-        this.dx = 0
-        this.distribution = []
-        this.config = config
-
-        if(this.config["min_biom_distance"] != 0.5){
-            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
+class Optimizer_GradientDescent extends Optimizer{
+    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, dx){
+        super(config, mode, reset, distribution, console_output, use_extern_map_weights_and_delta, save_maps, start_delta, estimate)
+        this.dx = dx
+        // opt_object is a class containing the weights, choosen mode to optimize and the maprota-generator
+    }
+    optimize_recursive(currentIndex, abort=0, minChanged){
+        //check if map has mode
+        let start_index = currentIndex
+        while(!this.map_has_mode(this.generator.all_maps[currentIndex], this.current_mode)){
+            currentIndex++
+            if(currentIndex >= this.generator.all_maps.length){
+                currentIndex = 0
+                this.over_run = true;
+            }
+            if(currentIndex == start_index){
+                throw Error("mode group not in maps");
+            }
         }
+        
+        // Calculate slope and increment by the slopes inverse
+        this.delta = this.get_new_stepwidth(this.generator.all_maps[currentIndex], currentIndex)
+        this.update_mode_key(this.generator.all_maps[currentIndex], true);
+        this.generator.generate_rota(reset=true);
+        this.update_dist();
+        let cMin = this.calc_current_norm();
 
-        this.config['seed_layer'] = 0;
-        this.config['number_of_rotas'] = 1;
-        this.config['number_of_layers'] = 50000;
-        this.config['use_vote_weight'] = false;
+        if(this.currentMin > cMin){
+            //new min found
+            this.currentMin = cMin;
+            if(this.console_output){
+                console.log("new min by +: "+cMin);
+                console.log("mapweights for "+ this.current_mode);
+                for(let map of this.generator.all_maps){
+                    process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
+                }
+                console.log();
+            }
 
-        this.config["mode_distribution"]["pool_distribution"]["main"] = 0
-        this.config["mode_distribution"]["pool_distribution"]["intermediate"] = 0
-        this.config["mode_distribution"]["pool_distribution"]["rest"] = 0
+            this.saveMapWeights();
+            this.save_maps();
+            this.optimize_recursive(currentIndex, true);
+        }else{
+            currentIndex++
+            if(currentIndex >= this.generator.all_maps.length || this.over_run){
+                if(!this.over_run){
+                    currentIndex = 0
+                }
+                if(!minChanged){
+                    this.delta -= this.deltaStepSize
+                    if(this.console_output){
+                        console.log("new Delta "+this.delta)
+                    }
+                    this.saveDelta();
+                }
+                this.over_run = false;
+            }
+            this.optimize_recursive(currentIndex, false)
 
-        this.config["mode_distribution"]["pool_distribution"][mode_group] = 1
-        this.config["mode_distribution"]["pool_spacing"] = 0
-
-        let dummy = 1/Object.keys(this.config["mode_distribution"]["pools"][mode_group]).length;
-        for(let mode of Object.keys(this.config["mode_distribution"]["pools"][mode_group])){
-            this.config["mode_distribution"]["pools"][mode_group][mode] = dummy;
+            return this.generator;
         }
-        console.log(this.config["mode_distribution"]["pools"]);
-
+    }
     
-        this.generator = new gen.Maprota(this.config);
-
-        let maps = [];
-        for(let map of this.generator.all_maps){
-            if(this.map_has_mode_group(map, this.current_mode_group)){
-                maps.push(maps);
-            }else{
-                for(let mode of this.get_modes_of_mode_group(this.current_mode_group)){
-                    map.map_weight[mode] = 0;
-                }
-                this.wUni[map.name] = 0;
-            }
-        }
-
-        let temp = 1/maps.length;
-        for(let map of maps){
-            this.wUni[map.name] = temp;
-        }
+    get_new_stepwidth(map){
+        map.map_weight[this.current_mode] += this.dx
+        this.generator.generate_rota(reset=true)
+        this.update_dist()
+        let f1 = this.calc_current_norm()
+        map.map_weight[this.current_mode] -= 2*this.dx
+        this.generator.generate_rota(reset=true)
+        this.update_dist()
+        let f2 = this.calc_current_norm()
+        let deriv = this.derivative_twosided(f1, f2, this.dx)
+        console.log(`Derivative is ${deriv}`)
+        // reset mapweights
+        map.map_weight[this.current_mode] += this.dx
+        return this.stepwidth_from_slope(deriv)
     }
-    generate_rotas(){
-
-        // MAP ROTA ALG HERE!!!
-        this.distribution = []
+    derivative_twosided(f1, f2, h){
+        return (f1- f2)/(2*h)
     }
-    // Sets the weights and maps in accordance with the choosen mode
-    set_weights(){
-        let temp = []
-        if(this.mode != "undefined"){
-            for(let map of maps){
-                if(map.mode == this.mode){
-                    this.weights.push(1)
-                    temp.push(map)
-                }
-            }
-            this.maps = temp
-        }
-        else{
-            console.log("Define the mode first!")
-        }
-    }
+    stepwidth_from_slope(slope, factor=1, shift=0){
+        return -Math.sign(slope)*factor/Math.sqrt(Math.abs(slope+shift))
+    } 
 }
 
-// opt_object is a class containing the weights, choosen mode to optimize and the maprota-generator
-function main_optimize(opt_object, end_distribution, threshold){
-    currentMin = Infinity
-    while(currentMin > threshold){
-        oldMin = currentMin
-        currentMin = get_next_minimum(opt_object, currentMin, end_distribution)
-        // Abort if the minimum did not change in the last cycle(going over all coordinate axes)
-        if(oldMin == currentMin){
-            threshold = Infinity
-        }
-    }
-}
 
-function get_next_minimum(opt_object, currentMin, end_distribution){
-    let temp = currentMin
-    let minimum_found = false
-    // Do a linesearch for each coordinate axis
-    for(let i=0; i++; i<end_distribution.length){
-        // Stay on the current axis as long as there is no minimum found
-        while(!minimum_found){
-            temp = currentMin
-            currentMin = get_next_minimum_1d(opt_object, end_distribution, i)
-            if(currentMin >= temp){
-                minimum_found = true
-            }
-        }
-    }
-    return currentMin
-}
-
-function get_next_minimum_1d(opt_object, end_distribution, coordinate_index){
-    // Calculate locale derivative and deduce slope from its value, alter the weight of the current axis
-    let stepwidth = get_new_stepwidth(opt_object.weights, opt_object.dx, coordinate_index)
-    opt_object.weights[coordinate_index] += stepwidth
-
-    // Calculate the new optimization value
-    return optimizerValue(opt_object, end_distribution)
-
-}
-
-function get_new_stepwidth(current_weights, dx, direction_index){
-    let newweights = current_weights
-    newweights[direction_index] += dx
-    let f1 = optimizer(newweights)
-    newweights[direction_index] -= 2*dx
-    let f2 = optimizer(newweights)
-    let deriv = derivative_twosided(f1, f2, dx)
-    return stepwidth_from_slope(deriv)
-}
-function derivative_twosided(f1, f2, h){
-    return (f1- f2)/(2*h)
-}
-function stepwidth_from_slope(slope, factor=1, shift=1){
-    return factor/Math.sqrt(slope+shift)
-}
-
-function optimizerValue(opt_object, end_distribution){
-    // Generate Rotas
-    opt_object.generate_rotas()
-    // Get Distribution
-    return optimizationFunction(opt_object.distribution, end_distribution)
-}
-
-function optimizationFunction(current_distribution, end_distribution){
-    let opt = 0
-    let diff = current_distribution - end_distribution
-    for(let i=0; i < current_distribution.length; i++){
-        opt += Math.pow(diff[i],2)
-    }
-    return Math.sqrt(opt)
-}
 
 
 
 module.exports = { Optimizer };
 
-console.log(derivative_twosided(testing, 2, 0.001))
-op = new Optimizer(config, "rest", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
-
-op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
+op = new Optimizer_GradientDescent(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false, 0.005)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")

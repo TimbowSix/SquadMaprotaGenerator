@@ -10,7 +10,9 @@ function choice(arr, weights=null){
         return arr[Math.floor(Math.random()*arr.length)];
     }
     let sum = round(sumArr(weights), 4);
-    if (sum != 1) throw Error("weights do not sum to 1")
+    if (sum != 1){
+        throw Error(`weights do not sum to 1: Sum: ${sum} Array: ${weights}`)
+    } 
     if (arr.length != weights.length) throw Error("arr and weights don't have the same length")
     let w = []
     for(let i = 0; i<weights.length; i++){
