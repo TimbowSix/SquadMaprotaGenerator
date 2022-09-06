@@ -72,7 +72,7 @@ class Map{
         this.target_map_dist = {}
         //for optimizer
         this.distribution = 0
-        this.mode_groups = []
+        this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht
         this.vote_weights_by_mode = {}
 
     }
