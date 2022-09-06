@@ -187,6 +187,25 @@ class Maprota {
         }
         return rota
     }
+    maps_by_mode(){
+        //{mode:{map:count}}
+        let map_counts = {}
+        for(let layer of this.rotation){
+            let map = layer.map.name
+            let mode = layer.mode
+            if(mode in map_counts){
+                if(map in map_counts[mode]){
+                    map_counts[mode][map]++
+                }else{
+                    map_counts[mode][map] = 1
+                }
+            }else{
+                map_counts[mode] = {}
+                map_counts[mode][map] = 1
+            }
+        }
+        return map_counts
+    }
 }
 
 
@@ -194,7 +213,8 @@ if (require.main === module) {
     let config = require("../config.json")
     let rota = new Maprota(config)
     console.time("Execution Time")
-    let test = rota.generate_rota()
+    rota.generate_rota()
+    console.log(rota.maps_by_mode())
     console.timeEnd("Execution Time")
 }
 
