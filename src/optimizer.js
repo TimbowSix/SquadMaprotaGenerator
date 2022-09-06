@@ -320,14 +320,58 @@ class Optimizer{
 }
 
 class OptimizationObject{
-    constructor(mode, maps, dx){
+    constructor(config, mode, maps, dx){
         this.mode = "undefined",
         this.maps = []
         this.weights = []
         this.dx = 0
         this.distribution = []
+        this.config = config
+
+        if(this.config["min_biom_distance"] != 0.5){
+            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
+        }
+
+        this.config['seed_layer'] = 0;
+        this.config['number_of_rotas'] = 1;
+        this.config['number_of_layers'] = 50000;
+        this.config['use_vote_weight'] = false;
+
+        this.config["mode_distribution"]["pool_distribution"]["main"] = 0
+        this.config["mode_distribution"]["pool_distribution"]["intermediate"] = 0
+        this.config["mode_distribution"]["pool_distribution"]["rest"] = 0
+
+        this.config["mode_distribution"]["pool_distribution"][mode_group] = 1
+        this.config["mode_distribution"]["pool_spacing"] = 0
+
+        let dummy = 1/Object.keys(this.config["mode_distribution"]["pools"][mode_group]).length;
+        for(let mode of Object.keys(this.config["mode_distribution"]["pools"][mode_group])){
+            this.config["mode_distribution"]["pools"][mode_group][mode] = dummy;
+        }
+        console.log(this.config["mode_distribution"]["pools"]);
+
+    
+        this.generator = new gen.Maprota(this.config);
+
+        let maps = [];
+        for(let map of this.generator.all_maps){
+            if(this.map_has_mode_group(map, this.current_mode_group)){
+                maps.push(maps);
+            }else{
+                for(let mode of this.get_modes_of_mode_group(this.current_mode_group)){
+                    map.map_weight[mode] = 0;
+                }
+                this.wUni[map.name] = 0;
+            }
+        }
+
+        let temp = 1/maps.length;
+        for(let map of maps){
+            this.wUni[map.name] = temp;
+        }
     }
     generate_rotas(){
+
         // MAP ROTA ALG HERE!!!
         this.distribution = []
     }
