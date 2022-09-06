@@ -226,8 +226,14 @@ class Optimizer{
         let tempSum = 0
         let maps_by_mode = this.generator.maps_by_mode();
         for(let map of this.generator.all_maps){
-            tempSum += maps_by_mode[this.current_mode][map.name];
-            map.distribution = maps_by_mode[this.current_mode][map.name];
+            let temp = maps_by_mode[this.current_mode][map.name]
+            if(temp){
+                tempSum += temp;
+                map.distribution = temp;
+            }else{
+                tempSum += 0;
+                map.distribution = 0;
+            }
         }
         //normalize
         for(let map of this.generator.all_maps){
@@ -286,14 +292,14 @@ class Optimizer{
             }
             console.log();
         }
-        this.optimize_recursive(0, 0.1, this.current_mode, false);
+        return this.optimize_recursive(0, 0.1, this.current_mode, false);
     }
 }
 
 module.exports = { Optimizer };
 
-
-op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
+/*
+op = new Optimizer(config, "Destruction", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
 console.time("Execution Time")
 op.start_optimizer()
-console.timeEnd("Execution Time")
+console.timeEnd("Execution Time")*/
