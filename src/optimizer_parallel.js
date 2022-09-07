@@ -36,6 +36,7 @@ class OptimizerParallelOrganizer{
     }
     run(){
         //parallel run
+        console.time("Execution Time")
         console.log("run parallel")
         for(let w of Object.keys(this.workers)){
             this.workers[w].start(true)
@@ -58,6 +59,7 @@ class OptimizerParallelOrganizer{
             while(!this.workers[i].done){}
         }
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
+        console.timeEnd("Execution Time")
     }
 }
 
