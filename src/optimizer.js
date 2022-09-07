@@ -322,9 +322,14 @@ class Optimizer_GradientDescent extends Optimizer{
     constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, dx){
         super(config, mode, reset, distribution, console_output, use_extern_map_weights_and_delta, save_maps, start_delta, estimate)
         this.dx = dx
+        this.stepslope = 1
         // opt_object is a class containing the weights, choosen mode to optimize and the maprota-generator
     }
-    optimize_recursive(currentIndex, abort=0, minChanged){
+    optimize_recursive(currentIndex, lowestDelta, minChanged){
+        if(Math.abs(this.delta) <= lowestDelta || this.stepslope < 0.1){
+            console.log(`Abort optimizing with delta of ${this.delta}`)
+            return
+        }
         //check if map has mode
         let start_index = currentIndex
         while(!this.map_has_mode(this.generator.all_maps[currentIndex], this.current_mode)){
@@ -359,9 +364,14 @@ class Optimizer_GradientDescent extends Optimizer{
 
             this.saveMapWeights();
             this.save_maps();
-            this.optimize_recursive(currentIndex, true);
-        }else{
+            this.optimize_recursive(currentIndex, lowestDelta, true);
+        }
+        else{
             currentIndex++
+            if(this.currentMin <= cMin && currentIndex == this.generator.all_maps.length){
+                this.stepslope -= 0.1
+                console.log(`new slope of stepfunction is now ${this.stepslope}`) 
+            }
             if(currentIndex >= this.generator.all_maps.length || this.over_run){
                 if(!this.over_run){
                     currentIndex = 0
@@ -375,7 +385,7 @@ class Optimizer_GradientDescent extends Optimizer{
                 }
                 this.over_run = false;
             }
-            this.optimize_recursive(currentIndex, false)
+            this.optimize_recursive(currentIndex, lowestDelta, false)
 
             return this.generator;
         }
@@ -400,17 +410,38 @@ class Optimizer_GradientDescent extends Optimizer{
         return (f1- f2)/(2*h)
     }
     stepwidth_from_slope(slope, factor=1, shift=0){
-        return -Math.sign(slope)*factor/Math.sqrt(Math.abs(slope+shift))
+        return -Math.sign(slope)*this.stepslope/Math.sqrt(Math.abs(slope+shift))
     } 
 }
 
-
-
-
-
 module.exports = { Optimizer };
 
-op = new Optimizer_GradientDescent(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false, 0.005)
+new_dist =  {
+    "BlackCoast" : 0.0,
+    "Gorodok" : 0.8,
+    "Yehorivka": 0.05,
+    "GooseBay": 0.0,
+    "Narva": 0.05,
+    "Mutaha": 0.0,
+    "Skorpo": 0.0,
+    "Belaya": 0.0,
+    "Tallil": 0.0,
+    "Kohat": 0.0,
+    "Manic": 0.0,
+    "Sumari": 0.0,
+    "AlBasrah": 0.0,
+    "Kamdesh": 0.0,
+    "Fallujah": 0.0,
+    "Chora": 0.0,
+    "FoolsRoad": 0.1,
+    "Mestia": 0.0,
+    "LashkarValley": 0.0,
+    "Kokan": 0.0,
+    "Anvil": 0.0,
+    "Logar": 0.0,
+}
+
+op = new Optimizer_GradientDescent(config, "RAAS", reset=true, distribution = new_dist, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false, 0.005)
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")
