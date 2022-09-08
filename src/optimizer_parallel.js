@@ -75,6 +75,7 @@ class OptimizerParallelOrganizer{
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
     }
     runSeries(){
+        console.timeEnd("Execution Time")
         console.log("run series")
         for(let i=workers.length-1;i>=0;i--){
             console.log("run "+workers[i].mode)
