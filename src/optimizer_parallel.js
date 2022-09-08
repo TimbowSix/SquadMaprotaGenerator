@@ -1,69 +1,93 @@
 const {Worker, parentPort} = require('node:worker_threads')
+const opt = require('./optimizer.js')
 const fs = require("fs")
+const config = require("../config.json")
 
 let final_map_weights = JSON.parse(fs.readFileSync("./data/mapweights.json"))
+let workers = []
+
+
+let parallel_optimizer = null
+
 
 class WorkerEntry{
-    constructor(mode, dist = null){
+    constructor(mode, dist = null, runIndex){
         this.mode = mode
         this.dist = dist
         this.done = false
         this.worker = null
+        this.runIndex = runIndex
     }
     start(reset = true){
+        console.log("start "+this. mode)
         this.done = false
-        this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset} }); //reset = true map_weights reset to 0 else the weights from file
+        this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset, "runIndex": this.runIndex} }); //reset = true map_weights reset to 0 else the weights from file
         this.worker.on('message', (msg) => {
-            let m = this.mode
+            console.log(this.mode)
             for(let map of msg.all_maps){
-                if(Object.keys(final_map_weights[map.name]).includes(m)){
-                    final_map_weights[map.name][m] = map.map_weight[m]
+                if(Object.keys(final_map_weights[map.name]).includes(this.mode)){
+                    final_map_weights[map.name][this.mode] = map.map_weight[this.mode]
                 }
             }
             this.done = true
+            let allDone = true
+            for(let w of workers){
+                if(!w.done){
+                    allDone = false
+                }
+            }
+
+            if(allDone){
+                parallel_optimizer.runSeries()
+            }
+
         })
+    }
+    startSync(mReset = true){
+        let op = new opt.Optimizer(config, this.mode, mReset, this.dist, false, false, true, 0.15, false, this.runIndex)
+        op.start_optimizer()
+        let result = op.generator
+        for(let map of result.all_maps){
+            if(Object.keys(final_map_weights[map.name]).includes(this.mode)){
+                final_map_weights[map.name][this.mode] = map.map_weight[this.mode]
+            }
+        }
     }
 }
 
 class OptimizerParallelOrganizer{
-    constructor(modes = [], dist = null){
+    constructor(modes = [], dist = null, runIndex){
         //modes must be sorted by maps size per mode 
         this.dist = dist
-        this.workers = {}
+        this.runIndex = runIndex
         for(let mode of modes){
-            this.workers[mode] = new WorkerEntry(mode,this.dist)
+            workers.push(new WorkerEntry(mode,this.dist, this.runIndex))
         }
     }
-    run(){
+    runParallel(){
         //parallel run
         console.time("Execution Time")
         console.log("run parallel")
-        for(let w of Object.keys(this.workers)){
-            this.workers[w].start(true)
-        }
-        let running = true
-        while(running){
-            running = false
-            for(let w of Object.keys(this.workers)){
-                if(!this.workers[w].done){
-                    running = true
-                }
-            }
+        for(let w of workers){
+            w.start(true)
         }
         //save Mapweights
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
+    }
+    runSeries(){
         console.log("run series")
-        for(let i=this.workers.length-1;i>=0;i--){
-            console.log("run "+this.workers[i].mode)
-            this.workers[i].start(false);
-            while(!this.workers[i].done){}
+        for(let i=workers.length-1;i>=0;i--){
+            console.log("run "+workers[i].mode)
+            workers[i].startSync(false);
         }
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
         console.timeEnd("Execution Time")
     }
 }
 
-let modi = ["RAAS", "AAS", "Inversion", "TC", "Insurgency", "Destruction"]
+
+let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
+//let modi = ["Destruction"]
 let distribution = null //gleichverteilung
-let parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution)
-parallel_optimizer.run()
+parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution, Date.now())
+parallel_optimizer.runParallel()

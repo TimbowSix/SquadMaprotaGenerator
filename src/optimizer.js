@@ -6,7 +6,8 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true){
+    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, runIndex){
+        this.runIndex = runIndex
         this.config = config;
         this.estimate = estimate;
         this.console_output = console_output;
@@ -26,7 +27,7 @@ class Optimizer{
 
     
         this.generator = new gen.Maprota(this.config);
-
+        
         //set requested distribution
         this.wUni = {};
         if(distribution == null){
@@ -64,13 +65,13 @@ class Optimizer{
                 this.saveDelta()
             }
         }else{
-            this.data = start_delta;
+            this.delta = start_delta;
         }
 
         //init maps
-        for(let map  of this.generator.all_maps){
+        for(let map of this.generator.all_maps){
             map.distribution = 0;
-
+            
             if(reset){
                 map.map_weight[mode] = this.estimate_map_weight_even_dist(map, this.current_mode_group);
             }
@@ -103,12 +104,12 @@ class Optimizer{
                 this.over_run = true;
             }
             if(currentIndex == start_index){
-                throw Error("mode group not in maps");
+                throw Error("mode not in maps "+this.current_mode);
             }
         }
         
         this.update_mode_key(this.generator.all_maps[currentIndex], true);
-        this.generator.generate_rota(reset=true);
+        this.generator.generate_rota();
         this.update_dist();
         let cMin = this.calc_current_norm();
 
@@ -136,7 +137,7 @@ class Optimizer{
             if((this.generator.all_maps[currentIndex].map_weight[this.current_mode] + 1  - this.delta) > 0){
                 counted_down = true;
                 this.update_mode_key(this.generator.all_maps[currentIndex], false);
-                this.generator.generate_rota(reset=true);
+                this.generator.generate_rota();
                 this.update_dist();
                 cMinM = this.calc_current_norm();
             }
@@ -186,7 +187,7 @@ class Optimizer{
             }else{
                 map.map_weight[this.current_mode] -= this.delta;
             }
-        } 
+        }
     }
 
     map_has_mode(map, mode){
@@ -226,8 +227,8 @@ class Optimizer{
         let tempSum = 0
         let maps_by_mode = this.generator.maps_by_mode();
         for(let map of this.generator.all_maps){
-            let temp = maps_by_mode[this.current_mode][map.name]
-            if(temp){
+            if(Object.keys(maps_by_mode).includes(this.current_mode) && Object.keys(maps_by_mode[this.current_mode]).includes(map.name)){
+                let temp = maps_by_mode[this.current_mode][map.name]
                 tempSum += temp;
                 map.distribution = temp;
             }else{
@@ -265,18 +266,15 @@ class Optimizer{
 
     save_maps(){
         if(this.use_save_maps){
-            let path = "./optimizer_maps_history_"+this.current_mode+".json";
+            let path = "./optimizer_maps_history_"+this.current_mode+"_"+this.runIndex+".json";
             let history = [] 
             try {
                 history = JSON.parse(fs.readFileSync(path))
             }catch(e) {
                 //console.log(e)
             }
-            let counts = {};
-            for (let map of this.generator.maps) {
-                counts[map.name] = counts[map.name] ? counts[map.name] + 1 : 1;
-            }
-            history.push(counts)
+            let maps_by_mode = this.generator.maps_by_mode();
+            history.push(maps_by_mode)
             fs.writeFileSync(path, JSON.stringify(history, null, 2))
         }
     }
