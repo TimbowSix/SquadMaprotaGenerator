@@ -33,7 +33,7 @@ function choice(arr, weights=null){
  * @returns {[number]}
  */
 function normalize(arr){
-    if(arr.length <= 1) return arr
+    if(arr.length <= 0) return arr
     let sum = sumArr(arr);
     for (let i = 0; i<arr.length; i++){
         arr[i] = arr[i]/sum
