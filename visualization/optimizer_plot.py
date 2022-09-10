@@ -6,7 +6,8 @@ import imageio.v2 as imageio
 
 ## Setup
 
-history_path = "optimizer_maps_history_TC.json"
+history_path = "optimizer_maps_history_AAS_1662668217656.json"
+mode = "AAS"
 gif_duration = 0.5
 custom_title = None
 
@@ -28,7 +29,7 @@ def main():
     dfs = []
     max_ = 0
     for ind, maps in enumerate(file):
-        count = [{"map": str(map_), "count": count} for map_ , count in maps.items()]
+        count = [{"map": str(map_), "count": count} for map_ , count in maps[mode].items()]
         df = pd.DataFrame(count)
         max_n = round(df["count"].max()+500, -3)
         max_ = max_n if max_n > max_ else max_
@@ -41,9 +42,9 @@ def main():
         fig.update_xaxes(categoryorder="category ascending")
         fig.update_yaxes(range=[0, max_])
         fig.write_image(f"{path}/fig_{ind}.png")
-        if maps == file[0]:
+        if ind == 0:
             fig.write_image(f"first.png")
-        elif maps == file[-1]:
+        elif ind == len(dfs)-1:
             fig.write_image(f"last.png")
 
     images = os.listdir(path)
