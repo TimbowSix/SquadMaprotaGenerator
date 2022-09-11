@@ -47,7 +47,7 @@ class WorkerEntry{
         })
     }
     startSync(mReset = true){
-        let op = new opt.Optimizer(config, this.mode, mReset, this.dist, false, false, true, 0.15, false, this.runIndex)
+        let op = new opt.Optimizer(config, this.mode, mReset, this.dist, false, false, true, 0.5, false, this.runIndex)
         op.start_optimizer()
         let result = op.generator
         for(let map of result.all_maps){
