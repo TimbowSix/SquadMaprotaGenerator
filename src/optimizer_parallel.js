@@ -2,6 +2,7 @@ const {Worker, parentPort} = require('node:worker_threads')
 const opt = require('./optimizer.js')
 const fs = require("fs")
 const config = require("../config.json")
+const utils = require('./utils.js')
 
 let final_map_weights = JSON.parse(fs.readFileSync("./data/mapweights.json"))
 let workers = []
@@ -87,9 +88,9 @@ class OptimizerParallelOrganizer{
     }
 }
 
-
+let numberMaps = 22
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 //let modi = ["Destruction"]
-let distribution_all = null //gleichverteilung
+let distribution_all = utils.get_mode_dist_dict(mode, numberMaps)
 parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution_all, Date.now())
 parallel_optimizer.runParallel()
