@@ -105,3 +105,4 @@ dist
 
 *test*
 *workspace
+__pycache__
