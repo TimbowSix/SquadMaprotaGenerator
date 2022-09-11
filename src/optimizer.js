@@ -184,6 +184,7 @@ class Optimizer{
                 }
                 this.optimize_recursive(currentIndex,lowestDelta, false)
             }
+            this.write_last_min()
             return this.generator;
         }
     }
@@ -292,6 +293,11 @@ class Optimizer{
             let path = "./optimizer_data/"+this.runIndex+"/run_info_"+this.uuid+"_"+this.current_mode+".json"
             fs.writeFileSync(path, JSON.stringify(this.distribution, null, 2))
         }
+    }
+
+    write_last_min(){
+        let path = "./optimizer_data/"+this.runIndex+"/last_min_"+this.uuid+"_"+this.current_mode+".json"
+        fs.writeFileSync(path,JSON.stringify(this.currentMin, null, 2))
     }
 
 
