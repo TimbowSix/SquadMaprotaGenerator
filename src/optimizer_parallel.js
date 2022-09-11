@@ -101,21 +101,20 @@ let distributions = utils.get_mode_dist_dict(modi, numberMaps)
 
 for(let map of maps){
     for(let mode of Object.keys(map.map_weight)){
-        if(mode in modi){
+        if(modi.includes(mode)){
             if(dict[mode]){
-                if(dict[mode][`${map.name}`]){
-                    dict[mode][`${map.name}`] = distributions[mode][0]
+                if(dict[mode][map.name]){
+                    dict[mode][map.name] = distributions[mode][0]
                     distributions[mode].splice(0,1)
                 }
                 else{
-                    dict[mode] = {}
-                    dict[mode][`${map.name}`] = distributions[mode][0]
+                    dict[mode][map.name] = distributions[mode][0]
                     distributions[mode].splice(0,1)
                 }
             }
             else{
                 dict[mode] = {}
-                dict[mode][`${map.name}`] = distributions[mode][0]
+                dict[mode][map.name] = distributions[mode][0]
                 distributions[mode].splice(0,1)
             }
         }
