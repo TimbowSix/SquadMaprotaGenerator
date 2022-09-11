@@ -25,7 +25,33 @@ function choice(arr, weights=null){
     }
 }
 
+
+/**
+ * returns a dictionary where each input string gets a distribution
+ * @param {[string]} modes
+ * @param {number} numberMaps
+ */
+function get_mode_dist_dict(modes, numberMaps){
+    let dict = {}
+    for(let m of modes){
+        dict[m] = get_random_dist(numberMaps)
+    }
+    return dict
+}
+
 // Math kram
+/**
+ * returns an array which entries sum up to one
+ * @param {number} entries
+ * @returns {[number]}
+ */
+function get_random_dist(entries){
+    let dist = []
+    for(let i=0; i<entries; i++){
+        dist.push(Math.random())
+    }
+    return normalize(dist)
+}
 
 /**
  * normalizes an array of numbers
