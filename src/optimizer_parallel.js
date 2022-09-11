@@ -69,7 +69,6 @@ class OptimizerParallelOrganizer{
     }
     runParallel(){
         //parallel run
-        console.time("Execution Time")
         console.log("run parallel")
         for(let w of workers){
             w.start(false)
