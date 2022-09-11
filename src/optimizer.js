@@ -256,12 +256,12 @@ class Optimizer{
             for(let map of this.generator.all_maps){
                 temp[map.name] = map.map_weight;
             }
-            fs.writeFileSync("./optimizer_data/"+this.runIndex+"/data/mapweights.json", JSON.stringify(temp, null, 2));
+            fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
         }
     }
     saveDelta(){
         if(this.use_extern_map_weights_and_delta){
-            fs.writeFileSync("./optimizer_data/"+this.runIndex+"/data/delta.json", JSON.stringify(this.delta));
+            fs.writeFileSync("./optimizer_data/"+this.runIndex+"/delta.json", JSON.stringify(this.delta));
         }
     }
 

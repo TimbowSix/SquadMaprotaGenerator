@@ -12,6 +12,5 @@ op.start_optimizer()
 let result = op.generator
 parentPort.postMessage(result)
 console.timeEnd("Execution Time "+workerData["mode"])
-console.log("ende")
 
 //fs.writeFileSync("result_"+workerData["mode"]+"_"+Date.now()+".json",JSON.stringify(result,null,2))

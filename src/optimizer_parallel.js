@@ -74,16 +74,20 @@ class OptimizerParallelOrganizer{
         for(let w of workers){
             w.start(false)
         }
-        //save Mapweights
-        fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
     }
     runSeries(){
+        //save map weights from parallel run
+        fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2));
+        fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
+        //run series
         console.timeEnd("Execution Time")
         console.log("run series")
         for(let i=workers.length-1;i>=0;i--){
             console.log("run "+workers[i].mode)
             workers[i].startSync(false);
         }
+        //save map weights
+        fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2));
         fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
         console.timeEnd("Execution Time")
     }
