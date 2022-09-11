@@ -91,6 +91,6 @@ class OptimizerParallelOrganizer{
 let numberMaps = 22
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 //let modi = ["Destruction"]
-let distribution_all = utils.get_mode_dist_dict(mode, numberMaps)
+let distribution_all = utils.get_mode_dist_dict(modi, numberMaps)
 parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution_all, Date.now())
 parallel_optimizer.runParallel()
