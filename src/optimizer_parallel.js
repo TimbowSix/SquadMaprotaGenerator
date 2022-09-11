@@ -92,34 +92,9 @@ class OptimizerParallelOrganizer{
 let dummy_gen = new gen.Maprota(config)
 let maps = dummy_gen.all_maps
 
-let dict = {}
-
-let numberMaps = 22
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-//let modi = ["Destruction"]
-let distributions = utils.get_mode_dist_dict(modi, numberMaps)
 
-for(let map of maps){
-    for(let mode of Object.keys(map.map_weight)){
-        if(modi.includes(mode)){
-            if(dict[mode]){
-                if(dict[mode][map.name]){
-                    dict[mode][map.name] = distributions[mode][0]
-                    distributions[mode].splice(0,1)
-                }
-                else{
-                    dict[mode][map.name] = distributions[mode][0]
-                    distributions[mode].splice(0,1)
-                }
-            }
-            else{
-                dict[mode] = {}
-                dict[mode][map.name] = distributions[mode][0]
-                distributions[mode].splice(0,1)
-            }
-        }
-    }
-}
+let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
 
-parallel_optimizer = new OptimizerParallelOrganizer(modi,dict, Date.now())
+parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, Date.now())
 parallel_optimizer.runParallel()

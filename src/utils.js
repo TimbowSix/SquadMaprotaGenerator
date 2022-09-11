@@ -35,6 +35,47 @@ function create_UUID(){
     return uuid;
 }
 
+function get_maps_modi_dict(maps, modi){
+    let dict = {}
+    for(let map of maps){
+        for(let mode of modi){
+            if(dict[mode]){
+                if(dict[mode][map.name]){
+                    if(Object.keys(map.map_weight).includes(mode)){
+                        dict[mode][map.name] = Math.random()
+                    }
+                    else{
+                        dict[mode][map.name] = 0
+                    }
+                }
+                else{
+                    if(Object.keys(map.map_weight).includes(mode)){
+                        dict[mode][map.name] = Math.random()
+                    }
+                    else{
+                        dict[mode][map.name] = 0
+                    }
+                }
+            }
+            else{
+                dict[mode] = {}
+                dict[mode][map.name] = Math.random()
+            }
+        }
+    }
+    
+    for(let mode of Object.keys(dict)){
+        let sum = 0
+        for(let weight of Object.values(dict[mode])){
+            sum+=weight
+        }
+        for(let weight of Object.keys(dict[mode])){
+            dict[mode][weight] /= sum
+        }
+    }
+
+    return dict
+}
 
 /**
  * returns a dictionary where each input string gets a distribution
@@ -160,4 +201,4 @@ if (require.main === module) {
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID};
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict};
