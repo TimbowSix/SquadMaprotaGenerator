@@ -75,7 +75,7 @@ class OptimizerParallelOrganizer{
             w.start(false)
         }
         //save Mapweights
-        fs.writeFileSync("./data/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
+        fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
     }
     runSeries(){
         console.timeEnd("Execution Time")
@@ -84,7 +84,7 @@ class OptimizerParallelOrganizer{
             console.log("run "+workers[i].mode)
             workers[i].startSync(false);
         }
-        fs.writeFileSync("./data/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
+        fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
         console.timeEnd("Execution Time")
     }
 }
@@ -96,5 +96,8 @@ let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 
 let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
 
-parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, Date.now())
+let runIndex = Date.now()
+fs.mkdirSync("./optimizer_data/"+runIndex+"/")
+
+parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, runIndex)
 parallel_optimizer.runParallel()

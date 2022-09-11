@@ -255,12 +255,12 @@ class Optimizer{
             for(let map of this.generator.all_maps){
                 temp[map.name] = map.map_weight;
             }
-            fs.writeFileSync("./data/mapweights.json", JSON.stringify(temp, null, 2));
+            fs.writeFileSync("./optimizer_data/"+this.runIndex+"/data/mapweights.json", JSON.stringify(temp, null, 2));
         }
     }
     saveDelta(){
         if(this.use_extern_map_weights_and_delta){
-            fs.writeFileSync("./data/delta.json", JSON.stringify(this.delta));
+            fs.writeFileSync("./optimizer_data/"+this.runIndex+"/data/delta.json", JSON.stringify(this.delta));
         }
     }
 
@@ -274,7 +274,7 @@ class Optimizer{
 
     save_maps(){
         if(this.use_save_maps){
-            let path = "./optimizer_maps_history_"+this.current_mode+"_"+this.uuid+".json";
+            let path = "./optimizer_data/"+this.runIndex+"/optimizer_maps_history_"+this.current_mode+"_"+this.uuid+".json";
             let history = [] 
             try {
                 history = JSON.parse(fs.readFileSync(path))
@@ -289,7 +289,7 @@ class Optimizer{
 
     write_run_info(){
         if(this.save_run_info && this.distribution != null){
-            let path = "./run_info_"+this.uuid+"_"+this.current_mode+".json"
+            let path = "./optimizer_data/"+this.runIndex+"/run_info_"+this.uuid+"_"+this.current_mode+".json"
             fs.writeFileSync(path, JSON.stringify(this.distribution, null, 2))
         }
     }
