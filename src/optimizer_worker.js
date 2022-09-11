@@ -7,11 +7,11 @@ const fs = require("fs")
 
 console.log("start optimizer for "+ workerData["mode"])
 op = new opt.Optimizer(config, workerData["mode"], reset= workerData["reset"], distribution = workerData["dist"], console_output = false, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false, workerData["runIndex"])
-console.time("Execution Time")
+console.time("Execution Time "+workerData["mode"])
 op.start_optimizer()
 let result = op.generator
 parentPort.postMessage(result)
-console.timeEnd("Execution Time")
+console.timeEnd("Execution Time "+workerData["mode"])
 console.log("ende")
 
 //fs.writeFileSync("result_"+workerData["mode"]+"_"+Date.now()+".json",JSON.stringify(result,null,2))

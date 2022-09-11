@@ -14,16 +14,17 @@ class WorkerEntry{
     constructor(mode, dist = null, runIndex){
         this.mode = mode
         this.dist = dist
+        if(dist != null){
+            this.dist = dist[mode]
+        }
         this.done = false
         this.worker = null
         this.runIndex = runIndex
     }
     start(reset = true){
-        console.log("start "+this. mode)
         this.done = false
         this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset, "runIndex": this.runIndex} }); //reset = true map_weights reset to 0 else the weights from file
         this.worker.on('message', (msg) => {
-            console.log(this.mode)
             for(let map of msg.all_maps){
                 if(Object.keys(final_map_weights[map.name]).includes(this.mode)){
                     final_map_weights[map.name][this.mode] = map.map_weight[this.mode]
@@ -56,12 +57,12 @@ class WorkerEntry{
 }
 
 class OptimizerParallelOrganizer{
-    constructor(modes = [], dist = null, runIndex){
+    constructor(modes = [], dist_all = null, runIndex){
         //modes must be sorted by maps size per mode 
-        this.dist = dist
+        this.dist_all = dist_all
         this.runIndex = runIndex
         for(let mode of modes){
-            workers.push(new WorkerEntry(mode,this.dist, this.runIndex))
+            workers.push(new WorkerEntry(mode,this.dist_all, this.runIndex))
         }
     }
     runParallel(){
@@ -69,10 +70,10 @@ class OptimizerParallelOrganizer{
         console.time("Execution Time")
         console.log("run parallel")
         for(let w of workers){
-            w.start(true)
+            w.start(false)
         }
         //save Mapweights
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
+        fs.writeFileSync("./data/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
     }
     runSeries(){
         console.timeEnd("Execution Time")
@@ -81,7 +82,7 @@ class OptimizerParallelOrganizer{
             console.log("run "+workers[i].mode)
             workers[i].startSync(false);
         }
-        fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2))
+        fs.writeFileSync("./data/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
         console.timeEnd("Execution Time")
     }
 }
@@ -89,6 +90,6 @@ class OptimizerParallelOrganizer{
 
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 //let modi = ["Destruction"]
-let distribution = null //gleichverteilung
-parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution, Date.now())
+let distribution_all = null //gleichverteilung
+parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution_all, Date.now())
 parallel_optimizer.runParallel()
