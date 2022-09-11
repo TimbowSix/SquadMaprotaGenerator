@@ -16,6 +16,7 @@ class Optimizer{
         this.current_modeG = this.get_mode_group_from_mode(mode);
         this.over_run = false;
         this.save_run_info = save_run_info
+        this.distribution = distribution
 
         if(this.config["min_biom_distance"] != 0.5){
             throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
@@ -94,7 +95,8 @@ class Optimizer{
         this.deltaStepSize = 0.01;
 
         // save current run information
-        this.save_run_info()
+        if(this.save_run_info)
+        this.write_run_info()
     }
 
     optimize_recursive(currentIndex, lowestDelta, minChanged){ //TODO map weight group umsetzten
@@ -285,7 +287,7 @@ class Optimizer{
         }
     }
 
-    save_run_info(){
+    write_run_info(){
         if(this.save_run_info && this.distribution != null){
             let path = "./run_info_"+this.uuid+"_"+this.current_mode+".json"
             fs.writeFileSync(path, JSON.stringify(this.distribution, null, 2))
@@ -311,8 +313,8 @@ class Optimizer{
 
 module.exports = { Optimizer };
 
-/*
-op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
-console.time("Execution Time")
-op.start_optimizer()
-console.timeEnd("Execution Time")*/
+
+// op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false)
+// console.time("Execution Time")
+// op.start_optimizer()
+// console.timeEnd("Execution Time")
