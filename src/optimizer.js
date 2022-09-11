@@ -416,6 +416,7 @@ class Optimizer_GradientDescent extends Optimizer{
 
 module.exports = { Optimizer };
 
+<<<<<<< Updated upstream
 new_dist =  {
     "BlackCoast" : 0.0,
     "Gorodok" : 0.8,
@@ -442,6 +443,9 @@ new_dist =  {
 }
 
 op = new Optimizer_GradientDescent(config, "RAAS", reset=true, distribution = new_dist, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, estimate = false, 0.005)
+=======
+op = new Optimizer(config, "Insurgency", reset=false, distribution = null, console_output = true, use_extern_map_weights_and_delta = true,save_maps=false,start_delta = 0.5, estimate = false)
+>>>>>>> Stashed changes
 console.time("Execution Time")
 op.start_optimizer()
 console.timeEnd("Execution Time")

@@ -6,7 +6,7 @@ import imageio.v2 as imageio
 
 ## Setup
 
-history_path = "optimizer_maps_history_TC.json"
+history_path = "mapweights_gleichverteilung.json"
 gif_duration = 0.5
 custom_title = None
 
