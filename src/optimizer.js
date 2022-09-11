@@ -92,6 +92,9 @@ class Optimizer{
 
         //TODO vielleicht über config
         this.deltaStepSize = 0.01;
+
+        // save current run information
+        this.save_run_info()
     }
 
     optimize_recursive(currentIndex, lowestDelta, minChanged){ //TODO map weight group umsetzten
