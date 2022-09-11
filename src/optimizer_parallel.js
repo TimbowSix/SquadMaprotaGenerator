@@ -3,6 +3,7 @@ const opt = require('./optimizer.js')
 const fs = require("fs")
 const config = require("../config.json")
 const utils = require('./utils.js')
+const gen = require('./generator.js')
 
 let final_map_weights = JSON.parse(fs.readFileSync("./data/mapweights.json"))
 let workers = []
@@ -88,9 +89,38 @@ class OptimizerParallelOrganizer{
     }
 }
 
+let dummy_gen = new gen.Maprota(config)
+let maps = dummy_gen.all_maps
+
+let dict = {}
+
 let numberMaps = 22
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 //let modi = ["Destruction"]
-let distribution_all = utils.get_mode_dist_dict(modi, numberMaps)
-parallel_optimizer = new OptimizerParallelOrganizer(modi,distribution_all, Date.now())
+let distributions = utils.get_mode_dist_dict(modi, numberMaps)
+
+for(let map of maps){
+    for(let mode of Object.keys(map.map_weight)){
+        if(mode in modi){
+            if(dict[mode]){
+                if(dict[mode][`${map.name}`]){
+                    dict[mode][`${map.name}`] = distributions[mode][0]
+                    distributions[mode].splice(0,1)
+                }
+                else{
+                    dict[mode] = {}
+                    dict[mode][`${map.name}`] = distributions[mode][0]
+                    distributions[mode].splice(0,1)
+                }
+            }
+            else{
+                dict[mode] = {}
+                dict[mode][`${map.name}`] = distributions[mode][0]
+                distributions[mode].splice(0,1)
+            }
+        }
+    }
+}
+
+parallel_optimizer = new OptimizerParallelOrganizer(modi,dict, Date.now())
 parallel_optimizer.runParallel()
