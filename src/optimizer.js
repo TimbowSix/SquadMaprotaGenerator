@@ -6,7 +6,7 @@ let config = require("../config.json")
 let fs = require("fs");
 
 class Optimizer{
-    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, runIndex){
+    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, runIndex, save_run_info){
         this.runIndex = runIndex
         this.config = config;
         this.estimate = estimate;
@@ -15,6 +15,7 @@ class Optimizer{
         this.current_mode = mode;
         this.current_modeG = this.get_mode_group_from_mode(mode);
         this.over_run = false;
+        this.save_run_info = save_run_info
 
         if(this.config["min_biom_distance"] != 0.5){
             throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
@@ -24,6 +25,8 @@ class Optimizer{
         this.config['number_of_rotas'] = 1;
         this.config['number_of_layers'] = 50000;
         this.config['use_vote_weight'] = false;
+
+        this.uuid = utils.create_UUID()
 
     
         this.generator = new gen.Maprota(this.config);
@@ -266,7 +269,7 @@ class Optimizer{
 
     save_maps(){
         if(this.use_save_maps){
-            let path = "./optimizer_maps_history_"+this.current_mode+"_"+this.runIndex+".json";
+            let path = "./optimizer_maps_history_"+this.current_mode+"_"+this.uuid+".json";
             let history = [] 
             try {
                 history = JSON.parse(fs.readFileSync(path))
@@ -278,6 +281,15 @@ class Optimizer{
             fs.writeFileSync(path, JSON.stringify(history, null, 2))
         }
     }
+
+    save_run_info(){
+        if(this.save_run_info && this.distribution != null){
+            let path = "./run_info_"+this.uuid+"_"+this.current_mode+".json"
+            fs.writeFileSync(path, JSON.stringify(this.distribution, null, 2))
+        }
+    }
+
+
 
     start_optimizer(){
         if(this.console_output){
