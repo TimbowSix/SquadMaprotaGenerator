@@ -18,7 +18,7 @@ let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 let pathOfCsv = "datacsv_"+Date.now()+".csv"
 
 let mapWeightsFiles = []
-let output = []
+let output = [["map","neighbor","RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]]
 
 for(let dir of dirs){
     for (let file of fs.readdirSync("./"+dir)){
