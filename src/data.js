@@ -23,7 +23,6 @@ function initialize_maps(config, use_map_weights=true){
                 console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
             }
         }
-
         let map_ = new Map(map_name, biom_values, weight, distances[map_name])
         for(let mode of Object.keys(layers[map_name])){
             for(let layer of layers[map_name][mode]){
@@ -205,13 +204,9 @@ if (require.main === module) {
     let config = require("../config.json")
     let maps = initialize_maps(config)
     console.log(maps[0])
-    statistics.calcMapDistribution(maps)
-    let müll = 0
-    for(let i=0; i<maps.length; i++){
-        if(maps[i].total_probabilities["rest"]){
-            müll += maps[i].total_probabilities["rest"]
-            console.log(`Rest mode sum: ${müll}`)
-        }
+    for(let map of  maps){
+        console.log(map.name)
+        console.log(map.map_weight)
     }
 }
 
