@@ -1,24 +1,23 @@
 import plotly.express as px
 import pandas as pd
-import json, os
+import json
 from PIL import Image
+import tempfile
 
 
 #-# Config #-#
 
 run_info_path = "run_info_eb191fb1-b617-4a50-a315-d5ad83111b79_AAS.json"
 history_path = "optimizer_maps_history_AAS_eb191fb1-b617-4a50-a315-d5ad83111b79.json"
-remove_single_pics = True
+plot_template = "plotly_dark"
 
 #-#
 
 mode = run_info_path.split("_")[-1].replace(".json", "")
 
-with open(run_info_path, "r") as f:
-    run_info = json.load(f)
-
-with open(history_path, "r") as f:
-    history = json.load(f)
+with open(run_info_path, "r") as fr, open(history_path, "r") as fh:
+    run_info = json.load(fr)
+    history = json.load(fh)
 
 ri = [{"map": str(map_), "count": count} for map_ , count in run_info.items()]
 run_info_df = pd.DataFrame(ri)
@@ -28,23 +27,20 @@ h = [{"map": str(map_), "count": count} for map_ , count in history[-1][mode].it
 history_df = pd.DataFrame(h)
 history_df.sort_values(by="count", inplace=True, ascending=False)
 
-template = "plotly_dark"
-history_plot = px.bar(history_df, x="map", y="count", template=template)
+title = f"History"
+history_plot = px.bar(history_df, x="map", y="count", template=plot_template, title=title)
 history_plot.update_xaxes(categoryorder="category ascending")
-run_info_plot = px.bar(run_info_df, x="map", y="count", template=template)
+title = f"Run Info"
+run_info_plot = px.bar(run_info_df, x="map", y="count", template=plot_template, title=title)
 run_info_plot.update_xaxes(categoryorder="category ascending")
 
-history_plot.write_image("history.png")
-run_info_plot.write_image("run_info.png")
+with tempfile.TemporaryFile() as hist, tempfile.TemporaryFile() as run:
+    history_plot.write_image(hist)
+    history_img = Image.open(hist)
+    run_info_plot.write_image(run)
+    run_info_img = Image.open(run)
 
-history_img = Image.open("history.png")
-run_info_img = Image.open("run_info.png")
-
-combined = Image.new('RGB', (history_img.width + run_info_img.width, history_img.height))
-combined.paste(history_img, (0, 0))
-combined.paste(run_info_img, (history_img.width, 0))
-combined.save("history_run_info.png")
-
-if remove_single_pics:
-    os.remove("history.png")
-    os.remove("run_info.png")
+    combined = Image.new('RGB', (history_img.width + run_info_img.width, history_img.height))
+    combined.paste(history_img, (0, 0))
+    combined.paste(run_info_img, (history_img.width, 0))
+    combined.save("history_run_info.png")
