@@ -111,11 +111,28 @@ run_info_plot.update_xaxes(categoryorder="category ascending")
 history_plot.update_yaxes(range=[0, max_value])
 
 if deviation:
-    history_df["deviation"] = history_df["percentage"]-run_info_df["count"]
-    title = f"History-Run Info Deviation {mode_r}<br><sup>{id_r}</sup>"
-    deviation_plot = px.bar(history_df, x="map", y="deviation", template=plot_template, title=title)
-    deviation_plot.update_xaxes(categoryorder="category ascending")
-    deviation_plot.write_image("deviation.png")
+    with tempfile.TemporaryFile() as d, tempfile.TemporaryFile() as rd:
+        history_df["relative_deviation"] = (history_df["percentage"]-run_info_df["count"])/run_info_df["count"]
+        history_df["deviation"] = history_df["percentage"]-run_info_df["count"]
+
+        title = f"History-Run Info Deviation {mode_r}<br><sup>{id_r}</sup>"
+        deviation_plot = px.bar(history_df, x="map", y="deviation", template=plot_template, title=title)
+        deviation_plot.update_xaxes(categoryorder="category ascending")
+        deviation_plot.write_image(d)
+
+        title = f"History-Run Info relative Deviation {mode_r}<br><sup>{id_r}</sup>"
+        relative_deviation_plot = px.bar(history_df, x="map", y="relative_deviation", template=plot_template, title=title)
+        relative_deviation_plot.update_xaxes(categoryorder="category ascending")
+        relative_deviation_plot.write_image(rd)
+
+        relative_deviation_img = Image.open(d)
+        deviation_img = Image.open(rd)
+
+        combined_deviation = Image.new('RGB', (deviation_img.width + relative_deviation_img.width, deviation_img.height))
+        combined_deviation.paste(deviation_img, (0, 0))
+        combined_deviation.paste(relative_deviation_img, (deviation_img.width, 0))
+        combined_deviation.save("deviation.png")
+
 
 with tempfile.TemporaryFile() as hist, tempfile.TemporaryFile() as run:
     history_plot.write_image(hist)
