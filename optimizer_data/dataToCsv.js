@@ -18,30 +18,42 @@ let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
 let pathOfCsv = "datacsv_"+Date.now()+".csv"
 
 let mapWeightsFiles = []
-let output = [["map","neighbor","RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]]
+let propByMode = []
+let output = [["map","neighbor","p RAAS", "RAAS", "p AAS", "AAS", "p inv", "Invasion", "p tc", "TC", "p ins", "Insurgency", "p des", "Destruction"]]
 
 for(let dir of dirs){
+    let modeDict = {}
     for (let file of fs.readdirSync("./"+dir)){
         let temp = file.split("_")[0]
         if(temp == "mapweights"){
             mapWeightsFiles.push("./"+dir+"/"+file)
         }
+        let t = file.split("_")
+        if(t[0] == "run"){
+            let m = t[t.length-1].split(".")[0]
+            modeDict[m] = JSON.parse(fs.readFileSync("./"+dir+"/"+file))
+        }
     }
+    propByMode.push(modeDict)
 }
 
+let index = 0
 for(let mpFile of mapWeightsFiles){
     let f = JSON.parse(fs.readFileSync(mpFile))
     for(let map of g.all_maps){
         let temp = [map.name , map.neighbor_count]
         for(let mode of modi){
             if(f[map.name][mode]){
+                temp.push(propByMode[index][mode][map.name])
                 temp.push(f[map.name][mode])
             }else{
+                temp.push(0)
                 temp.push(0)
             }
         }
         output.push(temp)
     }
+    index++
 }
 //output to csv
 let csv = ""
