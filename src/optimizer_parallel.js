@@ -92,17 +92,15 @@ class OptimizerParallelOrganizer{
     }
 }
 
-for(let i=0; i<2; i++){
-    let dummy_gen = new gen.Maprota(config)
-    let maps = dummy_gen.all_maps
-    
-    let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-    
-    let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
-    
-    let runIndex = Date.now()
-    fs.mkdirSync("./optimizer_data/"+runIndex+"/")
-    
-    parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, runIndex)
-    parallel_optimizer.runParallel()
-}
+let dummy_gen = new gen.Maprota(config)
+let maps = dummy_gen.all_maps
+
+let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
+
+let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
+
+let runIndex = Date.now()
+fs.mkdirSync("./optimizer_data/"+runIndex+"/")
+
+parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, runIndex)
+parallel_optimizer.runParallel()
