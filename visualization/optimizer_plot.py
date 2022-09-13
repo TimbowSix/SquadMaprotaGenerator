@@ -11,15 +11,31 @@ import os
 
 #-# Config #-#
 
-run_info_path = "run_info_eb191fb1-b617-4a50-a315-d5ad83111b79_AAS.json"
-history_path = "optimizer_maps_history_AAS_eb191fb1-b617-4a50-a315-d5ad83111b79.json"
+run_info_path = "run_info_9732be4e-b882-480a-b0e1-3993a6c22d8a_AAS.json"
+history_path = "optimizer_maps_history_AAS_9732be4e-b882-480a-b0e1-3993a6c22d8a.json"
 deviation = True
 plot_template = "plotly_dark"
 save_single_pics=False
 gif_duration = 0.5
+value_check = True
 
-mode = run_info_path.split("_")[-1].replace(".json", "")
 #-#
+
+sr = run_info_path.replace(".json", "").split("_")
+sh = history_path.replace(".json", "").split("_")
+
+mode_r = sr[-1]
+mode_h = sh[-2]
+
+id_r = sr[-2]
+id_h = sh[-1]
+
+if value_check:
+    if not (mode_r == mode_h):
+        raise ValueError("history and run_info modes are different")
+    if not (id_r == id_h):
+        raise ValueError("history and run_info run IDs are different")
+
 
 def sorted_alphanumeric(data):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
@@ -40,7 +56,7 @@ with open(run_info_path, "r") as fr, open(history_path, "r") as fh:
 dfs = []
 max_ = 0
 for ind, maps in enumerate(history):
-    count = [{"map": str(map_), "count": count} for map_ , count in maps[mode].items()]
+    count = [{"map": str(map_), "count": count} for map_ , count in maps[mode_h].items()]
     df = pd.DataFrame(count)
     max_n = round(df["count"].max()+500, -3)
     max_ = max_n if max_n > max_ else max_
@@ -49,7 +65,7 @@ for ind, maps in enumerate(history):
 
 with tempfile.TemporaryDirectory() as t_dir:
     for ind, df in enumerate(dfs):
-        title = f"{ind} {mode}"
+        title = f"{ind} {mode_h}<br><sup>{id_h}</sup>"
         fig = px.bar(df, x="map", y="count", template="plotly_dark", title=title)
         fig.update_xaxes(categoryorder="category ascending")
         fig.update_yaxes(range=[0, max_])
@@ -73,7 +89,7 @@ run_info_df = pd.DataFrame(ri)
 run_info_df.sort_values(by="map", inplace=True, ascending=True)
 run_info_df.reset_index(drop=True,inplace=True)
 
-h = [{"map": str(map_), "count": count} for map_ , count in history[-1][mode].items()]
+h = [{"map": str(map_), "count": count} for map_ , count in history[-1][mode_r].items()]
 history_df = pd.DataFrame(h)
 history_df.sort_values(by="map", inplace=True, ascending=True)
 history_df.reset_index(drop=True, inplace=True)
@@ -85,18 +101,18 @@ max_r = round_x_decimal(run_info_df["count"].max())
 
 max_value = max((max_h, max_r))
 
-title = f"History {mode}"
+title = f"History {mode_h}<br><sup>{id_h}</sup>"
 history_plot = px.bar(history_df, x="map", y="percentage", template=plot_template, title=title)
 history_plot.update_xaxes(categoryorder="category ascending")
 history_plot.update_yaxes(range=[0, max_value])
-title = f"Run Info {mode}"
+title = f"Run Info {mode_r}<br><sup>{id_r}</sup>"
 run_info_plot = px.bar(run_info_df, x="map", y="count", template=plot_template, title=title)
 run_info_plot.update_xaxes(categoryorder="category ascending")
 history_plot.update_yaxes(range=[0, max_value])
 
 if deviation:
     history_df["deviation"] = history_df["percentage"]-run_info_df["count"]
-    title = f"History-Run Info Deviation {mode}"
+    title = f"History-Run Info Deviation {mode_r}<br><sup>{id_r}</sup>"
     deviation_plot = px.bar(history_df, x="map", y="deviation", template=plot_template, title=title)
     deviation_plot.update_xaxes(categoryorder="category ascending")
     deviation_plot.write_image("deviation.png")
