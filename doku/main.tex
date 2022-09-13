@@ -50,7 +50,8 @@
 \usepackage{pgfplots}
 \usepackage{pdfpages}
 \usepackage{verbatim}
-
+%include bib data
+\bibliography{bibtex.bib}
 
 \begin{document}
     
@@ -72,15 +73,120 @@
 
     \begin{acronym}[Rota] %in den [] die abkürzung angeben mit der längsten Beschriftung
         \acro{Rota}{Maprotation}
+        \acro{WLS}{We Love Squad}
+        \acro{RAAS}{Random Advance and Secure}
+        \acro{AAS}{Advance and Secure}
+        \acro{TC}{Territory Control}
     \end{acronym}
 
 
     \chapter{Übersicht}
-    \section{Problemdarstellung}
-    \section{Ziel}
-    \section{Spezifikationen}
-    \section{Metriken}
+    \section{Einleitung}
+        Squad ist ein Online Multiplayerspiel, welches 2015 im \glqq{}Early Access\grqq{} veröffentlicht wurde.\cite{steampage}
+        Für die Umsetzung des Onlinespielens, wird darauf gesetzt, 
+        dass Spielserver von Personen oder Gruppen bereitgestellt und verwaltet werden.
+        \cite{wiki.serverbrowser}
+        Diese Personen/Gruppen sind darum bemüht ihre Server möglichst attraktiv zu halten. \todo{quelle}\\
+        Squad wird in Runden gespielt. Eine Runde besteht aus einem vorherrschenden Spielmodus, 
+        welcher auf einer Kartenvariation (Layer) gespielt wird. 
+        Ein Layer gibt damit an, welcher Spielmodus auf welcher Kartenvariation gespielt wird.\\ \todo{quelle}
+        Um die Attraktivität eines Servers zu steigen, wird versucht eine begehrenswerte Reihenfolge an Runden zu spielen.
+        Dafür wird für jeden Tag eine Reihenfolge an Runden bestimmt, welche auf dem Server gespielt werden sollen.
+        Diese vorgegebene Reihenfolge wird Maprotation oder kurz Maprota genannt.\\
+        Dieses Dokument beschäftigt sich mit der Umsetzung eines Programmes, welches eine attraktive Maprota generieren kann.   
 
+    \section{Problemdarstellung}
+
+    \section{Ziel}
+        Das fertige Programm soll attraktive Maprotationen erstellen können.
+        Dabei müssen die Layervotes mit einbezogen werden. Zudem soll die Maprota, im Bezug auf die Eigenschaften einer Runde, wenig repetitiv sein.
+        Außerdem soll eine Karte sich nicht in einem kurzem Zeitraum wiederholen.
+
+    \section{Spezifikationen}
+    Im folgenden werden unbekannte Begriffe erklärt und/oder definiert.
+        \subsection{Allgemeines}
+            \subsubsection{Spielmodus}
+                Die aktuell (stand Sep. 2022) auf dem \ac{WLS} Server gespielten Spielmodi sind:\\
+                \begin{itemize}
+                    \item \ac{RAAS}
+                    \item \ac{AAS}
+                    \item Invasion
+                    \item \ac{TC}
+                    \item Insurgency
+                    \item Destruction
+                    \item Skirmish\todo{Tanks ?}
+                \end{itemize}
+                Die Beschreibung dieser Modi geht über dieses Dokument hinaus.
+            \subsubsection{Layer}
+                Ein Layer ist einer Karte und einen Spielmodus zugeordnet.
+                Pro Runde Squad wird ein Layer gespielt. 
+            \subsubsection{Maprotation}
+                Eine Maprotation (kurz Maprota) besteht aus einer Liste von vorgegebene Runden, die gespielt werden sollen.
+                Jede Runde wird ein Layer gespielt.
+            \subsubsection{Clustering}
+                Beschreibt die Wiederholung von Squad Runden mit ähnlichen Eigenschaften in einem kurzem zeitintervall.
+            \subsection{Attraktive Maprotation}
+                Eine attraktive Maprota kann durch ihre Rundenverteilung und Rundenreihenfolge beschrieben werden.
+                Gibt es eine positive Korrelation zwischen Layer-Verteilungen einer Maprota und der Layervote-Verteilung ist der Beliebtheitsgrad höher.
+                Zudem ist eine Maprota mit kurz aufeinander folgenden, sich stärker unterscheidnenen Maps, beliebter.
+                \todo{ist ein bisschen aus der Luft gegriffen}
+        \subsection{Eingabe Parameter}
+            \subsubsection{Layervote}
+                Während einer Runde auf einem \ac{WLS} Server kann das gespielte Layer, von jedem Spieler,
+                positiv oder negativ bewertet werden.
+                Diese Stimme einer Person wird Layervote genannt.
+            \subsubsection{Biom-Bewertung}
+                Eine Karte in Squad ist einem Platz auf der Welt nachempfunden. 
+                Für die Einordnung der Karten untereinander werden sie anhand ihrer Eigenschaften bewertet.
+                Diese Bewertung wird hier Biom-Bewertung genannt.
+        \subsection{Gruppierung der Spielmodi}
+                Für eine bessere Übersicht werden hier die Spielmodi Gruppiert.\\
+                Casual:
+                \begin{itemize}
+                    \item \ac{RAAS}
+                    \item \ac{AAS}
+                \end{itemize}
+                Intermediates:
+                \begin{itemize}
+                    \item \ac{TC}
+                    \item Invasion
+                \end{itemize}
+                Rest:
+                \begin{itemize}
+                    \item Insurgency
+                    \item Destruction \todo{tanks ?}
+                \end{itemize}
+    
+    \section{Metriken}
+    Um eine erzeuge Maprota Bewerten zu können, muss sie quantifiziert werden. 
+    Dafür werden Metriken definiert welche eine objektive Bewertung, mit gegebenen Daten, zulässt.
+
+    \begin{center}
+        \begin{tabular}{||m{4cm} m{4cm} m{5cm}||}
+            \hline
+            Metrikname & Beschreibung & Output/Messgröße\\
+            \hline
+            \hline
+            Ungewichtete globale Wahrscheinlichkeitsdichte & 
+            Statistische Verteilung der Maps ohne Berücksichtigung der Layervotes &
+            Wahrscheinlichkeitsdichte $\rho$ \\
+            \hline
+            Gewichtete globale Wahrscheinlichkeitsdichte &
+            Verteilung der Maps, nur dass Layervotes einbezogen werden &
+            Wahrscheinlichkeitsdichte $\rho$ , Korrelationsfunktion zwischen $\rho$ und Mapvote-Weights (W-Dichte der Mapvotes) \\
+            \hline
+            Erwartungswert des mittleren minimalen Abstandes bzgl der letzten n-Maps &
+            Eine Folge von Layern wird gezogen, die ersten n Layer werden in einen “bin” gepackt und das Minimum ausgelesen.
+            Anschließend wird der “bin” um einen Folgeglied weiter geschoben bis zum ende der Folge. 
+            Zum Schluss wird der Erwartungswert aller Minima berechnet &
+            $< Min(d_n) >,$ wobei 
+            $d_n=\{d(x,y) | x,y $ 
+            sind maps, und 
+            $ d = $ abstandsfunktion$\}$ \\
+            \hline
+        \end{tabular}
+    \end{center}
+    
 
 
     \chapter{Aufbau}
@@ -95,6 +201,9 @@
 
     \chapter{Warum dieser Generator besser ist als Andere}
 
+    \newpage
 
+    \printbibliography[title=Literaturverzeichnis]
+    \addcontentsline{toc}{chapter}{Literaturverzeichnis}
 
 \end{document}
