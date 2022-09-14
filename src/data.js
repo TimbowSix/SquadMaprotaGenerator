@@ -54,6 +54,45 @@ function initialize_maps(config, use_map_weights=true){
     return maps
 }
 
+function calculate_weights(config){
+    let maps = initialize_maps(config)
+    let weights = {} //{map:{mode:weight}}
+    let mode_probs = {} //{mode:{map:prob}}
+    for(let map of maps){
+        for(let mode of Object.keys(map.mapvote_weights)){
+            if(mode in mode_probs) mode_probs[mode][map.name] = map.mapvote_weights[mode]
+            else mode_probs[mode] = {[map.name]:map.mapvote_weights[mode]}
+        }
+    }
+    let neighbors = {} //{map:neighbor_count}
+    for(let map of maps){
+        neighbors[map.name] = map.neighbor_count-1
+    }
+
+    for(let mode of Object.keys(mode_probs)){
+        let mode_weights = Object.values(mode_probs[mode])
+        console.log(`${mode} ${mode_weights}`)
+        mode_weights = utils.normalize(mode_weights)
+        let mode_maps = Object.keys(mode_probs[mode])
+        for(let i=0; i<mode_maps.length; i++){
+            mode_probs[mode][mode_maps[i]] = mode_weights[i]
+        }
+    }
+    let formulas = require("../data/weight_formulas.json")
+    for(let [mode, maps] of Object.entries(mode_probs)){
+        for(let map of Object.keys(maps)){
+            x = neighbors[map]
+            y = mode_probs[mode][map]
+            //console.log(`${map} ${mode} ${x} ${y}`)
+            weight = eval(formulas[mode])
+            if(map in weights) weights[map][mode] = weight
+            else weights[map] = {[mode]:weight}
+        }
+    }
+    return weights
+}
+
+
 class Map{
     constructor(name, bioms, map_weights, distances, ){
         this.name = name
@@ -88,6 +127,42 @@ class Map{
         this.current_lock_time = this.lock_time
     }
     add_mapvote_weights(){
+        if(this.layers.length == 0) {
+            console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`); 
+            return
+        }
+        let log = false
+        if(this.name == "BlackCoast") log = true
+        let votesum = {}
+        for(let mode of Object.keys(this.layers)){
+            let votes = []
+            for(let layer of this.layers[mode]) votes.push(layer.votes)
+            votesum[mode] = votes
+        }
+        let means = {}
+        let weights = {}
+        let temp = {}
+        for(let mode of Object.keys(votesum)){
+            means[mode] = 1/votesum[mode].length*utils.sumArr(votesum[mode])
+            for(let v of Object.values(votesum[mode])){
+                if (log) console.log(`${mode} ${v} ${means[mode]}`)
+                if(weights[mode]) weights[mode].push(Math.exp(-Math.pow(means[mode] - v, 2)))
+                else weights[mode] = [Math.exp(-Math.pow(means[mode] - v, 2))]
+            }
+            if (log) console.log(weights)
+            let sum = utils.sumArr(weights[mode]) 
+            for(let w of Object.keys(weights[mode])) {
+                weights[mode][w] = weights[mode][w]/sum
+            }
+            for(let i=0; i<votesum[mode].length; i++) {
+                weights[mode][i] *= votesum[mode][i]
+            }
+            temp[mode] = utils.sumArr(weights[mode])
+        }
+        this.mapvote_weights = temp
+    }
+
+    add_mapvote_weights_old(){
         let votesum = {}
         let weights = {}
         let means = {}
@@ -202,12 +277,11 @@ function get_layers(){
 // Test Stuff here
 if (require.main === module) {
     let config = require("../config.json")
+    //let test = calculate_weights(config)
+    //console.log(test)
     let maps = initialize_maps(config)
-    console.log(maps[0])
-    for(let map of  maps){
-        console.log(map.name)
-        console.log(map.map_weight)
-    }
+    //console.log(maps[maps.length-3])
+    //console.log(maps[0].mapvote_weights)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
