@@ -6,7 +6,10 @@ const utils = require("./utils.js")
 
 function initialize_maps(config, use_map_weights=true){
     let bioms = require("../data/bioms.json")
-    let map_weights = require("../data/mapweights.json")
+    if (use_map_weights) {
+        //let map_weights = require("../data/mapweights.json")
+        let map_weights = calculate_weights(config)
+    }
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
     let layers = require("../data/layers.json")
@@ -55,7 +58,7 @@ function initialize_maps(config, use_map_weights=true){
 }
 
 function calculate_weights(config){
-    let maps = initialize_maps(config)
+    let maps = initialize_maps(config, false)
     let weights = {} //{map:{mode:weight}}
     let mode_probs = {} //{mode:{map:prob}}
     for(let map of maps){
@@ -88,6 +91,7 @@ function calculate_weights(config){
         }
     }
     return weights
+    //fs.writeFileSync("../data/mapweights.json", JSON.stringify(weights, null, 2))
 }
 
 
@@ -271,10 +275,11 @@ function get_layers(){
 if (require.main === module) {
     let config = require("../config.json")
     let test = calculate_weights(config)
+    fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
     //console.log(test)
-    let maps = initialize_maps(config)
+    //let maps = initialize_maps(config)
     //console.log(maps[maps.length-3])
-    console.log(maps[0].mapvote_weights)
+    //console.log(maps[0].mapvote_weights)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
