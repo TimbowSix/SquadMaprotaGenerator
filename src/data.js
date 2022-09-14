@@ -140,14 +140,13 @@ class Map{
         let temp = {}
         for(let mode of Object.keys(votesum)){
             means[mode] = 1/votesum[mode].length*utils.sumArr(votesum[mode])
-            for(let v of Object.values(votesum[mode])){
+            for(let v of votesum[mode]){
                 if(weights[mode]) weights[mode].push(Math.exp(-Math.pow(means[mode] - v, 2)))
                 else weights[mode] = [Math.exp(-Math.pow(means[mode] - v, 2))]
             }
-            let sum = utils.sumArr(weights[mode]) 
-            for(let w of Object.keys(weights[mode])) {
-                weights[mode][w] = weights[mode][w]/sum
-            }
+
+            weights[mode] = utils.normalize(weights[mode])
+            
             for(let i=0; i<votesum[mode].length; i++) {
                 weights[mode][i] *= votesum[mode][i]
             }
@@ -271,11 +270,11 @@ function get_layers(){
 // Test Stuff here
 if (require.main === module) {
     let config = require("../config.json")
-    //let test = calculate_weights(config)
+    let test = calculate_weights(config)
     //console.log(test)
     let maps = initialize_maps(config)
     //console.log(maps[maps.length-3])
-    //console.log(maps[0].mapvote_weights)
+    console.log(maps[0].mapvote_weights)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
