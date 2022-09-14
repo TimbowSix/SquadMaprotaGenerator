@@ -146,11 +146,11 @@ class Map{
             }
 
             weights[mode] = utils.normalize(weights[mode])
-            
+
             for(let i=0; i<votesum[mode].length; i++) {
                 weights[mode][i] *= votesum[mode][i]
             }
-            temp[mode] = utils.sumArr(weights[mode])
+            temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), 1, 0)
         }
         this.mapvote_weights = temp
     }

@@ -140,6 +140,11 @@ function squareArr(arr){
     return n_arr
 }
 
+function sigmoid(x, slope, shift=0){
+    let arg = slope*(x+shift)
+    return 1/(1+Math.exp(-arg))
+}
+
 /**
  * returns sum of an array of numbers
  * @param {[number]} arr 
@@ -202,4 +207,4 @@ if (require.main === module) {
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict};
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid};
