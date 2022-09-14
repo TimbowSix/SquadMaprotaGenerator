@@ -71,7 +71,6 @@ function calculate_weights(config){
 
     for(let mode of Object.keys(mode_probs)){
         let mode_weights = Object.values(mode_probs[mode])
-        console.log(`${mode} ${mode_weights}`)
         mode_weights = utils.normalize(mode_weights)
         let mode_maps = Object.keys(mode_probs[mode])
         for(let i=0; i<mode_maps.length; i++){
@@ -83,7 +82,6 @@ function calculate_weights(config){
         for(let map of Object.keys(maps)){
             x = neighbors[map]
             y = mode_probs[mode][map]
-            //console.log(`${map} ${mode} ${x} ${y}`)
             weight = eval(formulas[mode])
             if(map in weights) weights[map][mode] = weight
             else weights[map] = {[mode]:weight}
@@ -131,8 +129,6 @@ class Map{
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`); 
             return
         }
-        let log = false
-        if(this.name == "BlackCoast") log = true
         let votesum = {}
         for(let mode of Object.keys(this.layers)){
             let votes = []
@@ -145,11 +141,9 @@ class Map{
         for(let mode of Object.keys(votesum)){
             means[mode] = 1/votesum[mode].length*utils.sumArr(votesum[mode])
             for(let v of Object.values(votesum[mode])){
-                if (log) console.log(`${mode} ${v} ${means[mode]}`)
                 if(weights[mode]) weights[mode].push(Math.exp(-Math.pow(means[mode] - v, 2)))
                 else weights[mode] = [Math.exp(-Math.pow(means[mode] - v, 2))]
             }
-            if (log) console.log(weights)
             let sum = utils.sumArr(weights[mode]) 
             for(let w of Object.keys(weights[mode])) {
                 weights[mode][w] = weights[mode][w]/sum
