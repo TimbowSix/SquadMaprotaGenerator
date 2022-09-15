@@ -54,7 +54,7 @@ function initialize_maps(config, use_map_weights=true){
     }
     for(let map of maps){
         map.set_layer_by_pools(config)
-        map.add_mapvote_weights()
+        map.add_mapvote_weights(config["mapvote_slope"])
     }
     return maps
 }
@@ -148,7 +148,7 @@ class Map{
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
-    add_mapvote_weights(){
+    add_mapvote_weights(slope=1){
         if(this.layers.length == 0) {
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`); 
             return
@@ -174,7 +174,7 @@ class Map{
             for(let i=0; i<votesum[mode].length; i++) {
                 weights[mode][i] *= votesum[mode][i]
             }
-            temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), 1, 0)
+            temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), slope, 0)
         }
         this.mapvote_weights = temp
     }

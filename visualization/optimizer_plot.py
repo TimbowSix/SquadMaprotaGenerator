@@ -3,10 +3,9 @@ import pandas as pd
 import json
 from PIL import Image
 import tempfile
-import math
-import re
 import imageio.v2 as imageio
 import os
+import utils
 
 
 #-# Config #-#
@@ -37,16 +36,7 @@ if value_check:
         raise ValueError("history and run_info run IDs are different")
 
 
-def sorted_alphanumeric(data):
-    convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ] 
-    return sorted(data, key=alphanum_key)
 
-def num_zeros(decimal):
-    return -math.floor(math.log10(decimal)) - 1
-
-def round_x_decimal(num):
-    return round(num+5*10**-(num_zeros(num)+2), num_zeros(num)+1)  
 
 with open(run_info_path, "r") as fr, open(history_path, "r") as fh:
     run_info = json.load(fr)
@@ -75,7 +65,7 @@ with tempfile.TemporaryDirectory() as t_dir:
         elif ind == len(dfs)-1:
             fig.write_image(f"last.png")
 
-    images = sorted_alphanumeric(os.listdir(t_dir))
+    images = utils.sorted_alphanumeric(os.listdir(t_dir))
     images_read = []
     for filename in images:
         if ".png" in filename:
@@ -96,8 +86,8 @@ history_df.reset_index(drop=True, inplace=True)
 
 history_df["percentage"] = history_df["count"]/history_df["count"].sum()  
 
-max_h = round_x_decimal(history_df["percentage"].max())
-max_r = round_x_decimal(run_info_df["count"].max())
+max_h = utils.round_x_decimal(history_df["percentage"].max())
+max_r = utils.round_x_decimal(run_info_df["count"].max())
 
 max_value = max((max_h, max_r))
 

@@ -11,7 +11,7 @@ function main(){
 }
 
 if (require.main === module) {
-    //console.time("Execution Time")
+    console.time("Execution Time")
     main()
-    //console.timeEnd("Execution Time")
+    console.timeEnd("Execution Time")
 }
