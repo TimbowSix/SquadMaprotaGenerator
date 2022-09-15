@@ -7,7 +7,7 @@
     "biom_spacing": 4,
     "min_biom_distance": 0.5,
     "update_layers":false,
-    "mapvote_slope": 0.97,
+    "mapvote_slope": 0.2,
     "mode_distribution":
     {
         "pools":
