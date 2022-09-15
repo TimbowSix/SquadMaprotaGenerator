@@ -6,36 +6,35 @@ const utils = require("./utils.js")
 
 function initialize_maps(config, use_map_weights=true){
     let bioms = require("../data/bioms.json")
-    let map_weights = {}
-    if (use_map_weights) {
-        //let map_weights = require("../data/mapweights.json")
-        map_weights = calculate_weights(config)
-    }
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
     let layers = require("../data/layers.json")
+    let map_weights = {}
+    if (use_map_weights) map_weights = calculate_weights(config)
 
     for (const [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
         if (!(map_name in layers)) continue
-        let weight = {}
-        if (use_map_weights){
-            // use map_weight_corrction = 0 if map is not in mapweights
-            try{
-                weight = map_weights[map_name]
-            }catch(e){
-                console.log("WARNING: Map '"+map_name+"' has no saved correction weights, this may destroy the map distribution!")
-            }
-        }
-        let map_ = new Map(map_name, biom_values, weight, distances[map_name])
+
+        let map_ = new Map(map_name, biom_values, undefined, distances[map_name])
         for(let mode of Object.keys(layers[map_name])){
             for(let layer of layers[map_name][mode]){
                 let l = new Layer(layer["name"], mode, map_, layer["votes"])
                 map_.add_layer(l)
             }
-            if (!use_map_weights) weight[mode] = 0
         }
-        if (!use_map_weights) map_.map_weight = weight
+
+        //use calculatet map weights or set every weight to 0
+        if (use_map_weights){
+            map_.map_weight = map_weights[map_.name]
+        }else{
+            let weight = {}
+            for(let mode of Object.keys(map_.layers)){
+                weight[mode] = 0
+            }
+            map_.map_weight = weight
+        }
+
         map_.lock_time = config["biom_spacing"]
         map_.calculate_vote_weights_by_mode()
         maps.push(map_)
