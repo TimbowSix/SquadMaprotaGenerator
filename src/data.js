@@ -18,7 +18,7 @@ function initialize_maps(config, use_map_weights=true){
     for (const [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
         if (!(map_name in layers)) continue
-        let weight = 0
+        let weight = {}
         if (use_map_weights){
             // use map_weight_corrction = 0 if map is not in mapweights
             try{
@@ -32,8 +32,10 @@ function initialize_maps(config, use_map_weights=true){
             for(let layer of layers[map_name][mode]){
                 let l = new Layer(layer["name"], mode, map_, layer["votes"])
                 map_.add_layer(l)
-            } 
+            }
+            if (!use_map_weights) weight[mode] = 0
         }
+        if (!use_map_weights) map_.map_weight = weight
         map_.lock_time = config["biom_spacing"]
         map_.calculate_vote_weights_by_mode()
         maps.push(map_)
@@ -293,9 +295,9 @@ function get_layers(){
 if (require.main === module) {
     let config = require("../config.json")
     let test = calculate_weights(config)
-    fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
+    //fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
     //console.log(test)
-    //let maps = initialize_maps(config)
+    let maps = initialize_maps(config)
     //console.log(maps[maps.length-3])
     //console.log(maps[0].mapvote_weights)
 }
