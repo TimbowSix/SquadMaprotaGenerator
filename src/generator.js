@@ -15,7 +15,7 @@ class Maprota {
         this.maps = []
         this.mode_buffer = ""
 
-        this.all_maps = data.initialize_maps(this.config)
+        this.all_maps = data.initialize_maps(this.config, this.config["use_map_weight"])
     }
     reset(){
         this.rotation = []
@@ -214,7 +214,7 @@ if (require.main === module) {
     let rota = new Maprota(config)
     console.time("Execution Time")
     rota.generate_rota()
-    console.log(rota.maps_by_mode())
+    //console.log(rota.maps_by_mode())
     console.timeEnd("Execution Time")
 }
 
