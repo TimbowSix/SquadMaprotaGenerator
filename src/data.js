@@ -57,7 +57,7 @@ function initialize_maps(config, use_map_weights=true){
     return maps
 }
 
-function calculate_weights(config){
+function calculate_weights(config, save_map_dist=true){
     let maps = initialize_maps(config, false)
     let weights = {} //{map:{mode:weight}}
     let mode_probs = {} //{mode:{map:prob}}
@@ -75,11 +75,28 @@ function calculate_weights(config){
     for(let mode of Object.keys(mode_probs)){
         let mode_weights = Object.values(mode_probs[mode])
         mode_weights = utils.normalize(mode_weights)
+
         let mode_maps = Object.keys(mode_probs[mode])
         for(let i=0; i<mode_maps.length; i++){
             mode_probs[mode][mode_maps[i]] = mode_weights[i]
         }
     }
+    
+    if(save_map_dist){
+        let map_dist = {}
+        for(let map of maps){
+            if(!(map.name in map_dist)){
+                map_dist[map.name] = {}
+            }
+            for(let mode of Object.keys(mode_probs)){
+                if(Object.keys(mode_probs[mode]).includes(map.name)){
+                    map_dist[map.name][mode] = mode_probs[mode][map.name]
+                }
+            }
+        }
+        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
+    }
+
     let formulas = require("../data/weight_formulas.json")
     for(let [mode, maps] of Object.entries(mode_probs)){
         for(let map of Object.keys(maps)){
