@@ -39,7 +39,9 @@ class Maprota {
         let weight = Object.values(mode_distribution["pool_distribution"])
         let pool = custom_pool ? custom_pool : utils.choice(pools, weight)
         if (latest_modes.length != 0){
-            let latest = latest_modes.slice(latest_modes.length-mode_distribution["pool_spacing"],latest_modes.length)
+            let latest
+            if(latest_modes.length<=mode_distribution["pool_spacing"]) latest = latest_modes
+            else latest = latest_modes.slice(latest_modes.length-mode_distribution["pool_spacing"],latest_modes.length)
             if (latest.some((mode) => !(mode_distribution["pools"]["main"].hasOwnProperty(mode)))){
                 pool = "main"
             }
