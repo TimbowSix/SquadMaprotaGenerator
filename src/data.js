@@ -133,6 +133,7 @@ class Map{
         this.distribution = 0
         this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht
         this.vote_weights_by_mode = {}
+        this.weight_parameter = {}
 
     }
     add_layer(layer){
@@ -177,52 +178,6 @@ class Map{
         }
         this.mapvote_weights = temp
     }
-
-    add_mapvote_weights_old(){
-        let votesum = {}
-        let weights = {}
-        let means = {}
-        let sum = 0
-        if(this.layers.length != 0){
-            for(let l of Object.keys(this.layers)){
-                if(this.layer_by_pools[l]){
-                    for(let layer of Object.values(this.layers[l])){
-                        if(votesum[this.layer_by_pools[l]]){
-                            votesum[this.layer_by_pools[l]].push(layer.votes)
-                        }
-                        else{
-                            votesum[this.layer_by_pools[l]] = [layer.votes]
-                        }
-                    }
-                }
-            }
-            let temp = {}
-            for(let pool of Object.keys(votesum)){
-                means[pool] = 1/votesum[pool].length*utils.sumArr(votesum[pool])
-                for(let v of Object.values(votesum[pool])){
-                    if(weights[pool]){
-                        weights[pool].push(Math.exp(-Math.pow(means[pool] - v, 2)))
-                    }
-                    else{
-                        weights[pool] = [Math.exp(-Math.pow(means[pool] - v, 2))]
-                    }
-                }
-                let sum = utils.sumArr(weights[pool]) 
-                for(let w of Object.keys(weights[pool])){
-                    weights[pool][w] = weights[pool][w]/sum
-                }
-                for(let i=0; i<votesum[pool].length; i++){
-                    weights[pool][i] *= votesum[pool][i]
-                }
-                temp[pool] = utils.sumArr(weights[pool])
-            }
-            this.mapvote_weights = temp
-        }
-        else{
-            console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`)
-        }
-    }
-
     set_layer_by_pools(config){
         this.layer_by_pools = get_mode_to_pools_dict(config)
     }
@@ -234,6 +189,16 @@ class Map{
             for(let layer of this.layers[mode]) votes.push(layer.votes)
             let weights = utils.normalize(statistics.sigmoidArr(votes, sigmoid_slope, sigmoid_shift))
             this.vote_weights_by_mode[mode] = weights
+        }
+    }
+    set_weight_parameters(params_dict){
+        this.weight_parameter = params_dict
+    }
+    calculate_map_weight(...params){
+        let x = this.neighbor_count
+        for(let mode of Object.keys(this.layers)){
+            let y = this.mapvote_weights[mode]
+            this.map_weight[mode] = params[0]+params[1]*x+params[2]*y+params[3]*x*y+params[4]*x**2+params[5]*y**2
         }
     }
 }
