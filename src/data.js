@@ -6,9 +6,10 @@ const utils = require("./utils.js")
 
 function initialize_maps(config, use_map_weights=true){
     let bioms = require("../data/bioms.json")
+    let map_weights = {}
     if (use_map_weights) {
         //let map_weights = require("../data/mapweights.json")
-        let map_weights = calculate_weights(config)
+        map_weights = calculate_weights(config)
     }
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
