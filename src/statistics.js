@@ -1,5 +1,6 @@
 const utils = require("./utils.js")
-const fs = require("fs")
+const fs = require("fs");
+
 
 function getValidMaps(allMaps, lastChosenMap){
     if(lastChosenMap == null){
@@ -79,15 +80,79 @@ function sigmoidArr(x, slope, shift=0){
     return res
 }
 
-module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid, calcMapDistribution };
+function calc_stats(){
+    let config = require("../config.json")
+    let gen = require("./generator.js");
+    
+
+    config["number_of_rotas"] = 1
+    config["number_of_layers"] = 100000
+    config["seed_layer"] = 0
+    config["use_vote_weight"] = true
+    config["use_map_weight"] = true
+
+    let mr = new gen.Maprota(config)
+    mr.generate_rota(false,true)
+
+    let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
+
+    let rota_dist = {}
+    let sum = {}
+
+    for(let layer of mr.rotation){
+        if(layer.map.name in rota_dist){
+            rota_dist[layer.map.name][layer.mode]++
+            if (layer.mode in sum){
+                sum[layer.mode]++
+            }else{
+                sum[layer.mode] = 1
+            }
+        }else{
+            rota_dist[layer.map.name] = {}
+            for(let m of Object.keys(layer.map.layers)){
+                rota_dist[layer.map.name][m] = 0
+            }
+            rota_dist[layer.map.name][layer.mode] = 1
+        }
+    }
+    
+    for(let map of Object.keys(rota_dist)){
+        for(let mode of Object.keys(rota_dist[map])){
+            if(rota_dist[map][mode] != 0){
+                rota_dist[map][mode] /= sum[mode]
+            }
+        }
+    }
+    
+    return calc_dist_error(current_dist, rota_dist)
+}
+
+function calc_dist_error(reference_dist, measured_dist){
+    let error_per_mode = {}
+    for(let map of Object.keys(reference_dist)){
+        for(let mode of Object.keys(reference_dist[map])){
+
+            let error = Math.pow(reference_dist[map][mode] - measured_dist[map][mode], 2)
+
+            if(mode in error_per_mode){
+                error_per_mode[mode] += error
+            }else{
+                error_per_mode[mode] = error
+            }
+        }
+    }
+    return error_per_mode
+}
+
+module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid, calcMapDistribution, calc_stats };
 
 function main(){
-    let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
+    //let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
     //let dist = getAllMapDistances(bioms)
-    console.time("test")
+    //console.time("test")
     //console.log(dist)
-    for(let i=0; i<1000; i++) getAllMapDistances(bioms)
-    console.timeEnd("test")
+    //for(let i=0; i<1000; i++) getAllMapDistances(bioms)
+    //console.timeEnd("test")
 }
 
 if (require.main === module) {
