@@ -125,8 +125,8 @@ class Maprota {
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //failsave //set weight to 1 if no weight available
-                if (map.map_weight === undefined) {
-                    console.log(`WARNING: map "${map.name}" has undefined map_weight ; this will cause errors in the expected map distribution`)
+                if (map.map_weight[mode] === undefined) {
+                    console.log(`WARNING: map '${map.name}' has undefined map_weight ; this will cause errors in the expected map distribution`)
                     weights.push(1)
                 }else weights.push(map.map_weight[mode]+1)
                 //weights.push(map.map_weight+1)
