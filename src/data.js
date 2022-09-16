@@ -212,7 +212,7 @@ class Map{
         if(!(params)) return
         let x = this.neighbor_count - 1
         let y = this.mapvote_weights[mode]
-        this.map_weight[mode] = params[0] + params[1]*x + params[2]*y + params[3]*x**2 + params[4]*x*y + params[5]*y**2
+        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
     }
 }
 

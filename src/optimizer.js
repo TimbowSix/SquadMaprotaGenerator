@@ -85,7 +85,7 @@ class Optimizer{
         this.currentMin = this.calc_current_norm();
 
         //TODO vielleicht über config
-        this.deltaStepSize = 0.01;
+        this.deltaStepSize = 0.05;
 
         // save current run information (distribution)
         if(this.save_run_info)
@@ -300,8 +300,24 @@ module.exports = { Optimizer };
 
 
 if (require.main === module) {
-    op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, 1, true)
+
+
+
+
+    let current_mode = "RAAS"
+    dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
+
+    mode_dist = {}
+
+    for(let map of Object.keys(dist)){
+        if(current_mode in dist[map]){
+            mode_dist[map] = dist[map][current_mode]
+        }
+    }
+
+    op = new Optimizer(config, current_mode, reset=true, distribution = mode_dist, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 2, 1, true)
     console.time("Execution Time")
-    console.log(op.start_optimizer())
+    let a = op.start_optimizer()
+    console.log(a.config)
     console.timeEnd("Execution Time")    
 }
