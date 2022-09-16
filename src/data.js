@@ -78,23 +78,6 @@ function initialize_maps(config, use_map_weights=true){
         map.mapvote_weights = weights
     }
 
-    // initially calculate actual weights
-    if(use_map_weights){
-        for(let map of maps){
-            for(let mode in map.layers){
-                map.calculate_map_weight(mode, config["weight_params"][mode])
-            }
-        }
-    }else{
-        for(let map of maps){
-            for(let mode in map.layers){
-                let params = []
-                for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
-                map.calculate_map_weight(mode, params)
-            }
-        }
-    }
-
     if(config["save_expected_map_dist"]){
         let map_dist = {}
         for(let map of maps){
@@ -129,6 +112,23 @@ function initialize_maps(config, use_map_weights=true){
             if (!contains) clusters.push(nc)
         }
         map.cluster_overlap = map.neighbor_count-1-clusters.length
+    }
+
+    // initially calculate actual weights
+    if(use_map_weights){
+        for(let map of maps){
+            for(let mode in map.layers){
+                map.calculate_map_weight(mode, config["weight_params"][mode])
+            }
+        }
+    }else{
+        for(let map of maps){
+            for(let mode in map.layers){
+                let params = []
+                for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
+                map.calculate_map_weight(mode, params)
+            }
+        }
     }
 
     return maps
@@ -309,6 +309,7 @@ if (require.main === module) {
     //save_mapweights()
     let config = require("../config.json")
     let maps = initialize_maps(config)
+    console.log(maps[1].map_weight)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
