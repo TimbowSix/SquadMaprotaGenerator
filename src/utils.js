@@ -11,6 +11,7 @@ function choice(arr, weights=null){
     }
     let sum = round(sumArr(weights), 4);
     if (sum != 1) {
+        console.log(weights)
         throw Error("weights do not sum to 1")
     }
     if (arr.length != weights.length) throw Error("arr and weights don't have the same length")
