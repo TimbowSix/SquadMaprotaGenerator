@@ -133,7 +133,7 @@ class Maprota {
             }
         }
         weights = utils.normalize(weights)
-        return utils.choice(maps, weights)
+        return utils.choice(valid_maps, weights)
     }
     /**
      * Creates a new rotation based on the parameters set in the configuration.
@@ -143,7 +143,7 @@ class Maprota {
      */
     generate_rota(str_output=true, reset=true){
         if(reset) this.reset()
-        let mode = this.choose_mode()
+        let mode = this.choose_mode(null, "main")
         this.modes.push(mode)
         let v_maps = this.valid_maps()
         let maps = this.av_maps(v_maps, mode)
