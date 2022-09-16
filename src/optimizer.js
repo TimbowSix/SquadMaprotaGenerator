@@ -267,7 +267,7 @@ class Optimizer{
             try{
                 fs.writeFileSync(path, JSON.stringify(this.desired_dist, null, 2))
             }catch(e){
-                fs.mkdir("./optimizer_data/"+this.runIndex)
+                fs.mkdirSync("./optimizer_data/"+this.runIndex)
                 fs.writeFileSync(path, JSON.stringify(this.desired_dist, null, 2))
             }
         }
