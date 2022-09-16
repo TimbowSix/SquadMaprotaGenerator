@@ -5,11 +5,17 @@ const utils = require("./utils.js")
 
 
 function initialize_maps(config, use_map_weights=true){
+    let layers
+    if (config["update_layers"]){
+        layers = get_layers()
+        fs.writeFileSync("./data/layers.json", JSON.stringify(layers, null, 2))
+    }else{
+        layers = require("../data/layers.json")
+    }
     let bioms = require("../data/bioms.json")
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
-    let layers = require("../data/layers.json")
-
+    
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
         if (!(map_name in layers)) continue
@@ -76,14 +82,12 @@ function initialize_maps(config, use_map_weights=true){
     if(use_map_weights){
         for(let map of maps){
             for(let mode in map.layers){
-                console.log(mode)
                 map.calculate_map_weight(mode, config["weight_params"][mode])
             }
         }
     }else{
         for(let map of maps){
             for(let mode in map.layers){
-                console.log(mode)
                 let params = []
                 for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
                 map.calculate_map_weight(mode, params)
@@ -250,7 +254,6 @@ function get_layers(){
 // Test Stuff here
 if (require.main === module) {
     let config = require("../config.json")
-    let test = calculate_weights(config)
     //fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
     //console.log(test)
     let maps = initialize_maps(config)
