@@ -181,6 +181,12 @@ class Optimizer{
         for(let map of this.generator.all_maps){
             map.calculate_map_weight(this.current_mode, this.config["weight_params"][this.current_mode])
         }
+
+        console.log(this.config["weight_params"][this.current_mode])
+        for(let map of this.generator.all_maps){
+            process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
+        }
+        console.log();
         
     }
 
