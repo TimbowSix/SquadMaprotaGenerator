@@ -271,14 +271,19 @@ function get_layers(){
     return maps
 }
 
+function save_mapweights(){
+    let config = require("../config.json")
+    let maps = initialize_maps(config)
+    let weights = {}
+    for(let map of maps){
+        weights[map.name] = map.map_weight
+    }
+    fs.writeFileSync("test.json", JSON.stringify(weights, null, 2))
+}
+
 // Test Stuff here
 if (require.main === module) {
-    let config = require("../config.json")
-    //fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
-    //console.log(test)
-    let maps = initialize_maps(config)
-    //console.log(maps[maps.length-3])
-    //console.log(maps[0].mapvote_weights)
+    save_mapweights()
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
