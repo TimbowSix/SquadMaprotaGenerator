@@ -85,7 +85,7 @@ class Optimizer{
         this.currentMin = this.calc_current_norm();
 
         //TODO vielleicht über config
-        this.deltaStepSize = 0.001;
+        this.deltaStepSize = 0.01;
 
         // save current run information (distribution)
         if(this.save_run_info)
@@ -109,9 +109,9 @@ class Optimizer{
                 console.log("new min by +: "+cMin);
                 console.log("mapweights for "+ this.current_mode);
                 console.log(this.config["weight_params"][this.current_mode])
-                for(let map of this.generator.all_maps){
+                /*for(let map of this.generator.all_maps){
                     process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-                }
+                }*/
                 console.log();
             }
 
@@ -138,9 +138,9 @@ class Optimizer{
                     console.log("new min by -: "+cMinM);
                     console.log("mapweights for "+ this.current_mode);
                     console.log(this.config["weight_params"][this.current_mode])
-                    for(let map of this.generator.all_maps){
+                    /*for(let map of this.generator.all_maps){
                         process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-                    }
+                    }*/
                     console.log();
                 }
 
@@ -164,7 +164,6 @@ class Optimizer{
                 this.optimize_recursive(currentIndex,lowestDelta, false)
             }
             this.write_last_min()
-            console.log(this.config)
             return this.generator
         }
     }
@@ -182,12 +181,6 @@ class Optimizer{
             map.calculate_map_weight(this.current_mode, this.config["weight_params"][this.current_mode])
         }
 
-        console.log(this.config["weight_params"][this.current_mode])
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-        }
-        console.log();
-        
     }
 
     map_has_mode(map, mode){
@@ -309,6 +302,6 @@ module.exports = { Optimizer };
 if (require.main === module) {
     op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, 1, true)
     console.time("Execution Time")
-    op.start_optimizer()
+    console.log(op.start_optimizer())
     console.timeEnd("Execution Time")    
 }
