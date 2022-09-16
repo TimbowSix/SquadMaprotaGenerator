@@ -5,39 +5,33 @@ const utils = require("./utils.js")
 
 
 function initialize_maps(config, use_map_weights=true){
+    let layers
+    if (config["update_layers"]){
+        layers = get_layers()
+        fs.writeFileSync("./data/layers.json", JSON.stringify(layers, null, 2))
+    }else{
+        layers = require("../data/layers.json")
+    }
     let bioms = require("../data/bioms.json")
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
-    let layers = require("../data/layers.json")
-    let map_weights = {}
-    if (use_map_weights) map_weights = calculate_weights(config)
-
-    for (const [map_name, biom_values] of Object.entries(bioms)) {
+    
+    for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
         if (!(map_name in layers)) continue
 
-        let map_ = new Map(map_name, biom_values, undefined, distances[map_name])
+        let map = new Map(map_name, biom_values, distances[map_name])
         for(let mode of Object.keys(layers[map_name])){
             for(let layer of layers[map_name][mode]){
-                let l = new Layer(layer["name"], mode, map_, layer["votes"])
-                map_.add_layer(l)
+                let l = new Layer(layer["name"], mode, map, layer["votes"])
+                map.add_layer(l)
             }
         }
 
-        //use calculatet map weights or set every weight to 0
-        if (use_map_weights){
-            map_.map_weight = map_weights[map_.name]
-        }else{
-            let weight = {}
-            for(let mode of Object.keys(map_.layers)){
-                weight[mode] = 0
-            }
-            map_.map_weight = weight
-        }
-
-        map_.lock_time = config["biom_spacing"]
-        map_.calculate_vote_weights_by_mode()
-        maps.push(map_)
+        map.lock_time = config["biom_spacing"]
+        //pre-calculate layervote weights
+        map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
+        maps.push(map)
     }
 
     //init neighbors 
@@ -53,28 +47,20 @@ function initialize_maps(config, use_map_weights=true){
         }
     }
     for(let map of maps){
-        map.set_layer_by_pools(config)
-        map.add_mapvote_weights(config["mapvote_slope"])
+        map.set_layer_by_pools(config) //redundant?
+        map.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
     }
-    return maps
-}
 
-function calculate_weights(config, save_map_dist=true){
-    let maps = initialize_maps(config, false)
-    let weights = {} //{map:{mode:weight}}
+    // normalize mapvote weights by mode
     let mode_probs = {} //{mode:{map:prob}}
     for(let map of maps){
-        for(let mode of Object.keys(map.mapvote_weights)){
+        for(let mode in map.mapvote_weights){
             if(mode in mode_probs) mode_probs[mode][map.name] = map.mapvote_weights[mode]
             else mode_probs[mode] = {[map.name]:map.mapvote_weights[mode]}
         }
     }
-    let neighbors = {} //{map:neighbor_count}
-    for(let map of maps){
-        neighbors[map.name] = map.neighbor_count-1
-    }
 
-    for(let mode of Object.keys(mode_probs)){
+    for(let mode in mode_probs){
         let mode_weights = Object.values(mode_probs[mode])
         mode_weights = utils.normalize(mode_weights)
 
@@ -83,14 +69,39 @@ function calculate_weights(config, save_map_dist=true){
             mode_probs[mode][mode_maps[i]] = mode_weights[i]
         }
     }
-    
-    if(save_map_dist){
+
+    for(let map of maps){
+        let weights = {}
+        for(let mode in map.layers){
+            weights[mode] = mode_probs[mode][map.name]
+        }
+        map.mapvote_weights = weights
+    }
+
+    // initially calculate actual weights
+    if(use_map_weights){
+        for(let map of maps){
+            for(let mode in map.layers){
+                map.calculate_map_weight(mode, config["weight_params"][mode])
+            }
+        }
+    }else{
+        for(let map of maps){
+            for(let mode in map.layers){
+                let params = []
+                for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
+                map.calculate_map_weight(mode, params)
+            }
+        }
+    }
+
+    if(config["save_expected_map_dist"]){
         let map_dist = {}
         for(let map of maps){
             if(!(map.name in map_dist)){
                 map_dist[map.name] = {}
             }
-            for(let mode of Object.keys(mode_probs)){
+            for(let mode in mode_probs){
                 if(Object.keys(mode_probs[mode]).includes(map.name)){
                     map_dist[map.name][mode] = mode_probs[mode][map.name]
                 }
@@ -99,39 +110,27 @@ function calculate_weights(config, save_map_dist=true){
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
 
-    let formulas = require("../data/weight_formulas.json")
-    for(let [mode, maps] of Object.entries(mode_probs)){
-        for(let map of Object.keys(maps)){
-            x = neighbors[map]
-            y = mode_probs[mode][map]
-            weight = eval(formulas[mode])
-            if(map in weights) weights[map][mode] = weight
-            else weights[map] = {[mode]:weight}
-        }
-    }
-    return weights
-    //fs.writeFileSync("../data/mapweights.json", JSON.stringify(weights, null, 2))
+    return maps
 }
 
-
 class Map{
-    constructor(name, bioms, map_weights, distances, ){
+    constructor(name, bioms, distances){
         this.name = name
         this.layers = {}
         this.bioms = bioms
-        this.map_weight = map_weights
+        this.map_weight = {}
         this.mapvote_weights = {}
-        this.total_probabilities = {}
+        this.total_probabilities = {} //redundant?
         this.distances = distances
         this.neighbors = []
         this.neighbor_count = 0
         this.lock_time = 0
         this.current_lock_time = 0
-        this.layer_by_pools = {}
-        this.target_map_dist = {}
+        this.layer_by_pools = {} // redundant?
+        this.target_map_dist = {} //redundant?
         //for optimizer
         this.distribution = 0
-        this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht
+        this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht //also kann weg?
         this.vote_weights_by_mode = {}
         this.weight_parameter = {}
 
@@ -148,7 +147,7 @@ class Map{
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
-    add_mapvote_weights(slope=1){
+    add_mapvote_weights(slope=1, shift=0){
         if(this.layers.length == 0) {
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`); 
             return
@@ -174,13 +173,20 @@ class Map{
             for(let i=0; i<votesum[mode].length; i++) {
                 weights[mode][i] *= votesum[mode][i]
             }
-            temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), slope, 0)
+            temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), slope, shift)
         }
         this.mapvote_weights = temp
     }
+
+    // redundant?
     set_layer_by_pools(config){
         this.layer_by_pools = get_mode_to_pools_dict(config)
     }
+    /**
+     * calculate layervotes to weights
+     * @param {float} sigmoid_slope 
+     * @param {float} sigmoid_shift 
+     */
     calculate_vote_weights_by_mode(sigmoid_slope=1, sigmoid_shift=0){
         if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
 
@@ -191,15 +197,21 @@ class Map{
             this.vote_weights_by_mode[mode] = weights
         }
     }
+    // wa do dis do? wa is dis for?
     set_weight_parameters(params_dict){
         this.weight_parameter = params_dict
     }
-    calculate_map_weight(...params){
-        let x = this.neighbor_count
-        for(let mode of Object.keys(this.layers)){
-            let y = this.mapvote_weights[mode]
-            this.map_weight[mode] = params[0]+params[1]*x+params[2]*y+params[3]*x*y+params[4]*x**2+params[5]*y**2
-        }
+
+    /**
+     * calculates mapweight for given mode based on given params
+     * @param {string} mode Mode for which the weight is to be calculated
+     * @param {[float]} params Array of parameters for the calculation
+     */
+    calculate_map_weight(mode, params){
+        if(!(params)) return
+        let x = this.neighbor_count - 1
+        let y = this.mapvote_weights[mode]
+        this.map_weight[mode] = params[0] + params[1]*x + params[2]*y + params[3]*x**2 + params[4]*x*y + params[5]*y**2
     }
 }
 
@@ -258,7 +270,6 @@ function get_layers(){
 // Test Stuff here
 if (require.main === module) {
     let config = require("../config.json")
-    let test = calculate_weights(config)
     //fs.writeFileSync("test.json", JSON.stringify(test, null, 2))
     //console.log(test)
     let maps = initialize_maps(config)
