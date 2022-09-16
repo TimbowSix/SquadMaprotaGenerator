@@ -1,15 +1,27 @@
 {
   "BlackCoast": {
-    "mode": [
+    "RAAS": [
       {
         "name": "BlackCoast_RAAS_v1",
         "votes": 133
+      },
+      {
+        "name": "BlackCoast_RAAS_v4",
+        "votes": 55
+      },
+      {
+        "name": "BlackCoast_RAAS_v3",
+        "votes": 30
+      },
+      {
+        "name": "BlackCoast_RAAS_v2",
+        "votes": 12
       }
     ],
     "Invasion": [
       {
         "name": "BlackCoast_Invasion_v1",
-        "votes": 75
+        "votes": 77
       },
       {
         "name": "BlackCoast_Invasion_v3",
@@ -30,20 +42,6 @@
         "votes": -2
       }
     ],
-    "RAAS": [
-      {
-        "name": "BlackCoast_RAAS_v4",
-        "votes": 55
-      },
-      {
-        "name": "BlackCoast_RAAS_v3",
-        "votes": 30
-      },
-      {
-        "name": "BlackCoast_RAAS_v2",
-        "votes": 12
-      }
-    ],
     "Seed": [
       {
         "name": "BlackCoast_Seed_v1",
@@ -58,13 +56,11 @@
     ]
   },
   "Gorodok": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Gorodok_RAAS_v06",
         "votes": 72
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Gorodok_RAAS_v01",
         "votes": 41
@@ -158,13 +154,11 @@
     ]
   },
   "Yehorivka": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Yehorivka_RAAS_v01",
         "votes": 68
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Yehorivka_RAAS_v10",
         "votes": 21
@@ -270,13 +264,11 @@
     ]
   },
   "GooseBay": {
-    "mode": [
+    "RAAS": [
       {
         "name": "GooseBay_RAAS_v3",
         "votes": 51
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "GooseBay_RAAS_v2",
         "votes": 29
@@ -322,13 +314,11 @@
     ]
   },
   "Narva": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Narva_RAAS_v2",
         "votes": 62
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Narva_RAAS_v4",
         "votes": 37
@@ -398,13 +388,11 @@
     ]
   },
   "Mutaha": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Mutaha_RAAS_v6",
         "votes": 31
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Mutaha_RAAS_v1",
         "votes": 21
@@ -450,12 +438,12 @@
         "votes": 1
       },
       {
-        "name": "Mutaha_Invasion_v1",
-        "votes": 1
-      },
-      {
         "name": "Mutaha_Invasion_v2",
         "votes": 6
+      },
+      {
+        "name": "Mutaha_Invasion_v1",
+        "votes": 1
       },
       {
         "name": "Mutaha_Invasion_v4",
@@ -470,13 +458,11 @@
     ]
   },
   "Skorpo": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Skorpo_RAAS_v5",
         "votes": 3
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Skorpo_RAAS_v1",
         "votes": 12
@@ -518,27 +504,11 @@
     ]
   },
   "Belaya": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Belaya_RAAS_v4",
         "votes": 13
-      }
-    ],
-    "AAS": [
-      {
-        "name": "Belaya_AAS_v2",
-        "votes": 11
       },
-      {
-        "name": "Belaya_AAS_v3",
-        "votes": 9
-      },
-      {
-        "name": "Belaya_AAS_v1",
-        "votes": 1
-      }
-    ],
-    "RAAS": [
       {
         "name": "Belaya_RAAS_v1",
         "votes": 14
@@ -554,6 +524,20 @@
       {
         "name": "Belaya_RAAS_v2",
         "votes": -5
+      }
+    ],
+    "AAS": [
+      {
+        "name": "Belaya_AAS_v2",
+        "votes": 11
+      },
+      {
+        "name": "Belaya_AAS_v3",
+        "votes": 9
+      },
+      {
+        "name": "Belaya_AAS_v1",
+        "votes": 1
       }
     ],
     "Invasion": [
@@ -578,13 +562,11 @@
     ]
   },
   "Tallil": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Tallil_RAAS_v1",
         "votes": 7
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Tallil_RAAS_v5",
         "votes": 5
@@ -595,7 +577,7 @@
       },
       {
         "name": "Tallil_RAAS_v3",
-        "votes": 12
+        "votes": 10
       },
       {
         "name": "Tallil_RAAS_v4",
@@ -679,8 +661,58 @@
       }
     ]
   },
+  "Manic": {
+    "RAAS": [
+      {
+        "name": "Manic_RAAS_v1",
+        "votes": 7
+      },
+      {
+        "name": "Manic_RAAS_v4",
+        "votes": -8
+      },
+      {
+        "name": "Manic_RAAS_v3",
+        "votes": 1
+      },
+      {
+        "name": "Manic_RAAS_v2",
+        "votes": -14
+      }
+    ],
+    "AAS": [
+      {
+        "name": "Manic_AAS_v2",
+        "votes": 4
+      },
+      {
+        "name": "Manic_AAS_v1",
+        "votes": -10
+      }
+    ],
+    "Invasion": [
+      {
+        "name": "Manic_Invasion_v2",
+        "votes": 2
+      },
+      {
+        "name": "Manic_Invasion_v1",
+        "votes": 2
+      }
+    ],
+    "skirmish": [
+      {
+        "name": "Manic_skirmish_v1",
+        "votes": 1
+      },
+      {
+        "name": "Manic_skirmish_v2",
+        "votes": 1
+      }
+    ]
+  },
   "Sumari": {
-    "mode": [
+    "Insurgency": [
       {
         "name": "Sumari_Insurgency_v1",
         "votes": 6
@@ -741,66 +773,12 @@
       }
     ]
   },
-  "Manic": {
-    "mode": [
-      {
-        "name": "Manic_RAAS_v1",
-        "votes": 7
-      }
-    ],
-    "AAS": [
-      {
-        "name": "Manic_AAS_v2",
-        "votes": 4
-      },
-      {
-        "name": "Manic_AAS_v1",
-        "votes": -10
-      }
-    ],
-    "Invasion": [
-      {
-        "name": "Manic_Invasion_v2",
-        "votes": 2
-      },
-      {
-        "name": "Manic_Invasion_v1",
-        "votes": 2
-      }
-    ],
-    "skirmish": [
-      {
-        "name": "Manic_skirmish_v1",
-        "votes": 1
-      },
-      {
-        "name": "Manic_skirmish_v2",
-        "votes": 1
-      }
-    ],
-    "RAAS": [
-      {
-        "name": "Manic_RAAS_v4",
-        "votes": -8
-      },
-      {
-        "name": "Manic_RAAS_v3",
-        "votes": 1
-      },
-      {
-        "name": "Manic_RAAS_v2",
-        "votes": -14
-      }
-    ]
-  },
   "Kohat": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Kohat_RAAS_v7",
         "votes": 7
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Kohat_RAAS_v2",
         "votes": -3
@@ -876,13 +854,11 @@
     ]
   },
   "Fallujah": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Fallujah_RAAS_v2",
         "votes": 10
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Fallujah_RAAS_v1",
         "votes": 6
@@ -893,7 +869,7 @@
       },
       {
         "name": "Fallujah_RAAS_v3",
-        "votes": 6
+        "votes": 5
       },
       {
         "name": "Fallujah_RAAS_v6",
@@ -960,13 +936,11 @@
     ]
   },
   "Kamdesh": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Kamdesh_RAAS_v3",
         "votes": 0
-      }
-    ],
-    "RAAS": [
+      },
       {
         "name": "Kamdesh_RAAS_v7",
         "votes": -5
@@ -1046,7 +1020,7 @@
     ]
   },
   "AlBasrah": {
-    "mode": [
+    "Insurgency": [
       {
         "name": "AlBasrah_Insurgency_v1",
         "votes": 5
@@ -1055,7 +1029,7 @@
     "AAS": [
       {
         "name": "AlBasrah_AAS_v2",
-        "votes": 2
+        "votes": 0
       },
       {
         "name": "AlBasrah_AAS_v3",
@@ -1122,10 +1096,22 @@
     ]
   },
   "Chora": {
-    "mode": [
+    "RAAS": [
       {
         "name": "Chora_RAAS_v1",
         "votes": -3
+      },
+      {
+        "name": "Chora_RAAS_v2",
+        "votes": -7
+      },
+      {
+        "name": "Chora_RAAS_v4",
+        "votes": 0
+      },
+      {
+        "name": "Chora_RAAS_v3",
+        "votes": -12
       }
     ],
     "skirmish": [
@@ -1148,20 +1134,6 @@
       {
         "name": "Chora_Insurgency_v1",
         "votes": 0
-      }
-    ],
-    "RAAS": [
-      {
-        "name": "Chora_RAAS_v2",
-        "votes": -7
-      },
-      {
-        "name": "Chora_RAAS_v4",
-        "votes": 0
-      },
-      {
-        "name": "Chora_RAAS_v3",
-        "votes": -12
       }
     ],
     "AAS": [
@@ -1188,10 +1160,26 @@
     ]
   },
   "FoolsRoad": {
-    "mode": [
+    "RAAS": [
       {
         "name": "FoolsRoad_RAAS_v2",
         "votes": 7
+      },
+      {
+        "name": "FoolsRoad_RAAS_v1",
+        "votes": 0
+      },
+      {
+        "name": "FoolsRoad_RAAS_v5",
+        "votes": -12
+      },
+      {
+        "name": "FoolsRoad_RAAS_v4",
+        "votes": -10
+      },
+      {
+        "name": "FoolsRoad_RAAS_v3",
+        "votes": -2
       }
     ],
     "Invasion": [
@@ -1210,24 +1198,6 @@
         "votes": 1
       }
     ],
-    "RAAS": [
-      {
-        "name": "FoolsRoad_RAAS_v1",
-        "votes": 0
-      },
-      {
-        "name": "FoolsRoad_RAAS_v5",
-        "votes": -12
-      },
-      {
-        "name": "FoolsRoad_RAAS_v4",
-        "votes": -10
-      },
-      {
-        "name": "FoolsRoad_RAAS_v3",
-        "votes": -2
-      }
-    ],
     "Destruction": [
       {
         "name": "FoolsRoad_Destruction_v1",
@@ -1241,12 +1211,12 @@
       },
       {
         "name": "FoolsRoad_AAS_v2",
-        "votes": -10
+        "votes": -9
       }
     ]
   },
   "Kokan": {
-    "mode": [
+    "Invasion": [
       {
         "name": "Kokan_Invasion_v1",
         "votes": 4
@@ -1271,7 +1241,7 @@
       },
       {
         "name": "Kokan_RAAS_v3",
-        "votes": -10
+        "votes": -11
       },
       {
         "name": "Kokan_RAAS_v4",
@@ -1298,22 +1268,20 @@
     ]
   },
   "Mestia": {
-    "mode": [
+    "AAS": [
       {
         "name": "Mestia_AAS_v1",
         "votes": -5
+      },
+      {
+        "name": "Mestia_AAS_v2",
+        "votes": 0
       }
     ],
     "skirmish": [
       {
         "name": "Mestia_skirmish_v1",
         "votes": 1
-      }
-    ],
-    "AAS": [
-      {
-        "name": "Mestia_AAS_v2",
-        "votes": 0
       }
     ],
     "Invasion": [
@@ -1337,8 +1305,98 @@
       }
     ]
   },
+  "lashkar": {
+    "RAAS": [
+      {
+        "name": "lashkar_RAAS_v1",
+        "votes": 3
+      },
+      {
+        "name": "lashkar_RAAS_v2",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_RAAS_v4",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_RAAS_v5",
+        "votes": -2
+      },
+      {
+        "name": "lashkar_RAAS_v3",
+        "votes": -5
+      }
+    ],
+    "AAS": [
+      {
+        "name": "lashkar_AAS_v1",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_AAS_v3",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_AAS_v4",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_AAS_v2",
+        "votes": -3
+      }
+    ],
+    "Insurgency": [
+      {
+        "name": "lashkar_Insurgency_v1",
+        "votes": 1
+      }
+    ],
+    "Invasion": [
+      {
+        "name": "lashkar_Invasion_v2",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_Invasion_v3",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_Invasion_v1",
+        "votes": -6
+      }
+    ],
+    "skirmish": [
+      {
+        "name": "lashkar_skirmish_v1",
+        "votes": 1
+      }
+    ],
+    "TC": [
+      {
+        "name": "lashkar_TC_v1",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_TC_v2",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_TC_v3",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_TC_v4",
+        "votes": 1
+      },
+      {
+        "name": "lashkar_TC_v5",
+        "votes": 1
+      }
+    ]
+  },
   "Anvil": {
-    "mode": [
+    "skirmish": [
       {
         "name": "Anvil_skirmish_v1",
         "votes": 1
@@ -1384,7 +1442,7 @@
     ]
   },
   "jensensrange": {
-    "mode": [
+    "aus-rus": [
       {
         "name": "jensensrange_aus-rus_undefined",
         "votes": 1
@@ -1416,7 +1474,7 @@
     ]
   },
   "Logar": {
-    "mode": [
+    "Seed": [
       {
         "name": "Logar_Seed_v1",
         "votes": 1
@@ -1460,7 +1518,7 @@
     ]
   },
   "pacificprovinggrounds": {
-    "mode": [
+    "usmc-mea": [
       {
         "name": "pacificprovinggrounds_usmc-mea_undefined",
         "votes": 1
@@ -1474,7 +1532,7 @@
     ]
   },
   "tutorial": {
-    "mode": [
+    "helicopter": [
       {
         "name": "tutorial_helicopter_undefined",
         "votes": 1
@@ -1487,103 +1545,19 @@
       }
     ]
   },
-  "lashkar": {
-    "mode": [
-      {
-        "name": "lashkar_RAAS_v1",
-        "votes": 3
-      }
-    ],
-    "AAS": [
-      {
-        "name": "lashkar_AAS_v1",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_AAS_v3",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_AAS_v4",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_AAS_v2",
-        "votes": -3
-      }
-    ],
-    "Insurgency": [
-      {
-        "name": "lashkar_Insurgency_v1",
-        "votes": 1
-      }
-    ],
-    "Invasion": [
-      {
-        "name": "lashkar_Invasion_v2",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_Invasion_v3",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_Invasion_v1",
-        "votes": -6
-      }
-    ],
-    "RAAS": [
-      {
-        "name": "lashkar_RAAS_v2",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_RAAS_v4",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_RAAS_v5",
-        "votes": -2
-      },
-      {
-        "name": "lashkar_RAAS_v3",
-        "votes": -5
-      }
-    ],
-    "skirmish": [
-      {
-        "name": "lashkar_skirmish_v1",
-        "votes": 1
-      }
-    ],
-    "TC": [
-      {
-        "name": "lashkar_TC_v1",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_TC_v2",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_TC_v3",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_TC_v4",
-        "votes": 1
-      },
-      {
-        "name": "lashkar_TC_v5",
-        "votes": 1
-      }
-    ]
-  },
   "LashkarValley": {
-    "mode": [
+    "Invasion": [
       {
         "name": "LashkarValley_Invasion_v2",
         "votes": 0
+      },
+      {
+        "name": "LashkarValley_Invasion_v3",
+        "votes": -2
+      },
+      {
+        "name": "LashkarValley_Invasion_v1",
+        "votes": -2
       }
     ],
     "RAAS": [
@@ -1612,16 +1586,6 @@
       {
         "name": "LashkarValley_skirmish_v1",
         "votes": 0
-      }
-    ],
-    "Invasion": [
-      {
-        "name": "LashkarValley_Invasion_v3",
-        "votes": -2
-      },
-      {
-        "name": "LashkarValley_Invasion_v1",
-        "votes": -2
       }
     ],
     "Insurgency": [
