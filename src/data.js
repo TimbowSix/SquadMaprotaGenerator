@@ -103,7 +103,8 @@ function initialize_maps(config, use_map_weights=true){
             }
             for(let mode in mode_probs){
                 if(Object.keys(mode_probs[mode]).includes(map.name)){
-                    map_dist[map.name][mode] = mode_probs[mode][map.name]
+                    if (map.name in map_dist) map_dist[map.name][mode] = mode_probs[mode][map.name]
+                    else map_dist[map.name] = {[mode]:mode_probs[mode][map.name]}
                 }
             }
         }
@@ -256,13 +257,16 @@ function get_layers(){
         let mode = layer_values[1]
 
         let data = {"name": layer, "votes": upvotes[i]+downvotes[i]}
-        if (maps.hasOwnProperty(map)){
-            if(maps[map].hasOwnProperty(mode)){
+
+        if(map in maps){
+            if(mode in maps[map]){
                 maps[map][mode].push(data)
             }else{
                 maps[map][mode] = [data]
             }
-        }else maps[map] = {mode: [data]}
+        }else{
+            maps[map] = {[mode]: [data]}
+        }
     }
     return maps
 }
