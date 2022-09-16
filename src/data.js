@@ -94,6 +94,22 @@ function initialize_maps(config, use_map_weights=true){
             }
         }
     }
+
+    if(config["save_expected_map_dist"]){
+        let map_dist = {}
+        for(let map of maps){
+            if(!(map.name in map_dist)){
+                map_dist[map.name] = {}
+            }
+            for(let mode in mode_probs){
+                if(Object.keys(mode_probs[mode]).includes(map.name)){
+                    map_dist[map.name][mode] = mode_probs[mode][map.name]
+                }
+            }
+        }
+        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
+    }
+
     return maps
 }
 
