@@ -111,6 +111,26 @@ function initialize_maps(config, use_map_weights=true){
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
 
+    //calculate cluster overlap
+    function parse_neighbors(arr){
+        let out = []
+        for(let i of arr) out.push(i.name)
+        out.sort()
+        return out
+    }
+    for(let map of maps) {
+        let clusters = []
+        //let own = parse_neighbors(map.neighbors).join()
+        for(let neighbor of map.neighbors){
+            if(neighbor===map) continue
+            let nc = parse_neighbors(neighbor.neighbors).join()
+            let contains = false
+            for(let cluster of clusters) if(cluster==nc) contains=true
+            if (!contains) clusters.push(nc)
+        }
+        map.cluster_overlap = map.neighbor_count-1-clusters.length
+    }
+
     return maps
 }
 
@@ -134,6 +154,8 @@ class Map{
         this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht //also kann weg?
         this.vote_weights_by_mode = {}
         this.weight_parameter = {}
+
+        this.cluster_overlap
 
     }
     add_layer(layer){
@@ -212,7 +234,8 @@ class Map{
         if(!(params)) return
         let x = this.neighbor_count - 1
         let y = this.mapvote_weights[mode]
-        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
+        let z = this.cluster_overlap
+        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2 + params[6]*z
     }
 }
 
@@ -283,7 +306,9 @@ function save_mapweights(){
 
 // Test Stuff here
 if (require.main === module) {
-    save_mapweights()
+    //save_mapweights()
+    let config = require("../config.json")
+    let maps = initialize_maps(config)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
