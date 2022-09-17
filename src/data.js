@@ -124,7 +124,9 @@ function initialize_maps(config, use_map_weights=true){
                 pTemp = 1/pTemp
                 if(pTemp < config["biom_spacing"]){
                     //max lock time smaller than config lock time 
-                    map.lock_time = config["biom_spacing"] - 1
+                    map.lock_time_modifier[mode] = 1
+                }else{
+                    map.lock_time_modifier[mode] = 0
                 }
             }
         }
@@ -186,6 +188,7 @@ class Map{
         this.current_lock_time = 0
         this.layer_by_pools = {} // redundant?
         this.target_map_dist = {} //redundant?
+        this.lock_time_modifier = {}
         //for optimizer
         this.distribution = 0
         this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht //also kann weg?

@@ -90,12 +90,13 @@ class Maprota {
     }
     /**
      * returns valid maps for current biom distribution
+     * @param {string} current_mode
      * @returns {Array}
      */
-    valid_maps(){
+    valid_maps(current_mode){
         let maps = []
         while (maps.length == 0){
-            maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1))
+            maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1), current_mode)
         }
         return maps
     }
@@ -145,7 +146,7 @@ class Maprota {
         if(reset) this.reset()
         let mode = this.choose_mode(null, "main")
         this.modes.push(mode)
-        let v_maps = this.valid_maps()
+        let v_maps = this.valid_maps(mode)
         let maps = this.av_maps(v_maps, mode)
         let map = this.choose_map(maps, mode)
         //let layer = this.choose_layer(map.layers[mode])
@@ -155,7 +156,7 @@ class Maprota {
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
-            v_maps = this.valid_maps()
+            v_maps = this.valid_maps(mode)
             maps = this.av_maps(v_maps, mode)
             if(maps.length === 0){
                 this.mode_buffer = mode
