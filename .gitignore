@@ -106,3 +106,4 @@ dist
 *test*
 *workspace
 __pycache__
+*.cfg
