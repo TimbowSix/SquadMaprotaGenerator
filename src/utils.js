@@ -113,7 +113,11 @@ function get_random_dist(entries){
 function normalize(arr){
     if(arr.length <= 0) return arr
     let sum = sumArr(arr);
-    if(sum == 0) return arr
+    if(sum == 0) {
+        let t = 1/arr.length
+        for(let i=0; i<arr.length; i++) arr[i] = t
+        return arr
+    }
     for (let i = 0; i<arr.length; i++){
         arr[i] = arr[i]/sum
     }
