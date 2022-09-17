@@ -1,6 +1,4 @@
-let data = require("./data.js")
 let utils = require("./utils.js")
-let stat = require("./statistics.js")
 let gen = require("./generator.js")
 let config = require("../config.json")
 let fs = require("fs");
@@ -16,9 +14,6 @@ class Optimizer{
         this.save_run_info = save_run_info
         this.distribution = distribution
 
-        if(this.config["min_biom_distance"] != 0.5){
-            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
-        }
 
         this.config['seed_layer'] = 0;
         this.config['number_of_rotas'] = 1;
@@ -52,7 +47,8 @@ class Optimizer{
             let temp = Object.keys(this.desired_dist);
             for(let map of this.generator.all_maps){
                 if(!temp.includes(map.name)){
-                    throw Error("distribution has not all maps");
+                    this.desired_dist[map.name] = 0
+                    console.log(map.name+" has been added to distribution for "+this.current_mode)
                 }
             }
         }
@@ -119,7 +115,6 @@ class Optimizer{
             this.save_maps();
             this.optimize_recursive(currentIndex,lowestDelta, true);
         }else{
-            let counted_down = false;
             //no new min in plus direction found
             this.update_map_weights_and_formula(currentIndex, false);
             //check negative direction
@@ -304,7 +299,7 @@ if (require.main === module) {
 
 
 
-    let current_mode = "RAAS"
+    let current_mode = "Invasion"
     dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 
     mode_dist = {}
