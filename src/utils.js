@@ -199,14 +199,6 @@ function formatLayer(layer){
     return `${map}_${mode}_${ver}`
 }
 
-function arithmeticWeightedMean(weights, data){
-    let temp = 0
-    for(let i = 0; i < data.length; i++){
-        temp += data[i]*weights[i]
-    }
-    return temp
-}
-
 if (require.main === module) {
     let test =  "koKan_rAAs_v1"
     console.log(formatLayer(test))

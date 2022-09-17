@@ -1,4 +1,3 @@
-const fs = require("fs");
 const utils = require("./utils.js")
 const data = require("./data.js")
 const statistics = require("./statistics.js")
