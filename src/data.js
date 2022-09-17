@@ -103,34 +103,7 @@ function initialize_maps(config, use_map_weights=true){
         }
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
-    //check for settings feasibility 
-
-    //get main pool an intermediate pool modes 
-    let tempModes = Object.keys(config["mode_distribution"]["pools"]["main"])
-    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
-    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
-
-    //calc max locktime from dist  
-    for(let mode in mode_probs){
-        for(let map of maps){
-            if(Object.keys(mode_probs[mode]).includes(map.name)){
-                let pTemp = 0
-                for(let neighbor of map.neighbors){
-                    if(Object.keys(mode_probs[mode]).includes(neighbor.name) && neighbor.name != map.name){
-                        pTemp += Math.pow((1-mode_probs[mode][neighbor.name]), config["biom_spacing"])
-                    }
-                }
-                pTemp = mode_probs[mode][map.name] * (1+pTemp)
-                pTemp = 1/pTemp
-                if(pTemp < config["biom_spacing"]){
-                    //max lock time smaller than config lock time 
-                    map.lock_time_modifier[mode] = 1
-                }else{
-                    map.lock_time_modifier[mode] = 0
-                }
-            }
-        }
-    }
+    
 
 
     //calculate cluster overlap
@@ -150,7 +123,7 @@ function initialize_maps(config, use_map_weights=true){
             for(let cluster of clusters) if(cluster==nc) contains=true
             if (!contains) clusters.push(nc)
         }
-        map.cluster_overlap = +!(map.neighbor_count-1-clusters.length)
+        map.cluster_overlap = (map.neighbor_count-1-clusters.length)
     }
 
     // initially calculate actual weights
@@ -166,6 +139,37 @@ function initialize_maps(config, use_map_weights=true){
                 let params = []
                 for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
                 map.calculate_map_weight(mode, params)
+            }
+        }
+    }
+
+
+    //check for settings feasibility 
+
+    //get main pool an intermediate pool modes 
+    let tempModes = Object.keys(config["mode_distribution"]["pools"]["main"])
+    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
+    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
+
+
+    //calc max locktime from dist  
+    for(let mode in mode_probs){
+        for(let map of maps){
+            if(Object.keys(mode_probs[mode]).includes(map.name)){
+                /*let pTemp = 0
+                for(let neighbor of map.neighbors){
+                    if(Object.keys(mode_probs[mode]).includes(neighbor.name) && neighbor.name != map.name){
+                        pTemp += Math.pow((1-mode_probs[mode][neighbor.name]), config["biom_spacing"])
+                    }
+                }
+                pTemp = mode_probs[mode][map.name] * (1+pTemp)
+                pTemp = 1/pTemp*/
+                if(map.cluster_overlap > 0){
+                    //console.log(mode+" "+map.name)
+                    map.lock_time_modifier[mode] = 1
+                }else{
+                    map.lock_time_modifier[mode] = 0
+                }
             }
         }
     }
