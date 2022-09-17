@@ -153,7 +153,7 @@ function initialize_maps(config, use_map_weights=true){
     for(let mode in mode_probs){
         for(let map of maps){
             if(Object.keys(mode_probs[mode]).includes(map.name)){
-                if(map.cluster_overlap > 0){ // TODO && config param = true
+                if(map.cluster_overlap > 0 && config["use_lock_time_modifier"]){
                     map.lock_time_modifier[mode] = 1
                 }else{
                     map.lock_time_modifier[mode] = 0
@@ -182,7 +182,6 @@ class Map{
         //for optimizer
         this.distribution = 0
         
-
         this.cluster_overlap = 0 //pro mode?
 
     }
@@ -239,7 +238,7 @@ class Map{
         for(let mode of Object.keys(this.layers)){
             let votes = []
             for(let layer of this.layers[mode]) votes.push(layer.votes)
-            let weights = utils.normalize(statistics.sigmoidArr(votes, sigmoid_slope, sigmoid_shift))
+            let weights = utils.normalize(utils.sigmoidArr(votes, sigmoid_slope, sigmoid_shift))
             this.vote_weights_by_mode[mode] = weights
         }
     }

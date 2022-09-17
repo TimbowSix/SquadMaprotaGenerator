@@ -159,6 +159,14 @@ function sumArr(arr){
     return arr.reduce(function(pv, cv) { return pv + cv; }, 0)
 }
 
+function sigmoidArr(x, slope, shift=0){
+    let res = []
+    for(let i=0; i<x.length; i++){
+        res.push(sigmoid(x[i], slope, shift))
+    }
+    return res
+}
+
 /**
  * multiplies two arrays element wise
  * @param {[number]} arr1 
@@ -204,4 +212,4 @@ if (require.main === module) {
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid};
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid, sigmoidArr};

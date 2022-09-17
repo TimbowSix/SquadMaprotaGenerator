@@ -43,20 +43,6 @@ function getAllMapDistances(allMapsDict){
     return distancesDict
 }
 
-
-function sigmoid(x, slope, shift=0){
-    let arg = slope*(x+shift)
-    return 1/(1+Math.exp(-arg))
-}
-
-function sigmoidArr(x, slope, shift=0){
-    let res = []
-    for(let i=0; i<x.length; i++){
-        res.push(sigmoid(x[i], slope, shift))
-    }
-    return res
-}
-
 function calc_stats(){
     let config = require("../config.json")
     let gen = require("./generator.js");
@@ -120,7 +106,7 @@ function calc_dist_error(reference_dist, measured_dist){
     return error_per_mode
 }
 
-module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid, calc_stats };
+module.exports = { getAllMapDistances, getValidMaps, calc_stats };
 
 function main(){
     //let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
