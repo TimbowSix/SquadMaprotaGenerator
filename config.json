@@ -1,11 +1,11 @@
 {
     "number_of_rotas": 1,
-    "number_of_layers": 1000000,
+    "number_of_layers": 30,
     "seed_layer": 0,
     "use_vote_weight": true,
     "use_map_weight": true,
     "biom_spacing": 4,
-    "min_biom_distance": 0.5,
+    "min_biom_distance": 0.4,
     "update_layers": false,
     "mapvote_slope": 0.15,
     "mapvote_shift": 0,
@@ -40,13 +40,6 @@
         "pool_spacing": 4,
         "space_main": true
     },
-    "weight_params": {
-        "AAS": [-0.8864,-0.3095,1.586,0.2481,0.7816,1.308],
-        "RAAS": [-0.8864,-0.3095,1.586,0.2481,0.7816,1.308],
-        "Invasion": [-0.9379,0.184,15.61,0.1424,0.5999,20.22],
-        "TC": [0,0,-3.715,0,6.059, 8.23],
-        "Insurgency": [0,0,-18.93,0,9.207,101.6],
-        "Destruction": [0,0,-6.315,0,6.609,14.25]
-    },
-    "save_expected_map_dist": true
+    "save_expected_map_dist": true,
+    "use_lock_time_modifier": true
 }

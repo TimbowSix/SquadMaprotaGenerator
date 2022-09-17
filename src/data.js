@@ -124,17 +124,18 @@ function initialize_maps(config, use_map_weights=true){
     }
 
     // initially calculate actual weights
+    let weight_params = require("../data/weight_params.json")
     if(use_map_weights){
         for(let map of maps){
             for(let mode in map.layers){
-                map.calculate_map_weight(mode, config["weight_params"][mode])
+                map.calculate_map_weight(mode, weight_params[mode])
             }
         }
     }else{
         for(let map of maps){
             for(let mode in map.layers){
                 let params = []
-                for(i=0;i<config["weight_params"][mode].length; i++) params.push(0) //compatibility 
+                for(i=0;i<weight_params[mode].length; i++) params.push(0) //compatibility 
                 map.calculate_map_weight(mode, params)
             }
         }
