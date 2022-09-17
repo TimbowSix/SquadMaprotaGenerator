@@ -58,6 +58,6 @@ for i in range(int(len(all_modes)/2+0.5)):
 
 for ind, mode in enumerate(modes):
     col = rows[int(ind/2)][ind%2]
-    fig = px.bar(dist_df.loc[dist_df["mode"] == mode], x="map", y="dist", template="plotly_dark", title=f"generated<br><sup>{mode}</sup>")
+    fig = px.bar(dist_df.loc[dist_df["mode"] == mode], x="map", y="dist", template="plotly_dark", title=f"{mode}")
     fig.update_xaxes(categoryorder="category ascending")
     col.plotly_chart(fig)
