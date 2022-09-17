@@ -40,7 +40,6 @@ function initialize_maps(config, use_map_weights=true){
     //check if for every mode in config is at least one map available
     let config_modes = []
     for(let pool in config["mode_distribution"]["pools"]) for(let mode in config["mode_distribution"]["pools"][pool]) if(config["mode_distribution"]["pools"][pool][mode]>0) config_modes.push(mode)
-    console.log(modes)
     for(let mode of config_modes){
         if(!(modes.has(mode))) throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
     }
@@ -246,7 +245,7 @@ class Map{
         let x = this.neighbor_count - 1
         let y = this.mapvote_weights[mode]
         let z = this.cluster_overlap
-        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2 + params[6]*z
+        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
     }
 }
 
