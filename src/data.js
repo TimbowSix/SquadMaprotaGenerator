@@ -103,6 +103,35 @@ function initialize_maps(config, use_map_weights=true){
         }
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
+    //check for settings feasibility 
+
+    //get main pool an intermediate pool modes 
+    let tempModes = Object.keys(config["mode_distribution"]["pools"]["main"])
+    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
+    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
+
+    //calc max locktime from dist  
+    for(let mode in mode_probs){
+        for(let map of maps){
+            if(Object.keys(mode_probs[mode]).includes(map.name)){
+                let pTemp = 0
+                for(let neighbor of map.neighbors){
+                    if(Object.keys(mode_probs[mode]).includes(neighbor.name) && neighbor.name != map.name){
+                        pTemp += Math.pow((1-mode_probs[mode][neighbor.name]), config["biom_spacing"])
+                    }
+                }
+                pTemp = mode_probs[mode][map.name] * (1+pTemp)
+                pTemp = 1/pTemp
+                if(pTemp < config["biom_spacing"]){
+                    //max lock time smaller than config lock time 
+                    map.lock_time_modifier[mode] = 1
+                }else{
+                    map.lock_time_modifier[mode] = 0
+                }
+            }
+        }
+    }
+
 
     //calculate cluster overlap
     function parse_neighbors(arr){
@@ -159,6 +188,7 @@ class Map{
         this.current_lock_time = 0
         this.layer_by_pools = {} // redundant?
         this.target_map_dist = {} //redundant?
+        this.lock_time_modifier = {}
         //for optimizer
         this.distribution = 0
         this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht //also kann weg?
@@ -244,8 +274,7 @@ class Map{
         if(!(params)) return
         let x = this.neighbor_count - 1
         let y = this.mapvote_weights[mode]
-        let z = this.cluster_overlap
-        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2 + params[6]*z
+        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
     }
 }
 

@@ -2,7 +2,7 @@ const utils = require("./utils.js")
 const fs = require("fs");
 
 
-function getValidMaps(allMaps, lastChosenMap){
+function getValidMaps(allMaps, lastChosenMap, current_mode){
     if(lastChosenMap == null){
         return allMaps;
     }
@@ -17,9 +17,9 @@ function getValidMaps(allMaps, lastChosenMap){
         }
     }
     let valid_maps = [];
-    for(let i=0;i<allMaps.length;i++){
-        if(allMaps[i].current_lock_time == 0){
-            valid_maps.push(allMaps[i]);
+    for(let map of allMaps){
+        if(map.current_lock_time - map.lock_time_modifier[current_mode] <= 0){
+            valid_maps.push(map);
         }
     }
     return valid_maps;
