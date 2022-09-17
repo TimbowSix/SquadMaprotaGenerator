@@ -18,8 +18,8 @@ function initialize_maps(config, use_map_weights=true){
     
     let modes = new Set()
     for (let [map_name, biom_values] of Object.entries(bioms)) {
-        // skip map if no layers available
-        if (!(map_name in layers)) continue
+        // error map if no layers available
+        if (!(map_name in layers)) throw Error(`No layers available for map '${map_name}'`)
 
         let map = new Map(map_name, biom_values, distances[map_name])
         for(let mode of Object.keys(layers[map_name])){
@@ -57,7 +57,6 @@ function initialize_maps(config, use_map_weights=true){
         }
     }
     for(let map of maps){
-        map.set_layer_by_pools(config) //redundant?
         map.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
     }
 
@@ -104,8 +103,6 @@ function initialize_maps(config, use_map_weights=true){
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
     
-
-
     //calculate cluster overlap
     function parse_neighbors(arr){
         let out = []
@@ -143,7 +140,7 @@ function initialize_maps(config, use_map_weights=true){
         }
     }
 
-
+    // TODO pro mode?
     //check for settings feasibility 
 
     //get main pool an intermediate pool modes 
@@ -156,16 +153,7 @@ function initialize_maps(config, use_map_weights=true){
     for(let mode in mode_probs){
         for(let map of maps){
             if(Object.keys(mode_probs[mode]).includes(map.name)){
-                /*let pTemp = 0
-                for(let neighbor of map.neighbors){
-                    if(Object.keys(mode_probs[mode]).includes(neighbor.name) && neighbor.name != map.name){
-                        pTemp += Math.pow((1-mode_probs[mode][neighbor.name]), config["biom_spacing"])
-                    }
-                }
-                pTemp = mode_probs[mode][map.name] * (1+pTemp)
-                pTemp = 1/pTemp*/
-                if(map.cluster_overlap > 0){
-                    //console.log(mode+" "+map.name)
+                if(map.cluster_overlap > 0){ // TODO && config param = true
                     map.lock_time_modifier[mode] = 1
                 }else{
                     map.lock_time_modifier[mode] = 0
@@ -184,22 +172,18 @@ class Map{
         this.bioms = bioms
         this.map_weight = {}
         this.mapvote_weights = {}
-        this.total_probabilities = {} //redundant?
         this.distances = distances
         this.neighbors = []
         this.neighbor_count = 0
         this.lock_time = 0
         this.current_lock_time = 0
-        this.layer_by_pools = {} // redundant?
-        this.target_map_dist = {} //redundant?
         this.lock_time_modifier = {}
+        this.vote_weights_by_mode = {}
         //for optimizer
         this.distribution = 0
-        this.mode_groups = [] //TODO kann weg wenn es keiner mehr braucht //also kann weg?
-        this.vote_weights_by_mode = {}
-        this.weight_parameter = {}
+        
 
-        this.cluster_overlap
+        this.cluster_overlap = 0 //pro mode?
 
     }
     add_layer(layer){
@@ -244,11 +228,6 @@ class Map{
         }
         this.mapvote_weights = temp
     }
-
-    // redundant?
-    set_layer_by_pools(config){
-        this.layer_by_pools = get_mode_to_pools_dict(config)
-    }
     /**
      * calculate layervotes to weights
      * @param {float} sigmoid_slope 
@@ -264,11 +243,6 @@ class Map{
             this.vote_weights_by_mode[mode] = weights
         }
     }
-    // wa do dis do? wa is dis for?
-    set_weight_parameters(params_dict){
-        this.weight_parameter = params_dict
-    }
-
     /**
      * calculates mapweight for given mode based on given params
      * @param {string} mode Mode for which the weight is to be calculated
