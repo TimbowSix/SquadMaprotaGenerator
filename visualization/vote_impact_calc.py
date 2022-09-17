@@ -1,6 +1,5 @@
 from __future__ import annotations
 import numpy as np
-from scipy.special import expit
 import utils
 import math
 import json
@@ -26,7 +25,11 @@ def initialize_maps(config):
     for map_ in maps:
         map_.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
 
-    #// normalize mapvote weights by mode
+    normalize_mapvote_weights_by_mode(maps)
+
+    return maps
+
+def normalize_mapvote_weights_by_mode(maps):
     mode_probs = {} #//{mode:{map:prob}}
     for map_ in maps:
         for mode in map_.mapvote_weights:
@@ -58,8 +61,8 @@ def initialize_maps(config):
                     map_dist[map_.name][mode] = mode_probs[mode][map_.name]
                 else:
                     map_dist[map_.name] = {mode:mode_probs[mode][map_.name]}
-    with open("pytest.json", "w") as f:
-        json.dump(map_dist, f, indent=2)
+    
+    return map_dist
 
 class Map:
     def __init__(self, name: str, bioms: list,  distances: dict) -> None:
@@ -103,8 +106,6 @@ class Map:
                     weights[mode] = [math.exp(-math.pow(means[mode] - v, 2))]
 
             weights[mode] = utils.normalize(weights[mode])
-            if mode == "AAS":
-                print(self.name, weights[mode])
 
             for i in range(len(votesum[mode])):
                 weights[mode][i] *= votesum[mode][i]
@@ -152,7 +153,8 @@ def sigmoid(x, slope, shift):
 def main():
     with open("config.json", "r") as f:
         config = json.load(f)
-    initialize_maps(config)
+    maps = initialize_maps(config)
+    print(maps[0])
 
 if __name__ == "__main__":
     main()
