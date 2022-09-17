@@ -16,6 +16,7 @@ function initialize_maps(config, use_map_weights=true){
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
     
+    let modes = new Set()
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if no layers available
         if (!(map_name in layers)) continue
@@ -32,6 +33,16 @@ function initialize_maps(config, use_map_weights=true){
         //pre-calculate layervote weights
         map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
         maps.push(map)
+
+        
+        for(let mode in map.layers) modes.add(mode)
+    }
+    //check if for every mode in config is at least one map available
+    let config_modes = []
+    for(let pool in config["mode_distribution"]["pools"]) for(let mode in config["mode_distribution"]["pools"][pool]) if(config["mode_distribution"]["pools"][pool][mode]>0) config_modes.push(mode)
+    console.log(modes)
+    for(let mode of config_modes){
+        if(!(modes.has(mode))) throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
     }
 
     //init neighbors 
@@ -111,7 +122,7 @@ function initialize_maps(config, use_map_weights=true){
             for(let cluster of clusters) if(cluster==nc) contains=true
             if (!contains) clusters.push(nc)
         }
-        map.cluster_overlap = map.neighbor_count-1-clusters.length
+        map.cluster_overlap = +!(map.neighbor_count-1-clusters.length)
     }
 
     // initially calculate actual weights
@@ -309,7 +320,7 @@ if (require.main === module) {
     //save_mapweights()
     let config = require("../config.json")
     let maps = initialize_maps(config)
-    console.log(maps[1].map_weight)
+    //console.log(maps[1].map_weight)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers };
