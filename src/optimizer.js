@@ -16,9 +16,6 @@ class Optimizer{
         this.save_run_info = save_run_info
         this.distribution = distribution
 
-        if(this.config["min_biom_distance"] != 0.5){
-            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
-        }
 
         this.config['seed_layer'] = 0;
         this.config['number_of_rotas'] = 1;
