@@ -1,6 +1,6 @@
-\documentclass[a4paper, 11pt]{scrreprt}
+\documentclass[a4paper, 11pt]{scrartcl}
 
-\usepackage[a4paper, total={6in, 9in}]{geometry}
+%\usepackage[a4paper, total={6in, 9in}]{geometry}
 
 %========================================== Dokumentinformationen ===================================================
 
@@ -25,31 +25,16 @@
 ]{hyperref}
 
 %========================================== Klassen ===================================================
-\usepackage{nomentbl}
-\usepackage{siunitx}
 \usepackage{hyperref}
-\usepackage{float}
-\usepackage{dcolumn}
 \usepackage[backend=bibtex,language=german,style=ieee]{biblatex}
 \usepackage{todonotes}
-\usepackage[]{listofsymbols}
 \usepackage{amsmath,amssymb}
 \usepackage[german]{babel}
-\usepackage{bibgerm}
-\usepackage[printonlyused]{acronym}
-\usepackage{lmodern}
-\usepackage{graphicx}
+
+
 \usepackage{graphicx, subfigure}
 \graphicspath{{img/}}
-\usepackage{scrlayer-scrpage}
-\usepackage[onehalfspacing]{setspace}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows}
-\usepackage{pdflscape}
-\usepackage{multirow}
-\usepackage{pgfplots}
-\usepackage{pdfpages}
-\usepackage{verbatim}
+
 %include bib data
 \bibliography{bibtex.bib}
 
@@ -72,22 +57,14 @@
     \listoffigures
     \label{sec:abkuerzungverzeichnis}
     %\addchap{Abkürzungverzeichnis}
-    \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+    \addcontentsline{toc}{section}{Abbildungsverzeichnis}
     \newpage
     %\listoftables
     %\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
     %\newpage
 
-    \begin{acronym}[Rota] %in den [] die abkürzung angeben mit der längsten Beschriftung
-        \acro{Rota}{Maprotation}
-        \acro{WLS}{We Love Squad}
-        \acro{RAAS}{Random Advance and Secure}
-        \acro{AAS}{Advance and Secure}
-        \acro{TC}{Territory Control}
-    \end{acronym}
 
-
-    \chapter{Übersicht}
+    \section{test}
     \section{Einleitung}
         Squad ist ein Online Multiplayerspiel, welches 2015 im \glqq{}Early Access\grqq{} veröffentlicht wurde.\cite{steampage}
         Für die Umsetzung des Onlinespielens, wird darauf gesetzt, 
@@ -114,12 +91,12 @@
     Im folgenden werden unbekannte Begriffe erklärt und/oder definiert.
         \subsection{Allgemeines}
             \subsubsection{Spielmodus}
-                Die aktuell (stand Sep. 2022) auf dem \ac{WLS} Server gespielten Spielmodi sind:\\
+                Die aktuell (stand Sep. 2022) auf dem {WLS} Server gespielten Spielmodi sind:\\
                 \begin{itemize}
-                    \item \ac{RAAS}
-                    \item \ac{AAS}
+                    \item RAAS
+                    \item AAS
                     \item Invasion
-                    \item \ac{TC}
+                    \item TC
                     \item Insurgency
                     \item Destruction
                     \item Skirmish\todo{Tanks ?}
@@ -140,7 +117,7 @@
                 \todo{ist ein bisschen aus der Luft gegriffen}
         \subsection{Eingabe Parameter}
             \subsubsection{Layervote}
-                Während einer Runde auf einem \ac{WLS} Server kann das gespielte Layer, von jedem Spieler,
+                Während einer Runde auf einem WLS Server kann das gespielte Layer, von jedem Spieler,
                 positiv oder negativ bewertet werden.
                 Diese Stimme einer Person wird Layervote genannt.
             \subsubsection{Biom-Bewertung}
@@ -151,12 +128,12 @@
                 Für eine bessere Übersicht werden hier die Spielmodi Gruppiert.\\
                 Casual:
                 \begin{itemize}
-                    \item \ac{RAAS}
-                    \item \ac{AAS}
+                    \item RAAS
+                    \item AAS
                 \end{itemize}
                 Intermediates:
                 \begin{itemize}
-                    \item \ac{TC}
+                    \item TC
                     \item Invasion
                 \end{itemize}
                 Rest:
@@ -167,37 +144,10 @@
     
     \section{Metriken}
     Um eine erzeuge Maprota Bewerten zu können, muss sie quantifiziert werden. 
-    Dafür werden Metriken definiert welche eine objektive Bewertung, mit gegebenen Daten, zulässt.
-
-    \begin{center}
-        \begin{tabular}{||m{4cm} m{4cm} m{5cm}||}
-            \hline
-            Metrikname & Beschreibung & Output/Messgröße\\
-            \hline
-            \hline
-            Ungewichtete globale Wahrscheinlichkeitsdichte & 
-            Statistische Verteilung der Maps ohne Berücksichtigung der Layervotes &
-            Wahrscheinlichkeitsdichte $\rho$ \\
-            \hline
-            Gewichtete globale Wahrscheinlichkeitsdichte &
-            Verteilung der Maps, nur dass Layervotes einbezogen werden &
-            Wahrscheinlichkeitsdichte $\rho$ , Korrelationsfunktion zwischen $\rho$ und Mapvote-Weights (W-Dichte der Mapvotes) \\
-            \hline
-            Erwartungswert des mittleren minimalen Abstandes bzgl der letzten n-Maps &
-            Eine Folge von Layern wird gezogen, die ersten n Layer werden in einen “bin” gepackt und das Minimum ausgelesen.
-            Anschließend wird der “bin” um einen Folgeglied weiter geschoben bis zum ende der Folge. 
-            Zum Schluss wird der Erwartungswert aller Minima berechnet &
-            $< Min(d_n) >,$ wobei 
-            $d_n=\{d(x,y) | x,y $ 
-            sind maps, und 
-            $ d = $ abstandsfunktion$\}$ \\
-            \hline
-        \end{tabular}
-    \end{center}
-    
+    Dafür werden Metriken definiert welche eine objektive Bewertung, mit gegebenen Daten, zulässt.    
 
 
-    \chapter{Aufbau}
+
     \section{Überliegende Struktur}
     \section{Abhängigkeiten der Generierung}
     \subsection{Mode}
@@ -206,11 +156,6 @@
     \subsection{Votes}
     \subsection{Modes pro Map}
 
-    \chapter{Biom Bewertung}
-    \chapter{}
-    \chapter{Tests und Auswertung}
-
-    \chapter{Warum dieser Generator besser ist als Andere}
     \todo{hier mem colonel einfügen}
     \newpage
 
