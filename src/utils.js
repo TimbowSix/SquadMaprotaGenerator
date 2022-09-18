@@ -113,7 +113,11 @@ function get_random_dist(entries){
 function normalize(arr){
     if(arr.length <= 0) return arr
     let sum = sumArr(arr);
-    if(sum == 0) return arr
+    if(sum == 0) {
+        let t = 1/arr.length
+        for(let i=0; i<arr.length; i++) arr[i] = t
+        return arr
+    }
     for (let i = 0; i<arr.length; i++){
         arr[i] = arr[i]/sum
     }
@@ -153,6 +157,14 @@ function sigmoid(x, slope, shift=0){
  */
 function sumArr(arr){
     return arr.reduce(function(pv, cv) { return pv + cv; }, 0)
+}
+
+function sigmoidArr(x, slope, shift=0){
+    let res = []
+    for(let i=0; i<x.length; i++){
+        res.push(sigmoid(x[i], slope, shift))
+    }
+    return res
 }
 
 /**
@@ -195,17 +207,9 @@ function formatLayer(layer){
     return `${map}_${mode}_${ver}`
 }
 
-function arithmeticWeightedMean(weights, data){
-    let temp = 0
-    for(let i = 0; i < data.length; i++){
-        temp += data[i]*weights[i]
-    }
-    return temp
-}
-
 if (require.main === module) {
     let test =  "koKan_rAAs_v1"
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid};
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid, sigmoidArr};

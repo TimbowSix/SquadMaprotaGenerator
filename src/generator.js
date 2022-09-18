@@ -1,4 +1,3 @@
-const fs = require("fs");
 const utils = require("./utils.js")
 const data = require("./data.js")
 const statistics = require("./statistics.js")
@@ -40,7 +39,7 @@ class Maprota {
         let pool = custom_pool ? custom_pool : utils.choice(pools, weight)
         if (latest_modes.length != 0){
             let latest
-            if(latest_modes.length<=mode_distribution["pool_spacing"]) latest = latest_modes
+            if(latest_modes.length<mode_distribution["pool_spacing"]) latest = latest_modes
             else latest = latest_modes.slice(latest_modes.length-mode_distribution["pool_spacing"],latest_modes.length)
             if (latest.some((mode) => !(mode_distribution["pools"]["main"].hasOwnProperty(mode)))){
                 pool = "main"
@@ -85,17 +84,18 @@ class Maprota {
         let votes = []
         for(let layer of layers) votes.push(layer.votes)
         //return statistics.convert_mapvote_to_weights(votes, 1)
-        let weights = statistics.sigmoidArr(votes, slope, shift)
+        let weights = utils.sigmoidArr(votes, slope, shift)
         return utils.normalize(weights)
     }
     /**
      * returns valid maps for current biom distribution
+     * @param {string} current_mode
      * @returns {Array}
      */
-    valid_maps(){
+    valid_maps(current_mode){
         let maps = []
         while (maps.length == 0){
-            maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1))
+            maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1), current_mode)
         }
         return maps
     }
@@ -145,7 +145,7 @@ class Maprota {
         if(reset) this.reset()
         let mode = this.choose_mode(null, "main")
         this.modes.push(mode)
-        let v_maps = this.valid_maps()
+        let v_maps = this.valid_maps(mode)
         let maps = this.av_maps(v_maps, mode)
         let map = this.choose_map(maps, mode)
         //let layer = this.choose_layer(map.layers[mode])
@@ -155,7 +155,7 @@ class Maprota {
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
-            v_maps = this.valid_maps()
+            v_maps = this.valid_maps(mode)
             maps = this.av_maps(v_maps, mode)
             if(maps.length === 0){
                 this.mode_buffer = mode

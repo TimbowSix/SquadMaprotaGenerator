@@ -1,8 +1,7 @@
 const utils = require("./utils.js")
 const fs = require("fs");
 
-
-function getValidMaps(allMaps, lastChosenMap){
+function getValidMaps(allMaps, lastChosenMap, current_mode){
     if(lastChosenMap == null){
         return allMaps;
     }
@@ -17,9 +16,9 @@ function getValidMaps(allMaps, lastChosenMap){
         }
     }
     let valid_maps = [];
-    for(let i=0;i<allMaps.length;i++){
-        if(allMaps[i].current_lock_time == 0){
-            valid_maps.push(allMaps[i]);
+    for(let map of allMaps){
+        if(map.current_lock_time - map.lock_time_modifier[current_mode] <= 0){
+            valid_maps.push(map);
         }
     }
     return valid_maps;
@@ -44,47 +43,10 @@ function getAllMapDistances(allMapsDict){
     return distancesDict
 }
 
-function calcMapDistribution(maps){
-    let tempSum = {}
-    for(let map of maps){
-        for(let pool of Object.keys(map.mapvote_weights)){
-            map.total_probabilities[pool] = sigmoid(map.mapvote_weights[pool], 0.1, 0)  // TWEAK SHIFT AND SLOPE!! -> config
-            if(tempSum[pool]){
-                tempSum[pool] += map.total_probabilities[pool]
-            }
-            else{
-                tempSum[pool] = map.total_probabilities[pool]
-            }
-        }
-    }
-    //normalize
-    for(let map of maps){
-        for(let pool of Object.keys(map.mapvote_weights)){
-            if(map.total_probabilities[pool]){
-                map.total_probabilities[pool] /= tempSum[pool];
-            }
-        }
-    }
-}
-
-function sigmoid(x, slope, shift=0){
-    let arg = slope*(x+shift)
-    return 1/(1+Math.exp(-arg))
-}
-
-function sigmoidArr(x, slope, shift=0){
-    let res = []
-    for(let i=0; i<x.length; i++){
-        res.push(sigmoid(x[i], slope, shift))
-    }
-    return res
-}
-
 function calc_stats(){
     let config = require("../config.json")
     let gen = require("./generator.js");
     
-
     config["number_of_rotas"] = 1
     config["number_of_layers"] = 100000
     config["seed_layer"] = 0
@@ -144,7 +106,7 @@ function calc_dist_error(reference_dist, measured_dist){
     return error_per_mode
 }
 
-module.exports = { getAllMapDistances, getValidMaps, sigmoidArr, sigmoid, calcMapDistribution, calc_stats };
+module.exports = { getAllMapDistances, getValidMaps, calc_stats };
 
 function main(){
     //let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))

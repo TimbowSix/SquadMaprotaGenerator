@@ -11,7 +11,7 @@ function getDirectories(path) {
 }
 
 const g = new gen.Maprota(config)
-let dirs = getDirectories(".")
+let dirs = getDirectories("./optimizer_data/")
 
 //modi einstellen 
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
@@ -23,17 +23,18 @@ let output = [["map","neighbor","p RAAS", "RAAS", "p AAS", "AAS", "p inv", "Inva
 
 for(let dir of dirs){
     let modeDict = {}
-    for (let file of fs.readdirSync("./"+dir)){
+    for (let file of fs.readdirSync("./optimizer_data/"+dir)){
         let temp = file.split("_")[0]
         if(temp == "mapweights"){
-            mapWeightsFiles.push("./"+dir+"/"+file)
+            mapWeightsFiles.push("./optimizer_data/"+dir+"/"+file)
         }
         let t = file.split("_")
         if(t[0] == "run"){
             let m = t[t.length-1].split(".")[0]
-            modeDict[m] = JSON.parse(fs.readFileSync("./"+dir+"/"+file))
+            modeDict[m] = JSON.parse(fs.readFileSync("./optimizer_data/"+dir+"/"+file))
         }
     }
+    
     propByMode.push(modeDict)
 }
 

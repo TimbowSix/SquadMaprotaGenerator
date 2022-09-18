@@ -1,6 +1,4 @@
-let data = require("./data.js")
 let utils = require("./utils.js")
-let stat = require("./statistics.js")
 let gen = require("./generator.js")
 let config = require("../config.json")
 let fs = require("fs");
@@ -16,9 +14,6 @@ class Optimizer{
         this.save_run_info = save_run_info
         this.distribution = distribution
 
-        if(this.config["min_biom_distance"] != 0.5){
-            throw Error("Der Optimizer ist nicht auf den min_biom_distance getrimmt");
-        }
 
         this.config['seed_layer'] = 0;
         this.config['number_of_rotas'] = 1;
@@ -52,7 +47,8 @@ class Optimizer{
             let temp = Object.keys(this.desired_dist);
             for(let map of this.generator.all_maps){
                 if(!temp.includes(map.name)){
-                    throw Error("distribution has not all maps");
+                    this.desired_dist[map.name] = 0
+                    console.log(map.name+" has been added to distribution for "+this.current_mode)
                 }
             }
         }
@@ -85,7 +81,7 @@ class Optimizer{
         this.currentMin = this.calc_current_norm();
 
         //TODO vielleicht über config
-        this.deltaStepSize = 0.001;
+        this.deltaStepSize = 0.05;
 
         // save current run information (distribution)
         if(this.save_run_info)
@@ -109,9 +105,9 @@ class Optimizer{
                 console.log("new min by +: "+cMin);
                 console.log("mapweights for "+ this.current_mode);
                 console.log(this.config["weight_params"][this.current_mode])
-                for(let map of this.generator.all_maps){
+                /*for(let map of this.generator.all_maps){
                     process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-                }
+                }*/
                 console.log();
             }
 
@@ -119,7 +115,6 @@ class Optimizer{
             this.save_maps();
             this.optimize_recursive(currentIndex,lowestDelta, true);
         }else{
-            let counted_down = false;
             //no new min in plus direction found
             this.update_map_weights_and_formula(currentIndex, false);
             //check negative direction
@@ -138,9 +133,9 @@ class Optimizer{
                     console.log("new min by -: "+cMinM);
                     console.log("mapweights for "+ this.current_mode);
                     console.log(this.config["weight_params"][this.current_mode])
-                    for(let map of this.generator.all_maps){
+                    /*for(let map of this.generator.all_maps){
                         process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-                    }
+                    }*/
                     console.log();
                 }
 
@@ -164,7 +159,6 @@ class Optimizer{
                 this.optimize_recursive(currentIndex,lowestDelta, false)
             }
             this.write_last_min()
-            console.log(this.config)
             return this.generator
         }
     }
@@ -182,12 +176,6 @@ class Optimizer{
             map.calculate_map_weight(this.current_mode, this.config["weight_params"][this.current_mode])
         }
 
-        console.log(this.config["weight_params"][this.current_mode])
-        for(let map of this.generator.all_maps){
-            process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
-        }
-        console.log();
-        
     }
 
     map_has_mode(map, mode){
@@ -400,8 +388,24 @@ module.exports = { Optimizer };
 
 
 if (require.main === module) {
-    op = new Optimizer(config, "RAAS", reset=true, distribution = null, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 0.5, 1, true)
+
+
+
+
+    let current_mode = "Invasion"
+    dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
+
+    mode_dist = {}
+
+    for(let map of Object.keys(dist)){
+        if(current_mode in dist[map]){
+            mode_dist[map] = dist[map][current_mode]
+        }
+    }
+
+    op = new Optimizer(config, current_mode, reset=true, distribution = mode_dist, console_output = true, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 2, 1, true)
     console.time("Execution Time")
-    op.start_optimizer()
+    let a = op.start_optimizer()
+    console.log(a.config)
     console.timeEnd("Execution Time")    
 }
