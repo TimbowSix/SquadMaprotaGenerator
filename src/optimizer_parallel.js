@@ -5,15 +5,13 @@ const config = require("../config.json")
 const utils = require('./utils.js')
 const gen = require('./generator.js')
 
-let final_map_weights = JSON.parse(fs.readFileSync("./data/mapweights.json"))
+let final_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
 let workers = []
-
-
 let parallel_optimizer = null
 
-
 class WorkerEntry{
-    constructor(mode, dist = null, runIndex){
+    constructor(mode, dist = null, runIndex, finish_callback){
+        this.finish_callback = finish_callback
         this.mode = mode
         this.dist = dist
         if(dist != null){
@@ -27,11 +25,11 @@ class WorkerEntry{
         this.done = false
         this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset, "runIndex": this.runIndex} }); //reset = true map_weights reset to 0 else the weights from file
         this.worker.on('message', (msg) => {
-            for(let map of msg.all_maps){
-                if(Object.keys(final_map_weights[map.name]).includes(this.mode)){
-                    final_map_weights[map.name][this.mode] = map.map_weight[this.mode]
-                }
-            }
+            
+            //save result
+            final_params[this.mode] = msg 
+
+            //check if all done
             this.done = true
             let allDone = true
             for(let w of workers){
@@ -41,11 +39,19 @@ class WorkerEntry{
             }
 
             if(allDone){
-                parallel_optimizer.runSeries()
+                //No Series run for the start 
+                //parallel_optimizer.runSeries()
+                //save params
+                fs.writeFileSync("./data/weight_params.json", JSON.stringify(final_params,null,2))
+                //callback
+                this.finish_callback()
+                process.exit()
             }
 
         })
     }
+    //not used for now
+    /*
     startSync(mReset = true){
         let op = new opt.Optimizer(config, this.mode, mReset, this.dist, false, false, true, 0.5, false, this.runIndex)
         op.start_optimizer()
@@ -55,16 +61,16 @@ class WorkerEntry{
                 final_map_weights[map.name][this.mode] = map.map_weight[this.mode]
             }
         }
-    }
+    }*/
 }
 
 class OptimizerParallelOrganizer{
-    constructor(modes = [], dist_all = null, runIndex){
+    constructor(modes = [], dist_all = null, runIndex, finish_callback){
         //modes must be sorted by maps size per mode 
         this.dist_all = dist_all
         this.runIndex = runIndex
         for(let mode of modes){
-            workers.push(new WorkerEntry(mode,this.dist_all, this.runIndex))
+            workers.push(new WorkerEntry(mode,this.dist_all, this.runIndex, finish_callback))
         }
     }
     runParallel(){
@@ -74,6 +80,8 @@ class OptimizerParallelOrganizer{
             w.start(false)
         }
     }
+    //not used for now
+    /*
     runSeries(){
         //save map weights from parallel run
         fs.writeFileSync("./data/mapweights.json", JSON.stringify(final_map_weights, null, 2));
@@ -89,18 +97,41 @@ class OptimizerParallelOrganizer{
         //save map weights
         fs.writeFileSync("./optimizer_data/"+this.runIndex+"/mapweights_"+this.runIndex+".json", JSON.stringify(final_map_weights, null, 2))
         console.timeEnd("Execution Time")
-    }
+    }*/
 }
 
-let dummy_gen = new gen.Maprota(config)
+/*
+//for testing
 let maps = dummy_gen.all_maps
+let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
+*/
+//fs.mkdirSync("./optimizer_data/"+runIndex+"/")
+
+
+let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
+let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
+
 
 let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-
-let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
-
+//let modi = ["RAAS"]
 let runIndex = Date.now()
-fs.mkdirSync("./optimizer_data/"+runIndex+"/")
 
-parallel_optimizer = new OptimizerParallelOrganizer(modi,all_maps_dict, runIndex)
+let dist_modi_dict = {}
+
+for(let mode of modi){
+    let mode_dist = {}
+    for(let map of Object.keys(current_dist)){
+        if(mode in current_dist[map]){
+            mode_dist[map] = current_dist[map][mode]
+        }
+    }
+    dist_modi_dict[mode] = mode_dist
+}
+
+function after_optimizer(){
+    console.log("finish optimizer")
+    //hier sachen einfügen die nach dem optimizer passieren sollen
+}
+
+parallel_optimizer = new OptimizerParallelOrganizer(modi, dist_modi_dict, runIndex, after_optimizer)
 parallel_optimizer.runParallel()
