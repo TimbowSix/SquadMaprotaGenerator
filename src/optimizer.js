@@ -295,6 +295,99 @@ class Optimizer{
     }
 }
 
+class WeightFunctionOptimizer extends Optimizer{
+    constructor(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, runIndex, save_run_info){
+        super(config, mode, reset = true, distribution = null, console_output = false, use_extern_map_weights_and_delta = false, save_maps = true, start_delta=0.15, estimate = true, runIndex, save_run_info)
+    }
+    // Optimizer works on a specific mode!!!
+    update_mode_key(map, up){
+        if(this.current_mode in map.map_weight){
+            if(up){
+                map.map_weight[this.current_mode] += this.delta;
+            }else{
+                map.map_weight[this.current_mode] -= this.delta;
+            }
+        }
+    }
+
+    optimize_recursive(currentIndex, lowestDelta, minChanged){ //TODO map weight group umsetzten
+        if(this.delta <= lowestDelta){
+            return
+        }        
+        this.update_mode_key(this.generator.all_maps[currentIndex], true);
+        this.generator.generate_rota();
+        this.update_dist();
+        let cMin = this.calc_current_norm();
+
+        if(this.currentMin > cMin){
+            //new min found
+            this.currentMin = cMin;
+            if(this.console_output){
+                console.log("new min by +: "+cMin);
+                console.log("mapweights for "+ this.current_mode);
+                for(let map of this.generator.all_maps){
+                    process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
+                }
+                console.log();
+            }
+
+            this.saveMapWeights();
+            this.save_maps();
+            this.optimize_recursive(currentIndex,lowestDelta, true);
+        }else{
+            let counted_down = false;
+            //no new min in plus direction found
+            this.update_mode_key(this.generator.all_maps[currentIndex], false);
+            //check negative direction
+            let cMinM = this.currentMin;
+            if((this.generator.all_maps[currentIndex].map_weight[this.current_mode] + 1  - this.delta) > 0){
+                counted_down = true;
+                this.update_mode_key(this.generator.all_maps[currentIndex], false);
+                this.generator.generate_rota();
+                this.update_dist();
+                cMinM = this.calc_current_norm();
+            }
+
+            if(cMinM < this.currentMin){
+                this.currentMin = cMinM
+                //new min found
+                if(this.console_output){
+                    console.log("new min by -: "+cMinM);
+                    console.log("mapweights for "+ this.current_mode);
+                    for(let map of this.generator.all_maps){
+                        process.stdout.write(map.name+" "+map.map_weight[this.current_mode]+" ");
+                    }
+                    console.log();
+                }
+                this.saveMapWeights();
+                this.save_maps();
+                this.optimize_recursive(currentIndex,lowestDelta, true)
+            }else{
+                if(counted_down){
+                    this.update_mode_key(this.generator.all_maps[currentIndex], true);
+                }
+                currentIndex++
+                if(currentIndex >= this.generator.all_maps.length || this.over_run){
+                    if(!this.over_run){
+                        currentIndex = 0
+                    }
+                    if(!minChanged){
+                        this.delta -= this.deltaStepSize
+                        if(this.console_output){
+                            console.log("new Delta "+this.delta)
+                        }
+                        this.saveDelta();
+                    }
+                    this.over_run = false;
+                }
+                this.optimize_recursive(currentIndex,lowestDelta, false)
+            }
+            this.write_last_min()
+            return this.generator;
+        }
+    }
+}
+
 module.exports = { Optimizer };
 
 
