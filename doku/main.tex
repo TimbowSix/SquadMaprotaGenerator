@@ -63,98 +63,83 @@
     %\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
     %\newpage
 
+    \include{Einleitung.tex}
     
-    \include{test.tex}
-    \section{Einleitung}
-        Squad ist ein Online Multiplayerspiel, welches 2015 im \glqq{}Early Access\grqq{} veröffentlicht wurde.\cite{steampage}
-        Für die Umsetzung des Onlinespielens, wird darauf gesetzt, 
-        dass Spielserver von Personen oder Gruppen bereitgestellt und verwaltet werden.
-        \cite{wiki.serverbrowser}
-        Diese Personen/Gruppen sind darum bemüht ihre Server möglichst attraktiv zu halten. \todo{quelle}\\
-        Squad wird in Runden gespielt. Eine Runde besteht aus einem vorherrschenden Spielmodus, 
-        welcher auf einer Kartenvariation (Layer) gespielt wird. 
-        Ein Layer gibt damit an, welcher Spielmodus auf welcher Kartenvariation gespielt wird.\\ \todo{quelle}
-        Um die Attraktivität eines Servers zu steigen, wird versucht eine begehrenswerte Reihenfolge an Runden zu spielen.
-        Dafür wird für jeden Tag eine Reihenfolge an Runden bestimmt, welche auf dem Server gespielt werden sollen.
-        Diese vorgegebene Reihenfolge wird Maprotation oder kurz Maprota genannt.\\
-        Dieses Dokument beschäftigt sich mit der Umsetzung eines Programmes, welches eine attraktive Maprota generieren kann.   
+    \include{background.tex}
 
-    \section{Problemdarstellung}
-        Was war die Herangehensweise?
+    \include{mapWeights.tex}
 
-    \section{Ziel}
-        Das fertige Programm soll attraktive Maprotationen erstellen können.
-        Dabei müssen die Layervotes mit einbezogen werden. Zudem soll die Maprota, im Bezug auf die Eigenschaften einer Runde, wenig repetitiv sein.
-        Außerdem soll eine Karte sich nicht in einem kurzem Zeitraum wiederholen.
+    \include{Ergebnisse.tex}
 
-    \section{Spezifikationen}
-    Im folgenden werden unbekannte Begriffe erklärt und/oder definiert.
-        \subsection{Allgemeines}
-            \subsubsection{Spielmodus}
-                Die aktuell (stand Sep. 2022) auf dem {WLS} Server gespielten Spielmodi sind:\\
-                \begin{itemize}
-                    \item RAAS
-                    \item AAS
-                    \item Invasion
-                    \item TC
-                    \item Insurgency
-                    \item Destruction
-                    \item Skirmish\todo{Tanks ?}
-                \end{itemize}
-                Die Beschreibung dieser Modi geht über dieses Dokument hinaus.
-            \subsubsection{Layer}
-                Ein Layer ist einer Karte und einen Spielmodus zugeordnet.
-                Pro Runde Squad wird ein Layer gespielt. 
-            \subsubsection{Maprotation}
-                Eine Maprotation (kurz Maprota) besteht aus einer Liste von vorgegebene Runden, die gespielt werden sollen.
-                Jede Runde wird ein Layer gespielt.
-            \subsubsection{Clustering}
-                Beschreibt die Wiederholung von Squad Runden mit ähnlichen Eigenschaften in einem kurzem zeitintervall.
-            \subsection{Attraktive Maprotation}
-                Eine attraktive Maprota kann durch ihre Rundenverteilung und Rundenreihenfolge beschrieben werden.
-                Gibt es eine positive Korrelation zwischen Layer-Verteilungen einer Maprota und der Layervote-Verteilung ist der Beliebtheitsgrad höher.
-                Zudem ist eine Maprota mit kurz aufeinander folgenden, sich stärker unterscheidnenen Maps, beliebter.
-                \todo{ist ein bisschen aus der Luft gegriffen}
-        \subsection{Eingabe Parameter}
-            \subsubsection{Layervote}
-                Während einer Runde auf einem WLS Server kann das gespielte Layer, von jedem Spieler,
-                positiv oder negativ bewertet werden.
-                Diese Stimme einer Person wird Layervote genannt.
-            \subsubsection{Biom-Bewertung}
-                Eine Karte in Squad ist einem Platz auf der Welt nachempfunden. 
-                Für die Einordnung der Karten untereinander werden sie anhand ihrer Eigenschaften bewertet.
-                Diese Bewertung wird hier Biom-Bewertung genannt.
-        \subsection{Gruppierung der Spielmodi}
-                Für eine bessere Übersicht werden hier die Spielmodi Gruppiert.\\
-                Casual:
-                \begin{itemize}
-                    \item RAAS
-                    \item AAS
-                \end{itemize}
-                Intermediates:
-                \begin{itemize}
-                    \item TC
-                    \item Invasion
-                \end{itemize}
-                Rest:
-                \begin{itemize}
-                    \item Insurgency
-                    \item Destruction \todo{tanks ?}
-                \end{itemize}
+
+    % \section{Spezifikationen}
+    % Im folgenden werden unbekannte Begriffe erklärt und/oder definiert.
+    %     \subsection{Allgemeines}
+    %         \subsubsection{Spielmodus}
+    %             Die aktuell (stand Sep. 2022) auf dem {WLS} Server gespielten Spielmodi sind:\\
+    %             \begin{itemize}
+    %                 \item RAAS
+    %                 \item AAS
+    %                 \item Invasion
+    %                 \item TC
+    %                 \item Insurgency
+    %                 \item Destruction
+    %                 \item Skirmish\todo{Tanks ?}
+    %             \end{itemize}
+    %             Die Beschreibung dieser Modi geht über dieses Dokument hinaus.
+    %         \subsubsection{Layer}
+    %             Ein Layer ist einer Karte und einen Spielmodus zugeordnet.
+    %             Pro Runde Squad wird ein Layer gespielt. 
+    %         \subsubsection{Maprotation}
+    %             Eine Maprotation (kurz Maprota) besteht aus einer Liste von vorgegebene Runden, die gespielt werden sollen.
+    %             Jede Runde wird ein Layer gespielt.
+    %         \subsubsection{Clustering}
+    %             Beschreibt die Wiederholung von Squad Runden mit ähnlichen Eigenschaften in einem kurzem zeitintervall.
+    %         \subsection{Attraktive Maprotation}
+    %             Eine attraktive Maprota kann durch ihre Rundenverteilung und Rundenreihenfolge beschrieben werden.
+    %             Gibt es eine positive Korrelation zwischen Layer-Verteilungen einer Maprota und der Layervote-Verteilung ist der Beliebtheitsgrad höher.
+    %             Zudem ist eine Maprota mit kurz aufeinander folgenden, sich stärker unterscheidnenen Maps, beliebter.
+    %             \todo{ist ein bisschen aus der Luft gegriffen}
+    %     \subsection{Eingabe Parameter}
+    %         \subsubsection{Layervote}
+    %             Während einer Runde auf einem WLS Server kann das gespielte Layer, von jedem Spieler,
+    %             positiv oder negativ bewertet werden.
+    %             Diese Stimme einer Person wird Layervote genannt.
+    %         \subsubsection{Biom-Bewertung}
+    %             Eine Karte in Squad ist einem Platz auf der Welt nachempfunden. 
+    %             Für die Einordnung der Karten untereinander werden sie anhand ihrer Eigenschaften bewertet.
+    %             Diese Bewertung wird hier Biom-Bewertung genannt.
+    %     \subsection{Gruppierung der Spielmodi}
+    %             Für eine bessere Übersicht werden hier die Spielmodi Gruppiert.\\
+    %             Casual:
+    %             \begin{itemize}
+    %                 \item RAAS
+    %                 \item AAS
+    %             \end{itemize}
+    %             Intermediates:
+    %             \begin{itemize}
+    %                 \item TC
+    %                 \item Invasion
+    %             \end{itemize}
+    %             Rest:
+    %             \begin{itemize}
+    %                 \item Insurgency
+    %                 \item Destruction \todo{tanks ?}
+    %             \end{itemize}
     
-    \section{Metriken}
-    Um eine erzeuge Maprota Bewerten zu können, muss sie quantifiziert werden. 
-    Dafür werden Metriken definiert welche eine objektive Bewertung, mit gegebenen Daten, zulässt.    
+    % \section{Metriken}
+    % Um eine erzeuge Maprota Bewerten zu können, muss sie quantifiziert werden. 
+    % Dafür werden Metriken definiert welche eine objektive Bewertung, mit gegebenen Daten, zulässt.    
 
 
 
-    \section{Überliegende Struktur}
-    \section{Abhängigkeiten der Generierung}
-    \subsection{Mode}
-    \subsection{Biome}
-    \subsection{Mapgröße}
-    \subsection{Votes}
-    \subsection{Modes pro Map}
+    % \section{Überliegende Struktur}
+    % \section{Abhängigkeiten der Generierung}
+    % \subsection{Mode}
+    % \subsection{Biome}
+    % \subsection{Mapgröße}
+    % \subsection{Votes}
+    % \subsection{Modes pro Map}
 
     \todo{hier mem colonel einfügen}
     \newpage
