@@ -137,4 +137,4 @@ function start_optimizer_parallel(callback){
     parallel_optimizer.runParallel()
 }
 
-module.exports(start_optimizer_parallel)
+module.exports = {start_optimizer_parallel}

@@ -6,7 +6,7 @@ const crypto = require("crypto")
 function main(){
     let config = require("./config.json")
     if (config["auto_optimize"]){
-        let save = require("./data/save.json")
+        let save = JSON.parse(fs.readFileSync("./data/save.json"))
         let check = {}
         check["bioms"] = crypto.createHash("md5").update(JSON.stringify(require("./data/bioms.json"))).digest("hex")
         let c_config = {}
@@ -18,22 +18,24 @@ function main(){
         let old_hash = crypto.createHash("md5").update(JSON.stringify(save)).digest("hex")
         let new_hash = crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")
         if(old_hash != new_hash){
+            console.log(old_hash, new_hash)
             console.log(`WARNING: relevant data values changed, running optimizer`)
             fs.writeFileSync("./data/save.json", JSON.stringify(check))
             optimizer.start_optimizer_parallel(main)
             return
         }
     }
-
+    console.time("Generation Time")
     for(let i=0; i<config["number_of_rotas"]; i++){
         let gen = new generator.Maprota(config)
         let rota = gen.generate_rota()
         fs.writeFileSync(`layer_${i+1}.cfg`, rota.join("\n"))
     }
+    console.timeEnd("Generation Time")
 }
 
 if (require.main === module) {
-    console.time("Execution Time")
+    //console.time("Execution Time")
     main()
-    console.timeEnd("Execution Time")
+    //console.timeEnd("Execution Time")
 }
