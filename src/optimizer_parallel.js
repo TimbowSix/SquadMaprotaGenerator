@@ -107,31 +107,34 @@ let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
 */
 //fs.mkdirSync("./optimizer_data/"+runIndex+"/")
 
+function start_optimizer_parallel(callback){
+    let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
+    let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 
-let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
-let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 
+    let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
+    //let modi = ["RAAS"]
+    let runIndex = Date.now()
 
-let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-//let modi = ["RAAS"]
-let runIndex = Date.now()
+    let dist_modi_dict = {}
 
-let dist_modi_dict = {}
-
-for(let mode of modi){
-    let mode_dist = {}
-    for(let map of Object.keys(current_dist)){
-        if(mode in current_dist[map]){
-            mode_dist[map] = current_dist[map][mode]
+    for(let mode of modi){
+        let mode_dist = {}
+        for(let map of Object.keys(current_dist)){
+            if(mode in current_dist[map]){
+                mode_dist[map] = current_dist[map][mode]
+            }
         }
+        dist_modi_dict[mode] = mode_dist
     }
-    dist_modi_dict[mode] = mode_dist
+
+    function after_optimizer(){
+        console.log("finish optimizer")
+        callback()
+    }
+
+    parallel_optimizer = new OptimizerParallelOrganizer(modi, dist_modi_dict, runIndex, after_optimizer)
+    parallel_optimizer.runParallel()
 }
 
-function after_optimizer(){
-    console.log("finish optimizer")
-    //hier sachen einfügen die nach dem optimizer passieren sollen
-}
-
-parallel_optimizer = new OptimizerParallelOrganizer(modi, dist_modi_dict, runIndex, after_optimizer)
-parallel_optimizer.runParallel()
+module.exports(start_optimizer_parallel)
