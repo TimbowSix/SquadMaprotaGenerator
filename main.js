@@ -15,10 +15,7 @@ function main(){
         c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
         check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
 
-        let old_hash = crypto.createHash("md5").update(JSON.stringify(save)).digest("hex")
-        let new_hash = crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")
-        if(old_hash != new_hash){
-            console.log(old_hash, new_hash)
+        if(crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
             console.log(`WARNING: relevant data values changed, running optimizer`)
             fs.writeFileSync("./data/save.json", JSON.stringify(check))
             optimizer.start_optimizer_parallel(main)
