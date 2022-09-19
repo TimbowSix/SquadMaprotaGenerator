@@ -25,7 +25,7 @@ function main(){
     console.log("Starting Rota generation")
     console.time("Generation Time")
     for(let i=0; i<config["number_of_rotas"]; i++){
-        console.log(`generate rotation ${i+1}/${config["number_of_rotas"]}]`)
+        console.log(`generate rotation ${i+1}/${config["number_of_rotas"]}`)
         let gen = new generator.Maprota(config)
         let rota = gen.generate_rota()
         fs.writeFileSync(`layer_${i+1}.cfg`, rota.join("\n"))
