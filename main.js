@@ -16,12 +16,13 @@ function main(){
         check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
 
         if(crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
-            console.log(`WARNING: relevant data values changed, running optimizer`)
+            console.log(`INFO: relevant data values changed, running optimizer`)
             fs.writeFileSync("./data/save.json", JSON.stringify(check))
             optimizer.start_optimizer_parallel(main)
             return
         }
     }
+    console.log("Starting Rota generation")
     console.time("Generation Time")
     for(let i=0; i<config["number_of_rotas"]; i++){
         let gen = new generator.Maprota(config)
