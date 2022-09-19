@@ -1,5 +1,6 @@
 const config = require("../config.json");
 const gen = require("./generator.js");
+const fs = require("fs")
 
 class Metrics{
     constructor(config){
@@ -152,5 +153,8 @@ class Metrics{
 
 if (require.main === module) {
     let temp = new Metrics(config)
+    console.log(temp.calc_map_dist_error())
+    console.log(temp.calc_modi_dist_error())
+    console.log(temp.calc_mean_biom_distance())
     console.log(temp.get_min_map_repetition())
 }
