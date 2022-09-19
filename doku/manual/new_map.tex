@@ -1,0 +1,22 @@
+\section{Neue Map einfügen}
+Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json' biom Parameter zugewiesen werden. \newline
+Beipsiel Struktur der `bioms.json':
+
+\begin{lstlisting}[language=json, firstnumber=1]
+{
+    "Sumari": [0.0,0.0,0.0,0.0,0.8,0.0,1.0,0.0,0.3],
+    "Logar": [0.03,0.0,0.0,0.0,1.0,0.0,0.9,0.4,0.2]
+}
+\end{lstlisting}
+Jede Map hat 9 Biom Parameter, jeder Parameter bildet einen float wert in dem Biom Array in folgender Reihenfolge:
+\begin{enumerate}
+    \item Mapgröße
+    \item Wald
+    \item Schnee
+    \item Wasser
+    \item Wüste
+    \item Grasland
+    \item Stadt
+    \item Berge
+    \item Felder
+\end{enumerate}
