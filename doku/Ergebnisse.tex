@@ -1,5 +1,7 @@
 \section{Ergebnisse}
+    
     \subsection{Bewertung des Systems}
+        \label{sec:bewerten_des_systems}
         Um den entstandenen Maprotagenerator bewerten zu können und den Grad der Qualität festellen zu können, 
         werden die Metriken aus Kapitel \ref{} \todo{ref} zur Hilfe genommen. Die Metriken sind für Squadmaprotas
         allgemeingültig und anhand dessen könnten sie miteinader verglichen werden. Es soll nicht unerwähnt bleiben,
@@ -108,7 +110,23 @@
         % Was sind die Einstellungen und warum haben wir so gewählt
     \subsection{Grenzen des Systems}
         \label{s:grenzen_des_systems}
-        % unsere limitierendes Feature
-        % optimizer warum das ? 
-        % warum schlechter wenn Ähnlichkeit des maps und gleichzeitig sehr beliebt
+        Um dieses Sektion am besten nachzuvollziehen zu können, sollte nochmal ein Blick auf die Ziele des Systems
+        geworfen werden. Es wird eine qualitativ hohe Maprota gefordert, die zum einen der Voteverteilung folgen soll und
+        zum anderen in der Map-Reihenfolge einige gewisse Diversität garantieren soll. Bei genauere Überlegung ist
+        das schon ein Widerspruch in sich. Angenommen eine einzelne Map hat unendlich viele Stimmen und die Maprota 
+        folgt strikt den Votes. Es würde Resultieren, dass nur noch die eine Map drankommen würde. Diese, von 
+        der Maprota, angenommene Verteilung bildet aber einen Konflikt mit dem Ziel, dass die Maps eine gewisse Diversität
+        bieten sollen. Daher sind an der Stelle die Möglichkeiten das Systems beschränkt und die Voteverteilung kann 
+        nicht immer in einer generierten Rota abgebildet werden. Sehr stark hoch gewählte Maps können nur so oft drankommen,
+        wie es die Clusterstruktur und die Locktime zulässt. Dieser Aspekt des Systems muss aber nicht als negativer Punkt 
+        aufgefasst werden, denn keiner will immer nur eine Map spielen (solange es nicht GooseBay ist). 
+        Dieses \glqq{}Feature\glqq{} wirkt damit aktiv gegen die Befürchtung, welche im Feedback-chat angesprochen wurde,
+        dass nur noch Yehorivka und Gorodok drankommen.
+        Um trotzdem das Optimum zwischen vorgegebener Verteilung und Diversität der Maps zu garantieren wird ein Optimizer
+        eingesetzt.\\
+        Eine Weitere Grenze des System ist die Falsche Bedienung. Jedes System kann nur so gut sein wie der Anwender*in.
+        Damit soll zu Ausdruck gebracht werden, wenn unwissend am System Einstellungen geändert werden, kann die kleinste 
+        Änderung alle im Abschnitt \ref{sec:bewerten_des_systems} ungültig machen.\\
+        \todo{weitere grenzen ?}
         % warum kann man mit gewissen einstellungen die Rota zu zerstören kann
+        % optimizer warum das ? 
