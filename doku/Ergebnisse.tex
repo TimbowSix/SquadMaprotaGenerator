@@ -72,12 +72,37 @@
             quantifizierendes Mitteln genommen werden. Bei den Modi ergibt sich eine MSD = $0.04514$.
             Dieser Wert ist für die vorgesehenen Einstellparameter akzeptabel, da Modi die nicht RAAS oder AAS sind
             einen Mindestabstand haben. In diesem Falle ist dieser Abstand 4 Runden.
-        \subsubsection{Biom Distanz}
+        \subsubsection{Varriation der Maps}
+            Für den die Messbarkeit, der Differenz aufeinander folgende Maps, kann das arithmetische Mittel der Distanzen
+            auf der Hyperfläche genutzt werden. Zudem ist es noch sinnvoll sich den gleitenden Mittelwert der Distanzen
+            zu betrachten.\\
+            Das arithmetische Mittel der Distanzen beträgt $d_m = 1.08946$\\
+            \todo{Bewertung das wertes}
+            Die Betrachtung des gleitenden Mittelwertes ergibt sich für eine Mittelwertbreite von 5 und einer Rota mit 100000 Layern
+            eine Verteilung die auf Abbildung \ref{fig:haufigkeit_gleitender_mittelwert} zu sehen ist.
             
-        1.0894609482848558
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\textwidth]{gleitender_mittelwert_biom_distanz.jpg}
+                \caption{Häufigkeiten des gleitenden Mittelwertes der Distanzen}
+                \label{fig:haufigkeit_gleitender_mittelwert}
+            \end{figure}
+            
+            \todo{bewertung des histograms}
+
         \subsubsection{Map Wiederholung}
-        3
-       
+            Das nächste und hier letzte benutzte Mittel, um eine Maprota zu bewerten ist, nach wie vielen Runden sich eine Map
+            wiederholt. Hierfür wurde eine Histogramm aus einer 100000 Layer Rota erstellt.
+            Die Abbildung \ref{fig:haufigkeit_der_map_wiederholung} zeigt die Häufigkeit einer Map Wiederholung. Es ergibt sich ein
+            Minimum von 3 Runden bevor sich eine Map wiederholen kann. Am Häufigsten ist jedoch eine Map Wiederholung nach 6 bis 9 Runden.
+            Dabei muss bedacht werden, das Squad aktuell (09.2022) spielbare Maps beinhaltet. Daher ist dieses ein gutes Wiederholverhalten.
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\textwidth]{mapWiederholungsHaufigkeiten.jpg}
+                \caption{Häufigkeiten der Map Wiederholung}
+                \label{fig:haufigkeit_der_map_wiederholung}
+            \end{figure}
 
         % wie kommt er mit verschiedenen Mapverteilungen klar 
         % Was sind die Einstellungen und warum haben wir so gewählt
