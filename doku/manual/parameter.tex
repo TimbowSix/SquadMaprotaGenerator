@@ -1,0 +1,70 @@
+\section{Einstell Parameter Übersicht}
+%\subsection{Config}
+\begin{description}
+    \item[number\_of\_rotas][int] \newline
+        anzahl an Rotas, die generiert werden sollen
+    \item[number\_of\_layers][int] \newline
+        Wie viele Layer eine Rotation insgesamt beinhalten soll
+    \item[seed\_layer][int] \newline
+        Wie viele Seed Layer am sich am Start der Rota befinden sollen
+    \item[update\_layers][bool] \newline
+        Entscheidet, ob beim start layer/votes neu abgerufen werden sollen
+    \item[mode\_distribution][dict] \newline
+    Struktur: 
+    \begin{description}
+        \item[pools][dict] \newline
+        Beliebige anzahl an Mode pools, die eine beliebige Anzahl an modes beinhalten und deren wahrscheinlichkeit innerhalb des Pools festlegen.
+        Wichtig: Es muss immer mindestens den 'main' pool mit mindestens einem Modes geben.
+        Struktur:
+\begin{lstlisting}[language=json, firstnumber=1]
+{
+    "pool_name": 
+    {
+    "Mode1": probability (float),
+    "Mode2": probability (float)
+    }
+}
+\end{lstlisting}
+        \item[pool\_distribution][dict] \newline
+        Wahrscheinlichkeiten für die mode pools, s.o
+        Struktur:
+\begin{lstlisting}[language=json, firstnumber=1]
+{
+    "pool_name1": probability (float),
+    "pool_name2": probability (float)
+}
+\end{lstlisting}
+    \item[pool\_spacing][int] \newline
+    Mindestabstand zwischen \underline{nicht} 'main' pool modes
+    \item[space\_main][bool] \newline
+    Entscheidet, ob 2x der selbe Mode aus dem Main pool hintereinander kommen dürfen oder sie sich abwechseln müssen.
+    \end{description}
+\end{description}
+\newpage
+\textbf{Einstellungen ab hier haben enorme Auswirkungen auf die Generierung und Verteilung.
+Änderungen ohne genaueres Verständis der Funktionsweise und des Ablaufs der Generierung nicht empfohlen}
+\begin{description}
+    \item[biom\_spacing][int] \newline
+        Wie lange ein Cluster gelockt wird.
+    \item[min\_biom\_distance][float] \newline
+        Bioms umkreis Abstand, in dem gelockt wird
+    \item[mapvote\_slope][float] \newline
+        Slope der Mapvoteweight Sigmoid funktion
+    \item[mapvote\_shift][int] \newline
+        Shift der Mapvoteweight Sigmoid funktion
+    \item[layervote\_slope][float] \newline
+        Slope der Layervote Sigmoid funktion
+    \item[layervote\_shift][int] \newline
+        Shift der Layervote Sigmoid funktion
+    \item[use\_vote\_weight][bool] \newline
+        Entscheidet, ob die layer nach Votes gewichtet werden sollen 
+    \item[use\_map\_weight][bool] \newline
+        Entscheidet, ob die Maps nach Votes gewichtet werden sollen
+    \item[save\_expected\_map\_dist][bool] \newline
+        Entscheidet, ob die erwartete Mapverteilung nach Mapvoteweight als Datei gespeichert werden soll
+    \item[use\_lock\_time\_modifier][bool] \newline
+        Entscheidet, ob die Cluster-Locktime für eine bessere verteilung korrigiert werden darf.
+    \item[auto\_optimize][bool] \newline
+        Entscheidet, ob bei Änderungen relevanter Werte vor Generierung einer Rota automatisch der Optimizer gestartet werden soll
+        Dringend empfohlen.
+\end{description}
