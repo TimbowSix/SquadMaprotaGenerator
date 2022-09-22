@@ -127,7 +127,14 @@
         \end{equation}
         wobei $v$ die Summe aller Layervotes eines Modus einer Maps ist und $a$ und $b$ zwei freie Parameter sind.
         Während $a$ die Steigung moduliert kann mit $b$ ein Offset erzeugt werden.
-        Die Sigmoid funktion erlaubt es ein kontinuierliches weight zu definieren wodurch eine Map oder ein Layer nicht abrupt verschwindet sondern graduierlich ändert.
+        Die Sigmoid funktion erlaubt es ein kontinuierliches weight zu definieren wodurch eine Map oder ein Layer nicht abrupt verschwindet sondern langsam ändert.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.85\textwidth]{plot_sigmoid.pdf}
+            \caption{Die Sigmoidfunktion für mehrere Werte $a$ und $b$. 
+                        Für $b=0$ ist für alle Werte $a$ $f(0)=1/2$.
+                        Der Parameter $b$ dient als Offset.}
+        \end{figure}
     \subsection{blub2}
     % was ist eine kugel und was meint tim damit 
     % wie werden die mapvotes ausgerechnet
