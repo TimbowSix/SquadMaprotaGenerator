@@ -2,7 +2,7 @@
     "number_of_rotas": 1,
     "number_of_layers": 1000000,
     "seed_layer": 0,
-    "update_layers": false,
+    "update_layers": true,
     "mode_distribution":
     {
         "pools":
