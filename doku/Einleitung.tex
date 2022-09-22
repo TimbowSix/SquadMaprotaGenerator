@@ -1,21 +1,52 @@
 \section{Einleitung}
-        Squad ist ein Online Multiplayerspiel, welches 2015 im \glqq{}Early Access\grqq{} veröffentlicht wurde.\cite{steampage}
-        Für die Umsetzung des Onlinespielens, wird darauf gesetzt, 
-        dass Spielserver von Personen oder Gruppen bereitgestellt und verwaltet werden.
-        \cite{wiki.serverbrowser}
-        Diese Personen/Gruppen sind darum bemüht ihre Server möglichst attraktiv zu halten. \todo{quelle}\\
-        Squad wird in Runden gespielt. Eine Runde besteht aus einem vorherrschenden Spielmodus, 
-        welcher auf einer Kartenvariation (Layer) gespielt wird. 
-        Ein Layer gibt damit an, welcher Spielmodus auf welcher Kartenvariation gespielt wird.\\ \todo{quelle}
-        Um die Attraktivität eines Servers zu steigen, wird versucht eine begehrenswerte Reihenfolge an Runden zu spielen.
-        Dafür wird für jeden Tag eine Reihenfolge an Runden bestimmt, welche auf dem Server gespielt werden sollen.
-        Diese vorgegebene Reihenfolge wird Maprotation oder kurz Maprota genannt.\\
-        Dieses Dokument beschäftigt sich mit der Umsetzung eines Programmes, welches eine attraktive Maprota generieren kann.   
+        % Squad ist ein Online Multiplayerspiel, welches 2015 im \glqq{}Early Access\grqq{} veröffentlicht wurde.\cite{steampage}
+        % Für die Umsetzung des Onlinespielens, wird darauf gesetzt, 
+        % dass Spielserver von Personen oder Gruppen bereitgestellt und verwaltet werden.
+        % \cite{wiki.serverbrowser}
+        % Diese Personen/Gruppen sind darum bemüht ihre Server möglichst attraktiv zu halten. \todo{quelle}\\
+        % Squad wird in Runden gespielt. Eine Runde besteht aus einem vorherrschenden Spielmodus, 
+        % welcher auf einer Kartenvariation (Layer) gespielt wird. 
+        % Ein Layer gibt damit an, welcher Spielmodus auf welcher Kartenvariation gespielt wird.\\ \todo{quelle}
+        % Um die Attraktivität eines Servers zu steigen, wird versucht eine begehrenswerte Reihenfolge an Runden zu spielen.
+        % Dafür wird für jeden Tag eine Reihenfolge an Runden bestimmt, welche auf dem Server gespielt werden sollen.
+        % Diese vorgegebene Reihenfolge wird Maprotation oder kurz Maprota genannt.\\
+        % Dieses Dokument beschäftigt sich mit der Umsetzung eines Programmes, welches eine attraktive Maprota generieren kann.   
 
         \subsection{Problemdarstellung}
-            Was war die Herangehensweise?
+            Aus den historischen Debatten über die Maprota wurden die Hauptprobleme versucht herauszuheben und im folgenden erklärt.
+
+            Der Mapgenerator soll qualitativ hochwerte Rotas generieren.
+            Zur klassifizierung werden wir nun zunächst Eckpunkte definieren welche die Qualität einer Rota bemessen sollen.
+
+            Zunächste sollte sich eine Map nicht zu stark wiederholen.
+            Desweiteren gab es in der Community bedenken welche sich damit beschäftigen dass nicht zu ähnliche Maps zu kurz hintereinander gespielt werden sollten. 
+            Ein Beispiel für letzteres wäre die Abfolge 
+            \begin{equation*}
+                \text{Sumari} \rightarrow \text{Logar Valley} \rightarrow \text{Fallujah}.
+            \end{equation*}
+            Hier würden direkt nacheinander folgend drei relativ ähnliche Maps gezogen werden. 
+            Der Charakter dieser Maps wird im wesentlichen über die Eigenschaften "Wüste", "Stadt", "Infanterie lastig/klein" der Map definiert.
+            Eine gute Rota sollte solche Map-Ketten vermeiden.
+
+            Ein weitere wichtiger Punkt ist die Vermeidung von Mustern in der Rota. 
+            Das bedeutet dass die generierten Rotas nicht deterministisch verteilt sondern aus zufälligem ziehen entstehen sollen.
+            
+            Das seit einiger Zeit bestehende Layervote-System muss direkten Einfluss auf die Rota haben um die Verteilung den Wünschen der Community anzupassen.
 
         \subsection{Ziel}
-            Das fertige Programm soll attraktive Maprotationen erstellen können.
-            Dabei müssen die Layervotes mit einbezogen werden. Zudem soll die Maprota, im Bezug auf die Eigenschaften einer Runde, wenig repetitiv sein.
-            Außerdem soll eine Karte sich nicht in einem kurzem Zeitraum wiederholen.
+            Zusammenfassend werden wir im folgenden die Qualität der Maprota an folgenden Eigenschaften messen:
+            \begin{itemize}
+                \item Ähnlichkeit der gezogenen Maps in kurzem Zeitraum
+                \item Wiederholung der selben Map in kurzem Zeitraum
+                \item Keine Muster/Nicht-deterministische Verteilung 
+                \item Layervotes müssen direkten Einfluss haben 
+            \end{itemize}
+
+            Der in diesem Dokument beschriebene Algorithmus soll alle vier genannten Eigenschaften so gut wie möglich Erfüllen.
+            Kurz gesagt ist das Ziel des Maprota Generators:\\\
+            " Ein probabilistisches System dessen globale Verteilung durch Mapvotes gegeben ist und lokal Wiederholung ähnlicher Maps vermeidet. "
+            Anders ausgedrückt:\\
+            Das System sollte global einer Verteilung folgen welche die Map/Layervotes wiederspiegeln und lokal eine gewisse Varianz unter den Mapcharakteristiken hervorruft.
+
+            Im weiteren Verlauf wird ein Algorithmus präsentiert welcher alle oben genannten Aspekte so gut wie möglich abdeckt. 
+            Es sei aber darauf hingewiesen dass nicht alle Punkte gleichzeitig perfekt umgesetzt werden können aufgrund kritischer Eigenschaften des Systems und der gesetzen Nebenbedingungen.
