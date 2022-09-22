@@ -25,15 +25,22 @@
 ]{hyperref}
 
 %========================================== Klassen ===================================================
-\usepackage{hyperref}
+\usepackage{hyperref}               % Hyperlinks zwischen Chaptern und TOC
 \usepackage[backend=bibtex,language=german,style=ieee]{biblatex}
-\usepackage{todonotes}
-\usepackage{amsmath,amssymb}
+\usepackage{todonotes}              % Setzt Notes im fertigen PDF
+\usepackage{amsmath,amssymb}        % basic Math package
 \usepackage[german]{babel}
+\usepackage{graphicx, subfigure}    % Bild-/file inputs
+\usepackage{tikz}                   % notwendig für tikz-zeichnen in Latex selbst
 
-
-\usepackage{graphicx, subfigure}
+\usepackage{fancybox}               % Zitate-box
+\usepackage{yfonts}                 % Alt-deutsche Buchstaben
+\usepackage{forest}                 % Baumdiagramme, alternative zu Tikz
 \graphicspath{{img/}}
+
+\newenvironment{boxedlaw}[1]
+  {\begin{Sbox}\begin{minipage}{#1}\centering}
+  {\end{minipage}\end{Sbox}\begin{center}\shadowbox{\TheSbox}\end{center}}
 
 %include bib data
 \bibliography{bibtex.bib}
@@ -45,13 +52,18 @@
     \tableofcontents
     \newpage
 
-    Memory Colonel, der du bist in GooseBay, geheiligt werde dein Name.
-    Deine Rota komme.
-    Deine locktime geschehe.
-    Unser täglich Squad gib und heute. Und vergib uns unser Minen legen, wie auch wir vergeben unseren snipern
-    Und führe uns nicht in versuchsung, sondern erlöse uns von Tallil
-    Denn dein ist die Rota und Biome und die Abwechslung in Ewigkeit.
-    Amen
+    \begin{boxedlaw}{10cm}
+        \textswab{Memory Colonel, der du bist in GooseBay, geheiligt werde dein Name.}\\
+        \textswab{Deine Rota komme.}\\
+        \textswab{Deine locktime geschehe.}\\
+        \textswab{Unser täglich Squad gib und heute.}\\
+        \textswab{Und vergib uns unser Minen legen, wie auch wir vergeben unseren snipern}\\
+        \textswab{Und führe uns nicht in Versuchung, sondern erlöse uns von Tallil}\\
+        \textswab{Denn dein ist die Rota und Biome und die Abwechslung in Ewigkeit.}\\
+        \textswab{Amen}\\\
+
+        - \textit{Das Maprota Gebet}
+    \end{boxedlaw}
 
     \newpage
     \listoffigures
@@ -66,6 +78,8 @@
     \include{Einleitung.tex}
     
     \include{background.tex}
+
+    \include{aufbau.tex}
 
     \include{mapWeights.tex}
 
