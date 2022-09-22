@@ -47,14 +47,14 @@
             Diagramm dargestellt (siehe Abbildung \ref{fig:expected_mapverteilung_raas} 
             und Abbildung \ref{fig:generated_mapverteilung_raas}).
 
-            \begin{figure}[h]
+            \begin{figure}[htbp]
                 \centering
                 \includegraphics[width=0.7\textwidth]{RAAS_expected.png}
                 \caption{erwartete Mapverteilung im Modus RAAS nach den Layervotes vom 19.09.2022}
                 \label{fig:expected_mapverteilung_raas}
             \end{figure}
 
-            \begin{figure}[h]
+            \begin{figure}[htbp]
                 \centering
                 \includegraphics[width=0.7\textwidth]{RAAS_generated.png}
                 \caption{generierte Mapverteilung im Modus RAAS nach den Layervotes vom 19.09.2022 (1.Mio. Layer Rota)}
@@ -83,9 +83,9 @@
             Die Betrachtung des gleitenden Mittelwertes ergibt sich für eine Mittelwertbreite von 5 und einer Rota mit 100000 Layern
             eine Verteilung die auf Abbildung \ref{fig:haufigkeit_gleitender_mittelwert} zu sehen ist.
             
-            \begin{figure}[h]
+            \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=0.9\textwidth]{gleitender_mittelwert_biom_distanz.jpg}
+                \includegraphics[width=0.9\textwidth]{gleitender_mittelwert_biom_distanz.pdf}
                 \caption{Häufigkeiten des gleitenden Mittelwertes der Distanzen}
                 \label{fig:haufigkeit_gleitender_mittelwert}
             \end{figure}
@@ -99,9 +99,9 @@
             Minimum von 3 Runden bevor sich eine Map wiederholen kann. Am Häufigsten ist jedoch eine Map Wiederholung nach 6 bis 9 Runden.
             Dabei muss bedacht werden, das Squad aktuell (09.2022) spielbare Maps beinhaltet. Daher ist dieses ein gutes Wiederholverhalten.
 
-            \begin{figure}[h]
+            \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=0.9\textwidth]{mapWiederholungsHaufigkeiten.jpg}
+                \includegraphics[width=0.9\textwidth]{mapWiederholungsHaufigkeiten.pdf}
                 \caption{Häufigkeiten der Map Wiederholung}
                 \label{fig:haufigkeit_der_map_wiederholung}
             \end{figure}
@@ -120,13 +120,9 @@
         nicht immer in einer generierten Rota abgebildet werden. Sehr stark hoch gewählte Maps können nur so oft drankommen,
         wie es die Clusterstruktur und die Locktime zulässt. Dieser Aspekt des Systems muss aber nicht als negativer Punkt 
         aufgefasst werden, denn keiner will immer nur eine Map spielen (solange es nicht GooseBay ist). 
-        Dieses \glqq{}Feature\glqq{} wirkt damit aktiv gegen die Befürchtung, welche im Feedback-chat angesprochen wurde,
+        Dieses \glqq{}Feature\grqq{} wirkt damit aktiv gegen die Befürchtung, welche im Feedback-chat angesprochen wurde,
         dass nur noch Yehorivka und Gorodok drankommen.
         Um trotzdem das Optimum zwischen vorgegebener Verteilung und Diversität der Maps zu garantieren wird ein Optimizer
         eingesetzt.\\
-        Eine Weitere Grenze des System ist die Falsche Bedienung. Jedes System kann nur so gut sein wie der Anwender*in.
-        Damit soll zu Ausdruck gebracht werden, wenn unwissend am System Einstellungen geändert werden, kann die kleinste 
-        Änderung alle im Abschnitt \ref{sec:bewerten_des_systems} ungültig machen.\\
-        \todo{weitere grenzen ?}
         % warum kann man mit gewissen einstellungen die Rota zu zerstören kann
         % optimizer warum das ? 

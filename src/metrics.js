@@ -5,9 +5,10 @@ const fs = require("fs")
 class Metrics{
     constructor(config){
         this.config = config
+        this.nr_of_rotas = 100000
 
         this.config["number_of_rotas"] = 1
-        this.config["number_of_layers"] = 100000
+        this.config["number_of_layers"] = this.nr_of_rotas
         this.config["seed_layer"] = 0
         this.config["use_vote_weight"] = true
         this.config["use_map_weight"] = true
@@ -118,43 +119,75 @@ class Metrics{
         }
         return output
     }
-    get_min_map_repetition(){
+    get_map_repetition(){
         let buffer = {}
         let min_rep = {}
+        let output = []
         let index = 0
         for(let map of this.mr.maps){
 
             if(Object.keys(buffer).includes(map.name)){
                 let min =  index - buffer[map.name]
 
-                if(!Object.keys(min_rep).includes(map.name)){
+                /*if(!Object.keys(min_rep).includes(map.name)){
                     min_rep[map.name] = min
-                }
+                }*/
 
-                if(min_rep[map.name] > min){
+                /*if(min_rep[map.name] > min){
                     min_rep[map.name] = min
-                }
+                }*/
+                min_rep[map.name] = min
+                output.push(min)
             }
 
             buffer[map.name] = index
 
             index++
         }
-        let min = min_rep[Object.keys(min_rep)[0]]
+        /*let min = min_rep[Object.keys(min_rep)[0]]
         for(let m of Object.keys(min_rep)){
             if(min_rep[m] < min){
                 min = min_rep[m]
             }
+        }*/
+        return output
+    }
+
+    get_patterns(size){
+        let k = size - 1
+        let current_clusters = {}
+        let buffer = []
+
+        for(let i = 0;i<k;i++){
+            buffer.push(this.mr.maps[i])
         }
-        return min
+
+        for(let i=k;i<this.mr.maps.length;i++){
+            buffer.push(this.mr.maps[i])
+            let temp_name = ""
+            for(let j=0;j<=k;j++){
+                temp_name += buffer[j].name +"=>"
+            }
+            buffer.shift()
+            if(Object.keys(current_clusters).includes(temp_name)){
+                current_clusters[temp_name]++
+            }else{
+                current_clusters[temp_name] = 1
+            }
+        }
+
+        let temp = []
+        for(let i of Object.keys(current_clusters)){
+            temp.push(current_clusters[i])
+        }
+    
+        fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(temp))
+        return current_clusters
     }
 }
 
 
 if (require.main === module) {
     let temp = new Metrics(config)
-    console.log(temp.calc_map_dist_error())
-    console.log(temp.calc_modi_dist_error())
-    console.log(temp.calc_mean_biom_distance())
-    console.log(temp.get_min_map_repetition())
+    console.log(temp.get_patterns(5))
 }
