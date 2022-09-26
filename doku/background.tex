@@ -1,14 +1,18 @@
 \section{Theoretische Grundlagen}
-    Im Folgenden sollen die zuvor genannten Ziele genau definiert werden. 
-    Desweiteren wird ein mathematisches Modell aufgebaut welches den späteren Algorithmus repräsentieren wird.
-    \subsection{Definitionen}
-    \subsubsection{Maprota}
-    Eine Maprota setzt sich aus einer geordneten Menge von einer fest gesetzten Anzahl an Layern zusammen. 
-    Es können verschiedene Modi vorhanden sein.
+    Eine Maprota besteht aus einer festen Anzahl an Layern mit verschiedenen Gamemodes. 
+    Zu beginn der Abfolge wird noch eine feste Anzahl an Seedmaps gelistet welche jedoch für die Mapverteilung des Rota-Generators statistisch irrelevant sind.
+    Die folgenden Abschnitte beschäftigen sich mit den benutzten mathematischen Modellen und definiert alle notwendigen Objekte.
+    Der genaue Aufbau des Generators ist im nächsten Kapitel zu finden.
     \subsection{Wahrscheinlichkeitsmaß}
-        Wie im vorherigen Kapitel dargelegt ist das Ziel eine Mapverteilung zu bekommen welche einer Vorgegebenen Verteilung folgt. 
-        Letztere wird aus den Layervotes generiert.
-        Die Maprota kann durch folgende multivariate Verteilung modelliert werden
+        Wie im vorherigen Kapitel dargelegt ist das Ziel eine Mapverteilung zu bekommen welche einer vorgegebenen Verteilung folgt und lokal ein ''Gedächtnis'' besitzt.
+        Die vorgegebene Verteilung wird aus den Layervotes generiert, kann aber prinzipiell jede beliebge diskrete Wahrscheinlichkeitsverteilung 
+        \begin{equation}
+            p_{M,\text{fi}}(m) := \sum_{i=1}^N \mathbb{P}(M=m)
+        \end{equation}
+        sein, wobei $\mathbb{P}(M=m)$ die Wahrscheinlichkeit ist dass die Map $m$ gezogen wird, repräsentiert durch die Zufallsvariable $X$.
+        Das ''Gedächtnis'' wird im folgenden als \textbf{Memory Kernel} bezeichnet.
+        Um die obige Verteilung $p_{x,\text{fi}}(x)$ zu realisieren werden mehrere intere Weights verwendet um ein auf System zu repräsentieren welche sich aus mehreren Stufen des ''Ziehens'' eines Gamemodes/Map/Layers zusammensetzt.
+        Die Maprota wird dann durch folgende multivariate Verteilung modelliert
         \begin{align}
             p_{G,M,L}(g,m,l)    &= P(G=g, M=m, L=l) \\
                                 &= P(G=g)\cdot P(M=m|G=g) \cdot P(L=l|G=g, M=m)
@@ -18,6 +22,20 @@
         \begin{equation*}
             \mathbb{P}(\text{''Yehorivka RAASv3''}) = p_{G,M,L}(\text{''RAAS'', ''Yehorivka'', ''RAASv3''})
         \end{equation*}
+        Das Ziel ist die einzelnen bedingten Wahrscheinlichkeiten so zu wählen, dass wir die Übereinstimmung
+        \begin{equation}
+            p_{M,\text{fi}}(m) \equiv \sum_{g,l}p_{G,M,L}(g,m,l)
+        \end{equation}
+        haben, oder zumindest in einer Umgebung dieser Lösung sind definiert durch 
+        \begin{equation}
+            \sum_m |p_{M,\text{fi}}(m)-\sum_{g,l}p_{G,M,L}(g,m,l)|<\epsilon  
+        \end{equation}
+        für $\epsilon>0$ aber $\epsilon << 1$.
+        \subsubsection{Mode Wahrscheinlichkeiten}
+            Die Modewahrscheinlichkeiten definiert durch $p_G(g)=\mathbb{P}(G=g)$ werden \textit{a priori} gesetzt da das Ziehen des Gamemodes der erste Schritt in der Rota-Generierung ist.
+            Prinzipiell kann diese von Hand gesetzt werden. 
+        \subsubsection{Map Wahrscheinlichkeiten}
+            Die Mapwahrscheinlichkeiten              
         \subsubsection{Verteilungsfunktionen}
         Die Gamemode Wahrscheinlichkeiten werden von Hand gesetzt. 
         Sollte eine Map $m$ nicht im Gamemode $g$ vorhanden sein, so ist die bedingte Wahrscheinlichkeit $P(M=m|G=g) = 0$. 
@@ -75,7 +93,13 @@
         Der Mapvote einer Map für einen Modus errechnet sich als das gewichtete arithmetische Mittel aller Votes im selben Modes der Map.
         Das Gewicht eines Votes ist so definiert dass Vote-summen fern des Erwartungswertes weniger stark ins Gewicht fallen.
         Damit soll verhindert werden, dass einzelne "Ausreißer" die globale Map-Bewertung zu sehr herunterziehen.
-    \subsection{Die Kugel}
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.85\textwidth]{plot_gaus.pdf}
+            \caption{Die Weightfunktion $w_i=f(x)$ geplottet für verschiedene Erwartungswerte.
+            Je weiter die Vote-Anzahl vom Mittelwert entfernt ist desto kleiner ist das errechnete Weight und das Layer wird somit stärker bestraft und als ''Ausreißer'' gewertet.}
+        \end{figure}
+        \subsection{Die Kugel}
     % was muss hier erklärt werden
     % was ist eine rota
     % Überblick aus dem Game, was sind modes was sind map was sind layer, was sind biome 
@@ -109,7 +133,7 @@
     \end{equation}
     wobei $\mathcal{N}$ das Produkt-Weight normiert sodass $\sum_m w_m = 1$.
     \subsubsection{Distanzweight}
-        Das Distanzweight ist eine allgemeine kontinuierliche Funktion definiert durch
+        Das Distanzweight ist eine allgemeine stückweise stetige Funktion definiert durch
         \begin{equation}
             w_d : \mathbb{R}^+ \rightarrow \mathbb{R}^+, d \mapsto w_d(d),
         \end{equation}
@@ -128,13 +152,13 @@
         wobei $v$ die Summe aller Layervotes eines Modus einer Maps ist und $a$ und $b$ zwei freie Parameter sind.
         Während $a$ die Steigung moduliert kann mit $b$ ein Offset erzeugt werden.
         Die Sigmoid funktion erlaubt es ein kontinuierliches weight zu definieren wodurch eine Map oder ein Layer nicht abrupt verschwindet sondern langsam ändert.
-        \begin{figure}
+        \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.85\textwidth]{plot_sigmoid.pdf}
             \caption{Die Sigmoidfunktion für mehrere Werte $a$ und $b$. 
                         Für $b=0$ ist für alle Werte $a$ $f(0)=1/2$.
                         Der Parameter $b$ dient als Offset.}
         \end{figure}
-    \subsection{blub2}
+    \subsection{Zusammenfassung}
     % was ist eine kugel und was meint tim damit 
     % wie werden die mapvotes ausgerechnet
