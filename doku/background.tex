@@ -37,7 +37,7 @@
         \subsubsection{Map Wahrscheinlichkeiten}
             Die Mapwahrscheinlichkeiten              
         \subsubsection{Verteilungsfunktionen}
-        Die Gamemode Wahrscheinlichkeiten werden von Hand gesetzt. 
+        Die Gamemode-Wahrscheinlichkeiten werden von Hand gesetzt. 
         Sollte eine Map $m$ nicht im Gamemode $g$ vorhanden sein, so ist die bedingte Wahrscheinlichkeit $P(M=m|G=g) = 0$. 
         Falls die Map vorhanden ist so wird die Wahrscheinlichkeit zum ziehen der Map errechnet aus den Mapvotes verglichen mit den anderen Maps und der Ähnlichkeit zu den zuvor gezogenen Maps.
         Wenn eine Map $m$ gezogen wurde wird ein Layer $l$ nach der Verteilung der Mapvotes der in frage kommenden Layern gezogen. 
@@ -75,8 +75,8 @@
                 ]
             \end{forest}
         \caption{Baumdiagramm zur Zusammensetzung der Mapwahrscheinlichkeiten. 
-        Die Wahrscheinlichkeiten einen Mode zu ziehen sind $q_1$ und $q_2$ für Mode $1$ und $2$ repsektiv.
-        Die Wahrscheinlichkeit eine Map unter gegebenen Modus zu ziehen ist gegeben durch $p_{ij}$, d.h. $p_{12}$ ist die bedingte Wahrscheinlichkeit dass Map $2$ gezogen wird wenn vorher Mode $1$ gezogen wurde.}
+        Die Wahrscheinlichkeiten, einen Mode zu ziehen, sind $q_1$ und $q_2$ für Mode $1$ und $2$ repsektiv.
+        Die Wahrscheinlichkeit, eine Map unter gegebenen Modus zu ziehen, ist gegeben durch $p_{ij}$, d.h. $p_{12}$ ist die bedingte Wahrscheinlichkeit dass Map $2$ gezogen wird wenn vorher Mode $1$ gezogen wurde.}
         \end{figure}
     \subsection{Mapvoteweights}
         Zur Realisierung der Verteilung werden Mapwahrscheinlichkeiten benötigt. 
@@ -105,7 +105,7 @@
     % Überblick aus dem Game, was sind modes was sind map was sind layer, was sind biome 
     % kleine einführung in mathe 
     % was ist eine gute und eine schlechte rota
-    Um den ''Map Charakter'' verschiedener Maps zu vergleichen werden zunächst verschiedene Charakteristiken definiert wie zum Beispiel ''Wüste'' oder ''Stadt''.
+    Um den ''Map-Charakter'' verschiedener Maps zu vergleichen, werden zunächst verschiedene Charakteristiken definiert wie zum Beispiel ''Wüste'' oder ''Stadt''.
     Jede Map wird ein Anteil an jeder Charakteristik zwischen $0$ und $1$ zugeschrieben, was respektiv dafür steht dass die Eigenschaft gar nicht oder absolut zutrifft für die Map.
     Zum Beispiel würde eine Map mit ''Winter-Setting'' welche nur aus Gebirge besteht in jeder der beiden Eigenschaften den Wert $1$ erhalten. 
     Die Bewertung der einzelnen Maps ist jedoch subjektiv.
@@ -117,10 +117,10 @@
     \begin{equation*}
         \mathcal{L} = \{\vec{x}\in\mathbb{R}^n ||\vec{x}|=1 \land 0\leq x_i \leq \smash{\frac{\pi}{2}} \quad \forall i\in\{1...n\}\}
     \end{equation*}
-    Das bedeutet das die Maps durch Punkte auf dem Rand der $1/2^n$-tel Kugel beschrieben werden.
+    Das bedeutet, dass die Maps durch Punkte auf dem Rand der $1/2^n$-tel Kugel beschrieben werden.
 
-    Zwei Maps sind ''ähnlich'' sofern die Punkte nahe beieinander liegen, da in diesem fall die Vektorkomponenten fast alle gleich sind wodurch sich die beiden Vektoren lediglich um einen kleinen Winkel unterscheiden.
-    Da die Vektoren normiert sind entspricht dies einer kleinen Distanz auf der Kugeloberfläche.
+    Zwei Maps sind ''ähnlich'', sofern die Punkte nahe beieinander liegen, da in diesem fall die Vektorkomponenten fast alle gleich sind wodurch sich die beiden Vektoren lediglich um einen kleinen Winkel unterscheiden.
+    Da die Vektoren normiert sind, entspricht dies einer kleinen Distanz auf der Kugeloberfläche.
     Die Distanz $l$ zweier Punkte auf der Kugel wird im Mapweight verrechnet und ist gegeben durch 
     \begin{equation}
         d = 2\arccos(\vec{a}\cdot\vec{b})
@@ -160,5 +160,6 @@
                         Der Parameter $b$ dient als Offset.}
         \end{figure}
     \subsection{Zusammenfassung}
+
     % was ist eine kugel und was meint tim damit 
     % wie werden die mapvotes ausgerechnet

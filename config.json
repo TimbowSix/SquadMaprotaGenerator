@@ -1,8 +1,8 @@
 {
     "number_of_rotas": 1,
-    "number_of_layers": 1000000,
+    "number_of_layers": 100000,
     "seed_layer": 0,
-    "update_layers": false,
+    "update_layers": true,
     "mode_distribution":
     {
         "pools":
@@ -36,7 +36,7 @@
     "min_biom_distance": 0.4,
     "mapvote_slope": 0.15,
     "mapvote_shift": 0,
-    "layervote_slope": 1,
+    "layervote_slope": 0.2,
     "layervote_shift": 0,
     "use_vote_weight": true,
     "use_map_weight": true,

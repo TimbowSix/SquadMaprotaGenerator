@@ -2,6 +2,7 @@ const fs = require('fs')
 const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
+const crypto = require("crypto")
 
 
 function initialize_maps(config, use_map_weights=true){
@@ -321,6 +322,22 @@ function save_mapweights(){
     fs.writeFileSync("test.json", JSON.stringify(weights, null, 2))
 }
 
+function check_changes(){
+    let save = JSON.parse(fs.readFileSync("./data/save.json"))
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    let check = {}
+    check["bioms"] = crypto.createHash("md5").update(JSON.stringify(JSON.parse(fs.readFileSync("./data/bioms.json")))).digest("hex")
+    let c_config = {}
+    c_config["biom_spacing"] = config["biom_spacing"]
+    c_config["mode_distribution"] = config["mode_distribution"] 
+    c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
+    check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
+    if (crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
+        fs.writeFileSync("./data/save.json", JSON.stringify(check))
+        return true
+    }else return false
+}
+
 // Test Stuff here
 if (require.main === module) {
     //save_mapweights()
@@ -329,4 +346,4 @@ if (require.main === module) {
     //console.log(maps[1].map_weight)
 }
 
-module.exports = { Map, Layer, initialize_maps, get_layers };
+module.exports = { Map, Layer, initialize_maps, get_layers, check_changes };
