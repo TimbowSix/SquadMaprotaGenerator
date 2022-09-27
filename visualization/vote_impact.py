@@ -16,7 +16,6 @@ for pool in config["mode_distribution"]["pools"]:
         if config["mode_distribution"]["pools"][pool][mode] > 0:
             all_modes.append(mode)
 
-@st.experimental_singleton
 def getMaps():
     maps = calc.initialize_maps(config)
     return maps
