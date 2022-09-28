@@ -2,7 +2,8 @@ const fs = require('fs')
 const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
-const crypto = require("crypto")
+const crypto = require("crypto");
+const { normalize } = require('path');
 
 
 function initialize_maps(config, use_map_weights=true){
@@ -14,6 +15,7 @@ function initialize_maps(config, use_map_weights=true){
         layers = require("../data/layers.json")
     }
     let bioms = require("../data/bioms.json")
+    bioms = parse_map_size(bioms)
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
     
@@ -165,6 +167,19 @@ function initialize_maps(config, use_map_weights=true){
     }
 
     return maps
+}
+
+function parse_map_size(bioms){
+    let max = 0
+    let min = Number.MAX_SAFE_INTEGER
+    for(let map in bioms){
+        if(bioms[map][0] > max) max =bioms[map][0]
+        if (bioms[map][0] < min) min =bioms[map][0]
+    }
+    for(let map in bioms){
+        bioms[map][0] = (bioms[map][0]-min)/(max-min)
+    }
+    return bioms
 }
 
 class Map{
@@ -341,8 +356,8 @@ function check_changes(){
 // Test Stuff here
 if (require.main === module) {
     //save_mapweights()
-    let config = require("../config.json")
-    let maps = initialize_maps(config)
+    let bioms = require("../data/bioms.json")
+    console.log(parse_map_size(bioms))
     //console.log(maps[1].map_weight)
 }
 

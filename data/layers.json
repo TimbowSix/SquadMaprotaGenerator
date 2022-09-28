@@ -303,7 +303,7 @@
       },
       {
         "name": "GooseBay_AAS_v1",
-        "votes": 12
+        "votes": 14
       }
     ],
     "skirmish": [
@@ -870,12 +870,12 @@
         "votes": -4
       },
       {
-        "name": "Kohat_RAAS_v8",
-        "votes": -3
-      },
-      {
         "name": "Kohat_RAAS_v6",
         "votes": 3
+      },
+      {
+        "name": "Kohat_RAAS_v8",
+        "votes": -3
       },
       {
         "name": "Kohat_RAAS_v4",
@@ -897,7 +897,7 @@
     "Insurgency": [
       {
         "name": "Kohat_Insurgency_v1",
-        "votes": 3
+        "votes": 1
       }
     ],
     "AAS": [
@@ -1357,44 +1357,6 @@
       }
     ]
   },
-  "Mestia": {
-    "AAS": [
-      {
-        "name": "Mestia_AAS_v1",
-        "votes": -6
-      },
-      {
-        "name": "Mestia_AAS_v2",
-        "votes": 0
-      }
-    ],
-    "skirmish": [
-      {
-        "name": "Mestia_skirmish_v1",
-        "votes": 1
-      }
-    ],
-    "Invasion": [
-      {
-        "name": "Mestia_Invasion_v2",
-        "votes": -5
-      },
-      {
-        "name": "Mestia_Invasion_v1",
-        "votes": -7
-      }
-    ],
-    "RAAS": [
-      {
-        "name": "Mestia_RAAS_v1",
-        "votes": -17
-      },
-      {
-        "name": "Mestia_RAAS_v2",
-        "votes": -9
-      }
-    ]
-  },
   "Anvil": {
     "skirmish": [
       {
@@ -1499,17 +1461,55 @@
       },
       {
         "name": "Logar_RAAS_v2",
-        "votes": -29
+        "votes": -30
       }
     ],
     "AAS": [
       {
         "name": "Logar_AAS_v3",
-        "votes": -22
+        "votes": -24
       },
       {
         "name": "Logar_AAS_v2",
         "votes": -26
+      }
+    ]
+  },
+  "Mestia": {
+    "skirmish": [
+      {
+        "name": "Mestia_skirmish_v1",
+        "votes": 1
+      }
+    ],
+    "AAS": [
+      {
+        "name": "Mestia_AAS_v1",
+        "votes": -6
+      },
+      {
+        "name": "Mestia_AAS_v2",
+        "votes": 0
+      }
+    ],
+    "Invasion": [
+      {
+        "name": "Mestia_Invasion_v2",
+        "votes": -5
+      },
+      {
+        "name": "Mestia_Invasion_v1",
+        "votes": -7
+      }
+    ],
+    "RAAS": [
+      {
+        "name": "Mestia_RAAS_v1",
+        "votes": -17
+      },
+      {
+        "name": "Mestia_RAAS_v2",
+        "votes": -9
       }
     ]
   },
