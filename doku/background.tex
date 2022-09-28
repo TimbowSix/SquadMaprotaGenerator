@@ -17,8 +17,8 @@
             p_{G,M,L}(g,m,l)    &= P(G=g, M=m, L=l) \\
                                 &= P(G=g)\cdot P(M=m|G=g) \cdot P(L=l|G=g, M=m)
         \end{align}
-        wobei $G,M,L$ die Zufallsvariablen "Gamemode", "Map" und "Layer" sind und $P(A|B)$ die bedingte Wahrscheinlichkeit für das Ereignis $A$ unter der Nebenbedingungen das zuvor $B$ eingetreten ist.
-        Die Wahrscheinlichkeit für ein Layer wie "Yehorivka RAAS v3" ist damit gegeben durch 
+        wobei $G,M,L$ die Zufallsvariablen \glqq{}Gamemode\grqq{}, \glqq{}Map\grqq{} und \glqq{}Layer\grqq{} sind und $P(A|B)$ die bedingte Wahrscheinlichkeit für das Ereignis $A$ unter der Nebenbedingungen das zuvor $B$ eingetreten ist.
+        Die Wahrscheinlichkeit für ein Layer wie \glqq{}Yehorivka RAAS v3\grqq{} ist damit gegeben durch 
         \begin{equation*}
             \mathbb{P}(\text{''Yehorivka RAASv3''}) = p_{G,M,L}(\text{''RAAS'', ''Yehorivka'', ''RAASv3''})
         \end{equation*}
@@ -46,8 +46,8 @@
             \mathbb{P}(\text{''Layer A''}) = \frac{S(v_i)}{\mathcal{N}}
         \end{equation}
     \subsection{Oberflächliches Model - Baumdiagramm}
-        Die statistische Natur der Maprota kann als "Würfeln" verschiedener Layer verstanden werden. 
-        Der Algorithmus setzt sich aus zwei Schichten zusammen: Zunächst wird ein Modus gezogen z.b. "Invasion". 
+        Die statistische Natur der Maprota kann als \glqq{}Würfeln\grqq{} verschiedener Layer verstanden werden. 
+        Der Algorithmus setzt sich aus zwei Schichten zusammen: Zunächst wird ein Modus gezogen z.b. \glqq{}Invasion\grqq{}. 
         Die Wahrscheinlichkeit dass ein Modus gezogen wird ist \textit{a priori} gesetzt und wird als externe Größe in den Generator gegeben.
         Nach ziehen des Modus folgt nun die Auswahl der Map. 
         Die Wahrscheinlichkeit das eine Map gezogen wird hängt von den Mapvotes ab und weiteren internen Parametern. 
@@ -92,7 +92,7 @@
         \end{align*}
         Der Mapvote einer Map für einen Modus errechnet sich als das gewichtete arithmetische Mittel aller Votes im selben Modes der Map.
         Das Gewicht eines Votes ist so definiert dass Vote-summen fern des Erwartungswertes weniger stark ins Gewicht fallen.
-        Damit soll verhindert werden, dass einzelne "Ausreißer" die globale Map-Bewertung zu sehr herunterziehen.
+        Damit soll verhindert werden, dass einzelne \glqq{}Ausreißer\grqq{} die globale Map-Bewertung zu sehr herunterziehen.
         \begin{figure}[htbp]
             \centering
             \includegraphics[width=0.85\textwidth]{plot_gaus.pdf}
