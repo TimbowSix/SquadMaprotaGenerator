@@ -70,6 +70,59 @@
             w_m(m,d,v) = \frac{1}{\mathcal{N}}w_d(d,m)w_v(v,m)
         \end{equation}
         wobei $\mathcal{N}$ das Produkt-Weight normiert sodass $\sum_m w_m = 1$.
+        \subsubsection{Map Charakteristiken}
+            Um die verschiedenen Maps voneinander zu unterscheiden wird versucht bestimmende Charakteristiken der einzelnen Maps.
+            Das heißt es werden bestimmte Eigenschaften der Map bewertet um diese untereinander zu vergleichen.
+            Zum beispiel kann man das ''Setting'' bewerten wie ''Wüste'' oder ''Schnee'' und damit verhindern das zu oft Wüstenmaps hintereinander gespielt werden.
+            Die Idee ist eine Metrik $d(m_1,m_2)$ einzuführen welche einen ''Abstand'' zwischen zwei Maps $m_1$ und $m_2$ über die Map Charakteristiken misst.
+            Zurzeit werden folgende Eigenschaften bewertet:
+            \begin{table}[h]
+                \centering
+                \begin{tabular}{|| c ||}
+                    \hline
+                    \textbf{Mapcharakteristik}  \\
+                    \hline
+                    \hline
+                    Mapgröße \\
+                    \hline
+                    Wald \\
+                    \hline
+                    Schnee \\
+                    \hline
+                    Wasser \\
+                    \hline
+                    Wüste \\
+                    \hline
+                    Grasland \\
+                    \hline
+                    Stadt \\
+                    \hline
+                    Berge \\
+                    \hline
+                    Felder \\
+                    \hline
+                \end{tabular}
+                \caption{Benutzte Mapcharakteristiken.}
+                \label{t:Aufbau:Charakteristiken}
+            \end{table}
+            Für jeder Map wird jeder Eigenschaft ein Wert zwischen $0$ und $1$ zugewiesen wobei ersteres dafür steht das die Eigenschaft von der Map gar nicht erfüllt wird und letzteres bedeutet dass die Map diese Eigenschaft voll erfüllt. 
+            Die Einträge werden dann in einen Vektor $\vec{b}=(b_1,...,b_N)^T$ der aus den $N$ werten besteht zugeordnet und dieser wird Anschließend normiert sodass $|\vec{b}|=1$.
+            Damit lässt sich jede Map als Punkt auf einem Teilstück einer $N$-Dimensionalen Kugel beschreiben. 
+            Dadurch kann man eine Distanz zwischen zwei Punkten auf besagtem Flächenstück definieren welche gegeben ist durch 
+            \begin{equation}
+                d(m_1, m_2) = 2\text{arccos}(\vec{b}_1\cdot\vec{b}_2),
+            \end{equation}
+            wobei $\vec{b}_1$ die Mapcharakteristiken der Map $m_1$ beschreibt und $\cdot$ das Standardskalarprodukt ist.
+            Damit ist die Distanz zwischen zwei Maps rein durch den Winkel der beiden Vektoren gegeben. 
+            \begin{figure}[htbp]
+                \centering
+                \includegraphics[width=0.8\textwidth]{Kugel.pdf}
+                \caption{Skizze Kugeloberfläche für drei verwendete Biome, die verwendeten Radien sind nicht in der Größenordnung die im Generator verwendet wird. 
+                            Die schwarzen Punkte sind Maps die gezogen wurden und noch im Memory Kernel liegen. 
+                            Die grünen Punkte sind Maps welche für die nächste Runde zur Verfügung stehen.
+                            Die roten Punkte sind Maps welche gesperrt wurden aufgrund der Nähe zu einer bereits gezogenen Maps.}
+            \end{figure}
+            Maps die ähnlich sind wie z.b. ''Logar'' und ''Sumari'' liegen nahe beieinander sind aber weit entfernt von z.B. "Yehorivka".
         \subsubsection{Distanzweight}
             Das Distanzweight ist eine allgemeine stückweise stetige Funktion definiert durch
             \begin{equation}
@@ -82,6 +135,7 @@
             \end{equation}
             mit $d_\text{min}\geq 0$ als Mindestdistanz. 
             Sollte eine Map näher als $d_\text{min}$ an einer zuvor gezogenen Map liegen ist das Distanzweight und damit das Mapweight $0$ und wird damit nicht gezogen. 
+            
         \subsubsection{Mapvoteweight}
             Das Mapvoteweight wird aus dem Mapvote berechnet aus 
             \begin{equation}
