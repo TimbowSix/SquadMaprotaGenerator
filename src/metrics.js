@@ -119,6 +119,15 @@ class Metrics{
         }
         return output
     }
+    get_all_map_dist(){
+        let output = []
+        let last_map = this.mr.maps[0]
+        for(let i=1;i<this.mr.maps.length;i++){
+            output.push(this.mr.maps[i].distances[last_map.name])
+            last_map = this.mr.maps[i]
+        }
+        return output
+    }
     get_map_repetition(){
         let buffer = {}
         let min_rep = {}
@@ -192,9 +201,10 @@ class Metrics{
 
 if (require.main === module) {
     let temp = new Metrics(config)
+    fs.writeFileSync("test_map_distance_dist.json", JSON.stringify(temp.get_all_map_dist()))
     //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
-    temp.get_patterns(2)
-    temp.get_patterns(3)
-    temp.get_patterns(4)
-    temp.get_patterns(5)
+    //temp.get_patterns(2)
+    //temp.get_patterns(3)
+    //temp.get_patterns(4)
+    //temp.get_patterns(5)
 }
