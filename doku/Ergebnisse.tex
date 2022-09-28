@@ -6,8 +6,8 @@
         werden Metriken zur Hilfe genommen. Die Metriken sind für Squadmaprotas
         allgemeingültig und anhand dessen könnten sie miteinader verglichen werden. Es soll nicht unerwähnt bleiben,
         dass durch eine schlechte oder auch falsche Wahl der Einstellparameter das Maprotasystem leicht bis hin zu 
-        sehr stark beeinträchtigen werden kann. Genaueres dazu ist unter \ref{s:grenzen_des_systems} nachzulesen.
-        Daher ist bei diese Bewertung zu berücksichtigen, dass von uns wohl überlegte Einstellparameter festgelegt wurden
+        sehr stark beeinträchtigt werden kann. Genaueres dazu ist unter \ref{s:grenzen_des_systems} nachzulesen.
+        Daher ist bei dieser Bewertung zu berücksichtigen, dass von uns wohl überlegte Einstellparameter festgelegt wurden
         und als Referenz für Änderungen herangezogen werden sollten.
         Das Wählen passender Einstellparameter kann im User manual nachgelesen werden.
    
@@ -16,7 +16,7 @@
         \subsubsection{Mapverteilung}
             Die Mapverteilung wird von den Layervotes beeinflusst, dieses ist in Kapitel \ref{} \todo{ref} nachzulesen.
             Diese Verteilung ist die Vorgabe für das System und dieses versucht es optimal anzunähern. Da durch die 
-            Zielvorgaben die Verteilungsvorgabe nicht immer erreicht werden kann, tritt ein Abweichung in der Verteilung auf.
+            Zielvorgaben die Verteilungsvorgabe nicht immer erreicht werden kann, tritt eine Abweichung in der Verteilung auf.
             Diese Abweichung wird hier als mittlere quadratische Abweichung (MSD) \todo{ac?} pro Modus angegeben.
             Für diese Auswertung wurden den Verteilungen genommen, die aus den Layervotes vom 19.09.2022 entstanden sind.
             Dabei ist zu beachten, dass der Modus TC zu diesem Zeitpunkt \glqq{}Verbugged\grqq{} ist und daher 
@@ -64,7 +64,7 @@
             Bei der Betrachtung der Diagramme 
             (Abbildung \ref{fig:expected_mapverteilung_raas} und Abbildung \ref{fig:generated_mapverteilung_raas}) 
             ist zu beachten, dass es sich hier nur um den Modus RAAS handelt.
-            Beispielsweise ist die Karte AlBashrah hier deutlich unterrepräsentiert diese ist im Modus Invasion
+            Beispielsweise ist die Karte AlBashrah hier deutlich unterrepräsentiert. Dies ist im Modus Invasion
             nicht der Fall, da die Layervotes dort für AlBashrah deutlich besser ausfallen.
             Zudem lässt sich erkennen, dass die Karte Yehorivka, Blackcoast und Gorodok nicht den angestrebten
             Verteilung erreichen. Dieses Phänomen \ref{s:grenzen_des_systems} näher behandelt.
@@ -110,18 +110,18 @@
         % Was sind die Einstellungen und warum haben wir so gewählt
     \subsection{Grenzen des Systems}
         \label{s:grenzen_des_systems}
-        Um dieses Sektion am besten nachzuvollziehen zu können, sollte nochmal ein Blick auf die Ziele des Systems
-        geworfen werden. Es wird eine qualitativ hohe Maprota gefordert, die zum einen der Voteverteilung folgen soll und
-        zum anderen in der Map-Reihenfolge einige gewisse Diversität garantieren soll. Bei genauere Überlegung ist
-        das schon ein Widerspruch in sich. Angenommen eine einzelne Map hat unendlich viele Stimmen und die Maprota 
-        folgt strikt den Votes. Es würde Resultieren, dass nur noch die eine Map drankommen würde. Diese, von 
-        der Maprota, angenommene Verteilung bildet aber einen Konflikt mit dem Ziel, dass die Maps eine gewisse Diversität
+        Um diese Sektion am besten nachzuvollziehen zu können, wird empfohlen, erneut einen Blick in das Kapitel \ref{sub:Ziele} Ziele des Systems zu
+        werfen. Es wird eine qualitativ hochwertige Maprotation gefordert, die zum Einen der Voteverteilung folgen soll und
+        zum Anderen in der Map-Reihenfolge einige gewisse Diversität garantieren soll. Bei genauerer Überlegung ist
+        das bereits ein Widerspruch in sich. Angenommen eine einzelne Map hat unendlich viele Stimmen und die Maprota 
+        folgt strikt den Votes. Es würde darin Resultieren, dass nur noch diese eine Map vorkommen dürfte. Diese, von 
+        der Maprotation angenommenen Verteilung, bildet aber einen Konflikt mit dem Ziel, dass die Maps eine gewisse Diversität
         bieten sollen. Daher sind an der Stelle die Möglichkeiten das Systems beschränkt und die Voteverteilung kann 
-        nicht immer in einer generierten Rota abgebildet werden. Sehr stark hoch gewählte Maps können nur so oft drankommen,
+        nicht immer voll in einer generierten Rotation abgebildet werden. Maps, die sehr viele Upvotes erhalten, können nur so oft drankommen,
         wie es die Clusterstruktur und die Locktime zulässt. Dieser Aspekt des Systems muss aber nicht als negativer Punkt 
-        aufgefasst werden, denn keiner will immer nur eine Map spielen (solange es nicht GooseBay ist). 
-        Dieses \glqq{}Feature\grqq{} wirkt damit aktiv gegen die Befürchtung, welche im Feedback-chat angesprochen wurde,
-        dass nur noch Yehorivka und Gorodok drankommen.
+        aufgefasst werden, denn niemand möchte dauerhaft nur eine einzige Map spielen (solange es nicht GooseBay ist). 
+        Dieses \glqq{}Feature\grqq{} wirkt damit aktiv gegen die Befürchtung, welche im Vorfeld angesprochen wurde,
+        dass nur noch sehr beliebte Maps wie Yehorivka und Gorodok drankommen.
         Um trotzdem das Optimum zwischen vorgegebener Verteilung und Diversität der Maps zu garantieren wird ein Optimizer
         eingesetzt.\\
         % warum kann man mit gewissen einstellungen die Rota zu zerstören kann
