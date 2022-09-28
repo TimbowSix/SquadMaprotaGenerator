@@ -7,21 +7,33 @@ haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machin
 Der Optimizer sucht nach der kleinste Abweichung zwischen der vorgegebene und generierten Mapverteilung. 
 Es wird jeweils nur ein Modus betrachtet und optimiert.
 
-Der erste Schritt des Optimizers ist die Variierung des ersten Parameters um ein $\varDelta p$ der Mapweightgleichung.
-Anhand der neuen Mapweightgleichung werden neue Mapweights berechnet und eine Maprota generiert.
-Die Maprota hat eine ausreichende Größe, das Streungseffekte \todo{das hier ist falsch wie heißt das richtig?} nahezu nicht
-mehr vorhanden sind. Nun wird die Abweichung $s_m$ berechnet:
+Der zu betrachtende Optimizer ist als Maß der Abweichung der ''Soll-Mapverteilung'' und der Mapverteilung des Generators gedacht. 
+Es seien $p_i^\text{fi}$ die Mapwahrscheinlichkeiten errechnet nach den Mapvotes und $p_i^\text{gen}$ die Mapwahrscheinlichkeiten nach dem Mapgenerator sodass $\sum_i p_i^\text{fi/gen}=1$.
+Da die Generator wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(a_{ij})$ eine Funktion der Weight-Koeffizienten. 
+Es gilt nun diese so zu Optimieren, dass der Optimizer 
 \begin{equation}
-    s_m = \sqrt{(d_e[0] - d_g[0])^2 + ... + (d_e[n] - d_g[n])^2}
+    s_m(a_{ij}) = \sqrt{\sum_i \left(p_i^\text{fi}-p_i^\text{gen}(a_{ij})\right)^2}
 \end{equation}
-mit $n$ $\epsilon$ $\mathbb{Z}$
-\todo{tim mach mal mathe in schön bitte}
-wobei $d_e$ die diskrete Verteilung der erwarteten Maps sind und $d_g$ die generiert diskrete Verteilung ist.
-Im jetzigen Zeitschritt $k$  wird die Abweichung $s_m[k]$ mit der Abweichung $s_m[k-1]$ vergleichen. Bei dem ersten Durchlauf entspricht
-$s_m[k-1]$ der Abweichung der Grundverteilung. Sollte die Abweichung $s_m[k]$ kleiner sein als $s_m[k-1]$ bleibt die Variierung um das $\varDelta p$ bestehen. 
-Es wird zum nächsten Parameter gewechselt und es wird wieder variiert.
-Nachdem ein Minimum mit dem $\varDelta p$ gefunden wurde, wird $\varDelta p$ reduziert 
-und die Suche startet neu, bis ein vorgegebenes Minimum für $\varDelta p$ erreicht ist.\\
+minimal wird. 
+Das heißt wir versuchen die Gleichung 
+\begin{equation}
+    \underset{a}{\min}\quad s_m(a_{ij}) = a^*
+\end{equation}
+zu lösen. 
+Hierbei ist aber im Allgemeinen $s_m(a^*_{ij}) \neq 0$ da nicht angenommen werden kann dass ein globales Minimum existiert. 
+
+Der erste Schritt des Optimizers ist die Variierung des ersten Parameters um ein $\varDelta p$.
+Dadurch erhält man einen neuen parameter $a_{ij} \rightarrow a_{ij} + \delta a_{ij}$ welcher die generierten Mapwahrscheinlichkeiten ändert.
+Die neue Verteilung ersetzt damit die $p_i^\text{gen}$ von zuvor und ein neuer Optimizer Wert wird errechnet. 
+Anschließend wird der neue Optimizerwert mit dem alten verglichen. 
+Der Shift in $a_{ij}$ wird beibehalten wenn 
+\begin{equation}
+    s_m(a_{ij}) - s_m(a_{ij}+\delta a_{ij}) > 0 
+\end{equation}
+erfüllt ist. 
+Sollte jeder der 5 Parameter nichtmehr optimierbar sein so wird das $\varDelta p$ verringert.
+Das prozedere wird so lange durchgeführt bis $\varDelta p < \varDelta p_\text{min}$ erfüllt ist. 
+Die berechneten Koeffizienten $a_{ij}$ werden dann benutzt um die internen Mapweights zu berechnen.
 \subsection{Anwendung}
 Das finden neuer Parameter durch den Optimizer, wird nur bei veränderten Layervotes und veränderten Einstellungen benötigt.
 Daher wird der Optimizer auch nur bei solchen Veränderungen vor der Generierung automatisch aufgerufen. 
