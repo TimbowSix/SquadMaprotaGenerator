@@ -110,11 +110,16 @@ class Metrics{
     }
     calc_moving_average(size){
         let output = []
-        for(let i=size-1;i<this.mr.maps.length;i++){
+        for(let i=size;i<this.mr.maps.length;i++){
             let sum = 0 
-            for(let j = 1;j<size;j++){
+            let t = []
+            for(let j = 1;j<=size;j++){
+                t.push(this.mr.maps[i-(j-1)].distances[this.mr.maps[i-j].name])
                 sum += this.mr.maps[i-(j-1)].distances[this.mr.maps[i-j].name]
             }
+            //console.log(t)
+            //console.log(sum/size)
+            //console.log(size)
             output.push(sum / size)
         }
         return output
@@ -201,7 +206,7 @@ class Metrics{
 
 if (require.main === module) {
     let temp = new Metrics(config)
-    fs.writeFileSync("test_map_distance_dist.json", JSON.stringify(temp.get_all_map_dist()))
+    fs.writeFileSync("test_moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
     //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
     //temp.get_patterns(2)
     //temp.get_patterns(3)
