@@ -1,5 +1,6 @@
 const config = require("../config.json");
 const gen = require("./generator.js");
+const utils = require("./utils.js")
 const fs = require("fs")
 
 class Metrics{
@@ -190,15 +191,29 @@ class Metrics{
             }
         }
 
-        let e = this.nr_of_rotas / Math.pow(this.mr.all_maps.length, size)
-
-
+        //let e = this.nr_of_rotas / Math.pow(this.mr.all_maps.length, size)
+        
         let temp = []
         for(let i of Object.keys(current_clusters)){
-            temp.push(current_clusters[i] / e)
+            temp.push(current_clusters[i])
         }
-    
-        fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(temp))
+
+        let out = {}
+        for(let t of temp){
+            if(Object.keys(out).includes(t+"")){
+                out[t+""]++
+            }else{
+                out[t+""] = 1
+            }
+        }
+
+        let output = []
+        for(let t of Object.keys(out)){
+            output.push(out[t] / this.mr.all_maps.length*(Math.pow((1/22), (size*t))))
+        }
+
+        
+        fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(output))
         return current_clusters
     }
 }
@@ -206,9 +221,9 @@ class Metrics{
 
 if (require.main === module) {
     let temp = new Metrics(config)
-    fs.writeFileSync("test_moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
+    //fs.writeFileSync("test_moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
     //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
-    //temp.get_patterns(2)
+    temp.get_patterns(2)
     //temp.get_patterns(3)
     //temp.get_patterns(4)
     //temp.get_patterns(5)

@@ -207,9 +207,16 @@ function formatLayer(layer){
     return `${map}_${mode}_${ver}`
 }
 
+function binomial(n, k){
+    let c = 1
+    for(let x = n-k+1; x <= n;x++) c *= x
+    for(x = 1; x <= k; x++) c /= x
+    return c
+}
+
 if (require.main === module) {
     let test =  "koKan_rAAs_v1"
     console.log(formatLayer(test))
 }
 
-module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid, sigmoidArr};
+module.exports = { choice, normalize, squareArr, sumArr, multiplyArr, formatLayer, round, get_random_dist, get_mode_dist_dict, create_UUID, get_maps_modi_dict, sigmoid, sigmoidArr, binomial};
