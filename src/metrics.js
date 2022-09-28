@@ -112,8 +112,8 @@ class Metrics{
         let output = []
         for(let i=size-1;i<this.mr.maps.length;i++){
             let sum = 0 
-            for(let j = 0;j<size;j++){
-                sum += this.mr.maps[i].distances[this.mr.maps[i-j].name]
+            for(let j = 1;j<size;j++){
+                sum += this.mr.maps[i-(j-1)].distances[this.mr.maps[i-j].name]
             }
             output.push(sum / size)
         }
@@ -176,9 +176,12 @@ class Metrics{
             }
         }
 
+        let e = this.nr_of_rotas / Math.pow(this.mr.all_maps.length, size)
+
+
         let temp = []
         for(let i of Object.keys(current_clusters)){
-            temp.push(current_clusters[i])
+            temp.push(current_clusters[i] / e)
         }
     
         fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(temp))
@@ -189,5 +192,9 @@ class Metrics{
 
 if (require.main === module) {
     let temp = new Metrics(config)
-    console.log(temp.get_patterns(5))
+    //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
+    temp.get_patterns(2)
+    temp.get_patterns(3)
+    temp.get_patterns(4)
+    temp.get_patterns(5)
 }
