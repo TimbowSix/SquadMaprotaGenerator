@@ -15,13 +15,12 @@
 
     \subsection{Ausblick}
         Der hier präsentierte Maprota Generator bietet einen guten Kompromiss zwischen Varianz und Beliebtheit der Maps. 
-        Allerdings gibt es natürlich immer noch Punkte die verbessert oder geändert werden könnten.
-        
+        Allerdings gibt es natürlich immer Punkte, die noch verbessert oder geändert werden könnten.
         % Distanzweight - Heatmap
-        Es besteht die Möglichkeit das Distanzweight durch eine stetige Funktion zu ersetzen. 
-        Zum Beispiel könnte beim Ziehen einer Map dem Punkt auf dem Kugelstück eine Temperatur $T(t)>0$ zuordnen werden,
+        Es besteht die Möglichkeit, das Distanzweight durch eine stetige Funktion zu ersetzen. 
+        Zum Beispiel könnte beim Ziehen einer Map dem Punkt auf dem Kugelstück eine Temperatur $T(t)>0$ zugeordnet werden,
         welche mit jeder weiteren gezogenen Map stückweise abnimmt.
-        Der dadurch könnte ein Wärmefluss auf der Kugel definiert werden und jeder Punkt bekommt eine Temperatur kleiner als die des getroffenen Punktes. 
+        Dadurch könnte ein Wärmefluss auf der Kugel definiert werden und jeder Punkt erhält eine Temperatur kleiner als die des getroffenen Punktes. 
         Daraus kann dann ein Weight bestimmt werden, 
         welches verschwindet für $T(t=0)$ und größer wird je \glqq{}kälter\grqq{} ein Punkt ist. 
         Dadurch wird eine stärkere Varianz zwischen den Maps erlaubt, 
@@ -36,9 +35,9 @@
         bietet und durch die asymmetrische Mapverteilung, auf den Settings, es zu Problemen in der endgültigen Verteilung kommen könnte.
 
         % gleicher Fraktion
-        Ein weiteres Feature welches sich schon öfter gewünscht wurde wäre, das Verhindern des \glqq{}Spielens der selben Fraktion\grqq{}.
+        Ein weiteres Feature, welches sich schon öfter gewünscht wurde, wäre, das Verhindern des \glqq{}Spielens der selben Fraktion\grqq{}.
         Es kann vorkommen, dass bei drei Maps hintereinander eine Fraktion jeweils einmal zwischen BLU- und OPFOR wechselt. 
-        Da der Spieler auch zwischen den Seiten, von Runde zu Runde wechselt, würde damit eine Fraktion dreimal hintereinander gespielt werden.
+        Da der Spieler auch zwischen den Seiten, von Runde zu Runde wechselt, würde damit die selbe Fraktion zwei oder sogar dreimal direkt hintereinander gespielt werden.
         Dies könnte durch leichte Modifikation des Generators implementiert werden. 
         Allerdings muss hier sichergestellt werden, dass die Map-Kombinationen welche in einen \glqq{}Leeren Pool valider Maps\grqq{} führen würde vernünftig gehandhabt wird.
 
