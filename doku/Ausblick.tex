@@ -1,37 +1,31 @@
 \section{Ein Blick in die Glaskugel}
     \subsection{Diskussion}
+    	In dieser Dokumentation wurde ein neuer Mapgenerator dargestellt welcher für mehr Varianz aber auch gleichzeitig gute Einhaltung der Mapbeliebtheiten einhält.
+        Dafür wurden zunächst Ziele definiert welche eine Rota erfüllen sollte. 
+        Dazu zählen Vermeiden von Wiederholungen ähnlicher Maps in kurzem Zeitraum und globale Verteilung welche Mapvotes repräsentiert.
+        Der Generator ist als Schicht-Modell aufgebaut, welcher zunächst den Modus, die Map und anschließend ein Layer zieht. 
+        Durch Einführung der Mapcharakteristiken können Maps auf Ähnlichkeit miteinander verglichen werden.
+        Gezogene Maps werden durch einen Memory Kernel für kurze Zeit gesperrt um ungewollte Mapwiederholungen zu vermeiden.
         
-    	In dieser Dokumentation wurde ein Algorithmus für eine verbesserten Maprota dargestellt.
-        Jedes der gesetzten Ziel wurde bestmöglich umgesetzt. 
-        Der Algorithmus achtet darauf, dass es eine gewisse Diversität zwischen aufeinander folgende Maps gibt.
-        Dafür  
+        Wie gezeigt wurde konnte mit dieser Implementierung die gewünschte Mapverteilung nach Mapvotes annähernd erreicht werden kann, jedoch nie perfekt widerspiegeln kann aufgrund des Sperrens der Maps.
+        Desweiteren konnte gezeigt werden dass die Entfernungen hintereinander gezogener Maps im Mittel die halbe Verfügbare Strecke benutzt und eine Varianz aufweist die nicht zu stark lokalisiert ist sodass es zu Patternbildung kommen könnte.
+        Letzteres wurde ebenfalls überprüft und es zeigt sich dass die Häufigkeit auftretender Patterns nicht abhängig von der Patternlänge zu sein scheint, was ein Indiez dafür ist dass es nicht zu starker Patternbildung kommen kann. 
 
-
-
-        Zudem wird garantiert, dass eine Map nicht in einem kurzen Zeitraum wiederholt wird. Es werden Muster in den 
-        Maps vermieden und die Layervotes haben einen direkten Einfluss auf die Generierung der Maprota.
-
-
-        Wir haben in diesem Papier das Problem der Maprota zu verbessern. 
-        wie funk der algo
-        map chara
-        mem colonel 
-        ergebnisse
-        bla bli blub
-
+        Alles in allem wurden alle Ziele die zuvor formuliert wurden erreicht und der Generator zeigt keine Abnormalitäten oder statistische Probleme auf.
 
     \subsection{Ausblick}
         Der hier präsentierte Maprota Generator bietet einen guten Kompromiss zwischen Varianz und Beliebtheit der Maps. 
-        Allerdings gibt es natürlich immer noch Punkte die verbessert oder geändert werden könnten.
+        Allerdings gibt es natürlich immer Punkte, die noch verbessert oder geändert werden könnten.
         % Distanzweight - Heatmap
-        Es besteht die Möglichkeit das Distanzweight durch eine stetige Funktion zu ersetzen. 
-        Zum Beispiel könnte beim Ziehen einer Map dem Punkt auf dem Kugelstück eine Temperatur $T(t)>0$ zuordnen werden,
+        Es besteht die Möglichkeit, das Distanzweight durch eine stetige Funktion zu ersetzen. 
+        Zum Beispiel könnte beim Ziehen einer Map dem Punkt auf dem Kugelstück eine Temperatur $T(t)>0$ zugeordnet werden,
         welche mit jeder weiteren gezogenen Map stückweise abnimmt.
-        Der dadurch könnte ein Wärmefluss auf der Kugel definiert werden und jeder Punkt bekommt eine Temperatur kleiner als die des getroffenen Punktes. 
+        Dadurch könnte ein Wärmefluss auf der Kugel definiert werden und jeder Punkt erhält eine Temperatur kleiner als die des getroffenen Punktes. 
         Daraus kann dann ein Weight bestimmt werden, 
         welches verschwindet für $T(t=0)$ und größer wird je \glqq{}kälter\grqq{} ein Punkt ist. 
         Dadurch wird eine stärkere Varianz zwischen den Maps erlaubt, 
         läuft aber auch Gefahr, dass eine ähnliche Map theoretisch gezogen werden könnte, abhängig von der verwendeten Verteilung.
+        
         % zwei kugeln
         Eine weitere Verbesserung wäre das Aufteilen der Mapcharakteristiken in \glqq{}Setting\grqq{} und \glqq{}Gameplay\grqq{} Charakter der Map. 
         So kann zum Beispiel mit dem Setting bewertet werden, ob es sich um \glqq{}Wüste\grqq{}oder \glqq{}Schnee\grqq{} handelt 
@@ -39,12 +33,14 @@
         Dies würde zur Verwendung von zwei Kugelflächenstücken führen aus denen dann ein gemeinsames Distanzweight errechnet wird. 
         Das Problem hierbei könnte darin bestehen, dass Squad eigentlich nur drei Settings (\glqq{}Wüste\grqq{}, \glqq{}Schnee\grqq{}, \glqq{}Gemäßigt\grqq{}) 
         bietet und durch die asymmetrische Mapverteilung, auf den Settings, es zu Problemen in der endgültigen Verteilung kommen könnte.
+
         % gleicher Fraktion
-        Ein weiteres Feature welches sich schon öfter gewünscht wurde wäre, das Verhindern des \glqq{}Spielens der selben Fraktion\grqq{}.
+        Ein weiteres Feature, welches sich schon öfter gewünscht wurde, wäre, das Verhindern des \glqq{}Spielens der selben Fraktion\grqq{}.
         Es kann vorkommen, dass bei drei Maps hintereinander eine Fraktion jeweils einmal zwischen BLU- und OPFOR wechselt. 
-        Da der Spieler auch zwischen den Seiten, von Runde zu Runde wechselt, würde damit eine Fraktion dreimal hintereinander gespielt werden.
+        Da der Spieler auch zwischen den Seiten, von Runde zu Runde wechselt, würde damit die selbe Fraktion zwei oder sogar dreimal direkt hintereinander gespielt werden.
         Dies könnte durch leichte Modifikation des Generators implementiert werden. 
         Allerdings muss hier sichergestellt werden, dass die Map-Kombinationen welche in einen \glqq{}Leeren Pool valider Maps\grqq{} führen würde vernünftig gehandhabt wird.
+
         % Entscheidung rein auf layerebene 
         Zu guter Letzt wäre noch die Möglichkeit, das ganze System so umzubauen, dass die Map-Schicht im Generator komplett auf die Layer-Schicht abbildet wird.
         Dadurch muss kein Mapvote mehr berechnet werden und es würde die Möglichkeit bestehen den ganzen Generator auf Layervotes basierend arbeiten zu lassen.
