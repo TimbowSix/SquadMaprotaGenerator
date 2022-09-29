@@ -54,13 +54,14 @@
             w_g = \mathbb{P}(G=g|P=p) = \mathbb{P}(G=g)\mathbb{P}(P=p)
         \end{equation}
         wobei hier $G$ und $P$ die Zufallsvariablen \glqq{}Gamemode\grqq{} und \glqq{}Pool\grqq{} darstellen sollen.
-        Durch das Modespacing ist die Wahrscheinlichkeit einen Modus zu ziehen gegeben durch 
-        \begin{equation}
-            \label{eq:Modeweight}
-            \mathbb{P}(G=g) = \frac{1}{N}\sum_{j=0}^{k_0}j\binom{N-j \Delta_g}{j}w_g^j(1-w_g)^{N-j(\Delta_g+1)}
-        \end{equation}
-        mit $w_g$ das oben definierte Weight, $N$ die Anzahl gezogener Layer und $k_0=\lfloor\frac{N}{N_0}\rfloor$ die maximale Anzahl an Zügen des Modus.
-        Der interessierte Leser vermag eine Herleitung im Anhang zu finden.
+        Durch das Modespacing ist die Wahrscheinlichkeit einen Modus zu ziehen ungleich größer als $w_g$. 
+        Dies muss bei der Wahl der Mode und Pool Wahrscheinlichkeiten beachtet werden.
+        % \begin{equation}
+        %     \label{eq:Modeweight}
+        %     \mathbb{P}(G=g) = \frac{1}{N}\sum_{j=0}^{k_0}j\binom{N-j \Delta_g}{j}w_g^j(1-w_g)^{N-j(\Delta_g+1)}
+        % \end{equation}
+        % mit $w_g$ das oben definierte Weight, $N$ die Anzahl gezogener Layer und $k_0=\lfloor\frac{N}{N_0}\rfloor$ die maximale Anzahl an Zügen des Modus.
+        % Der interessierte Leser vermag eine Herleitung im Anhang zu finden.
 
         Anschließend wird geprüft ob die Verfügbaren Maps den gewählten Modus enthalten. Sollte dies nicht der Fall sein so wird der Modus in einem Buffer gespeichert und es wird erneute ein Modus zufällig gewählt. 
         Der Buffer wird bei der nächsten Gelgenheit abgearbeitet.
