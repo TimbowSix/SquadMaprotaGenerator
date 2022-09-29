@@ -142,7 +142,7 @@
             Sollte eine Map näher als $d_\text{min}$ an einer zuvor gezogenen Map liegen, ist das Distanzweight und damit das Mapweight $0$ und wird damit nicht gezogen.        
         \subsubsection{Mapvoteweight}
             Das Mapvoteweight soll die Beliebtheit der Map repräsentieren. 
-            Es ist allerdings nicht die Mapwahrscheinlichkeit gemessen an den Votes sondern ein rein internes Weight. \todo{satz macht keine sinn oder ?}
+            Es ist allerdings nicht die Mapwahrscheinlichkeit gemessen an den Votes sondern ein rein internes Weight.
             Dies kommt daher, dass die Wahrscheinlichkeit eine Map zu ziehen durch den Memory Kernel und das Distanzweight stark nicht-linear vom Mapvoteweight abhängt und damit keine 1-zu-1 Relation gegeben ist.
             Die internen Weights müssen so gewählt sein, dass die Mapwahrscheinlichkeit zu der vorhergesagten Mapwahrscheinlichkeit passt. 
             Leider ist dieses Problem nichtmehr geschlossen analytisch lösbar und benötigt numerische Lösungsmethoden. 
@@ -182,7 +182,7 @@
                 \begin{equation}
                     S(w) = \frac{1}{1+\exp\left(-a(w+b)\right)}
                 \end{equation}
-                nun das neue Mapvoteweight \todo{ das Mapvoteweight wurde vorher als was anders beschrieben} ist. $a$ und $b$ sind zwei freie Parameter welche die Steigung und den Offset beeinflussen. 
+                nun das Weight ist aus dem die Mapwahrscheinlichkeit errechnet wird welche nur von den Layervotes abhängen. $a$ und $b$ sind zwei freie Parameter welche die Steigung und den Offset beeinflussen. 
                 Die Funktion bildet große $w$ auf $1$ ab und kleine $w$ auf $0$. 
                 Werte die näher an der Null sind werden damit auf das Intervall zwischen den Randpunten abgebildet.
                 Damit kann die Mapwahrscheinlichkeit durch die Votes kontinuierlich angepasst werden und eine Map \glqq{}verschwindet\grqq{} erst nach mehreren negativen Votes aus der Rotation.
@@ -210,7 +210,7 @@
             Um das Wiederholen von Maps zu vermeiden wird ein Memory Kernel (\glqq{}Gedächtnis\grqq{}) verwendet. 
             Das heißt, wenn ein Layer gezogen wurde, so wird die zum Layer zugeordnete Map in den Kernel gelegt. 
             Das wird wiederholt, bis dieser mit einer Maximalen Anzahl an Maps gefüllt ist. 
-            Dies wird dadurch implementiert, dass das Mapweight \todo{meinst du hier vielleicht das Distanzweight ?} effektiv $0$ ist für diese Map solange diese noch im Gedächtnis bleibt.
+            Dies wird dadurch implementiert, dass das Mapweight effektiv $0$ ist für diese Map solange diese noch im Gedächtnis bleibt.
             Wenn nun in einem Modus eine Map gezogen wird, so darf diese nicht im Kernel liegen
         \subsubsection{Auswahl der Map}
             Nachdem nun alles notwendige definiert wurde wird kurz beschreiben wie eine Map gezogen wird.
@@ -221,7 +221,7 @@
             \end{itemize}
     \subsection{Aufbau im Detail - Layer}
     Sobald eine Map ausgewählt wurde, wird das Layer gewichtet nach dem Layerweights $w_l$ gezogen. 
-    Diese hängen nur von den Mapvotes \todo{seit wann hängen Layervotes von mapvotes ab ?} ab, welche mit der vorher genannten Sigmoidfunktion moduliert werden.
+    Diese hängen nur von den Layervotes ab, welche mit der vorher genannten Sigmoidfunktion moduliert werden.
     Damit ist dann für $N_l$ Layer einer Map 
     \begin{equation}
         w_l(j) = \frac{1}{\sum_{m=0}^{N_l}\frac{1}{\sum_{m=0}^{N_l}\left[1+\exp\left(-a(v_m+b)\right)\right]}}\frac{1}{1+\exp\left(-a(v_j+b)\right)}
