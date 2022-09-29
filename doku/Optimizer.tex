@@ -1,5 +1,6 @@
 \section{Optimizer}
-Der Optimizer ist ein entstandenes U-Boot Projekt, welches gute Parameter für \todo{wo gleichung für ref} die Mapweightgleichungen \todo{ref} findet.
+\label{sub:optimizer}
+Der Optimizer ist ein entstandenes U-Boot Projekt, welches gute Parameter für die Mapweightgleichungen \ref{eq:mapweight} findet.
 Die Bestimmung optimaler Parameter sind entscheidend für eine gute Annäherung der generierten Mapverteilung an die Erwartete.
 Wahrscheinlich wäre es möglich, die Parameter analytisch zu ermitteln. Da dieses aber sehr zeitintensiv sein würde, 
 haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machine Learning\grqq{} Algorithmus entschieden. 
@@ -7,7 +8,7 @@ haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machin
 Der Optimizer sucht nach der kleinste Abweichung zwischen der vorgegebenen und generierten Mapverteilung. 
 Es wird jeweils nur ein Modus betrachtet und optimiert.
 
-Der zu betrachtende Optimizer ist als Maß der Abweichung der ''Soll-Mapverteilung'' und der Mapverteilung des Generators gedacht. 
+Der zu betrachtende Optimizer ist als Maß der Abweichung der \glqq{}Soll-Mapverteilung\grqq{} und der Mapverteilung des Generators gedacht. 
 Es seien $p_i^\text{fi}$ die Mapwahrscheinlichkeiten errechnet nach den Mapvotes und $p_i^\text{gen}$ die Mapwahrscheinlichkeiten nach dem Mapgenerator, sodass $\sum_i p_i^\text{fi/gen}=1$.
 Da die Generator-Wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(a_{ij})$ eine Funktion der Weight-Koeffizienten. 
 Es gilt nun diese so zu Optimieren, dass der Optimizer 
@@ -37,4 +38,4 @@ Die berechneten Koeffizienten $a_{ij}$ werden dann benutzt um die internen Mapwe
 \subsection{Anwendung}
 Das Finden neuer Parameter durch den Optimizer wird nur bei veränderten Layervotes und veränderten Einstellungen benötigt.
 Daher wird der Optimizer auch nur bei solchen Veränderungen vor der Generierung automatisch aufgerufen. 
-Für eine geringere Laufzeit wird die Optimizer parallel mit jedem Modus ausgeführt.
+Für eine geringere Laufzeit wird die Optimizer parallel für jedem Modus ausgeführt.

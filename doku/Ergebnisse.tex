@@ -14,10 +14,10 @@
         Es folgt die Auswertung der Maprota anhand vorgegebenen Einstellungswerten.\\
 
         \subsubsection{Mapverteilung}
-            Die Mapverteilung wird von den Layervotes beeinflusst, dieses ist in Kapitel \ref{} \todo{ref} nachzulesen.
-            Diese Verteilung ist die Vorgabe für das System und dieses versucht es optimal anzunähern. Da durch die 
+            Die Mapverteilung wird von den Layervotes beeinflusst, dieses ist in Kapitel \ref{sub:AufbauImDetail-Map} nachzulesen.
+            Diese Verteilung ist die Vorgabe für das System und es wird eine optimale Annäherung angestrebt. Da durch die 
             Zielvorgaben die Verteilungsvorgabe nicht immer erreicht werden kann, tritt eine Abweichung in der Verteilung auf.
-            Diese Abweichung wird hier als mittlere quadratische Abweichung (MSD) \todo{ac?} pro Modus angegeben.
+            Diese Abweichung wird hier als mittlere quadratische Abweichung (MSD) pro Modus angegeben.
             Für diese Auswertung wurden den Verteilungen genommen, die aus den Layervotes vom 19.09.2022 entstanden sind.
             Dabei ist zu beachten, dass der Modus TC zu diesem Zeitpunkt \glqq{}Verbugged\grqq{} ist und daher 
             in der Tabelle \ref{t:Ergebnisse:fehler_Mapverteilung} nicht auftaucht.\\
@@ -43,9 +43,9 @@
                 \label{t:Ergebnisse:fehler_Mapverteilung}
             \end{table}
             
-            Um eine Vorstellung zu Entwickeln wird im Folgenden die angestrebte und generierte Verteilung als 
+            Um eine Vorstellung für die Zahlen zu Entwickeln wird im Folgenden die angestrebte und generierte Verteilung als 
             Diagramm dargestellt (siehe Abbildung \ref{fig:expected_mapverteilung_raas} 
-            und Abbildung \ref{fig:generated_mapverteilung_raas}).
+            und \ref{fig:generated_mapverteilung_raas}).
 
             \begin{figure}[htbp]
                 \centering
@@ -62,24 +62,23 @@
             \end{figure}
 
             Bei der Betrachtung der Diagramme 
-            (Abbildung \ref{fig:expected_mapverteilung_raas} und Abbildung \ref{fig:generated_mapverteilung_raas}) 
             ist zu beachten, dass es sich hier nur um den Modus RAAS handelt.
             Beispielsweise ist die Karte AlBashrah hier deutlich unterrepräsentiert. Dies ist im Modus Invasion
             nicht der Fall, da die Layervotes dort für AlBashrah deutlich besser ausfallen.
             Zudem lässt sich erkennen, dass die Karte Yehorivka, Blackcoast und Gorodok nicht den angestrebten
-            Verteilung erreichen. Dieses Phänomen \ref{s:grenzen_des_systems} näher behandelt.
+            Verteilung erreichen. Dieses Phänomen wird im Abschnitt \ref{s:grenzen_des_systems} näher behandelt.
 
-        \subsubsection{Mode/Modus verteilung}
+        \subsubsection{Mode/Modus Verteilung}
             Wie bei den Mapverteilungen kann bei den Modusverteilungen die mittlere quadratische Abweichung als
-            quantifizierendes Mitteln genommen werden. Bei den Modi ergibt sich eine MSD = $0.04514$.
+            quantifizierendes Mitteln genommen werden. Bei den Modi ergibt sich eine MSD von $0.04514$.
             Dieser Wert ist für die vorgesehenen Einstellparameter akzeptabel, da Modi die nicht RAAS oder AAS sind
-            einen Mindestabstand haben. In diesem Falle ist dieser Abstand 4 Runden.
+            einen Mindestabstand haben. In diesem Falle ist dieser Abstand 4 Runden.\\
+            Es ist zu beachten, dass durch Formel \ref{eq:Modeweight} der Ausgangswahrscheinlichkeiten bestimmt werden kann.
         \subsubsection{Varriation der Maps}
             Für den die Messbarkeit, der Differenz aufeinander folgende Maps, kann das arithmetische Mittel der Distanzen
             auf der Hyperfläche genutzt werden. Zudem ist es noch sinnvoll sich den gleitenden Mittelwert der Distanzen
             zu betrachten.\\
             Das arithmetische Mittel der Distanzen beträgt $d_m = 1.08946$\\
-            \todo{Bewertung das wertes}
             Die Betrachtung des gleitenden Mittelwertes ergibt sich für eine Mittelwertbreite von 5 und einer Rota mit 100000 Layern
             eine Verteilung die auf Abbildung \ref{fig:haufigkeit_gleitender_mittelwert} zu sehen ist.
             
@@ -90,14 +89,21 @@
                 \label{fig:haufigkeit_gleitender_mittelwert}
             \end{figure}
             
-            \todo{bewertung des histograms}
+            Die auf Abbildung \ref{fig:haufigkeit_gleitender_mittelwert} zusehende Normalverteilung zeigt das sich die höchste 
+            Häufigkeit zwischen dem eingestellten Minimum (0.4) und dem durch die Kugel gegebenen Maximum ($\pi/2$) befindet.
+            Die Lage der Normalverteilung zeigt, dass es ein gutes Maß an Diversität gibt. Zudem ist die
+            Verteilung nicht nahe am Maximalrand welches eine Patternbildung begünstigen würde.
+
+
+        \subsection{Patternbildung}
+            blub \todo{noch schreiben}
 
         \subsubsection{Map Wiederholung}
             Das nächste und hier letzte benutzte Mittel, um eine Maprota zu bewerten ist, nach wie vielen Runden sich eine Map
             wiederholt. Hierfür wurde eine Histogramm aus einer 100000 Layer Rota erstellt.
             Die Abbildung \ref{fig:haufigkeit_der_map_wiederholung} zeigt die Häufigkeit einer Map Wiederholung. Es ergibt sich ein
             Minimum von 3 Runden bevor sich eine Map wiederholen kann. Am Häufigsten ist jedoch eine Map Wiederholung nach 6 bis 9 Runden.
-            Dabei muss bedacht werden, das Squad aktuell (09.2022) spielbare Maps beinhaltet. Daher ist dieses ein gutes Wiederholverhalten.
+            Dabei muss bedacht werden, das Squad aktuell (09.2022) 22 spielbare Maps beinhaltet. Daher ist dieses ein gutes Wiederholverhalten.
 
             \begin{figure}[htbp]
                 \centering
@@ -118,7 +124,7 @@
         der Maprotation angenommenen Verteilung, bildet aber einen Konflikt mit dem Ziel, dass die Maps eine gewisse Diversität
         bieten sollen. Daher sind an der Stelle die Möglichkeiten das Systems beschränkt und die Voteverteilung kann 
         nicht immer voll in einer generierten Rotation abgebildet werden. Maps, die sehr viele Upvotes erhalten, können nur so oft drankommen,
-        wie es die Clusterstruktur und die Locktime zulässt. Dieser Aspekt des Systems muss aber nicht als negativer Punkt 
+        wie es Distanzweight $w_d$ und der Memory Kernel zulässt. Dieser Aspekt des Systems muss aber nicht als negativer Punkt 
         aufgefasst werden, denn niemand möchte dauerhaft nur eine einzige Map spielen (solange es nicht GooseBay ist). 
         Dieses \glqq{}Feature\grqq{} wirkt damit aktiv gegen die Befürchtung, welche im Vorfeld angesprochen wurde,
         dass nur noch sehr beliebte Maps wie Yehorivka und Gorodok drankommen.
