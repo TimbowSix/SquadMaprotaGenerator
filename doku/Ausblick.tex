@@ -1,15 +1,19 @@
-\section{Ein Blick in die Glaskugel}
+\section{Zusammenfassung}
     \subsection{Diskussion}
-    	In dieser Dokumentation wurde ein neuer Mapgenerator dargestellt welcher für mehr Varianz aber auch gleichzeitig gute Einhaltung der Mapbeliebtheiten einhält.
-        Dafür wurden zunächst Ziele definiert welche eine Rota erfüllen sollte. 
+    	In dieser Dokumentation wurde ein neuer Mapgenerator dargestellt, welcher für mehr Varianz aber auch gleichzeitig gute Einhaltung der Mapbeliebtheiten einhält.
+        Dafür wurden zunächst Ziele definiert, welche eine Rota erfüllen sollte. 
         Dazu zählen Vermeiden von Wiederholungen ähnlicher Maps in kurzem Zeitraum und globale Verteilung welche Mapvotes repräsentiert.
         Der Generator ist als Schicht-Modell aufgebaut, welcher zunächst den Modus, die Map und anschließend ein Layer zieht. 
         Durch Einführung der Mapcharakteristiken können Maps auf Ähnlichkeit miteinander verglichen werden.
         Gezogene Maps werden durch einen Memory Kernel für kurze Zeit gesperrt um ungewollte Mapwiederholungen zu vermeiden.
         
-        Wie gezeigt wurde konnte mit dieser Implementierung die gewünschte Mapverteilung nach Mapvotes annähernd erreicht werden kann, jedoch nie perfekt widerspiegeln kann aufgrund des Sperrens der Maps.
-        Desweiteren konnte gezeigt werden dass die Entfernungen hintereinander gezogener Maps im Mittel die halbe Verfügbare Strecke benutzt und eine Varianz aufweist die nicht zu stark lokalisiert ist sodass es zu Patternbildung kommen könnte.
-        Letzteres wurde ebenfalls überprüft und es zeigt sich dass die Häufigkeit auftretender Patterns nicht abhängig von der Patternlänge zu sein scheint, was ein Indiez dafür ist dass es nicht zu starker Patternbildung kommen kann. 
+        Wie gezeigt wurde konnte mit dieser Implementierung die gewünschte Mapverteilung nach Mapvotes annähernd erreicht werden kann, 
+        jedoch nie perfekt widerspiegeln kann aufgrund des Sperrens der Maps.
+        Des Weiteren konnte gezeigt werden,
+        dass die Entfernungen hintereinander gezogener Maps im Mittel die halbe Verfügbare Strecke benutzt und eine Varianz aufweist die nicht zu stark lokalisiert ist, 
+        sodass es zu Patternbildung kommen könnte.
+        Letzteres wurde ebenfalls überprüft und es zeigt sich, 
+        dass die Häufigkeit auftretender Patterns nicht abhängig von der Patternlänge zu sein scheint, was ein Indiez dafür ist dass es nicht zu starker Patternbildung kommen kann. 
 
         Alles in allem wurden alle Ziele die zuvor formuliert wurden erreicht und der Generator zeigt keine Abnormalitäten oder statistische Probleme auf.
 
