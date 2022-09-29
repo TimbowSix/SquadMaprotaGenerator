@@ -3,8 +3,6 @@ const statistics = require("./statistics.js")
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 const crypto = require("crypto");
-const { normalize } = require('path');
-
 
 function initialize_maps(config, use_map_weights=true){
     let layers

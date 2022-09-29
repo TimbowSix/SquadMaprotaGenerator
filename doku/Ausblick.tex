@@ -21,6 +21,27 @@
 
 
     \subsection{Ausblick}
-        % was könnte man noch besser machen 
-        % zwei Kugeln setting und Gameplay
-        % zweimal die gleich Fraktion und warum schwierig
+        Der hier präsentierte Maprota Generator bietet einen guten Kompromiss zwischen Varianz und Beliebtheit der Maps. 
+        Allerdings gibt es natürlich immernoch Punkte die verbessert oder geändert werden könnten.
+        % Distanzweight - Heatmap
+        Es besteht die möglichkeit das Distanzweight durch eine stetige Funktion zu ersetzen. 
+        Zum Beispiel könnte man beim Ziehen einer Map dem Punkt auf dem Kugelstück eine Temperatur $T(t)>0$ zuordnen welche mit jeder weiteren gezogenen Map stückweise abnimmt.
+        Dadurch definiert man einen Wärmefluss auf der Kugel und jeder Punkt bekommt eine Temperatur kleiner als die des getroffenen Punktes. 
+        Daraus kann dann ein Weight bestimmt werden, welches verschwindet für $T(t=0)$ und größer wird je ''kälter'' ein Punkt ist. 
+        Dadurch erlaubt man eine stärkere Varianz zwischen den Maps, läuft aber auch gefahr dass eine ähnliche Map theoretisch gezogen werden könnte, abhängig von der verwendeten Verteilung.
+        % zwei kugeln
+        Eine weitere Verbesserung wäre das Aufteilen der Mapcharakteristiken in ''Setting'' und ''Gameplay'' Charakter der Map. 
+        So kann zum Beispiel mit dem Setting bewertet werden ob es sich um "Wüste" oder "Schnee" handelt und mit dem Gameplay Charakter ob die Map offen ist, Fahrzeug- oder Infanterielastig ist usw. 
+        Dies würde zur verwendung von zwei Kugelflächenstücken führen aus denen dann ein gemeinsames Distanzweight errechnet wird. 
+        Das Problem hierbei könnte darin bestehen dass Squad eigentlich nur drei Settings (''Wüste'', ''Schnee'', ''Gemäßigt'') bietet und durch die asymmetrische Mapverteilung auf den Settings es zu Problemen in der endgültigen Verteilung kommen könnte.
+        % gleicher Fraktion
+        Ein weiteres Feature welches sich schon öfter gewünscht wurde wäre das verhindern des ''Spielens der selben Fraktion''.
+        Es kann vorkommen dass bei drei Maps hintereinander eine Fraktion jeweils einmal zwischen BLU- und OPFOR wechselt. 
+        Da der Spieler auch zwischen den Seiten von Runde zu Runde wechselt würde damit eine Fraktion dreimal hintereinander gespielt werden.
+        Dies könnte durch leichte Modifikation des Generators implementiert werden. 
+        Allerdings muss hier sichergestellt werden, dass man die Map-Kombinationen welche in einen ''Leeren Pool valider Maps'' führen vernünftig handhabt.
+        % Entscheidung rein auf layerebene 
+        Zu guter letzt wäre noch die Möglichkeit das ganze System so umzubauen das man die Map-Schicht im Generator komplett auf die Layer-Schicht abbildet.
+        Dadruch muss kein Mapvote mehr berechnet werden und man kann den ganzen Generator auf Layervotes basierend arbeiten lassen.
+        Da die internen Weights allerdings numerisch gelöst werden müssen sorgt dies für eine extrem große Laufzeit des Optimizers.
+        Insbesondere ist auch nicht sicher ob das interne Weight immernoch einer einfachen Polynom-Näherung folgen kann und wie viele Abhängigkeiten an Generator-Parameter wie ''Anzahl Mapnachbarn'' es geben wird. 
