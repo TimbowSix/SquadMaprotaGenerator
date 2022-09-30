@@ -14,11 +14,14 @@ function main(){
     }
     console.log("Starting Rota generation")
     console.time("Generation Time")
+    if (!fs.existsSync(config["output_path"])){
+        fs.mkdirSync(config["output_path"]);
+    }
     for(let i=0; i<config["number_of_rotas"]; i++){
         console.log(`generate rotation ${i+1}/${config["number_of_rotas"]}`)
         let gen = new generator.Maprota(config)
         let rota = gen.generate_rota()
-        fs.writeFileSync(`layer_${i+1}.cfg`, rota.join("\n"))
+        fs.writeFileSync(`${config["output_path"]}layer_${i+1}.cfg`, rota.join("\n"))
     }
     console.log("Generation complete")
     console.timeEnd("Generation Time")

@@ -3,6 +3,7 @@
     "number_of_layers": 30,
     "seed_layer": 2,
     "update_layers": true,
+    "output_path":"./output/",
     "mode_distribution":
     {
         "pools":
