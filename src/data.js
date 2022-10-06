@@ -16,7 +16,7 @@ function initialize_maps(config, use_map_weights=true){
     bioms = parse_map_size(bioms)
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
-    
+
     let modes = new Set()
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // error map if no layers available
@@ -35,7 +35,7 @@ function initialize_maps(config, use_map_weights=true){
         map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
         maps.push(map)
 
-        
+
         for(let mode in map.layers) modes.add(mode)
     }
     //check if for every mode in config is at least one map available
@@ -45,7 +45,7 @@ function initialize_maps(config, use_map_weights=true){
         if(!(modes.has(mode))) throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
     }
 
-    //init neighbors 
+    //init neighbors
     let cluster_radius = config["min_biom_distance"]
     for(let i=0;i<maps.length;i++){
         maps[i].neighbors = [];
@@ -103,7 +103,7 @@ function initialize_maps(config, use_map_weights=true){
         }
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
     }
-    
+
     //calculate cluster overlap
     function parse_neighbors(arr){
         let out = []
@@ -136,22 +136,22 @@ function initialize_maps(config, use_map_weights=true){
         for(let map of maps){
             for(let mode in map.layers){
                 let params = []
-                for(i=0;i<weight_params[mode].length; i++) params.push(0) //compatibility 
+                for(i=0;i<weight_params[mode].length; i++) params.push(0) //compatibility
                 map.calculate_map_weight(mode, params)
             }
         }
     }
 
     // TODO pro mode?
-    //check for settings feasibility 
+    //check for settings feasibility
 
-    //get main pool an intermediate pool modes 
+    //get main pool an intermediate pool modes
     let tempModes = Object.keys(config["mode_distribution"]["pools"]["main"])
     tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
     tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
 
 
-    //calc max locktime from dist  
+    //calc max locktime from dist
     for(let mode in mode_probs){
         for(let map of maps){
             if(Object.keys(mode_probs[mode]).includes(map.name)){
@@ -196,7 +196,7 @@ class Map{
         this.vote_weights_by_mode = {}
         //for optimizer
         this.distribution = 0
-        
+
         this.cluster_overlap = 0 //pro mode?
 
     }
@@ -214,7 +214,7 @@ class Map{
     }
     add_mapvote_weights(slope=1, shift=0){
         if(this.layers.length == 0) {
-            console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`); 
+            console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`);
             return
         }
         let votesum = {}
@@ -244,8 +244,8 @@ class Map{
     }
     /**
      * calculate layervotes to weights
-     * @param {float} sigmoid_slope 
-     * @param {float} sigmoid_shift 
+     * @param {float} sigmoid_slope
+     * @param {float} sigmoid_shift
      */
     calculate_vote_weights_by_mode(sigmoid_slope=1, sigmoid_shift=0){
         if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
@@ -283,8 +283,8 @@ function get_mode_to_pools_dict(config){
     let temp = {}
     for(let mode_group of Object.keys(config["mode_distribution"]["pools"])){
         if(mode_group != null){
-            for(let mode of Object.keys(config["mode_distribution"]["pools"][mode_group])){               
-                temp[mode] = mode_group 
+            for(let mode of Object.keys(config["mode_distribution"]["pools"][mode_group])){
+                temp[mode] = mode_group
             }
         }
     }
@@ -292,8 +292,8 @@ function get_mode_to_pools_dict(config){
 }
 
 function get_layers(){
-    let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
-    let data = get_data(theUrl)
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    let data = get_data(config.layer_vote_api_url)
     let layers = data["AxisLabels"]
     let upvotes = data["DataSet"][0]
     let downvotes = data["DataSet"][1]
@@ -338,7 +338,7 @@ function check_changes(){
     check["bioms"] = crypto.createHash("md5").update(JSON.stringify(JSON.parse(fs.readFileSync("./data/bioms.json")))).digest("hex")
     let c_config = {}
     c_config["biom_spacing"] = config["biom_spacing"]
-    c_config["mode_distribution"] = config["mode_distribution"] 
+    c_config["mode_distribution"] = config["mode_distribution"]
     c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
     check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
     if (crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
@@ -353,7 +353,9 @@ function get_data(url){
 
 // Test Stuff here
 if (require.main === module) {
-    console.log(get_data("https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"))
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    let data = get_data(config.layer_vote_api_url)
+    console.log(data)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, check_changes };

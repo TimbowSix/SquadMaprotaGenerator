@@ -4,27 +4,28 @@
     "seed_layer": 2,
     "update_layers": true,
     "output_path":"./output/",
+    "layer_vote_api_url": "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req",
     "mode_distribution":
     {
         "pools":
         {
-            "main": 
+            "main":
             {
                 "AAS": 0.5,
                 "RAAS": 0.5
             },
-            "intermediate": 
+            "intermediate":
             {
                 "Invasion": 1,
                 "TC": 0
             },
-            "rest": 
+            "rest":
             {
                 "Insurgency": 0.9,
                 "Destruction": 0.1
             }
         },
-        "pool_distribution": 
+        "pool_distribution":
         {
             "main": 0.65,
             "intermediate": 0.25,
