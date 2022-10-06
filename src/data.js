@@ -1,8 +1,8 @@
 const fs = require('fs')
 const statistics = require("./statistics.js")
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const utils = require("./utils.js")
 const crypto = require("crypto");
+const fetch = require("sync-fetch")
 
 function initialize_maps(config, use_map_weights=true){
     let layers
@@ -293,11 +293,7 @@ function get_mode_to_pools_dict(config){
 
 function get_layers(){
     let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
-    let xmlHttpReq = new XMLHttpRequest();
-    xmlHttpReq.open("GET", theUrl, false);
-    xmlHttpReq.send(null);
-
-    let data = JSON.parse(xmlHttpReq.responseText)
+    let data = get_data(theUrl)
     let layers = data["AxisLabels"]
     let upvotes = data["DataSet"][0]
     let downvotes = data["DataSet"][1]
@@ -351,12 +347,13 @@ function check_changes(){
     }else return false
 }
 
+function get_data(url){
+    return fetch(url).json()
+}
+
 // Test Stuff here
 if (require.main === module) {
-    //save_mapweights()
-    let bioms = require("../data/bioms.json")
-    console.log(parse_map_size(bioms))
-    //console.log(maps[1].map_weight)
+    console.log(get_data("https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"))
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, check_changes };
