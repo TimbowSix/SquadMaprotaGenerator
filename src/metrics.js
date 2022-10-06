@@ -6,7 +6,7 @@ const fs = require("fs")
 class Metrics{
     constructor(config){
         this.config = config
-        this.nr_of_rotas = 100000
+        this.nr_of_rotas = 10
 
         this.config["number_of_rotas"] = 1
         this.config["number_of_layers"] = this.nr_of_rotas
@@ -197,7 +197,7 @@ class Metrics{
         for(let i of Object.keys(current_clusters)){
             temp.push(current_clusters[i])
         }
-
+        /*
         let out = {}
         for(let t of temp){
             if(Object.keys(out).includes(t+"")){
@@ -207,14 +207,25 @@ class Metrics{
             }
         }
 
-        let output = []
-        for(let t of Object.keys(out)){
-            output.push(out[t] / this.mr.all_maps.length*(Math.pow((1/22), (size*t))))
-        }
+        console.log(out)
+
+        let output = {}
+        for(let x of Object.keys(out)){
+            //output.push(out[t] / this.mr.all_maps.length*(Math.pow((1/22), (size*t))))
+            let p = (Math.pow((1/22), size))
+            //console.log("out "+out[x])
+            console.log(utils.binomial(this.nr_of_rotas, x)+" "+Math.pow(p,x)+" "+Math.pow((1-p),(this.nr_of_rotas-x)))
+            //console.log("blub "+utils.binomial(this.mr.all_maps.length, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * 22)
+            console.log((utils.binomial(this.nr_of_rotas, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * this.nr_of_rotas))
+            output[x] = (out[x] / (utils.binomial(this.nr_of_rotas, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * this.nr_of_rotas))
+        }*/
 
         
-        fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(output))
+        fs.writeFileSync("test_patterns_"+size+".json",JSON.stringify(temp))
         return current_clusters
+    }
+    blub(n, x, p){
+        return (utils.binomial(n, x)*Math.pow(p,x)*Math.pow((1-p),(n-x)))
     }
 }
 
@@ -223,8 +234,8 @@ if (require.main === module) {
     let temp = new Metrics(config)
     //fs.writeFileSync("test_moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
     //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
-    temp.get_patterns(2)
+    //temp.get_patterns(2)
     //temp.get_patterns(3)
     //temp.get_patterns(4)
-    //temp.get_patterns(5)
+    temp.get_patterns(2)
 }
