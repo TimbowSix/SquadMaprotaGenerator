@@ -1,9 +1,11 @@
 const {Worker, parentPort} = require('node:worker_threads')
 const opt = require('./optimizer.js')
 const fs = require("fs")
-const config = require("../config.json")
+//const config = require("../config.json")
 const utils = require('./utils.js')
 const gen = require('./generator.js')
+const data = require("./data.js")
+const config = data.build_config()
 
 let final_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
 let workers = []
@@ -25,9 +27,9 @@ class WorkerEntry{
         this.done = false
         this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset, "runIndex": this.runIndex} }); //reset = true map_weights reset to 0 else the weights from file
         this.worker.on('message', (msg) => {
-            
+
             //save result
-            final_params[this.mode] = msg 
+            final_params[this.mode] = msg
 
             //check if all done
             this.done = true
@@ -39,7 +41,7 @@ class WorkerEntry{
             }
 
             if(allDone){
-                //No Series run for the start 
+                //No Series run for the start
                 //parallel_optimizer.runSeries()
                 //save params
                 fs.writeFileSync("./data/weight_params.json", JSON.stringify(final_params,null,2))
@@ -66,7 +68,7 @@ class WorkerEntry{
 
 class OptimizerParallelOrganizer{
     constructor(modes = [], dist_all = null, runIndex, finish_callback){
-        //modes must be sorted by maps size per mode 
+        //modes must be sorted by maps size per mode
         this.dist_all = dist_all
         this.runIndex = runIndex
         for(let mode of modes){

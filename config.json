@@ -8,23 +8,23 @@
     {
         "pools":
         {
-            "main": 
+            "main":
             {
                 "AAS": 0.5,
                 "RAAS": 0.5
             },
-            "intermediate": 
+            "intermediate":
             {
-                "Invasion": 1,
-                "TC": 0
+                "Invasion": 0.8,
+                "TC": 0.2
             },
-            "rest": 
+            "rest":
             {
                 "Insurgency": 0.9,
                 "Destruction": 0.1
             }
         },
-        "pool_distribution": 
+        "pool_distribution":
         {
             "main": 0.65,
             "intermediate": 0.25,
@@ -33,6 +33,30 @@
         "pool_spacing": 4,
         "space_main": true
     },
+    "maps": [
+        "AlBasrah",
+        "Anvil",
+        "Belaya",
+        "BlackCoast",
+        "Chora",
+        "Fallujah",
+        "FoolsRoad",
+        "GooseBay",
+        "Gorodok",
+        "Kamdesh",
+        "Kohat",
+        "Kokan",
+        "LashkarValley",
+        "Logar",
+        "Manic",
+        "Mestia",
+        "Mutaha",
+        "Narva",
+        "Skorpo",
+        "Sumari",
+        "Tallil",
+        "Yehorivka"
+    ],
     "biom_spacing": 4,
     "min_biom_distance": 0.4,
     "mapvote_slope": 0.15,
@@ -43,5 +67,6 @@
     "use_map_weight": true,
     "save_expected_map_dist": true,
     "use_lock_time_modifier": true,
-    "auto_optimize": true
+    "auto_optimize": true,
+    "fix_unavailables": true
 }

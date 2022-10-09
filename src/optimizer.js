@@ -1,6 +1,8 @@
 let utils = require("./utils.js")
 let gen = require("./generator.js")
-let config = require("../config.json")
+//let config = require("../config.json")
+const data = require("./data.js")
+const config = data.build_config()
 let weight_params = require("../data/weight_params.json")
 let fs = require("fs");
 
@@ -25,9 +27,9 @@ class Optimizer{
 
         this.uuid = utils.create_UUID()
 
-    
+
         this.generator = new gen.Maprota(this.config);
-        
+
         //set requested distribution
         this.desired_dist = {};
         if(distribution == null){
@@ -95,7 +97,7 @@ class Optimizer{
         if(this.delta <= lowestDelta){
             return
         }
-       
+
         this.update_map_weights_and_formula(currentIndex, true);
         this.generator.generate_rota();
         this.update_dist();
@@ -122,12 +124,12 @@ class Optimizer{
             this.update_map_weights_and_formula(currentIndex, false);
             //check negative direction
             let cMinM = this.currentMin;
-            
+
             this.update_map_weights_and_formula(currentIndex, false);
             this.generator.generate_rota();
             this.update_dist();
             cMinM = this.calc_current_norm();
-            
+
 
             if(cMinM < this.currentMin){
                 this.currentMin = cMinM
@@ -145,9 +147,9 @@ class Optimizer{
                 this.save_maps();
                 this.optimize_recursive(currentIndex,lowestDelta, true)
             }else{
-                
+
                 this.update_map_weights_and_formula(currentIndex, true);
-                
+
                 currentIndex++
                 if(currentIndex >= this.weight_params[this.current_mode].length){
                     currentIndex = 0
@@ -167,12 +169,12 @@ class Optimizer{
     }
 
     update_map_weights_and_formula(paramIndex, up){
-        
+
         //update param in formula
         if(up){
-            this.weight_params[this.current_mode][paramIndex] += this.delta 
+            this.weight_params[this.current_mode][paramIndex] += this.delta
         }else{
-            this.weight_params[this.current_mode][paramIndex] -= this.delta 
+            this.weight_params[this.current_mode][paramIndex] -= this.delta
         }
         //update map weights
         for(let map of this.generator.all_maps){
@@ -232,7 +234,7 @@ class Optimizer{
             map.distribution /= tempSum;
         }
     }
-    
+
     saveDelta(){
         if(this.use_extern_map_weights_and_delta && this.write_output_files){
             fs.writeFileSync("./optimizer_data/"+this.runIndex+"/delta.json", JSON.stringify(this.delta));
@@ -242,7 +244,7 @@ class Optimizer{
     save_maps(){
         if(this.use_save_maps && this.write_output_files){
             let path = "./optimizer_data/"+this.runIndex+"/optimizer_maps_history_"+this.current_mode+"_"+this.uuid+".json";
-            let history = [] 
+            let history = []
             try {
                 history = JSON.parse(fs.readFileSync(path))
             }catch(e) {
@@ -314,7 +316,7 @@ class WeightFunctionOptimizer extends Optimizer{
     optimize_recursive(currentIndex, lowestDelta, minChanged){ //TODO map weight group umsetzten
         if(this.delta <= lowestDelta){
             return
-        }        
+        }
         this.update_mode_key(this.generator.all_maps[currentIndex], true);
         this.generator.generate_rota();
         this.update_dist();
@@ -412,5 +414,5 @@ if (require.main === module) {
     console.time("Execution Time")
     let a = op.start_optimizer()
     console.log(a)
-    console.timeEnd("Execution Time")    
+    console.timeEnd("Execution Time")
 }

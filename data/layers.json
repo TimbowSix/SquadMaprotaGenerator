@@ -741,56 +741,6 @@
       }
     ]
   },
-  "Manic": {
-    "RAAS": [
-      {
-        "name": "Manic_RAAS_v1",
-        "votes": 7
-      },
-      {
-        "name": "Manic_RAAS_v4",
-        "votes": -8
-      },
-      {
-        "name": "Manic_RAAS_v3",
-        "votes": 1
-      },
-      {
-        "name": "Manic_RAAS_v2",
-        "votes": -6
-      }
-    ],
-    "AAS": [
-      {
-        "name": "Manic_AAS_v2",
-        "votes": 4
-      },
-      {
-        "name": "Manic_AAS_v1",
-        "votes": -10
-      }
-    ],
-    "Invasion": [
-      {
-        "name": "Manic_Invasion_v2",
-        "votes": 2
-      },
-      {
-        "name": "Manic_Invasion_v1",
-        "votes": 2
-      }
-    ],
-    "skirmish": [
-      {
-        "name": "Manic_skirmish_v1",
-        "votes": 1
-      },
-      {
-        "name": "Manic_skirmish_v2",
-        "votes": 1
-      }
-    ]
-  },
   "Sumari": {
     "Insurgency": [
       {
@@ -1424,6 +1374,14 @@
       {
         "name": "Logar_AAS_v2",
         "votes": -26
+      }
+    ]
+  },
+  "Manic": {
+    "skirmish": [
+      {
+        "name": "Manic_skirmish_v1",
+        "votes": 1
       }
     ]
   },

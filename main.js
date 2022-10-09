@@ -6,12 +6,14 @@ const data = require("./src/data.js")
 
 
 function main(){
-    let config = require("./config.json")
+    let config = JSON.parse(fs.readFileSync("./config.json"))
     if (config["auto_optimize"] && data.check_changes()){
         console.log(`INFO: relevant data values changed, running optimizer`)
         optimizer.start_optimizer_parallel(main)
         return
     }
+    config = data.build_config(true)
+
     console.log("Starting Rota generation")
     console.time("Generation Time")
     if (!fs.existsSync(config["output_path"])){
