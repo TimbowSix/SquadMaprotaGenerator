@@ -24,7 +24,7 @@ function initialize_maps(config, use_map_weights=true){
             used_modes.push(mode)
         }
     }
-
+    
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
         if(!(config["maps"].includes(map_name))){
@@ -48,12 +48,11 @@ function initialize_maps(config, use_map_weights=true){
             //pre-calculate layervote weights
             map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
             maps.push(map)
-
-
-            //for(let mode in map.layers) modes.add(mode)
+            
         }else{
             console.log(`WARNING: No layers available for map '${map_name}'`)
         }
+
     }
 
     //check if for every mode in config is at least one map available
@@ -319,8 +318,8 @@ function get_mode_to_pools_dict(config){
 }
 
 function get_layers(){
-    let theUrl = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req"
-    let data = get_data(theUrl)
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    let data = get_data(config.layer_vote_api_url)
     let layers = data["AxisLabels"]
     let upvotes = data["DataSet"][0]
     let downvotes = data["DataSet"][1]
@@ -424,7 +423,6 @@ function check_changes(){
     check["bioms"] = crypto.createHash("md5").update(JSON.stringify(JSON.parse(fs.readFileSync("./data/bioms.json")))).digest("hex")
     let c_config = {}
     c_config["biom_spacing"] = config["biom_spacing"]
-    //c_config["mode_distribution"] = config["mode_distribution"]
     c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
     check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
 

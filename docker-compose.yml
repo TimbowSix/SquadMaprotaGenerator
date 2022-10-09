@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  squad-maprota-generator:
+    container_name: squad-maprota-generator
+    image: ghcr.io/welovesquad/squadmaprotagenerator:latest
+    restart: "no"
+    volumes:
+      - "maprota-data:/home/node/app/data:rw"
+      - "./output:/home/node/app/output:rw"
+      - "./config.json:/home/node/app/config.json:ro"
+
+volumes:
+  maprota-data:
