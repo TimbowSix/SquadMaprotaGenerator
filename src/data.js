@@ -17,33 +17,58 @@ function initialize_maps(config, use_map_weights=true){
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
 
-    let modes = new Set()
+    //let modes = new Set()
+    let used_modes = ["Seed"]
+    for(let pool in config.mode_distribution.pools){
+        for(let mode in config.mode_distribution.pools[pool]){
+            used_modes.push(mode)
+        }
+    }
+    
     for (let [map_name, biom_values] of Object.entries(bioms)) {
-        // error map if no layers available
-        if (!(map_name in layers)) throw Error(`No layers available for map '${map_name}'`)
-
-        let map = new Map(map_name, biom_values, distances[map_name])
-        for(let mode of Object.keys(layers[map_name])){
-            for(let layer of layers[map_name][mode]){
-                let l = new Layer(layer["name"], mode, map, layer["votes"])
-                map.add_layer(l)
+        // skip map if unused / no layers available
+        if(!(config["maps"].includes(map_name))){
+            continue
+        }
+        if ((map_name in layers)){
+            //layer for map available
+            let map = new Map(map_name, biom_values, distances[map_name])
+            for(let mode of Object.keys(layers[map_name])){
+                //skip mode if not used
+                if(!(used_modes.includes(mode))){
+                    continue
+                }
+                for(let layer of layers[map_name][mode]){
+                    let l = new Layer(layer["name"], mode, map, layer["votes"])
+                    map.add_layer(l)
+                }
             }
+
+            map.lock_time = config["biom_spacing"]
+            //pre-calculate layervote weights
+            map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
+            maps.push(map)
+            
+        }else{
+            console.log(`WARNING: No layers available for map '${map_name}'`)
         }
 
-        map.lock_time = config["biom_spacing"]
-        //pre-calculate layervote weights
-        map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
-        maps.push(map)
-
-
-        for(let mode in map.layers) modes.add(mode)
     }
+
     //check if for every mode in config is at least one map available
+    /*
     let config_modes = []
-    for(let pool in config["mode_distribution"]["pools"]) for(let mode in config["mode_distribution"]["pools"][pool]) if(config["mode_distribution"]["pools"][pool][mode]>0) config_modes.push(mode)
-    for(let mode of config_modes){
-        if(!(modes.has(mode))) throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
+    for(let pool in config["mode_distribution"]["pools"]){
+        for(let mode in config["mode_distribution"]["pools"][pool]){
+            if(config["mode_distribution"]["pools"][pool][mode] > 0) config_modes.push(mode)
+        }
     }
+    for(let mode of config_modes){
+        if(!(modes.has(mode))){
+            throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
+        }
+    }
+    */
 
     //init neighbors
     let cluster_radius = config["min_biom_distance"]
@@ -183,6 +208,7 @@ function parse_map_size(bioms){
 class Map{
     constructor(name, bioms, distances){
         this.name = name
+        // layers = {biom:[layer]}
         this.layers = {}
         this.bioms = bioms
         this.map_weight = {}
@@ -248,7 +274,7 @@ class Map{
      * @param {float} sigmoid_shift
      */
     calculate_vote_weights_by_mode(sigmoid_slope=1, sigmoid_shift=0){
-        if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
+        //if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
 
         for(let mode of Object.keys(this.layers)){
             let votes = []
@@ -331,16 +357,82 @@ function save_mapweights(){
     fs.writeFileSync("test.json", JSON.stringify(weights, null, 2))
 }
 
+function fix_unavailables(){
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    if(!(config["fix_unavailables"])) return
+
+
+    // mode availability check
+    let maps = initialize_maps(config)
+    let av_modes = []
+    for(let map of maps){
+        for(let mode in map.layers){
+            if(map.layers[mode].length>0) av_modes.push(mode)
+        }
+    }
+    for(let pool in config["mode_distribution"]["pools"]){
+        let pool_sum = 0
+        for(let mode in config["mode_distribution"]["pools"][pool]){
+            if(!(av_modes.includes(mode))){
+                config["mode_distribution"]["pools"][pool][mode] = 0
+            }
+            pool_sum += config["mode_distribution"]["pools"][pool][mode]
+        }
+        if(pool_sum === 0){
+            config["mode_distribution"]["pool_distribution"][pool] = 0
+        }
+    }
+    fs.writeFileSync("./data/mode_distribution_overwrite.json", JSON.stringify(config["mode_distribution"], null, 2))
+
+
+    // map availability check
+    const layers = JSON.parse(fs.readFileSync("./data/layers.json"))
+    let av_maps = []
+    for(let map of maps){
+        if(Object.keys(map.layers).length > 0) av_maps.push(map.name)
+    }
+    av_maps.sort()
+    fs.writeFileSync("./data/maps_overwrite.json", JSON.stringify(av_maps, null, 2))
+
+
+}
+
+function build_config(warning=false){
+    let config = JSON.parse(fs.readFileSync("./config.json"))
+    let maps_overwrite = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
+    let o_maps = config["maps"]
+    o_maps.sort()
+    if(JSON.stringify(o_maps) != JSON.stringify(maps_overwrite)){
+        if(warning) console.log("WARNING: Some maps are unavailable")
+        config["maps"] = maps_overwrite
+    }
+
+    let mode_distribution_overwrite = JSON.parse(fs.readFileSync("./data/mode_distribution_overwrite.json"))
+    if(JSON.stringify(mode_distribution_overwrite) != JSON.stringify(config["mode_distribution"])){
+        if(warning) console.log("WARNING: Some modes are unavailable")
+        config["mode_distribution"] = mode_distribution_overwrite
+    }
+    return config
+}
+
 function check_changes(){
+    fix_unavailables()
     let save = JSON.parse(fs.readFileSync("./data/save.json"))
     let config = JSON.parse(fs.readFileSync("./config.json"))
     let check = {}
     check["bioms"] = crypto.createHash("md5").update(JSON.stringify(JSON.parse(fs.readFileSync("./data/bioms.json")))).digest("hex")
     let c_config = {}
     c_config["biom_spacing"] = config["biom_spacing"]
-    c_config["mode_distribution"] = config["mode_distribution"]
     c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
     check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
+
+    let maps = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
+    maps.sort()
+    check["maps_overwrite"] = crypto.createHash("md5").update(JSON.stringify(maps)).digest("hex")
+
+    let modes = JSON.parse(fs.readFileSync("./data/mode_distribution_overwrite.json"))
+    check["modes_overwrite"] = crypto.createHash("md5").update(JSON.stringify(modes)).digest("hex")
+
     if (crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
         fs.writeFileSync("./data/save.json", JSON.stringify(check))
         return true
@@ -353,9 +445,9 @@ function get_data(url){
 
 // Test Stuff here
 if (require.main === module) {
-    let config = JSON.parse(fs.readFileSync("./config.json"))
-    let data = get_data(config.layer_vote_api_url)
-    console.log(data)
+    //fix_unavailables()
+    let maps = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
+    console.log(JSON.stringify(maps))
 }
 
-module.exports = { Map, Layer, initialize_maps, get_layers, check_changes };
+module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config };

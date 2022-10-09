@@ -5,7 +5,7 @@ const statistics = require("./statistics.js")
 class Maprota {
     /**
      * setup for maprota generation
-     * @param {object} config 
+     * @param {object} config
      */
     constructor(config){
         this.config = config
@@ -67,7 +67,7 @@ class Maprota {
      * randomly chooses a layer of a mode from a specific map
      * @param {data.Map} map map to be chosen from
      * @param {string} mode mode to be chosen from
-     * @param {boolean} weighted if random layer probability should be weighted by their layervotes 
+     * @param {boolean} weighted if random layer probability should be weighted by their layervotes
      * @returns {data.Layer}
      */
     choose_layer_from_map(map, mode, weighted=true){
@@ -101,8 +101,8 @@ class Maprota {
     }
     /**
      * gets an array of maps, returns an array with all available maps for given mode
-     * @param {Array} maps 
-     * @param {string} mode 
+     * @param {Array} maps
+     * @param {string} mode
      * @returns {Array}
      */
     av_maps(maps, mode){
@@ -113,9 +113,9 @@ class Maprota {
         return valid_maps
     }
     /**
-     * gets an array of maps, checks if given mode is available for map and draws one map with mapweight probability 
-     * @param {Array} maps 
-     * @param {string} mode 
+     * gets an array of maps, checks if given mode is available for map and draws one map with mapweight probability
+     * @param {Array} maps
+     * @param {string} mode
      * @returns {data.Map}
      */
     choose_map(maps, mode){
@@ -174,7 +174,7 @@ class Maprota {
         if(this.config["seed_layer"] > 0){
             let seed_layers = []
             for(let map of this.all_maps) if("Seed" in map.layers) seed_layers = seed_layers.concat(map.layers["Seed"])
-        
+
             for(let i = 0; i<this.config["seed_layer"]; i++){
                 this.rotation.unshift(this.choose_layer(seed_layers, false))
             }
@@ -216,7 +216,7 @@ class Maprota {
 
 
 if (require.main === module) {
-    let config = require("../config.json")
+    let config = data.build_config()
     let rota = new Maprota(config)
     console.time("Execution Time")
     rota.generate_rota()

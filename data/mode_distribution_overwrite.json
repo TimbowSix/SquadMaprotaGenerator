@@ -1,0 +1,23 @@
+{
+  "pools": {
+    "main": {
+      "AAS": 0.5,
+      "RAAS": 0.5
+    },
+    "intermediate": {
+      "Invasion": 0.8,
+      "TC": 0
+    },
+    "rest": {
+      "Insurgency": 0.9,
+      "Destruction": 0.1
+    }
+  },
+  "pool_distribution": {
+    "main": 0.65,
+    "intermediate": 0.25,
+    "rest": 0.1
+  },
+  "pool_spacing": 4,
+  "space_main": true
+}
