@@ -20,7 +20,7 @@ function initialize_maps(config, use_map_weights=true){
     let modes = new Set()
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // error map if no layers available
-        if (map_name in layers){
+        if ((map_name in layers) && (Object.keys(layers[map_name]).length > 0)){
             //layer for map available
             let map = new Map(map_name, biom_values, distances[map_name])
             for(let mode of Object.keys(layers[map_name])){
