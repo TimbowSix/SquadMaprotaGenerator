@@ -113,9 +113,12 @@ function start_optimizer_parallel(callback){
     let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
     let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 
-
-    let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-    //let modi = ["RAAS"]
+    let modi = []
+    for(let pools of Object.keys(config["mode_distribution"]["pools"])){
+        for(let m of Object.keys(config["mode_distribution"]["pools"][pools])){
+            modi.push(m)
+        }
+    }
     let runIndex = Date.now()
 
     let dist_modi_dict = {}
