@@ -176,7 +176,11 @@ class Maprota {
             for(let map of this.all_maps) if("Seed" in map.layers) seed_layers = seed_layers.concat(map.layers["Seed"])
 
             for(let i = 0; i<this.config["seed_layer"]; i++){
-                this.rotation.unshift(this.choose_layer(seed_layers, false))
+                console.log(seed_layers.length)
+                let chosen = this.choose_layer(seed_layers, false)
+                this.rotation.unshift(chosen)
+                let index = seed_layers.indexOf(chosen);
+                seed_layers.splice(index, 1)
             }
         }
         if(str_output)return this.toString()
