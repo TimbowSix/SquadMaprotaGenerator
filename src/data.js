@@ -24,7 +24,7 @@ function initialize_maps(config, use_map_weights=true){
             used_modes.push(mode)
         }
     }
-    
+
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
         if(!(config["maps"].includes(map_name))){
@@ -48,7 +48,7 @@ function initialize_maps(config, use_map_weights=true){
             //pre-calculate layervote weights
             map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
             maps.push(map)
-            
+
         }else{
             console.log(`WARNING: No layers available for map '${map_name}'`)
         }
@@ -179,16 +179,12 @@ function initialize_maps(config, use_map_weights=true){
     //calc max locktime from dist
     for(let mode in mode_probs){
         for(let map of maps){
-            if(Object.keys(mode_probs[mode]).includes(map.name)){
-                if(map.cluster_overlap > 0 && config["use_lock_time_modifier"]){
-                    map.lock_time_modifier[mode] = 1
-                }else{
-                    map.lock_time_modifier[mode] = 0
-                }
+            map.lock_time_modifier[mode] = 0
+            if(Object.keys(mode_probs[mode]).includes(map.name) && map.cluster_overlap > 0 && config["use_lock_time_modifier"]){
+                map.lock_time_modifier[mode] = 1
             }
         }
     }
-
     return maps
 }
 
