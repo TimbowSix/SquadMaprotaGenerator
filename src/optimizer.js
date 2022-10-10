@@ -28,6 +28,11 @@ class Optimizer{
         this.uuid = utils.create_UUID()
 
 
+        if(!Object.keys(weight_params).includes(this.current_mode)){
+            weight_params[this.current_mode] = [0,0,0,0,0,0]
+        }
+
+
         this.generator = new gen.Maprota(this.config);
 
         //set requested distribution
