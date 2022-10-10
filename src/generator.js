@@ -36,6 +36,7 @@ class Maprota {
         let mode_distribution = structuredClone(this.config["mode_distribution"])
         let pools = Object.keys(mode_distribution["pool_distribution"])
         let weight = Object.values(mode_distribution["pool_distribution"])
+        weight = utils.normalize(weight)
         let pool = custom_pool ? custom_pool : utils.choice(pools, weight)
         if (latest_modes.length != 0){
             let latest
