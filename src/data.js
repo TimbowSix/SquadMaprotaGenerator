@@ -323,7 +323,8 @@ function get_layers(){
     let maps = {}
     for(let i=0; i<layers.length; i++){
         if (availability[i] > 0) continue
-        let layer = utils.formatLayer(layers[i])
+        let layer = layers[i]
+        layer = utils.formatLayer(layer)
         let layer_values = layer.split("_")
         let map = layer_values[0]
         let mode = layer_values[1]
