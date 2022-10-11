@@ -3,8 +3,10 @@ const fs = require("fs")
 const optimizer = require("./src/optimizer_parallel.js")
 const crypto = require("crypto")
 const data = require("./src/data.js")
+const package = require("./package.json")
 
 function main(){
+    console.log("Version "+package["version"])
     let config = JSON.parse(fs.readFileSync("./config.json"))
     if (config["auto_optimize"] && data.check_changes()){
         console.log(`INFO: relevant data values changed, running optimizer`)
