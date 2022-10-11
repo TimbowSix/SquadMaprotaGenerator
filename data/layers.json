@@ -1481,92 +1481,92 @@
       }
     ]
   },
-  "lashkar": {
+  "Lashkar": {
     "AAS": [
       {
-        "name": "lashkar_AAS_v1",
+        "name": "Lashkar_AAS_v1",
         "votes": 1
       },
       {
-        "name": "lashkar_AAS_v3",
+        "name": "Lashkar_AAS_v3",
         "votes": 1
       },
       {
-        "name": "lashkar_AAS_v4",
+        "name": "Lashkar_AAS_v4",
         "votes": 1
       },
       {
-        "name": "lashkar_AAS_v2",
+        "name": "Lashkar_AAS_v2",
         "votes": -3
       }
     ],
     "Insurgency": [
       {
-        "name": "lashkar_Insurgency_v1",
+        "name": "Lashkar_Insurgency_v1",
         "votes": 1
       }
     ],
     "Invasion": [
       {
-        "name": "lashkar_Invasion_v2",
+        "name": "Lashkar_Invasion_v2",
         "votes": 1
       },
       {
-        "name": "lashkar_Invasion_v3",
+        "name": "Lashkar_Invasion_v3",
         "votes": 1
       },
       {
-        "name": "lashkar_Invasion_v1",
+        "name": "Lashkar_Invasion_v1",
         "votes": -6
       }
     ],
     "RAAS": [
       {
-        "name": "lashkar_RAAS_v1",
+        "name": "Lashkar_RAAS_v1",
         "votes": 1
       },
       {
-        "name": "lashkar_RAAS_v2",
+        "name": "Lashkar_RAAS_v2",
         "votes": 1
       },
       {
-        "name": "lashkar_RAAS_v4",
+        "name": "Lashkar_RAAS_v4",
         "votes": 1
       },
       {
-        "name": "lashkar_RAAS_v5",
+        "name": "Lashkar_RAAS_v5",
         "votes": -2
       },
       {
-        "name": "lashkar_RAAS_v3",
+        "name": "Lashkar_RAAS_v3",
         "votes": -5
       }
     ],
     "skirmish": [
       {
-        "name": "lashkar_skirmish_v1",
+        "name": "Lashkar_skirmish_v1",
         "votes": 1
       }
     ],
     "TC": [
       {
-        "name": "lashkar_TC_v1",
+        "name": "Lashkar_TC_v1",
         "votes": 1
       },
       {
-        "name": "lashkar_TC_v2",
+        "name": "Lashkar_TC_v2",
         "votes": 1
       },
       {
-        "name": "lashkar_TC_v3",
+        "name": "Lashkar_TC_v3",
         "votes": 1
       },
       {
-        "name": "lashkar_TC_v4",
+        "name": "Lashkar_TC_v4",
         "votes": 1
       },
       {
-        "name": "lashkar_TC_v5",
+        "name": "Lashkar_TC_v5",
         "votes": 1
       }
     ]

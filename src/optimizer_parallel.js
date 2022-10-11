@@ -5,7 +5,6 @@ const fs = require("fs")
 const utils = require('./utils.js')
 const gen = require('./generator.js')
 const data = require("./data.js")
-const config = data.build_config()
 
 let final_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
 let workers = []
@@ -110,6 +109,7 @@ let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
 //fs.mkdirSync("./optimizer_data/"+runIndex+"/")
 
 function start_optimizer_parallel(callback){
+    const config = data.build_config()
     let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
     let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 

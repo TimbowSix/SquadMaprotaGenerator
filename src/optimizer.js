@@ -1,8 +1,6 @@
 let utils = require("./utils.js")
 let gen = require("./generator.js")
 //let config = require("../config.json")
-const data = require("./data.js")
-const config = data.build_config()
 let weight_params = require("../data/weight_params.json")
 let fs = require("fs");
 
@@ -305,6 +303,8 @@ module.exports = { Optimizer };
 
 
 if (require.main === module) {
+    const data = require("./data.js")
+    const config = data.build_config()
     let current_mode = "RAAS"
     dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 

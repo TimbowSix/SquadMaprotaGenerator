@@ -4,7 +4,6 @@ const optimizer = require("./src/optimizer_parallel.js")
 const crypto = require("crypto")
 const data = require("./src/data.js")
 
-
 function main(){
     let config = JSON.parse(fs.readFileSync("./config.json"))
     if (config["auto_optimize"] && data.check_changes()){
