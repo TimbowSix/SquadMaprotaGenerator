@@ -4,7 +4,7 @@ const utils = require("./utils.js")
 const crypto = require("crypto");
 const fetch = require("sync-fetch");
 
-function initialize_maps(config, use_map_weights=true){
+function initialize_maps(config){
     let layers
     if (config["update_layers"]){
         layers = get_layers()
@@ -111,38 +111,6 @@ function initialize_maps(config, use_map_weights=true){
         }
         map.cluster_overlap = (map.neighbor_count-1-clusters.length)
     }
-
-    /* redundant?
-    // initially calculate actual weights
-    let weight_params = require("../data/weight_params.json")
-    if(use_map_weights){
-        for(let map of maps){
-            for(let mode in map.layers){
-                map.calculate_map_weight(mode, weight_params[mode])
-            }
-        }
-    }else{
-        for(let map of maps){
-            for(let mode in map.layers){
-                let params = []
-                for(i=0;i<weight_params[mode].length; i++) params.push(0) //compatibility
-                map.calculate_map_weight(mode, params)
-            }
-        }
-    }
-    */
-
-    //-- Whut is dis?
-
-    // TODO pro mode?
-    //check for settings feasibility
-
-    //get main pool an intermediate pool modes
-    let tempModes = Object.keys(config["mode_distribution"]["pools"]["main"])
-    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
-    tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
-
-    //--
 
     //calc max locktime from dist
     let mode_probs = {} //{mode:{map:prob}}
@@ -309,6 +277,9 @@ class Map{
     add_mapvote_weights(mode){
         let modes = Object.keys(this.layers)
         if(mode){
+            if(!(mode in this.layers)){
+                return
+            }
             modes = [mode]
         }
         let slope = this.sigmoid_values["mapvote_slope"]
@@ -350,6 +321,9 @@ class Map{
     calculate_vote_weights_by_mode(mode){
         let modes = Object.keys(this.layers)
         if(mode){
+            if(!(mode in this.layers)){
+                return
+            }
             modes = [mode]
         }
         //if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
@@ -516,7 +490,7 @@ function check_changes(){
     check["modes_overwrite"] = crypto.createHash("md5").update(JSON.stringify(modes)).digest("hex")
 
     if (crypto.createHash("md5").update(JSON.stringify(save)).digest("hex") != crypto.createHash("md5").update(JSON.stringify(check)).digest("hex")){
-        //fs.writeFileSync("./data/save.json", JSON.stringify(check))
+        fs.writeFileSync("./data/save.json", JSON.stringify(check))
         return true
     }else return false
 }
@@ -532,4 +506,4 @@ if (require.main === module) {
     console.log(JSON.stringify(maps))
 }
 
-module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config, normalize_mapvote_weights };
+module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config };
