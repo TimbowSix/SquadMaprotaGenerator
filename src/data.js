@@ -96,7 +96,7 @@ function initialize_maps(config){
         for(let map of maps){
             current_map_dist[map.name] = {}
             for(let mode in map.layers){
-                current_map_dist[map.name][mode] = map.calculate_map_weight(mode, weight_params)
+                current_map_dist[map.name][mode] = map.mapvote_weights[mode] / map.mapvote_weight_sum[mode]
             }
         }
         fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(current_map_dist, null, 2))
@@ -518,8 +518,8 @@ function get_data(url){
 // Test Stuff here
 if (require.main === module) {
     //fix_unavailables()
-    let maps = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
-    console.log(JSON.stringify(maps))
+    let config = build_config()
+    initialize_maps(config)
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config };
