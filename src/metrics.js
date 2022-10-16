@@ -17,7 +17,6 @@ class Metrics {
 
         this.mr = new gen.Maprota(this.config);
         this.mr.generate_rota(false, true);
-        console.log('test');
     }
     calc_map_dist_error() {
         let reference_dist = JSON.parse(
@@ -249,19 +248,27 @@ class Metrics {
 
     get_layer_repetition() {
         let buffer = {};
+        let buffer_index = {};
         let min_rep = {};
         let output = [];
-        let index = 0;
+
         for (let layer of this.mr.rotation) {
-            if (Object.keys(buffer).includes(layer.name)) {
-                let min = index - buffer[layer.name];
-                min_rep[layer.name] = min;
-                output.push(min);
+            if (Object.keys(buffer).includes(layer.map.name)) {
+                if (Object.keys(buffer[layer.map.name]).includes(layer.name)) {
+                    let min =
+                        buffer_index[layer.map.name] -
+                        buffer[layer.map.name][layer.name];
+                    min_rep[layer.name] = min;
+                    output.push(min);
+                }
+                buffer_index[layer.map.name]++;
+                buffer[layer.map.name][layer.name] =
+                    buffer_index[layer.map.name];
+            } else {
+                buffer_index[layer.map.name] = 0;
+                buffer[layer.map.name] = {};
+                buffer[layer.map.name][layer.name] = 0;
             }
-
-            buffer[layer.name] = index;
-
-            index++;
         }
         return output;
     }
