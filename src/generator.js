@@ -26,6 +26,7 @@ class Maprota {
         this.mode_buffer = ""
         for(let map of this.all_maps){
             map.current_lock_time = 0
+            map.reset_layer_locktime()
         }
     }
     /**

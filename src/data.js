@@ -232,6 +232,12 @@ class Map{
         this.mapvote_weight_sum[mode] - old_weight + this.mapvote_weights[mode]
         this.calculate_vote_weights_by_mode(mode)
     }
+    reset_layer_locktime(){
+        for(let locked_layer of this.locked_layers){
+            locked_layer.locktime = 0
+        }
+        this.decrease_layer_lock_time()
+    }
     decrease_layer_lock_time(){
         let valid = []
         for(let locked_layer of this.locked_layers){
