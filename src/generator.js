@@ -82,7 +82,9 @@ class Maprota {
         }
         let layer =  utils.choice(map.layers[mode], weight)
         // Add Layer Locktime
-        layer.map.lock_layer(layer)
+        if(config["layer_locktime"] > 0){
+            layer.map.lock_layer(layer)
+        }
         return layer
     }
     /**
