@@ -345,7 +345,7 @@ class Map{
     calculate_map_weight(mode, params){
         if(!(params)) return
         let x = this.neighbor_count - 1
-        let y = this.mapvote_weights[mode]
+        let y = this.mapvote_weights[mode] / this.mapvote_weight_sum[mode]
         let weight = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
         return weight
     }
