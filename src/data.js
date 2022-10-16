@@ -254,7 +254,7 @@ class Map{
             console.log(`WARNING: Layer ${layer.name} not found in Map ${this.name}`)
         }
     }
-    decrease_layer_lock_time(){
+    decrease_layer_lock_time(allMaps, config, weight_params){
         let valid = []
         for(let locked_layer of this.locked_layers){
             locked_layer.locktime -= 1
@@ -273,6 +273,23 @@ class Map{
                 this.layers[locked_layer.layer.mode] = [locked_layer.layer]
             }
         }
+        if(valid.length > 0){
+            let modes = []
+            for(let layer of valid){
+                if(modes.includes(layer.mode)) continue
+                modes.push(layer.mode)
+            }
+            this.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
+            normalize_mapvote_weights(allMaps)
+            for(let map of allMaps){
+                map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
+                for(let mode of modes){
+                    if(mode in map.layers){
+                        map.calculate_map_weight(mode, weight_params[mode])
+                    }
+                }
+            }
+        }
     }
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
@@ -282,7 +299,6 @@ class Map{
         if(this.current_lock_time >= 1){
             this.current_lock_time--;
         }
-        this.decrease_layer_lock_time()
     }
     update_lock_time(){
         this.current_lock_time = this.lock_time

@@ -113,7 +113,13 @@ class Maprota {
         let maps = []
         while (maps.length == 0){
             maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1), current_mode)
+
         }
+        // decrease layer_locktime
+        for(let map of this.all_maps){
+            map.decrease_layer_lock_time(this.all_maps, this.config, this.weight_params)
+        }
+
         return maps
     }
     /**
