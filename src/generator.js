@@ -82,7 +82,7 @@ class Maprota {
         }
         let layer =  utils.choice(map.layers[mode], weight)
         // Add Layer Locktime
-        if(config["layer_locktime"] > 0){
+        if(this.config["layer_locktime"] > 0){
             layer.map.lock_layer(layer)
         }
         return layer
@@ -143,7 +143,7 @@ class Maprota {
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //failsave //set weight to 1 if no weight available
-                let weight = map.calculate_map_weight(mode, this.weight_params)
+                let weight = map.calculate_map_weight(mode, this.weight_params[mode])
                 if (!(weight)) {
                     //console.log(`WARNING: map '${map.name}' has undefined map_weight ; this will cause errors in the expected map distribution`)
                     weights.push(1)
