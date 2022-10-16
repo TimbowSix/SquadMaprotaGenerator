@@ -90,10 +90,20 @@ function initialize_maps(config){
         }
         map.mapvote_weight_sum = mapvote_weight_sum
     }
-
+    if(config["save_expected_map_dist"]){
+        const weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
+        let current_map_dist = {}
+        for(let map of maps){
+            current_map_dist[map.name] = {}
+            for(let mode in map.layers){
+                current_map_dist[map.name][mode] = map.calculate_map_weight(mode, weight_params)
+            }
+        }
+        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(current_map_dist, null, 2))
+    }
 
     //calculate cluster overlap
-    function parse_neighbors(arr){
+    const parse_neighbors = (arr) => {
         let out = []
         for(let i of arr) out.push(i.name)
         out.sort()
