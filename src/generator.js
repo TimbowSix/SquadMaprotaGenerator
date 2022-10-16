@@ -1,6 +1,7 @@
 const utils = require("./utils.js")
 const data = require("./data.js")
 const statistics = require("./statistics.js")
+const fs = require("fs")
 
 class Maprota {
     /**
@@ -15,6 +16,8 @@ class Maprota {
         this.mode_buffer = ""
 
         this.all_maps = data.initialize_maps(this.config, this.config["use_map_weight"])
+        this.weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
+
     }
     reset(){
         this.rotation = []
@@ -73,8 +76,21 @@ class Maprota {
      */
     choose_layer_from_map(map, mode, weighted=true){
         let weight = null
-        if(weighted && this.config["use_vote_weight"]) weight = map.vote_weights_by_mode[mode]
-        return utils.choice(map.layers[mode], weight)
+        if(weighted && this.config["use_vote_weight"]){
+            weight = map.vote_weights_by_mode[mode]
+        }
+        let layer =  utils.choice(map.layers[mode], weight)
+        // Add Layer Locktime
+        layer.map.lock_layer(layer)
+        layer.map.add_mapvote_weights(this.config["mapvote_slope"], this.config["mapvote_shift"])
+        data.normalize_mapvote_weights(this.all_maps)
+        layer.map.calculate_vote_weights_by_mode(this.config["layervote_slope"], this.config["layervote_shift"])
+        for(let map_ of this.all_maps){
+            if(mode in map_.layers){
+                map_.calculate_map_weight(mode, this.weight_params[mode])
+            }
+        }
+        return layer
     }
     /**
      * Gets a array of layers, finds their mapvotes and converts them to a Array of weights
@@ -134,6 +150,9 @@ class Maprota {
             }
         }
         weights = utils.normalize(weights)
+        if(utils.round(utils.sumArr(weights), 4)!= 1) {
+            console.log(weights)
+        }
         return utils.choice(valid_maps, weights)
     }
     /**
