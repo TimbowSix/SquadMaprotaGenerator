@@ -82,14 +82,6 @@ class Maprota {
         let layer =  utils.choice(map.layers[mode], weight)
         // Add Layer Locktime
         layer.map.lock_layer(layer)
-        layer.map.add_mapvote_weights(this.config["mapvote_slope"], this.config["mapvote_shift"])
-        data.normalize_mapvote_weights(this.all_maps)
-        layer.map.calculate_vote_weights_by_mode(this.config["layervote_slope"], this.config["layervote_shift"])
-        for(let map_ of this.all_maps){
-            if(mode in map_.layers){
-                map_.calculate_map_weight(mode, this.weight_params[mode])
-            }
-        }
         return layer
     }
     /**
@@ -117,7 +109,7 @@ class Maprota {
         }
         // decrease layer_locktime
         for(let map of this.all_maps){
-            map.decrease_layer_lock_time(this.all_maps, this.config, this.weight_params)
+            map.decrease_layer_lock_time()
         }
 
         return maps
@@ -148,10 +140,11 @@ class Maprota {
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //failsave //set weight to 1 if no weight available
-                if (map.map_weight[mode] === undefined) {
+                let weight = map.calculate_map_weight(mode, this.weight_params)
+                if (!(weight)) {
                     //console.log(`WARNING: map '${map.name}' has undefined map_weight ; this will cause errors in the expected map distribution`)
                     weights.push(1)
-                }else weights.push(map.map_weight[mode]+1)
+                }else weights.push(weight+1)
                 //weights.push(map.map_weight+1)
             }
         }
