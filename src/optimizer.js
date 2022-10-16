@@ -181,10 +181,6 @@ class Optimizer{
         }
         //update map weights
         this.generator.weight_params = this.weight_params
-        for(let map of this.generator.all_maps){
-            map.calculate_map_weight(this.current_mode, this.weight_params[this.current_mode])
-        }
-
     }
 
     map_has_mode(map, mode){

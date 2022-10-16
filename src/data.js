@@ -17,7 +17,6 @@ function initialize_maps(config, use_map_weights=true){
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
 
-    //let modes = new Set()
     let used_modes = ["Seed"]
     for(let pool in config.mode_distribution.pools){
         for(let mode in config.mode_distribution.pools[pool]){
@@ -48,8 +47,15 @@ function initialize_maps(config, use_map_weights=true){
 
             map.layer_locktime = config["layer_locktime"]
 
+            map.sigmoid_values = {
+                "mapvote_slope": config["mapvote_slope"],
+                "mapvote_shift":config["mapvote_shift"],
+                "layervote_slope":config["layervote_slope"],
+                "layervote_shift":config["layervote_shift"]
+            }
+
             //pre-calculate layervote weights
-            map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
+            map.calculate_vote_weights_by_mode()
             maps.push(map)
 
         }else{
@@ -57,21 +63,6 @@ function initialize_maps(config, use_map_weights=true){
         }
 
     }
-
-    //check if for every mode in config is at least one map available
-    /*
-    let config_modes = []
-    for(let pool in config["mode_distribution"]["pools"]){
-        for(let mode in config["mode_distribution"]["pools"][pool]){
-            if(config["mode_distribution"]["pools"][pool][mode] > 0) config_modes.push(mode)
-        }
-    }
-    for(let mode of config_modes){
-        if(!(modes.has(mode))){
-            throw Error(`No maps available for mode '${mode}'.\nMake sure that the probability of the mode is set to 0 or remove this mode if you don't intend to use it`)
-        }
-    }
-    */
 
     //init neighbors
     let cluster_radius = config["min_biom_distance"]
@@ -85,12 +76,21 @@ function initialize_maps(config, use_map_weights=true){
             }
         }
     }
+    // add mapvote weights for every map
+    // save mopvote weight sum for every mode
+    let mapvote_weight_sum = {} //{mode: sum}
     for(let map of maps){
-        map.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
+        map.add_mapvote_weights()
+        for(let mode in map.layers){
+            if(mode in mapvote_weight_sum){
+                mapvote_weight_sum[mode] += map.mapvote_weights[mode]
+            }else{
+                mapvote_weight_sum[mode] = map.mapvote_weights[mode]
+            }
+        }
+        map.mapvote_weight_sum = mapvote_weight_sum
     }
 
-    normalize_mapvote_weights(maps, config["save_expected_map_dist"])
-    // normalize mapvote weights by mode
 
     //calculate cluster overlap
     function parse_neighbors(arr){
@@ -112,6 +112,7 @@ function initialize_maps(config, use_map_weights=true){
         map.cluster_overlap = (map.neighbor_count-1-clusters.length)
     }
 
+    /* redundant?
     // initially calculate actual weights
     let weight_params = require("../data/weight_params.json")
     if(use_map_weights){
@@ -129,6 +130,9 @@ function initialize_maps(config, use_map_weights=true){
             }
         }
     }
+    */
+
+    //-- Whut is dis?
 
     // TODO pro mode?
     //check for settings feasibility
@@ -138,6 +142,7 @@ function initialize_maps(config, use_map_weights=true){
     tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["intermediate"]))
     tempModes = tempModes.concat(Object.keys(config["mode_distribution"]["pools"]["rest"]))
 
+    //--
 
     //calc max locktime from dist
     let mode_probs = {} //{mode:{map:prob}}
@@ -172,6 +177,7 @@ function parse_map_size(bioms){
     return bioms
 }
 
+//redundant?
 function normalize_mapvote_weights(maps, save_expected_map_dist=false){
     let mode_probs = {} //{mode:{map:prob}}
     for(let map of maps){
@@ -184,11 +190,6 @@ function normalize_mapvote_weights(maps, save_expected_map_dist=false){
     for(let mode in mode_probs){
         let mode_weights = Object.values(mode_probs[mode])
         mode_weights = utils.normalize(mode_weights)
-        if(Number.isNaN(utils.sumArr(mode_weights))){
-            console.log(mode_weights)
-            throw Error("This really is an error!")
-        }
-
         let mode_maps = Object.keys(mode_probs[mode])
         for(let i=0; i<mode_maps.length; i++){
             mode_probs[mode][mode_maps[i]] = mode_weights[i]
@@ -239,8 +240,10 @@ class Map{
         this.distribution = 0
         this.cluster_overlap = 0 //pro mode?
         // Layer Locktime
+        this.mapvote_weight_sum = {}
         this.layer_locktime = 0
         this.locked_layers = [] //[{"locktime": 1, "layer": layer}]
+        this.sigmoid_values = {}
     }
     lock_layer(layer){
         this.locked_layers.push({"locktime": this.layer_locktime, "layer":layer})
@@ -250,11 +253,18 @@ class Map{
             if(this.layers[layer.mode].length <1){
                 delete this.layers[layer.mode]
             }
+            this.new_weight(layer.mode)
         }else{
             console.log(`WARNING: Layer ${layer.name} not found in Map ${this.name}`)
         }
     }
-    decrease_layer_lock_time(allMaps, config, weight_params){
+    new_weight(mode){
+        const old_weight = this.mapvote_weights[mode]
+        this.add_mapvote_weights(mode)
+        this.mapvote_weight_sum[mode] - old_weight + this.mapvote_weights[mode]
+        this.calculate_vote_weights_by_mode(mode)
+    }
+    decrease_layer_lock_time(){
         let valid = []
         for(let locked_layer of this.locked_layers){
             locked_layer.locktime -= 1
@@ -274,21 +284,14 @@ class Map{
             }
         }
         if(valid.length > 0){
-            let modes = []
+            let modes = new Set
             for(let locked_layer of valid){
-                if(modes.includes(locked_layer.layer.mode)) continue
-                modes.push(locked_layer.layer.mode)
+                modes.add(locked_layer.layer.mode)
             }
-            this.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
-            normalize_mapvote_weights(allMaps)
-            for(let map of allMaps){
-                map.calculate_vote_weights_by_mode(config["layervote_slope"], config["layervote_shift"])
-                for(let mode of modes){
-                    if(mode in map.layers){
-                        map.calculate_map_weight(mode, weight_params[mode])
-                    }
-                }
+            for(let mode of modes){
+                this.new_weight(mode)
             }
+
         }
     }
     add_layer(layer){
@@ -303,13 +306,19 @@ class Map{
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
-    add_mapvote_weights(slope=1, shift=0){
+    add_mapvote_weights(mode){
+        let modes = Object.keys(this.layers)
+        if(mode){
+            modes = [mode]
+        }
+        let slope = this.sigmoid_values["mapvote_slope"]
+        let shift = this.sigmoid_values["mapvote_shift"]
         if(this.layers.length == 0) {
             console.log(`No layers added to map ${this.name}, could not calculate mapvote_weights!`);
             return
         }
         let votesum = {}
-        for(let mode of Object.keys(this.layers)){
+        for(let mode of modes){
             let votes = []
             for(let layer of this.layers[mode]) votes.push(layer.votes)
             votesum[mode] = votes
@@ -338,10 +347,16 @@ class Map{
      * @param {float} sigmoid_slope
      * @param {float} sigmoid_shift
      */
-    calculate_vote_weights_by_mode(sigmoid_slope=1, sigmoid_shift=0){
+    calculate_vote_weights_by_mode(mode){
+        let modes = Object.keys(this.layers)
+        if(mode){
+            modes = [mode]
+        }
         //if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
+        let sigmoid_slope = this.sigmoid_values["layervote_slope"]
+        let sigmoid_shift = this.sigmoid_values["layervote_shift"]
 
-        for(let mode of Object.keys(this.layers)){
+        for(let mode of modes){
             let votes = []
             for(let layer of this.layers[mode]) votes.push(layer.votes)
             let weights = utils.normalize(utils.sigmoidArr(votes, sigmoid_slope, sigmoid_shift))
@@ -357,7 +372,8 @@ class Map{
         if(!(params)) return
         let x = this.neighbor_count - 1
         let y = this.mapvote_weights[mode]
-        this.map_weight[mode] = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
+        let weight = params[0] + params[1]*x + 10*params[2]*y + params[3]*x**2 + 10*params[4]*x*y + 100*params[5]*y**2
+        return weight
     }
 }
 
