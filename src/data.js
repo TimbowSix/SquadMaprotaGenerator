@@ -275,9 +275,9 @@ class Map{
         }
         if(valid.length > 0){
             let modes = []
-            for(let layer of valid){
-                if(modes.includes(layer.mode)) continue
-                modes.push(layer.mode)
+            for(let locked_layer of valid){
+                if(modes.includes(locked_layer.layer.mode)) continue
+                modes.push(locked_layer.layer.mode)
             }
             this.add_mapvote_weights(config["mapvote_slope"], config["mapvote_shift"])
             normalize_mapvote_weights(allMaps)
