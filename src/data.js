@@ -91,15 +91,8 @@ function initialize_maps(config){
         map.mapvote_weight_sum = mapvote_weight_sum
     }
     if(config["save_expected_map_dist"]){
-        const weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
-        let current_map_dist = {}
-        for(let map of maps){
-            current_map_dist[map.name] = {}
-            for(let mode in map.layers){
-                current_map_dist[map.name][mode] = map.mapvote_weights[mode] / map.mapvote_weight_sum[mode]
-            }
-        }
-        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(current_map_dist, null, 2))
+        let current_dist = get_dist(maps)
+        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(current_dist, null, 2))
     }
 
     //calculate cluster overlap
@@ -140,6 +133,17 @@ function initialize_maps(config){
         }
     }
     return maps
+}
+function get_dist(maps){
+    const weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
+    let current_map_dist = {}
+    for(let map of maps){
+        current_map_dist[map.name] = {}
+        for(let mode in map.layers){
+            current_map_dist[map.name][mode] = map.mapvote_weights[mode] / map.mapvote_weight_sum[mode]
+        }
+    }
+    return current_map_dist
 }
 
 function parse_map_size(bioms){
@@ -327,7 +331,9 @@ class Map{
             }
             temp[mode] = utils.sigmoid(utils.sumArr(weights[mode]), slope, shift)
         }
-        this.mapvote_weights = temp
+        for(let mode in temp){
+            this.mapvote_weights[mode] = temp[mode]
+        }
     }
     /**
      * calculate layervotes to weights
@@ -522,4 +528,4 @@ if (require.main === module) {
     initialize_maps(config)
 }
 
-module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config };
+module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config, get_dist };
