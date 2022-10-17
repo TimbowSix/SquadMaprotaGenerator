@@ -174,7 +174,11 @@ class Maprota {
         let layer = this.choose_layer_from_map(map, mode)
         this.rotation.push(layer)
         this.maps.push(map)
+        let dist = []
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
+            if(this.config.debug){
+                dist.push(data.get_dist(this.all_maps))
+            }
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
             v_maps = this.valid_maps(mode)
@@ -206,6 +210,10 @@ class Maprota {
                 seed_maps.splice(index, 1)
             }
         }
+        if(this.config.debug){
+            fs.writeFileSync("./data/dist_progress.json", JSON.stringify(dist, null, 2))
+        }
+
         if(str_output)return this.toString()
         else return this.rotation
     }
