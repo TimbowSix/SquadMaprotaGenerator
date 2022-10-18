@@ -11,6 +11,7 @@ class Metrics {
 
         this.config['number_of_rotas'] = 1;
         this.config['number_of_layers'] = this.nr_of_layers;
+
         this.config['seed_layer'] = 0;
         this.config['use_vote_weight'] = true;
         this.config['use_map_weight'] = true;
@@ -242,6 +243,7 @@ class Metrics {
         );
         return current_clusters;
     }
+
     binomial(n, x, p) {
         return utils.binomial(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
     }
@@ -281,9 +283,4 @@ if (require.main === module) {
     //temp.get_patterns(2)
     //temp.get_patterns(3)
     //temp.get_patterns(4)
-    console.log(temp.get_layer_repetition());
-    fs.writeFileSync(
-        './test_layer_rep.json',
-        JSON.stringify(temp.get_layer_repetition(), null, 2)
-    );
 }

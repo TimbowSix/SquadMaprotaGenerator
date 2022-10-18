@@ -1,6 +1,7 @@
 const utils = require("./utils.js")
 const data = require("./data.js")
 const statistics = require("./statistics.js")
+const fs = require("fs")
 
 class Maprota {
     /**
@@ -15,6 +16,8 @@ class Maprota {
         this.mode_buffer = ""
 
         this.all_maps = data.initialize_maps(this.config, this.config["use_map_weight"])
+        this.weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
+
     }
     reset(){
         this.rotation = []
@@ -23,6 +26,7 @@ class Maprota {
         this.mode_buffer = ""
         for(let map of this.all_maps){
             map.current_lock_time = 0
+            map.reset_layer_locktime()
         }
     }
     /**
@@ -73,8 +77,15 @@ class Maprota {
      */
     choose_layer_from_map(map, mode, weighted=true){
         let weight = null
-        if(weighted && this.config["use_vote_weight"]) weight = map.vote_weights_by_mode[mode]
-        return utils.choice(map.layers[mode], weight)
+        if(weighted && this.config["use_vote_weight"]){
+            weight = map.vote_weights_by_mode[mode]
+        }
+        let layer =  utils.choice(map.layers[mode], weight)
+        // Add Layer Locktime
+        if(this.config["layer_locktime"] > 0){
+            layer.map.lock_layer(layer)
+        }
+        return layer
     }
     /**
      * Gets a array of layers, finds their mapvotes and converts them to a Array of weights
@@ -97,7 +108,13 @@ class Maprota {
         let maps = []
         while (maps.length == 0){
             maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1), current_mode)
+
         }
+        // decrease layer_locktime
+        for(let map of this.all_maps){
+            map.decrease_layer_lock_time()
+        }
+
         return maps
     }
     /**
@@ -126,14 +143,18 @@ class Maprota {
             if(mode in map.layers){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //failsave //set weight to 1 if no weight available
-                if (map.map_weight[mode] === undefined) {
+                let weight = map.calculate_map_weight(mode, this.weight_params[mode])
+                if (!(weight)) {
                     //console.log(`WARNING: map '${map.name}' has undefined map_weight ; this will cause errors in the expected map distribution`)
                     weights.push(1)
-                }else weights.push(map.map_weight[mode]+1)
+                }else weights.push(weight+1)
                 //weights.push(map.map_weight+1)
             }
         }
         weights = utils.normalize(weights)
+        if(utils.round(utils.sumArr(weights), 4)!= 1) {
+            console.log(weights)
+        }
         return utils.choice(valid_maps, weights)
     }
     /**
@@ -153,7 +174,11 @@ class Maprota {
         let layer = this.choose_layer_from_map(map, mode)
         this.rotation.push(layer)
         this.maps.push(map)
+        let dist = []
         for(let i=0; i<this.config["number_of_layers"]-1-this.config["seed_layer"]; i++){
+            if(this.config.debug){
+                dist.push(data.get_dist(this.all_maps))
+            }
             if(this.mode_buffer === "") mode = this.choose_mode(this.modes)
             else mode = this.mode_buffer
             v_maps = this.valid_maps(mode)
@@ -185,6 +210,10 @@ class Maprota {
                 seed_maps.splice(index, 1)
             }
         }
+        if(this.config.debug){
+            fs.writeFileSync("./data/dist_progress.json", JSON.stringify(dist, null, 2))
+        }
+
         if(str_output)return this.toString()
         else return this.rotation
     }
