@@ -1377,14 +1377,6 @@
       }
     ]
   },
-  "Manic": {
-    "skirmish": [
-      {
-        "name": "Manic_skirmish_v1",
-        "votes": 1
-      }
-    ]
-  },
   "pacificprovinggrounds": {
     "usmc-mea": [
       {
@@ -1545,28 +1537,6 @@
     "skirmish": [
       {
         "name": "Lashkar_skirmish_v1",
-        "votes": 1
-      }
-    ],
-    "TC": [
-      {
-        "name": "Lashkar_TC_v1",
-        "votes": 1
-      },
-      {
-        "name": "Lashkar_TC_v2",
-        "votes": 1
-      },
-      {
-        "name": "Lashkar_TC_v3",
-        "votes": 1
-      },
-      {
-        "name": "Lashkar_TC_v4",
-        "votes": 1
-      },
-      {
-        "name": "Lashkar_TC_v5",
         "votes": 1
       }
     ]

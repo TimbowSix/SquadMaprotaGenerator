@@ -59,6 +59,7 @@
         "Yehorivka"
     ],
     "biom_spacing": 4,
+    "layer_locktime": 30,
     "min_biom_distance": 0.4,
     "mapvote_slope": 0.15,
     "mapvote_shift": 0,
@@ -69,5 +70,6 @@
     "save_expected_map_dist": true,
     "use_lock_time_modifier": true,
     "auto_optimize": true,
-    "fix_unavailables": true
+    "fix_unavailables": true,
+    "debug":false
 }
