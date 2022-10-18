@@ -559,6 +559,7 @@ function check_changes(){
     let c_config = {}
     c_config["biom_spacing"] = config["biom_spacing"]
     c_config["use_lock_time_modifier"] = config["use_lock_time_modifier"]
+    c_config["layer_locktime"] = config["layer_locktime"]
     check["config"] = crypto.createHash("md5").update(JSON.stringify(c_config)).digest("hex")
 
     let maps = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
