@@ -4,6 +4,11 @@ const utils = require("./utils.js")
 const crypto = require("crypto");
 const fetch = require("sync-fetch");
 
+/**
+ * Initializing all available maps for the given configuration
+ * @param {object} config
+ * @returns {[Map]}
+ */
 function initialize_maps(config){
     let layers
     if (config["update_layers"]){
@@ -134,6 +139,11 @@ function initialize_maps(config){
     }
     return maps
 }
+/**
+ * calculating the expected distribution for every given map
+ * @param {[Map]} maps
+ * @returns
+ */
 function get_dist(maps){
     const weight_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
     let current_map_dist = {}
@@ -145,13 +155,17 @@ function get_dist(maps){
     }
     return current_map_dist
 }
-
+/**
+ * parsing the mapsize in km² to a value between 0 and 1 for every given map
+ * @param {object} bioms
+ * @returns
+ */
 function parse_map_size(bioms){
     let max = 0
     let min = Number.MAX_SAFE_INTEGER
     for(let map in bioms){
-        if(bioms[map][0] > max) max =bioms[map][0]
-        if (bioms[map][0] < min) min =bioms[map][0]
+        if(bioms[map][0] > max) max = bioms[map][0]
+        if (bioms[map][0] < min) min = bioms[map][0]
     }
     for(let map in bioms){
         bioms[map][0] = (bioms[map][0]-min)/(max-min)
@@ -227,6 +241,10 @@ class Map{
         this.locked_layers = [] //[{"locktime": 1, "layer": layer}]
         this.sigmoid_values = {}
     }
+    /**
+     * Locking a layer for the set layer_locktime, removing it from the available layers
+     * @param {Layer} layer
+     */
     lock_layer(layer){
         this.locked_layers.push({"locktime": this.layer_locktime, "layer":layer})
         const index = this.layers[layer.mode].indexOf(layer)
@@ -240,18 +258,29 @@ class Map{
             console.log(`WARNING: Layer ${layer.name} not found in Map ${this.name}`)
         }
     }
+    /**
+     * calculating new mapvote weight sum for a specific mode
+     * @param {string} mode
+     */
     new_weight(mode){
         const old_weight = this.mapvote_weights[mode]
         this.add_mapvote_weights(mode)
         this.mapvote_weight_sum[mode] - old_weight + this.mapvote_weights[mode]
         this.calculate_vote_weights_by_mode(mode)
     }
+    /**
+     * resetting the layer locktime for every currently locked layer, making every layer available again.
+     */
     reset_layer_locktime(){
         for(let locked_layer of this.locked_layers){
             locked_layer.locktime = 0
         }
         this.decrease_layer_lock_time()
     }
+    /**
+     * decreasing the layer locktime by one for every locked layer.
+     * re-adding the layer to the for this map available layers if no locktime is left.
+     */
     decrease_layer_lock_time(){
         let valid = []
         for(let locked_layer of this.locked_layers){
@@ -282,18 +311,34 @@ class Map{
 
         }
     }
+    /**
+     * adding a new layer as a property of this map
+     * @param {Layer} layer
+     */
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
     }
+    /**
+     * decreasing the locktime by one
+     */
     decrease_lock_time(){
         if(this.current_lock_time >= 1){
             this.current_lock_time--;
         }
     }
+    /**
+     * setting the current locktime of this map to the saved standard lock time
+     */
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
+    /**
+     * Calculating the mapvote weight for a specific mode.
+     * Calculating for every for this map available mode, if no mode given.
+     * @param {string} mode optional
+     * @returns
+     */
     add_mapvote_weights(mode){
         let modes = Object.keys(this.layers)
         if(mode){
@@ -337,8 +382,7 @@ class Map{
     }
     /**
      * calculate layervotes to weights
-     * @param {float} sigmoid_slope
-     * @param {float} sigmoid_shift
+     * @param {string} mode mode for which the vote weight should be calculated
      */
     calculate_vote_weights_by_mode(mode){
         let modes = Object.keys(this.layers)
@@ -394,6 +438,10 @@ function get_mode_to_pools_dict(config){
     return temp
 }
 
+/**
+ * retrieves layers, votes and maps from a fetched input file
+ * @returns {object}
+ */
 function get_layers(){
     let config = JSON.parse(fs.readFileSync("./config.json"))
     let data = get_data(config.layer_vote_api_url)
@@ -435,11 +483,13 @@ function save_mapweights(){
     fs.writeFileSync("test.json", JSON.stringify(weights, null, 2))
 }
 
+/**
+ * removing unavailable modes/maps und recalculating probabilities if necessary
+ * @returns
+ */
 function fix_unavailables(){
     let config = JSON.parse(fs.readFileSync("./config.json"))
     if(!(config["fix_unavailables"])) return
-
-
     // mode availability check
     let maps = initialize_maps(config)
     let av_modes = []
@@ -474,7 +524,11 @@ function fix_unavailables(){
 
 
 }
-
+/**
+ * building a config object based on the config.json and possible overwrites
+ * @param {boolean} warning display a warning if there is anything unavailable
+ * @returns {object}
+ */
 function build_config(warning=false){
     let config = JSON.parse(fs.readFileSync("./config.json"))
     let maps_overwrite = JSON.parse(fs.readFileSync("./data/maps_overwrite.json"))
@@ -492,7 +546,10 @@ function build_config(warning=false){
     }
     return config
 }
-
+/**
+ * checking if important changes in the configuration have been made
+ * @returns {boolean}
+ */
 function check_changes(){
     fix_unavailables()
     let save = JSON.parse(fs.readFileSync("./data/save.json"))
@@ -516,7 +573,11 @@ function check_changes(){
         return true
     }else return false
 }
-
+/**
+ * fetching a given url for a json file.
+ * @param {string} url
+ * @returns
+ */
 function get_data(url){
     return fetch(url).json()
 }
