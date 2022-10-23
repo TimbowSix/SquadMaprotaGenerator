@@ -1,9 +1,10 @@
 const {Worker, parentPort} = require('node:worker_threads')
 const opt = require('./optimizer.js')
 const fs = require("fs")
-const config = require("../config.json")
+//const config = require("../config.json")
 const utils = require('./utils.js')
 const gen = require('./generator.js')
+const data = require("./data.js")
 
 let final_params = JSON.parse(fs.readFileSync("./data/weight_params.json"))
 let workers = []
@@ -25,9 +26,9 @@ class WorkerEntry{
         this.done = false
         this.worker = new Worker("./src/optimizer_worker.js",{ workerData: {"mode": this.mode, "dist": this.dist, "reset": reset, "runIndex": this.runIndex} }); //reset = true map_weights reset to 0 else the weights from file
         this.worker.on('message', (msg) => {
-            
+
             //save result
-            final_params[this.mode] = msg 
+            final_params[this.mode] = msg
 
             //check if all done
             this.done = true
@@ -39,7 +40,7 @@ class WorkerEntry{
             }
 
             if(allDone){
-                //No Series run for the start 
+                //No Series run for the start
                 //parallel_optimizer.runSeries()
                 //save params
                 fs.writeFileSync("./data/weight_params.json", JSON.stringify(final_params,null,2))
@@ -66,7 +67,7 @@ class WorkerEntry{
 
 class OptimizerParallelOrganizer{
     constructor(modes = [], dist_all = null, runIndex, finish_callback){
-        //modes must be sorted by maps size per mode 
+        //modes must be sorted by maps size per mode
         this.dist_all = dist_all
         this.runIndex = runIndex
         for(let mode of modes){
@@ -108,12 +109,16 @@ let all_maps_dict = utils.get_maps_modi_dict(maps, modi)
 //fs.mkdirSync("./optimizer_data/"+runIndex+"/")
 
 function start_optimizer_parallel(callback){
+    const config = data.build_config()
     let dummy_gen = new gen.Maprota(config) // for creating the newest current_map_dist
     let current_dist = JSON.parse(fs.readFileSync("./data/current_map_dist.json"))
 
-
-    let modi = ["RAAS", "AAS", "Invasion", "TC", "Insurgency", "Destruction"]
-    //let modi = ["RAAS"]
+    let modi = []
+    for(let pools of Object.keys(config["mode_distribution"]["pools"])){
+        for(let m of Object.keys(config["mode_distribution"]["pools"][pools])){
+            modi.push(m)
+        }
+    }
     let runIndex = Date.now()
 
     let dist_modi_dict = {}

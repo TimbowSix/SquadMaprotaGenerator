@@ -1,7 +1,9 @@
 const {workerData, parentPort} = require('node:worker_threads')
 const opt = require('./optimizer.js')
-const config = require("../config.json")
-
+const fs = require("fs")
+//const config = require("../config.json")
+const data = require("./data.js")
+const config = data.build_config()
 
 console.log("start optimizer for "+ workerData["mode"])
 op = new opt.Optimizer(config, workerData["mode"], reset=workerData["reset"], distribution = workerData["dist"], console_output = false, use_extern_map_weights_and_delta = false,save_maps=true,start_delta = 2, workerData["runIndex"], false)

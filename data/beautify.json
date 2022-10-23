@@ -1,0 +1,36 @@
+{"modes":{
+    "aas": "AAS",
+    "raas": "RAAS",
+    "tc": "TC",
+    "ta": "TA",
+    "invasion": "Invasion",
+    "destruction": "Destruction",
+    "insurgency": "Insurgency",
+    "seed": "Seed"
+},
+"maps": {
+    "albasrah": "AlBasrah",
+    "anvil": "Anvil",
+    "belaya": "Belaya",
+    "blackcoast": "BlackCoast",
+    "chora": "Chora",
+    "fallujah": "Fallujah",
+    "foolsroad": "FoolsRoad",
+    "goosebay": "GooseBay",
+    "gorodok": "Gorodok",
+    "kamdesh": "Kamdesh",
+    "kohat": "Kohat",
+    "kokan": "Kokan",
+    "lashkarvalley": "LashkarValley",
+    "lashkar": "Lashkar",
+    "logar": "Logar",
+    "manic": "Manic",
+    "mestia": "Mestia",
+    "mutaha": "Mutaha",
+    "narva": "Narva",
+    "skorpo": "Skorpo",
+    "sumari": "Sumari",
+    "tallil": "Tallil",
+    "yehorivka": "Yehorivka"
+    }
+}

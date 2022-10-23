@@ -1,9 +1,9 @@
-
+const fs = require("fs")
 /**
  * returns random element from array
- * @param {Array} arr 
+ * @param {Array} arr
  * @param {[number]} weights chances for every element, defaults to 1/arr.length
- * @returns 
+ * @returns
  */
 function choice(arr, weights=null){
     if(!(weights)){
@@ -64,7 +64,7 @@ function get_maps_modi_dict(maps, modi){
             }
         }
     }
-    
+
     for(let mode of Object.keys(dict)){
         let sum = 0
         for(let weight of Object.values(dict[mode])){
@@ -107,7 +107,7 @@ function get_random_dist(entries){
 
 /**
  * normalizes an array of numbers
- * @param {[number]} arr 
+ * @param {[number]} arr
  * @returns {[number]}
  */
 function normalize(arr){
@@ -128,7 +128,7 @@ function normalize(arr){
  * rounds number to x decimal places
  * @param {number} val number
  * @param {int} digits decimal places
- * @returns 
+ * @returns
  */
 function round(val, digits=2){
     return Math.round((val + Number.EPSILON) * (Math.pow(10,digits))) / Math.pow(10,digits)
@@ -136,7 +136,7 @@ function round(val, digits=2){
 
 /**
  * squares every element of an array
- * @param {[number]} arr 
+ * @param {[number]} arr
  * @returns {[number]}
  */
 function squareArr(arr){
@@ -152,7 +152,7 @@ function sigmoid(x, slope, shift=0){
 
 /**
  * returns sum of an array of numbers
- * @param {[number]} arr 
+ * @param {[number]} arr
  * @returns {number}
  */
 function sumArr(arr){
@@ -169,8 +169,8 @@ function sigmoidArr(x, slope, shift=0){
 
 /**
  * multiplies two arrays element wise
- * @param {[number]} arr1 
- * @param {[number]} arr2 
+ * @param {[number]} arr1
+ * @param {[number]} arr2
  * @returns {[number]}
  */
 function multiplyArr(arr1, arr2){
@@ -188,19 +188,22 @@ function multiplyArr(arr1, arr2){
  * @returns {string} formatet Map_Mode_version
  */
 function formatLayer(layer){
+    const beautify = JSON.parse(fs.readFileSync("./data/beautify.json"))
     layer = layer.toLowerCase()
     let values = layer.split("_")
     let map =  values[0]
     let mode = values[1]
     let ver = values[2]
-    let modes = {"aas": "AAS", "raas": "RAAS", "tc": "TC", "ta": "TA", "invasion": "Invasion", "destruction": "Destruction","insurgency": "Insurgency", "seed": "Seed"}
+    let modes = beautify.modes
+    //{"aas": "AAS", "raas": "RAAS", "tc": "TC", "ta": "TA", "invasion": "Invasion", "destruction": "Destruction","insurgency": "Insurgency", "seed": "Seed"}
     mode = modes.hasOwnProperty(mode) ? modes[mode] : mode
 
-    maps = {'albasrah': 'AlBasrah','anvil': 'Anvil','belaya': 'Belaya','blackcoast': 'BlackCoast','chora': 'Chora','fallujah': 'Fallujah',
+    let maps = beautify.maps
+    /*{'albasrah': 'AlBasrah','anvil': 'Anvil','belaya': 'Belaya','blackcoast': 'BlackCoast','chora': 'Chora','fallujah': 'Fallujah',
     'foolsroad': 'FoolsRoad','goosebay': 'GooseBay','gorodok': 'Gorodok','kamdesh': 'Kamdesh','kohat': 'Kohat','kokan': 'Kokan','lashkarvalley': 'LashkarValley',
     'logar': 'Logar','manic': 'Manic','mestia': 'Mestia','mutaha': 'Mutaha','narva': 'Narva','skorpo': 'Skorpo','sumari': 'Sumari','tallil': 'Tallil',
     'yehorivka': 'Yehorivka'
-    }
+    }*/
 
     map = maps.hasOwnProperty(map) ? maps[map] : map
 
