@@ -1,16 +1,17 @@
-const data = require('./data.js');
+const data = require('./data');
 const config = data.build_config();
 const gen = require('./generator.js');
 const utils = require('./utils.js');
 const fs = require('fs');
 
 class Metrics {
-    constructor(config) {
+    constructor() {
         this.config = config;
-        this.nr_of_rotas = 10;
+        this.nr_of_layers = 100000;
 
         this.config['number_of_rotas'] = 1;
-        this.config['number_of_layers'] = this.nr_of_rotas;
+        this.config['number_of_layers'] = this.nr_of_layers;
+
         this.config['seed_layer'] = 0;
         this.config['use_vote_weight'] = true;
         this.config['use_map_weight'] = true;
@@ -242,8 +243,36 @@ class Metrics {
         );
         return current_clusters;
     }
-    blub(n, x, p) {
+
+    binomial(n, x, p) {
         return utils.binomial(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
+    }
+
+    get_layer_repetition() {
+        let buffer = {};
+        let buffer_index = {};
+        let min_rep = {};
+        let output = [];
+
+        for (let layer of this.mr.rotation) {
+            if (Object.keys(buffer).includes(layer.map.name)) {
+                if (Object.keys(buffer[layer.map.name]).includes(layer.name)) {
+                    let min =
+                        buffer_index[layer.map.name] -
+                        buffer[layer.map.name][layer.name];
+                    min_rep[layer.name] = min;
+                    output.push(min);
+                }
+                buffer_index[layer.map.name]++;
+                buffer[layer.map.name][layer.name] =
+                    buffer_index[layer.map.name];
+            } else {
+                buffer_index[layer.map.name] = 0;
+                buffer[layer.map.name] = {};
+                buffer[layer.map.name][layer.name] = 0;
+            }
+        }
+        return output;
     }
 }
 
@@ -254,5 +283,4 @@ if (require.main === module) {
     //temp.get_patterns(2)
     //temp.get_patterns(3)
     //temp.get_patterns(4)
-    console.log(temp.calc_modi_dist_error());
 }
