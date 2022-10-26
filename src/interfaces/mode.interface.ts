@@ -1,0 +1,3 @@
+interface Mode {
+    name: string;
+}

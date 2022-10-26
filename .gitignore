@@ -107,3 +107,6 @@ dist
 *workspace
 __pycache__
 *.cfg
+
+#builds
+build
