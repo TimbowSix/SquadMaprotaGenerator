@@ -28,7 +28,7 @@ function initialize_maps(config){
             used_modes.push(mode)
         }
     }
-
+    const team_layers = JSON.parse(fs.readFileSync("./data/layers_team.json"))
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
         if(!(config["maps"].includes(map_name))){
@@ -44,6 +44,8 @@ function initialize_maps(config){
                 }
                 for(let layer of layers[map_name][mode]){
                     let l = new Layer(layer["name"], mode, map, layer["votes"])
+                    l.team1 = team_layers[layer.name]["blufor"]
+                    l.team2 = team_layers[layer.name]["opfor"]
                     map.add_layer(l)
                 }
             }
@@ -173,50 +175,6 @@ function parse_map_size(bioms){
     return bioms
 }
 
-//redundant?
-function normalize_mapvote_weights(maps, save_expected_map_dist=false){
-    let mode_probs = {} //{mode:{map:prob}}
-    for(let map of maps){
-        for(let mode in map.mapvote_weights){
-            if(mode in mode_probs) mode_probs[mode][map.name] = map.mapvote_weights[mode]
-            else mode_probs[mode] = {[map.name]:map.mapvote_weights[mode]}
-        }
-    }
-
-    for(let mode in mode_probs){
-        let mode_weights = Object.values(mode_probs[mode])
-        mode_weights = utils.normalize(mode_weights)
-        let mode_maps = Object.keys(mode_probs[mode])
-        for(let i=0; i<mode_maps.length; i++){
-            mode_probs[mode][mode_maps[i]] = mode_weights[i]
-        }
-    }
-
-    for(let map of maps){
-        let weights = {}
-        for(let mode in map.layers){
-            weights[mode] = mode_probs[mode][map.name]
-        }
-        map.mapvote_weights = weights
-    }
-
-    if(save_expected_map_dist){
-        let map_dist = {}
-        for(let map of maps){
-            if(!(map.name in map_dist)){
-                map_dist[map.name] = {}
-            }
-            for(let mode in mode_probs){
-                if(Object.keys(mode_probs[mode]).includes(map.name)){
-                    if (map.name in map_dist) map_dist[map.name][mode] = mode_probs[mode][map.name]
-                    else map_dist[map.name] = {[mode]:mode_probs[mode][map.name]}
-                }
-            }
-        }
-        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
-    }
-}
-
 class Map{
     constructor(name, bioms, distances){
         this.name = name
@@ -244,9 +202,14 @@ class Map{
     /**
      * Locking a layer for the set layer_locktime, removing it from the available layers
      * @param {Layer} layer
+     * @param {Number} locktime optional
      */
-    lock_layer(layer){
-        this.locked_layers.push({"locktime": this.layer_locktime, "layer":layer})
+    lock_layer(layer, locktime){
+        let lt = this.layer_locktime
+        if (locktime){
+            lt = locktime
+        }
+        this.locked_layers.push({"locktime": lt, "layer":layer})
         const index = this.layers[layer.mode].indexOf(layer)
         if(index>-1){
             this.layers[layer.mode].splice(index, 1)
@@ -423,6 +386,8 @@ class Layer{
         this.mode = mode
         this.map = map
         this.votes = votes
+        this.team1
+        this.team2
     }
 }
 

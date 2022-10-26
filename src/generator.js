@@ -111,8 +111,55 @@ class Maprota {
 
         }
         // decrease layer_locktime
+
         for(let map of this.all_maps){
             map.decrease_layer_lock_time()
+
+        }
+
+        // check teams
+        let latest = this.layers.slice(this.layers.length-this.config.max_same_team)
+        let teams1 = []
+        let teams2 = []
+        for(let i = 0; i<latest.length; i++){
+            if(i%2==0){
+                teams1.push(latest[i].team1)
+                teams2.push(latest[i].team2)
+            }else{
+                team1.push(latest[i].team2)
+                teams2.push(latest[i].team1)
+            }
+        }
+        let lock_blu, lock_op
+        if(teams1.every((val, i, arr) => val == arr[0])){
+            if (this.config.max_same_team % 2 == 0){
+                lock_op = teams1[0]
+            }else{
+                lock_blu = teams1[0]
+            }
+        }
+        if(teams2.every((val, i, arr) => val == arr[0])){
+            if (this.config.max_same_team % 2 == 0){
+                lock_blu = teams2[0]
+            }else{
+                lock_op = teams2[0]
+            }
+        }
+        if(lock_blu || lock_op){
+            for(let map of this.all_maps){
+                for(let mode in map.layers){
+                    for(let layer of map.layers[mode]){
+                        // unnötiger rechenaufwand, wenn von einer map mehrere layer gelockt werden
+                        // relevante laufzeit auswirkung?
+                        // wie oft kommt das vor?
+                        if(layer.team1 == lock_blu){
+                            map.lock_layer(layer, 1)
+                        }else if (layer.team2 == lock_op){
+                            map.lock_layer(layer, 1)
+                        }
+                    }
+                }
+            }
         }
 
         return maps
