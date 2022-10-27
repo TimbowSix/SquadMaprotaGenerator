@@ -107,3 +107,9 @@ dist
 *workspace
 __pycache__
 *.cfg
+
+#build folder
+build
+
+#cmake folder
+CMakeFiles
