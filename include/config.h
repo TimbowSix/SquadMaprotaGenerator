@@ -33,7 +33,7 @@ struct config {
     char* outputPath;
     char* layerVoteApiUrl;
     struct modeDistribution* modeDists;
-    enum maps; //list of mapsnames
+    char* maps; //list of mapsnames
     int biomSpacing;
     int layerLocktime;
     double minBiomDistance;
