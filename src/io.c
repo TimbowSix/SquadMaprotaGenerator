@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "io.h"
 
 
@@ -37,4 +38,16 @@ int readJsonFile(char* path, struct json_object** object){
 
 int writeJsonFile(char* path, struct json_object* object){
 
+    const char* jsonString = json_object_to_json_string_ext(object, JSON_C_TO_STRING_PRETTY | JSON_C_TO_STRING_PRETTY_TAB | JSON_C_TO_STRING_SPACED);
+
+    FILE* file = fopen(path, "w");
+    size_t w = fwrite(jsonString, 1, strlen(jsonString), file);
+    if(w != strlen(jsonString)){
+        printf("error");
+        fclose(file);
+        return 1;
+    }
+    fclose(file);
+
+    return 0;
 }

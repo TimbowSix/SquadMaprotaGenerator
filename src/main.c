@@ -8,5 +8,6 @@ int main (char** args){
     struct json_object* object;
     readJsonFile("../config.json", &object);
 
-    printf("%s", json_object_to_json_string(object));
+    writeJsonFile("../testConfig.json", object);
+    //printf("%s", json_object_to_json_string(object));
 }
