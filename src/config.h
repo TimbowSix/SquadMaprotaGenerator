@@ -1,7 +1,5 @@
-#ifndef CONFIG
-#define CONFIG
-
-#include <stdbool.h>
+#ifndef rota_config_h
+#define rota_config_h
 
 struct gameMode{
     char* name;
@@ -22,11 +20,11 @@ struct modeDistribution {
     struct modePool* modePools;
     struct poolDistribution* poolDists;
     int poolSpacing;
-    bool spaceMain;
+    int spaceMain;
 };
 
 
-struct config {
+struct rotaConfig {
     int numberOfRotas;
     int numberOfLayers;
     int seedLayer;
@@ -41,13 +39,13 @@ struct config {
     double mapvoteShift;
     double layervoteSlope;
     double layervoteShift;
-    bool useVoteWeight;
-    bool useMapWeight;
-    bool saveExpectedMapDist;
-    bool useLockTimeModifier;
-    bool autoOptimize;
-    bool fixUnavailables;
-    bool debug;
+    int useVoteWeight;
+    int useMapWeight;
+    int saveExpectedMapDist;
+    int useLockTimeModifier;
+    int autoOptimize;
+    int fixUnavailables;
+    int debug;
 };
 
 
