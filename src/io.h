@@ -3,12 +3,14 @@
 
 #include <json.h>
 
-void readFile(char* path, int len, int* file);
+/**
+ * read a json file
+*/
+int readJsonFile(char* path, struct json_object* object);
 
-void writeFile(char* path, int len, int* file);
-
-void readJsonFile(int* file, struct json_object* object);
-
-void writeJsonFile(struct json_object* object);
+/**
+ * writes a json file
+*/
+int writeJsonFile(char* path, struct json_object* object);
 
 #endif
