@@ -6,7 +6,7 @@
 /**
  * read a json file
 */
-int readJsonFile(char* path, struct json_object* object);
+int readJsonFile(char* path, struct json_object** object);
 
 /**
  * writes a json file

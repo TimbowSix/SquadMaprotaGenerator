@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include "io.h"
 
-int readJsonFile(char* path, struct json_object* object){
+
+int readJsonFile(char* path, struct json_object** object){
     FILE* file = fopen(path, "r");
 
     fseek(file, 0L, SEEK_END);
     size_t fileSize = ftell(file) + 1;
     rewind(file);
-
-    printf("%i",fileSize);
 
     char* fileBuf = (char *)malloc(fileSize);
 
@@ -20,10 +19,19 @@ int readJsonFile(char* path, struct json_object* object){
     fread(fileBuf, sizeof(char), fileSize, file);
     fclose(file);
 
-    object = json_tokener_parse(fileBuf);
+    enum json_tokener_error jerr;
+    struct json_tokener* tok = json_tokener_new();
 
+    (*object) = json_tokener_parse_ex(tok, fileBuf, fileSize);
+    jerr = json_tokener_get_error(tok);
+    if(jerr != json_tokener_success){
+        printf("Json parsing error %s", jerr);
+        return 0;
+    }
 
-    printf("%s",json_object_to_json_string(object));
+    free(fileBuf);
+
+    return 1;
 }
 
 
