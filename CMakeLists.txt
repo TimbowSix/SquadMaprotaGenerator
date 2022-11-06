@@ -5,8 +5,13 @@ project(MapRotaGenerator)
 set(SOURCES
     src/main.c
     src/io.c
+    src/statistics.c
+    src/utils.c
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 add_subdirectory(lib)
+
+find_package(CURL REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE CURL::libcurl)
