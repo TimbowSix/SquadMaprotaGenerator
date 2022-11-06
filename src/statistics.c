@@ -25,7 +25,7 @@ int getValidMaps(
     // set lockTime of neighbour and choosen map
     for (int i = 0; i < lastChoosenMap->neighbourCount; i++)
     {
-        lastChoosenMap->neighbour[i].resetLockTime(&(lastChoosenMap->neighbour[i]));
+        lastChoosenMap->neighbour[i]->setLockTime((lastChoosenMap->neighbour[i]));
     }
 
     int counter = 0;

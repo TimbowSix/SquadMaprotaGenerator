@@ -7,6 +7,7 @@ set(SOURCES
     src/io.c
     src/statistics.c
     src/utils.c
+    src/rotaMap.c
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -1,0 +1,213 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <assert.h>
+
+#include "rotaMap.h"
+#include "utils.h"
+
+rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount)
+{
+    // allocate space
+    rotaMap *map = malloc(sizeof(rotaMap));
+
+    if (map == NULL)
+    {
+        return NULL;
+    }
+
+    map->neighbour = malloc(maxMapCount * sizeof(rotaMap *));
+    map->layers = malloc(maxLayerCount * sizeof(rotaLayer *));
+    map->modes = malloc(maxModeCount * sizeof(rotaMode *));
+    map->mapWeights = malloc(maxModeCount * sizeof(rotaMode *));
+    map->mapVoteWeights = malloc(maxModeCount * sizeof(rotaMode *));
+
+    if (map->neighbour == NULL || map->layers == NULL || map->modes == NULL)
+    {
+        return NULL;
+    }
+    // set function pointers
+
+    map->lockLayer = lockLayer;
+    map->newWeight = newWeight;
+    map->resetLayerLockTime = resetLayerLockTime;
+    map->decreaseLayerLockTime = decreaseLayerLockTime;
+    map->addLayer = addLayer;
+    map->decreaseLockTime = decreaseLockTime;
+    map->setLockTime = setLockTime;
+    map->calcMapVoteWeight = calcMapVoteWeight;
+    map->calcLayerVoteWeight = calcLayerVoteWeight;
+    map->calcMapWeight = calcMapWeight;
+
+    return map;
+}
+
+void delMap(rotaMap *map)
+{
+    free(map->neighbour);
+    free(map->layers);
+    free(map->modes);
+    free(map->mapVoteWeights);
+    free(map->mapWeights);
+    free(map);
+}
+
+void lockLayer(rotaLayer *layer)
+{
+    layer->currentLockTime = layer->lockTime;
+}
+
+void newWeight(rotaMode *mode, rotaMap *self)
+{
+    double oldWeight = self->mapWeights[mode->index];
+    self->calcMapVoteWeight(mode, self);
+    self->mapVoteWeightSum[mode->index] = oldWeight + self->mapVoteWeights[mode->index];
+}
+
+void resetLayerLockTime(rotaMap *self)
+{
+    for (int i = 0; i < self->layerCount; i++)
+    {
+        self->layers[i]->currentLockTime = 0;
+    }
+}
+
+void decreaseLayerLockTime(rotaMap *self)
+{
+    for (int i = 0; i < self->layerCount; i++)
+    {
+        if (self->layers[i]->currentLockTime > 0)
+        {
+            self->layers[i]->currentLockTime--;
+        }
+    }
+}
+
+void addLayer(rotaLayer *layer, rotaMap *self)
+{
+    self->layerCount++;
+    self->layers[self->layerCount] = layer;
+
+    for (int i = 0; i < self->modeCount; i++)
+    {
+        if (self->modes[i]->index == layer->mode->index)
+        {
+            // modes already added
+            return;
+        }
+    }
+
+    // mode not found -> add
+    self->modeCount++;
+    self->modes[self->modeCount] = layer->mode;
+}
+
+void decreaseLockTime(rotaMap *self)
+{
+    if (self->currentLockTime > 0)
+    {
+        self->currentLockTime--;
+    }
+}
+
+void setLockTime(rotaMap *self)
+{
+    self->currentLockTime = self->lockTime;
+}
+
+void calcMapVoteWeight(rotaMode *mode, rotaMap *self)
+{
+    double slope = self->sigmoidValues[0];
+    double shift = self->sigmoidValues[1];
+
+    // check if map has layers
+    if (self->layerCount == 0)
+    {
+        printf("No layers added to map %s, could not calculate map vote weights!", self->name);
+        return;
+    }
+
+    // calc all mapVoteWeights
+    // TODO what is faster malloc and free mem or loop a second time thought all layers ?
+    double *votes = malloc(self->layerCount * sizeof(double));
+    double *weights = malloc(self->layerCount * sizeof(double));
+
+    if (votes == NULL || weights == NULL)
+    {
+        printf("Error cannot allocate memory");
+        exit(EXIT_FAILURE);
+    }
+
+    int voteCount = 0;
+
+    double voteSum = 0;
+
+    for (int j = 0; j < self->layerCount; j++)
+    {
+        // check if layer is not locked
+        if (self->layers[j]->currentLockTime == 0)
+        {
+            voteSum += self->layers[j]->votes;
+            votes[voteCount] = self->layers[j]->votes;
+            voteCount++;
+        }
+    }
+
+    // check if mode has layers
+    if (voteCount > 0)
+    {
+        double mean = 1 / voteSum * voteCount;
+        double sum = 0;
+
+        for (int j = 0; j < voteCount; j++)
+        {
+            double temp = exp(-pow(mean - votes[j], 2));
+            weights[j] = temp;
+            sum += temp;
+        }
+
+        normalize(weights, voteCount, &sum);
+
+        double weightsSum = 0;
+        for (int j = 0; j < voteCount; j++)
+        {
+            weights[j] *= votes[j];
+            weightsSum += weights[j];
+        }
+
+        self->mapVoteWeights[mode->index] = sigmoid(weightsSum, slope, shift);
+    }
+
+    free(votes);
+    free(weights);
+}
+
+void calcAllMapVoteWeight(rotaMap *self)
+{
+    for (int i = 0; i < self->modeCount; i++)
+    {
+        calcMapVoteWeight(self->modes[i], self);
+    }
+}
+
+void calcLayerVoteWeight(rotaMap *self)
+{
+    double slope = self->sigmoidValues[2];
+    double shift = self->sigmoidValues[3];
+
+    for (int i = 0; i < self->layerCount; i++)
+    {
+        self->layers[i]->voteWeight = sigmoid(self->layers[i]->votes, slope, shift);
+    }
+}
+
+double calcMapWeight(rotaMode *mode, rotaMap *self, double *params, int paramLen)
+{
+    assert(paramLen == 6);
+
+    double x = self->neighbourCount - 1;
+    assert(x >= 0);
+    assert(self->mapVoteWeightSum[mode->index] > 0);
+    double y = self->mapVoteWeights[mode->index] / self->mapVoteWeightSum[mode->index];
+    return params[0] + params[1] * x + 10 * params[2] * y + params[3] * pow(x, 2) + 10 * params[4] * x * y + 100 * params[5] * pow(y, 2);
+}

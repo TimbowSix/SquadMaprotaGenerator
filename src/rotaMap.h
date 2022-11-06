@@ -4,10 +4,15 @@
 #include "rotaLayer.h"
 #include "rotaMode.h"
 
+typedef struct rotaMap rotaMap;
+
 /**
- * index               indexes all maps in conresponding arrays
+ * index               indexes all maps in corresponding arrays
  * name                name of the map
- * linkedLayers        linked list of available layers
+ * layers              list of available layers
+ * layerCount          count of layers
+ * modes               list of all modes
+ * modesCount          count of modes
  * bioms               array of double biom values
  * mapWeights          array of double indexes by mode index
  * mapVoteWeights      array of double indexes by mode index
@@ -17,12 +22,9 @@
  * lockTime            reset lockTime for this map
  * currentLockTime
  * lockTimeModifier    indexes by mode index
- * voteWeightsByMode   indexes by mode index
  * distribution
  * clusterOverlap
  * mapVoteWeightSum    array of Sums by mode index
- * layerLockTime
- * linkedLockedLayers  linked list of unavailable layer
  * sigmoidValues       values for layer and map sigmoid
  *                          index   0 -> mapVote slope
  *                                  1 -> mapVote shift
@@ -31,85 +33,122 @@
  *
  *
  */
-
 struct rotaMap
 {
-    int index; // index of map in arrays
+    int index;
     char *name;
-    struct rotaLayer **linkedLayers; // list of layers
-    double *biom;                    // array of biom values
-    int biomLen;                     // len of bioms array
-    double biomVecLen;               // vector len of the bioms vector
-    double *mapWeights;              // array of mapWeights by mode
-    double *mapVoteWeights;          // array of map vote weights by mode
-    double **distances;              // pointer to array of map distances
-    struct rotaMap *neighbour;       // array of map neighbour
-    int neighbourCount;              //
-    int lockTime;                    //
-    int currentLockTime;             //
-    int *lockTimeModifier;           // array of modifiers by mode
-    double *voteWeightsByMode;       // array of voteWeights by mode
+    rotaLayer **layers;
+    int layerCount;
+    rotaMode **modes;
+    int modeCount;
+    double *biom;
+    int biomLen;
+    double biomVecLen;
+    double *mapWeights;
+    double *mapVoteWeights;
+    double **distances;
+    rotaMap **neighbour;
+    int neighbourCount;
+    int lockTime;
+    int currentLockTime;
+    int *lockTimeModifier;
     // for optimizer
-    double distribution; //
-    int clusterOverlap;  //
+    double distribution;
+    int clusterOverlap;
     // layer lockTime
-    double *mapVoteWeightSum;        // array of Sums by mode
-    int layerLockTime;               //
-    struct rotaLayer **lockedLayers; //
-    double *sigmoidValues;           //
+    double *mapVoteWeightSum;
+    double *sigmoidValues;
 
-    /**
-     * locks a layer by
-     * move the layer from linkedLayers to linkedLockedLayers
-     */
-    void (*lockLayer)(struct rotaLayer *layer, struct rotaMap *self);
+    void (*lockLayer)(rotaLayer *layer);
 
-    /**
-     * calculating new mapVote weight sum for a specific mode
-     */
-    void (*new_weight)(struct rotaMode *mode, struct rotaMap *self);
+    void (*newWeight)(rotaMode *mode, rotaMap *self);
 
-    /**
-     * resetting the layer lockTime for every currently locked layer, making every layer available again.
-     */
-    void (*resetLayerLockTime)(struct rotaMap *self);
+    void (*resetLayerLockTime)(rotaMap *self);
 
-    /**
-     * decreasing the layer lockTime by one for every locked layer.
-     * re-adding the layer to the for this map available layers if no lockTime is left.
-     */
-    void (*decrease_layer_lock_time)(struct rotaMap *self);
+    void (*decreaseLayerLockTime)(rotaMap *self);
 
-    /**
-     * adding a new layer as a property of this map
-     */
-    void (*add_layer)(struct rotaLayer *layer, struct rotaMap *self);
+    void (*addLayer)(rotaLayer *layer, rotaMap *self);
 
-    /**
-     * decreasing the locktime by one
-     */
-    void (*decreaseLockTime)(struct rotaMap *self);
+    void (*decreaseLockTime)(rotaMap *self);
 
-    /**
-     * setting the current lockTime of this map to default lockTime
-     */
-    void (*resetLockTime)(struct rotaMap *self);
+    void (*setLockTime)(rotaMap *self);
 
-    /**
-     * calculating the mapVote weight for a mode
-     * and saves it in the rotaMap struct
-     */
-    void (*addMapVoteWeight)(struct rotaMode *mode, struct rotaMap *self);
+    void (*calcMapVoteWeight)(rotaMode *mode, rotaMap *self);
 
-    /**
-     * calculating layerVotes to weights
-     */
-    void (*calcVoteWeightByMode)(struct rotaMode *mode, struct rotaMap *self);
+    void (*calcLayerVoteWeight)(rotaMap *self);
 
-    /**
-     * calculates mapWeight for given mode based on given params
-     */
-    void (*calcMapWeight)(struct rotaMode *mode, double *params);
+    void (*calcMapWeight)(rotaMode *mode, rotaMap *self, double *params, int paramLen);
 };
+
+/**
+ * initializes rotaMap struct
+ * allocates needed space for rotaMap struct
+ */
+rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount);
+
+/**
+ * deletes map
+ */
+void delMap(rotaMap *map);
+
+/**
+ * locks a layer by
+ * move the layer from linkedLayers to linkedLockedLayers
+ */
+void lockLayer(rotaLayer *layer);
+
+/**
+ * calculating new mapVote weight sum for a specific mode
+ */
+void newWeight(rotaMode *mode, rotaMap *self);
+
+/**
+ * resetting the layer lockTime for every currently locked layer, making every layer available again.
+ */
+void resetLayerLockTime(rotaMap *self);
+
+/**
+ * decreasing the layer lockTime by one for every locked layer.
+ * re-adding the layer to the for this map available layers if no lockTime is left.
+ */
+void decreaseLayerLockTime(rotaMap *self);
+
+/**
+ * adding a new layer as a property of this map
+ */
+void addLayer(rotaLayer *layer, rotaMap *self);
+
+/**
+ * decreasing the lockTime by one
+ */
+void decreaseLockTime(rotaMap *self);
+
+/**
+ * setting the current lockTime of this map to default lockTime
+ */
+void setLockTime(rotaMap *self);
+
+/**
+ * calculating the mapVote weight for a mode
+ * and saves it in the rotaMap struct
+ */
+void calcMapVoteWeight(rotaMode *mode, rotaMap *self);
+
+/**
+ * calculating the mapVote weight for all modes
+ * and saves it in the rotaMap struct
+ */
+void calcAllMapVoteWeight(rotaMap *self);
+
+/**
+ * calculating layerVotes to weights
+ */
+void calcLayerVoteWeight(rotaMap *self);
+
+/**
+ * calculates mapWeight for given mode based on given params
+ * NOTE params has to been an amount of 6
+ */
+double calcMapWeight(rotaMode *mode, rotaMap *self, double *params, int paramLen);
 
 #endif
