@@ -6,6 +6,9 @@
 
 Weitere Informationen findet man in der [Dokumentation](doku/main.pdf).
 
+## Environment
+    sudo apt-get install gcc-multilib
+    sudo apt-get install libcurl4-openssl-dev
 ## Nutzung
 
 Lokales JavaScript ausführen:
