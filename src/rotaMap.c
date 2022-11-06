@@ -21,6 +21,8 @@ rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount)
     map->modes = malloc(maxModeCount * sizeof(rotaMode *));
     map->mapWeights = malloc(maxModeCount * sizeof(rotaMode *));
     map->mapVoteWeights = malloc(maxModeCount * sizeof(rotaMode *));
+    map->mapVoteWeightSum = malloc(maxModeCount * sizeof(rotaMode *));
+    map->sigmoidValues = malloc(4 * sizeof(double));
 
     if (map->neighbour == NULL || map->layers == NULL || map->modes == NULL)
     {
@@ -49,6 +51,8 @@ void delMap(rotaMap *map)
     free(map->modes);
     free(map->mapVoteWeights);
     free(map->mapWeights);
+    free(map->mapVoteWeightSum);
+    free(map->sigmoidValues);
     free(map);
 }
 

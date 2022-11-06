@@ -77,7 +77,7 @@ struct rotaMap
 
     void (*calcLayerVoteWeight)(rotaMap *self);
 
-    void (*calcMapWeight)(rotaMode *mode, rotaMap *self, double *params, int paramLen);
+    double (*calcMapWeight)(rotaMode *mode, rotaMap *self, double *params, int paramLen);
 };
 
 /**
