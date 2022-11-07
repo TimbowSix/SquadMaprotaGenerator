@@ -28,7 +28,7 @@ function initialize_maps(config){
             used_modes.push(mode)
         }
     }
-    const team_layers = JSON.parse(fs.readFileSync("./data/layers_team.json"))
+    const team_layers = JSON.parse(fs.readFileSync("./data/layers_teams.json"))
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
         if(!(config["maps"].includes(map_name))){
@@ -37,6 +37,12 @@ function initialize_maps(config){
         if ((map_name in layers)){
             //layer for map available
             let map = new Map(map_name, biom_values, distances[map_name])
+            map.sigmoid_values = {
+                "mapvote_slope": config["mapvote_slope"],
+                "mapvote_shift":config["mapvote_shift"],
+                "layervote_slope":config["layervote_slope"],
+                "layervote_shift":config["layervote_shift"]
+            }
             for(let mode of Object.keys(layers[map_name])){
                 //skip mode if not used
                 if(!(used_modes.includes(mode))){
@@ -44,6 +50,10 @@ function initialize_maps(config){
                 }
                 for(let layer of layers[map_name][mode]){
                     let l = new Layer(layer["name"], mode, map, layer["votes"])
+                    if(!(team_layers[layer.name])){
+                        console.log(layer.name)
+                        continue
+                    }
                     l.team1 = team_layers[layer.name]["blufor"]
                     l.team2 = team_layers[layer.name]["opfor"]
                     map.add_layer(l)
@@ -54,15 +64,7 @@ function initialize_maps(config){
 
             map.layer_locktime = config["layer_locktime"]
 
-            map.sigmoid_values = {
-                "mapvote_slope": config["mapvote_slope"],
-                "mapvote_shift":config["mapvote_shift"],
-                "layervote_slope":config["layervote_slope"],
-                "layervote_shift":config["layervote_shift"]
-            }
-
             //pre-calculate layervote weights
-            map.calculate_vote_weights_by_mode()
             maps.push(map)
 
         }else{
@@ -197,7 +199,12 @@ class Map{
         this.mapvote_weight_sum = {}
         this.layer_locktime = 0
         this.locked_layers = [] //[{"locktime": 1, "layer": layer}]
-        this.sigmoid_values = {}
+        this.sigmoid_values = {
+            "mapvote_slope": 1,
+            "mapvote_shift": 0,
+            "layervote_slope": 1,
+            "layervote_shift": 0
+        }
     }
     /**
      * Locking a layer for the set layer_locktime, removing it from the available layers
@@ -228,8 +235,8 @@ class Map{
     new_weight(mode){
         const old_weight = this.mapvote_weights[mode]
         this.add_mapvote_weights(mode)
-        this.mapvote_weight_sum[mode] - old_weight + this.mapvote_weights[mode]
-        this.calculate_vote_weights_by_mode(mode)
+        this.mapvote_weight_sum[mode] -= old_weight
+        this.mapvote_weight_sum[mode] += this.mapvote_weights[mode]
     }
     /**
      * resetting the layer locktime for every currently locked layer, making every layer available again.
@@ -238,7 +245,7 @@ class Map{
         for(let locked_layer of this.locked_layers){
             locked_layer.locktime = 0
         }
-        this.decrease_layer_lock_time()
+        this.decrease_layer_lock_time() //decrease locktime for re-enabling layers with locktime<=0
     }
     /**
      * decreasing the layer locktime by one for every locked layer.
@@ -281,6 +288,9 @@ class Map{
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
+        let slope = this.sigmoid_values["layervote_slope"]
+        let shift = this.sigmoid_values["layervote_shift"]
+        layer.calculate_vote_weight(slope, shift)
     }
     /**
      * decreasing the locktime by one
@@ -347,6 +357,7 @@ class Map{
      * calculate layervotes to weights
      * @param {string} mode mode for which the vote weight should be calculated
      */
+    /*
     calculate_vote_weights_by_mode(mode){
         let modes = Object.keys(this.layers)
         if(mode){
@@ -366,6 +377,7 @@ class Map{
             this.vote_weights_by_mode[mode] = weights
         }
     }
+    */
     /**
      * calculates mapweight for given mode based on given params
      * @param {string} mode Mode for which the weight is to be calculated
@@ -388,6 +400,10 @@ class Layer{
         this.votes = votes
         this.team1
         this.team2
+        this.vote_weight = 0
+    }
+    calculate_vote_weight(slope, shift){
+        this.vote_weight = utils.sigmoid(this.votes, slope, shift)
     }
 }
 

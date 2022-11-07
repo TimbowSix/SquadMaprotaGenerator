@@ -76,11 +76,16 @@ class Maprota {
      * @returns {data.Layer}
      */
     choose_layer_from_map(map, mode, weighted=true){
-        let weight = null
+        let weights = null
+        const layers = map.layers[mode]
         if(weighted && this.config["use_vote_weight"]){
-            weight = map.vote_weights_by_mode[mode]
+            weights = []
+            for(let layer of layers){
+                weights.push(layer.vote_weight)
+            }
+            weights = utils.normalize(weights)
         }
-        let layer =  utils.choice(map.layers[mode], weight)
+        let layer =  utils.choice(map.layers[mode], weights)
         // Add Layer Locktime
         if(this.config["layer_locktime"] > 0){
             layer.map.lock_layer(layer)
@@ -118,7 +123,11 @@ class Maprota {
         }
 
         // check teams
-        let latest = this.layers.slice(this.layers.length-this.config.max_same_team)
+        if(this.config.max_same_team < 1){
+            return maps
+        }
+        //else check
+        let latest = this.rotation.slice(this.rotation.length-this.config.max_same_team)
         let teams1 = []
         let teams2 = []
         for(let i = 0; i<latest.length; i++){
@@ -126,7 +135,7 @@ class Maprota {
                 teams1.push(latest[i].team1)
                 teams2.push(latest[i].team2)
             }else{
-                team1.push(latest[i].team2)
+                teams1.push(latest[i].team2)
                 teams2.push(latest[i].team1)
             }
         }
@@ -161,7 +170,6 @@ class Maprota {
                 }
             }
         }
-
         return maps
     }
     /**
