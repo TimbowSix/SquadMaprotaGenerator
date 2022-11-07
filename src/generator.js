@@ -142,16 +142,16 @@ class Maprota {
         let lock_blu, lock_op
         if(teams1.every((val, i, arr) => val == arr[0])){
             if (this.config.max_same_team % 2 == 0){
-                lock_op = teams1[0]
-            }else{
                 lock_blu = teams1[0]
+            }else{
+                lock_op = teams1[0]
             }
         }
         if(teams2.every((val, i, arr) => val == arr[0])){
             if (this.config.max_same_team % 2 == 0){
-                lock_blu = teams2[0]
-            }else{
                 lock_op = teams2[0]
+            }else{
+                lock_blu = teams2[0]
             }
         }
         if(lock_blu || lock_op){
