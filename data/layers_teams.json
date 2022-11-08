@@ -1,1454 +1,1402 @@
 {
-  "BlackCoast_RAAS_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "BlackCoast_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "BlackCoast_RAAS_v3": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "BlackCoast_RAAS_v2": {
-    "blufor": "USMC",
-    "opfor": "IM"
-  },
-  "BlackCoast_Invasion_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "BlackCoast_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "BlackCoast_Invasion_v2": {
-    "blufor": "USMC",
-    "opfor": "IM"
-  },
-  "BlackCoast_AAS_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "BlackCoast_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "IM"
-  },
-  "BlackCoast_Seed_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "BlackCoast_skirmish_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v06": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v01": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v11": {
-    "blufor": "CAF",
-    "opfor": "USA"
-  },
-  "Gorodok_RAAS_v07": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v09": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v05": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v02": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v10": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Gorodok_RAAS_v08": {
-    "blufor": "AA",
-    "opfor": "IM"
-  },
-  "Gorodok_RAAS_v03": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_RAAS_v04": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Gorodok_Invasion_v2": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Gorodok_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_AAS_v3": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Gorodok_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Gorodok_AAS_v4": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Gorodok_Insurgency_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Gorodok_skirmish_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Gorodok_Destruction_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Gorodok_TC_v2": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v01": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v10": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v08": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v12": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v06": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v03": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v07": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v05": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v02": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v11": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Yehorivka_RAAS_v09": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Yehorivka_RAAS_v04": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_AAS_v4": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Yehorivka_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_AAS_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_Destruction_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_Invasion_v1": {
-    "blufor": "BA",
-    "opfor": "IM"
-  },
-  "Yehorivka_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Yehorivka_skirmish_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_skirmish_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_skirmish_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_TA_v1": {
-    "blufor": "RGF",
-    "opfor": "RGF"
-  },
-  "Yehorivka_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_TC_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Yehorivka_TC_v3": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "GooseBay_RAAS_v3": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "GooseBay_RAAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "GooseBay_RAAS_v1": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "GooseBay_Invasion_v4": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "GooseBay_Invasion_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "GooseBay_Invasion_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "GooseBay_Invasion_v2": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "GooseBay_AAS_v2": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "GooseBay_AAS_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "GooseBay_skirmish_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Narva_RAAS_v2": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Narva_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Narva_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_RAAS_v3": {
-    "blufor": "USA",
-    "opfor": "IM"
-  },
-  "Narva_AAS_v4": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Narva_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Narva_AAS_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_Invasion_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Narva_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_Invasion_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_Invasion_v4": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Narva_Destruction_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_TA_v1": {
-    "blufor": "RGF",
-    "opfor": "RGF"
-  },
-  "Narva_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Narva_TC_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Mutaha_RAAS_v6": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Mutaha_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Mutaha_RAAS_v5": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Mutaha_RAAS_v3": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Mutaha_RAAS_v2": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Mutaha_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Mutaha_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Mutaha_AAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Mutaha_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Mutaha_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Mutaha_Invasion_v2": {
-    "blufor": "BA",
-    "opfor": "INS"
-  },
-  "Mutaha_Invasion_v3": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Mutaha_Invasion_v4": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Mutaha_Invasion_v1": {
-    "blufor": "BA",
-    "opfor": "INS"
-  },
-  "Mutaha_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Mutaha_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Mutaha_TC_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Skorpo_RAAS_v5": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Skorpo_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_RAAS_v4": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_RAAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_RAAS_v3": {
-    "blufor": "USA",
-    "opfor": "IM"
-  },
-  "Skorpo_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_Invasion_v2": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Skorpo_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "IM"
-  },
-  "Skorpo_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_TC_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Skorpo_TC_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Belaya_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Belaya_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Belaya_RAAS_v3": {
-    "blufor": "BA",
-    "opfor": "IM"
-  },
-  "Belaya_RAAS_v5": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Belaya_RAAS_v2": {
-    "blufor": "USMC",
-    "opfor": "IM"
-  },
-  "Belaya_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Belaya_AAS_v3": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Belaya_AAS_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Belaya_Invasion_v3": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Belaya_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Belaya_Invasion_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Belaya_skirmish_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Belaya_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_RAAS_v1": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Tallil_RAAS_v5": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Tallil_RAAS_v6": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Tallil_RAAS_v4": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Tallil_RAAS_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_RAAS_v7": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Tallil_RAAS_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Tallil_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_Invasion_v3": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Tallil_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Tallil_Invasion_v4": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Tallil_Seed_v1": {
-    "blufor": "USMC",
-    "opfor": "INS"
-  },
-  "Tallil_Seed_v2": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Tallil_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_skirmish_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_skirmish_v3": {
-    "blufor": "IM",
-    "opfor": "INS"
-  },
-  "Tallil_TA_v1": {
-    "blufor": "USA",
-    "opfor": "USA"
-  },
-  "Tallil_tanks_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_tanks_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Tallil_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Tallil_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Tallil_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Manic_RAAS_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_RAAS_v3": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_RAAS_v2": {
-    "blufor": "CAF",
-    "opfor": "IM"
-  },
-  "Manic_AAS_v2": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_AAS_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_Invasion_v2": {
-    "blufor": "CAF",
-    "opfor": "USA"
-  },
-  "Manic_Invasion_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_skirmish_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Manic_skirmish_v2": {
-    "blufor": "CAF",
-    "opfor": "USA"
-  },
-  "Manic_TC_v1": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Sumari_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Sumari_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Sumari_Seed_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Sumari_Seed_v2": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Sumari_skirmish_v1": {
-    "blufor": "IM",
-    "opfor": "INS"
-  },
-  "Sumari_AAS_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Sumari_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Sumari_AAS_v4": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Sumari_AAS_v5": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Sumari_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Sumari_RAAS_v2": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Sumari_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Sumari_TC_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Fallujah_RAAS_v2": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Fallujah_RAAS_v1": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Fallujah_RAAS_v5": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Fallujah_RAAS_v3": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Fallujah_RAAS_v6": {
-    "blufor": "USMC",
-    "opfor": "INS"
-  },
-  "Fallujah_RAAS_v4": {
-    "blufor": "AA",
-    "opfor": "MEA"
-  },
-  "Fallujah_Invasion_v1": {
-    "blufor": "INS",
-    "opfor": "INS"
-  },
-  "Fallujah_Invasion_v3": {
-    "blufor": "USMC",
-    "opfor": "INS"
-  },
-  "Fallujah_Invasion_v4": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Fallujah_Invasion_v5": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Fallujah_Invasion_v2": {
-    "blufor": "MEA",
-    "opfor": "INS"
-  },
-  "Fallujah_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Fallujah_Seed_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Fallujah_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Fallujah_skirmish_v2": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Fallujah_AAS_v1": {
-    "blufor": "MEA",
-    "opfor": "INS"
-  },
-  "Fallujah_AAS_v2": {
-    "blufor": "USMC",
-    "opfor": "MEA"
-  },
-  "Fallujah_TC_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Fallujah_TC_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Kohat_RAAS_v7": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Kohat_RAAS_v9": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Kohat_RAAS_v2": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v6": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v8": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v4": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v5": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Kohat_RAAS_v3": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Kohat_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kohat_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kohat_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Kohat_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Kohat_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "BA"
-  },
-  "Kohat_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kohat_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kohat_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Kohat_TC_v1": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Kamdesh_RAAS_v3": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Kamdesh_RAAS_v7": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Kamdesh_RAAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Kamdesh_RAAS_v6": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kamdesh_RAAS_v1": {
-    "blufor": "IM",
-    "opfor": "INS"
-  },
-  "Kamdesh_RAAS_v5": {
-    "blufor": "AA",
-    "opfor": "MEA"
-  },
-  "Kamdesh_RAAS_v4": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Kamdesh_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kamdesh_Invasion_v3": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kamdesh_Invasion_v5": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Kamdesh_Invasion_v6": {
-    "blufor": "AA",
-    "opfor": "MEA"
-  },
-  "Kamdesh_Invasion_v7": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Kamdesh_Invasion_v2": {
-    "blufor": "BA",
-    "opfor": "INS"
-  },
-  "Kamdesh_Invasion_v4": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Kamdesh_skirmish_v1": {
-    "blufor": "AA",
-    "opfor": "BA"
-  },
-  "Kamdesh_Insurgency_v2": {
-    "blufor": "BA",
-    "opfor": "INS"
-  },
-  "Kamdesh_Insurgency_v1": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Kamdesh_AAS_v1": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kamdesh_TC_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Kamdesh_TC_v2": {
-    "blufor": "IM",
-    "opfor": "INS"
-  },
-  "Kamdesh_TC_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kamdesh_TC_v4": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "AlBasrah_Insurgency_v1": {
-    "blufor": "BA",
-    "opfor": "INS"
+  "AlBasrah_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
   "AlBasrah_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "INS"
+    "teamOne": "US",
+    "teamTwo": "INS"
   },
   "AlBasrah_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "INS"
+    "teamOne": "AUS",
+    "teamTwo": "INS"
   },
-  "AlBasrah_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "AlBasrah_Invasion_v5": {
-    "blufor": "CAF",
-    "opfor": "MEA"
+  "AlBasrah_Insurgency_v1": {
+    "teamOne": "GB",
+    "teamTwo": "INS"
   },
   "AlBasrah_Invasion_v1": {
-    "blufor": "BA",
-    "opfor": "INS"
+    "teamOne": "GB",
+    "teamTwo": "INS"
   },
   "AlBasrah_Invasion_v2": {
-    "blufor": "USMC",
-    "opfor": "INS"
+    "teamOne": "USMC",
+    "teamTwo": "INS"
   },
   "AlBasrah_Invasion_v3": {
-    "blufor": "AA",
-    "opfor": "INS"
+    "teamOne": "AUS",
+    "teamTwo": "INS"
   },
   "AlBasrah_Invasion_v4": {
-    "blufor": "CAF",
-    "opfor": "INS"
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "AlBasrah_Invasion_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
   },
   "AlBasrah_Invasion_v6": {
-    "blufor": "CAF",
-    "opfor": "INS"
+    "teamOne": "CAF",
+    "teamTwo": "INS"
   },
-  "AlBasrah_Seed_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "AlBasrah_skirmish_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "AlBasrah_skirmish_v2": {
-    "blufor": "MEA",
-    "opfor": "INS"
-  },
-  "AlBasrah_TA_v1": {
-    "blufor": "USA",
-    "opfor": "USA"
+  "AlBasrah_Invasion_v7": {
+    "teamOne": "MEA",
+    "teamTwo": "INS"
   },
   "AlBasrah_RAAS_v1": {
-    "blufor": "IM",
-    "opfor": "INS"
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "AlBasrah_Seed_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "AlBasrah_Skirmish_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "AlBasrah_Skirmish_v2": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "AlBasrah_TA_v1": {
+    "teamOne": "US",
+    "teamTwo": "US"
   },
   "AlBasrah_TC_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
+    "teamOne": "GB",
+    "teamTwo": "MEA"
   },
   "AlBasrah_TC_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Chora_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Chora_RAAS_v2": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Chora_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Chora_RAAS_v3": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Chora_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Chora_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Chora_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Chora_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Chora_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Chora_AAS_v3": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Chora_AAS_v5": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "Chora_AAS_v2": {
-    "blufor": "USMC",
-    "opfor": "RGF"
-  },
-  "Chora_AAS_v4": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Chora_TC_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "FoolsRoad_RAAS_v2": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_RAAS_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_RAAS_v5": {
-    "blufor": "CAF",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_RAAS_v4": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_RAAS_v3": {
-    "blufor": "BA",
-    "opfor": "IM"
-  },
-  "FoolsRoad_Invasion_v1": {
-    "blufor": "BA",
-    "opfor": "IM"
-  },
-  "FoolsRoad_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_skirmish_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_Destruction_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "FoolsRoad_AAS_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "FoolsRoad_TC_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
-  },
-  "Kokan_Invasion_v1": {
-    "blufor": "RGF",
-    "opfor": "INS"
-  },
-  "Kokan_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Kokan_skirmish_v1": {
-    "blufor": "IM",
-    "opfor": "INS"
-  },
-  "Kokan_AAS_v1": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Kokan_AAS_v2": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Kokan_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kokan_RAAS_v2": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Kokan_RAAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Kokan_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Kokan_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Kokan_TC_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Lashkar_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Lashkar_RAAS_v2": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Lashkar_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Lashkar_RAAS_v5": {
-    "blufor": "USMC",
-    "opfor": "INS"
-  },
-  "Lashkar_RAAS_v3": {
-    "blufor": "AA",
-    "opfor": "MEA"
-  },
-  "Lashkar_AAS_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Lashkar_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Lashkar_AAS_v4": {
-    "blufor": "AA",
-    "opfor": "MEA"
-  },
-  "Lashkar_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Lashkar_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Lashkar_Invasion_v2": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Lashkar_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Lashkar_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
-  },
-  "Lashkar_skirmish_v1": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Lashkar_TC_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
-  },
-  "Lashkar_TC_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
-  },
-  "Lashkar_TC_v3": {
-    "blufor": "BA",
-    "opfor": "RGF"
-  },
-  "Lashkar_TC_v4": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Lashkar_TC_v5": {
-    "blufor": "CAF",
-    "opfor": "INS"
-  },
-  "Anvil_skirmish_v1": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Anvil_Invasion_v2": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Anvil_Invasion_v1": {
-    "blufor": "AA",
-    "opfor": "INS"
-  },
-  "Anvil_RAAS_v4": {
-    "blufor": "AA",
-    "opfor": "RGF"
-  },
-  "Anvil_RAAS_v2": {
-    "blufor": "CAF",
-    "opfor": "MEA"
-  },
-  "Anvil_RAAS_v1": {
-    "blufor": "RGF",
-    "opfor": "MEA"
-  },
-  "Anvil_RAAS_v3": {
-    "blufor": "AA",
-    "opfor": "MEA"
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
   "Anvil_AAS_v1": {
-    "blufor": "AA",
-    "opfor": "RGF"
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
   },
   "Anvil_AAS_v2": {
-    "blufor": "AA",
-    "opfor": "RGF"
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Anvil_Invasion_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Anvil_Invasion_v2": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Anvil_RAAS_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Anvil_RAAS_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Anvil_RAAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Anvil_RAAS_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Anvil_Skirmish_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
   },
   "Anvil_TC_v1": {
-    "blufor": "AA",
-    "opfor": "RGF"
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
   },
-  "jensensrange_aus-rus_undefined": {
-    "blufor": "AA",
-    "opfor": "RGF"
+  "Belaya_AAS_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
   },
-  "jensensrange_caf-ins_undefined": {
-    "blufor": "CAF",
-    "opfor": "INS"
+  "Belaya_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
   },
-  "jensensrange_gb-mil_undefined": {
-    "blufor": "BA",
-    "opfor": "IM"
+  "Belaya_AAS_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   },
-  "jensensrange_us-rus_undefined": {
-    "blufor": "USA",
-    "opfor": "RGF"
+  "Belaya_Invasion_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
   },
-  "jensensrange_usmc-mea_undefined": {
-    "blufor": "USMC",
-    "opfor": "MEA"
+  "Belaya_Invasion_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "Logar_Seed_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
+  "Belaya_Invasion_v3": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
   },
-  "Logar_skirmish_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
+  "Belaya_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "Logar_Insurgency_v1": {
-    "blufor": "RGF",
-    "opfor": "INS"
+  "Belaya_RAAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "MIL"
   },
-  "Logar_RAAS_v1": {
-    "blufor": "RGF",
-    "opfor": "MEA"
+  "Belaya_RAAS_v3": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
   },
-  "Logar_RAAS_v2": {
-    "blufor": "CAF",
-    "opfor": "MEA"
+  "Belaya_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   },
-  "Logar_AAS_v3": {
-    "blufor": "AUS",
-    "opfor": "RGF"
+  "Belaya_RAAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Belaya_Skirmish_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Belaya_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_AAS_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
+  },
+  "BlackCoast_Invasion_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_Invasion_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "MIL"
+  },
+  "BlackCoast_Invasion_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "BlackCoast_Invasion_v4": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "BlackCoast_RAAS_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_RAAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "MIL"
+  },
+  "BlackCoast_RAAS_v3": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_Seed_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "BlackCoast_Skirmish_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Chora_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Chora_AAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Chora_AAS_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Chora_AAS_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Chora_AAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Chora_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Chora_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Chora_Invasion_v2": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Chora_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Chora_RAAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Chora_RAAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Chora_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Chora_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Chora_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_AAS_v1": {
+    "teamOne": "MEA",
+    "teamTwo": "INS"
+  },
+  "Fallujah_AAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Invasion_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Invasion_v2": {
+    "teamOne": "MEA",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Invasion_v3": {
+    "teamOne": "USMC",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Invasion_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Invasion_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Fallujah_RAAS_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_RAAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_RAAS_v3": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_RAAS_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_RAAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_RAAS_v6": {
+    "teamOne": "USMC",
+    "teamTwo": "INS"
+  },
+  "Fallujah_Seed_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_Skirmish_v2": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Fallujah_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Fallujah_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "FoolsRoad_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_Destruction_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "FoolsRoad_Invasion_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
+  },
+  "FoolsRoad_RAAS_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_RAAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_RAAS_v3": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
+  },
+  "FoolsRoad_RAAS_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_RAAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_Skirmish_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "FoolsRoad_TC_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "GooseBay_AAS_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_AAS_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_Invasion_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_Invasion_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "GooseBay_Invasion_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_Invasion_v4": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_RAAS_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_RAAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_RAAS_v3": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "GooseBay_Skirmish_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_AAS_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_AAS_v4": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_Destruction_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_Insurgency_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "Gorodok_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_Invasion_v2": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "Gorodok_Invasion_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Gorodok_RAAS_v01": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v02": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v03": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v04": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v05": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v06": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v07": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v08": {
+    "teamOne": "AUS",
+    "teamTwo": "MIL"
+  },
+  "Gorodok_RAAS_v09": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_RAAS_v10": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Gorodok_RAAS_v11": {
+    "teamOne": "CAF",
+    "teamTwo": "US"
+  },
+  "Gorodok_Skirmish_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Gorodok_TC_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "JensensRange_AUS-RUS": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "JensensRange_CAF-INS": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "JensensRange_GB-MIL": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
+  },
+  "JensensRange_USA-RUS": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "JensensRange_USMC-MEA": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Kamdesh_AAS_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kamdesh_Insurgency_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Insurgency_v2": {
+    "teamOne": "GB",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v2": {
+    "teamOne": "GB",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v3": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v5": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Invasion_v6": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Kamdesh_Invasion_v7": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_RAAS_v1": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_RAAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Kamdesh_RAAS_v3": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Kamdesh_RAAS_v4": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Kamdesh_RAAS_v5": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Kamdesh_RAAS_v6": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kamdesh_RAAS_v7": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_Skirmish_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "GB"
+  },
+  "Kamdesh_TC_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Kamdesh_TC_v2": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "Kamdesh_TC_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kamdesh_TC_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Kohat_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Kohat_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Kohat_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kohat_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kohat_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kohat_Invasion_v2": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kohat_Invasion_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Kohat_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v3": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Kohat_RAAS_v4": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v5": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v6": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v7": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Kohat_RAAS_v8": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kohat_RAAS_v9": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Kohat_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "GB"
+  },
+  "Kohat_TC_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Kokan_AAS_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Kokan_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Kokan_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kokan_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Kokan_Invasion_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "INS"
+  },
+  "Kokan_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Kokan_RAAS_v2": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Kokan_RAAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Kokan_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Kokan_Skirmish_v1": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "Kokan_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_AAS_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Lashkar_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Lashkar_AAS_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Lashkar_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Lashkar_Invasion_v2": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Lashkar_Invasion_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Lashkar_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_RAAS_v2": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Lashkar_RAAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Lashkar_RAAS_v5": {
+    "teamOne": "USMC",
+    "teamTwo": "INS"
+  },
+  "Lashkar_Skirmish_v1": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Lashkar_TC_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Lashkar_TC_v3": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Lashkar_TC_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Lashkar_TC_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
   },
   "Logar_AAS_v1": {
-    "blufor": "RGF",
-    "opfor": "MEA"
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
   },
   "Logar_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Logar_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Logar_Insurgency_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "INS"
+  },
+  "Logar_RAAS_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "MEA"
+  },
+  "Logar_RAAS_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Logar_Seed_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Logar_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
   "Logar_TC_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
-  "Mestia_skirmish_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
+  "Manic_AAS_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_AAS_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_Invasion_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_Invasion_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "US"
+  },
+  "Manic_RAAS_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_RAAS_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Manic_RAAS_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Manic_Skirmish_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Manic_Skirmish_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "US"
+  },
+  "Manic_TC_v1": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   },
   "Mestia_AAS_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
   },
   "Mestia_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "RGF"
-  },
-  "Mestia_Invasion_v2": {
-    "blufor": "USA",
-    "opfor": "IM"
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
   "Mestia_Invasion_v1": {
-    "blufor": "RGF",
-    "opfor": "IM"
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "Mestia_Invasion_v2": {
+    "teamOne": "US",
+    "teamTwo": "MIL"
   },
   "Mestia_RAAS_v1": {
-    "blufor": "USa",
-    "opfor": "IM"
+    "teamOne": "US",
+    "teamTwo": "MIL"
   },
   "Mestia_RAAS_v2": {
-    "blufor": "CAF",
-    "opfor": "RGF"
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Mestia_Skirmish_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
   },
   "Mestia_TC_v1": {
-    "blufor": "USA",
-    "opfor": "RGF"
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "pacificprovinggrounds_usmc-mea_undefined": {
-    "blufor": "USMC",
-    "opfor": "MEA"
+  "Mutaha_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "pacificprovinggrounds_usmc-rus_undefined": {
-    "blufor": "USMC",
-    "opfor": "RGF"
+  "Mutaha_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
   },
-  "tutorial_helicopter_undefined": {
-    "blufor": "NONE",
-    "opfor": "NONE"
+  "Mutaha_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
   },
-  "tutorial_infantry_undefined": {
-    "blufor": "NONE",
-    "opfor": "NONE"
+  "Mutaha_AAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_Invasion_v2": {
-    "blufor": "AA",
-    "opfor": "INS"
+  "Mutaha_Invasion_v1": {
+    "teamOne": "GB",
+    "teamTwo": "INS"
   },
-  "LashkarValley_Invasion_v3": {
-    "blufor": "CAF",
-    "opfor": "INS"
+  "Mutaha_Invasion_v2": {
+    "teamOne": "GB",
+    "teamTwo": "INS"
   },
-  "LashkarValley_Invasion_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
+  "Mutaha_Invasion_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
   },
-  "LashkarValley_RAAS_v2": {
-    "blufor": "AA",
-    "opfor": "RGF"
+  "Mutaha_Invasion_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
   },
-  "LashkarValley_RAAS_v5": {
-    "blufor": "USMC",
-    "opfor": "INS"
+  "Mutaha_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_RAAS_v1": {
-    "blufor": "USA",
-    "opfor": "MEA"
+  "Mutaha_RAAS_v2": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_RAAS_v4": {
-    "blufor": "CAF",
-    "opfor": "INS"
+  "Mutaha_RAAS_v3": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_RAAS_v3": {
-    "blufor": "AA",
-    "opfor": "MEA"
+  "Mutaha_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_skirmish_v1": {
-    "blufor": "AA",
-    "opfor": "INS"
+  "Mutaha_RAAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_Insurgency_v1": {
-    "blufor": "USA",
-    "opfor": "INS"
+  "Mutaha_RAAS_v6": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_AAS_v1": {
-    "blufor": "BA",
-    "opfor": "RGF"
+  "Mutaha_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_AAS_v3": {
-    "blufor": "AA",
-    "opfor": "RGF"
+  "Mutaha_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_AAS_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
+  "Mutaha_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
   },
-  "LashkarValley_AAS_v4": {
-    "blufor": "AA",
-    "opfor": "MEA"
+  "Narva_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_TC_v1": {
-    "blufor": "BA",
-    "opfor": "MEA"
+  "Narva_AAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_TC_v2": {
-    "blufor": "USA",
-    "opfor": "MEA"
+  "Narva_AAS_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_TC_v3": {
-    "blufor": "BA",
-    "opfor": "RGF"
+  "Narva_AAS_v4": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_TC_v4": {
-    "blufor": "AA",
-    "opfor": "RGF"
+  "Narva_Destruction_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
   },
-  "LashkarValley_TC_v5": {
-    "blufor": "CAF",
-    "opfor": "INS"
+  "Narva_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Narva_Invasion_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Narva_Invasion_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Narva_Invasion_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Narva_Invasion_v5": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Narva_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Narva_RAAS_v2": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Narva_RAAS_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Narva_RAAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Narva_RAAS_v5": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Narva_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Narva_TA_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "RUS"
+  },
+  "Narva_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Narva_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "PacificProvingGrounds_USMC-MEA": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "PacificProvingGrounds_USMC-RUS": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "MIL"
+  },
+  "Skorpo_Invasion_v2": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "Skorpo_Invasion_v3": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_Invasion_v4": {
+    "teamOne": "RUS",
+    "teamTwo": "MIL"
+  },
+  "Skorpo_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_RAAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_RAAS_v3": {
+    "teamOne": "US",
+    "teamTwo": "MIL"
+  },
+  "Skorpo_RAAS_v4": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_RAAS_v5": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Skorpo_TC_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Sumari_AAS_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Sumari_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Sumari_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Sumari_AAS_v4": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Sumari_AAS_v5": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Sumari_Insurgency_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Sumari_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Sumari_RAAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Sumari_RAAS_v2": {
+    "teamOne": "GB",
+    "teamTwo": "MEA"
+  },
+  "Sumari_Seed_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Sumari_Seed_v2": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Sumari_Skirmish_v1": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "Sumari_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Tallil_AAS_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Tallil_Invasion_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_Invasion_v2": {
+    "teamOne": "RUS",
+    "teamTwo": "INS"
+  },
+  "Tallil_Invasion_v3": {
+    "teamOne": "US",
+    "teamTwo": "INS"
+  },
+  "Tallil_Invasion_v4": {
+    "teamOne": "AUS",
+    "teamTwo": "INS"
+  },
+  "Tallil_RAAS_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "MEA"
+  },
+  "Tallil_RAAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Tallil_RAAS_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_RAAS_v4": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Tallil_RAAS_v5": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Tallil_RAAS_v6": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Tallil_RAAS_v7": {
+    "teamOne": "CAF",
+    "teamTwo": "MEA"
+  },
+  "Tallil_Seed_v1": {
+    "teamOne": "USMC",
+    "teamTwo": "INS"
+  },
+  "Tallil_Seed_v2": {
+    "teamOne": "CAF",
+    "teamTwo": "INS"
+  },
+  "Tallil_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_Skirmish_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_Skirmish_v3": {
+    "teamOne": "MIL",
+    "teamTwo": "INS"
+  },
+  "Tallil_Tanks_v1": {
+    "teamOne": "US",
+    "teamTwo": "MEA"
+  },
+  "Tallil_Tanks_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tallil_TA_v1": {
+    "teamOne": "US",
+    "teamTwo": "US"
+  },
+  "Tallil_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Tutorial_Helicopter": {
+    "teamOne": "US",
+    "teamTwo": "US"
+  },
+  "Tutorial_Infantry": {
+    "teamOne": "US",
+    "teamTwo": "US"
+  },
+  "Yehorivka_AAS_v1": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_AAS_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_AAS_v3": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_AAS_v4": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Destruction_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Invasion_v1": {
+    "teamOne": "GB",
+    "teamTwo": "MIL"
+  },
+  "Yehorivka_Invasion_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Invasion_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Yehorivka_RAAS_v01": {
+    "teamOne": "USMC",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v02": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v03": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v04": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v05": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v06": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v07": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v08": {
+    "teamOne": "AUS",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v09": {
+    "teamOne": "CAF",
+    "teamTwo": "MIL"
+  },
+  "Yehorivka_RAAS_v10": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v11": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_RAAS_v12": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Skirmish_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Skirmish_v2": {
+    "teamOne": "GB",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_Skirmish_v3": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_TA_v1": {
+    "teamOne": "RUS",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_TC_v1": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_TC_v2": {
+    "teamOne": "US",
+    "teamTwo": "RUS"
+  },
+  "Yehorivka_TC_v3": {
+    "teamOne": "CAF",
+    "teamTwo": "RUS"
   }
 }

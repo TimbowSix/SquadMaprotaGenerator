@@ -77,7 +77,7 @@ class Maprota {
      */
     choose_layer_from_map(map, mode, weighted=true){
         let weights = null
-        const layers = map.layers[mode]
+        const layers = map.av_layers(mode)
         if(weighted && this.config["use_vote_weight"]){
             weights = []
             for(let layer of layers){
@@ -85,10 +85,10 @@ class Maprota {
             }
             weights = utils.normalize(weights)
         }
-        let layer =  utils.choice(map.layers[mode], weights)
+        let layer =  utils.choice(layers, weights)
         // Add Layer Locktime
         if(this.config["layer_locktime"] > 0){
-            layer.map.lock_layer(layer)
+            layer.update_lock_time()
         }
         return layer
     }
@@ -119,7 +119,6 @@ class Maprota {
 
         for(let map of this.all_maps){
             map.decrease_layer_lock_time()
-
         }
 
         // check teams
@@ -155,16 +154,16 @@ class Maprota {
             }
         }
         if(lock_blu || lock_op){
-            for(let map of this.all_maps){
-                for(let mode in map.layers){
-                    for(let layer of map.layers[mode]){
+            for(let map of maps){
+                for(let mode of map.av_modes()){
+                    for(let layer of map.av_layers(mode)){
                         // unnötiger rechenaufwand, wenn von einer map mehrere layer gelockt werden
                         // relevante laufzeit auswirkung?
                         // wie oft kommt das vor?
                         if(layer.teamOne == lock_blu){
-                            map.lock_layer(layer, 1)
+                            layer.update_lock_time(1)
                         }else if (layer.teamTwo == lock_op){
-                            map.lock_layer(layer, 1)
+                            layer.update_lock_time(1)
                         }
                     }
                 }
@@ -181,7 +180,7 @@ class Maprota {
     av_maps(maps, mode){
         let valid_maps = []
         for(let map of maps){
-            if(mode in map.layers) valid_maps.push(map)
+            if(map.av_modes().includes(mode)) valid_maps.push(map)
         }
         return valid_maps
     }
@@ -195,7 +194,7 @@ class Maprota {
         let weights = []
         let valid_maps = []
         for(let map of maps){
-            if(mode in map.layers){ //doppelt? -> av_maps
+            if(map.av_modes().includes(mode)){ //doppelt? -> av_maps
                 valid_maps.push(map)
                 //failsave //set weight to 1 if no weight available
                 let weight = map.calculate_map_weight(mode, this.weight_params[mode])
@@ -225,7 +224,7 @@ class Maprota {
         let v_maps = this.valid_maps(mode)
         let maps = this.av_maps(v_maps, mode)
         let map = this.choose_map(maps, mode)
-        //let layer = this.choose_layer(map.layers[mode])
+        //let layer = this.choose_layer(map.av_layers(mode))
         let layer = this.choose_layer_from_map(map, mode)
         this.rotation.push(layer)
         this.maps.push(map)
