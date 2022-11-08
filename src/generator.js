@@ -123,11 +123,11 @@ class Maprota {
         let teams2 = []
         for(let i = 0; i<latest.length; i++){
             if(i%2==0){
-                teams1.push(latest[i].team1)
-                teams2.push(latest[i].team2)
+                teams1.push(latest[i].teamOne)
+                teams2.push(latest[i].teamTwo)
             }else{
-                team1.push(latest[i].team2)
-                teams2.push(latest[i].team1)
+                teams1.push(latest[i].teamTwo)
+                teams2.push(latest[i].teamOne)
             }
         }
         let lock_blu, lock_op
@@ -152,9 +152,9 @@ class Maprota {
                         // unnötiger rechenaufwand, wenn von einer map mehrere layer gelockt werden
                         // relevante laufzeit auswirkung?
                         // wie oft kommt das vor?
-                        if(layer.team1 == lock_blu){
+                        if(layer.teamOne == lock_blu){
                             map.lock_layer(layer, 1)
-                        }else if (layer.team2 == lock_op){
+                        }else if (layer.teamTwo == lock_op){
                             map.lock_layer(layer, 1)
                         }
                     }

@@ -44,8 +44,8 @@ function initialize_maps(config){
                 }
                 for(let layer of layers[map_name][mode]){
                     let l = new Layer(layer["name"], mode, map, layer["votes"])
-                    l.team1 = team_layers[layer.name]["blufor"]
-                    l.team2 = team_layers[layer.name]["opfor"]
+                    l.teamOne = team_layers[layer.name]["blufor"]
+                    l.teamTwo = team_layers[layer.name]["opfor"]
                     map.add_layer(l)
                 }
             }
@@ -386,8 +386,8 @@ class Layer{
         this.mode = mode
         this.map = map
         this.votes = votes
-        this.team1
-        this.team2
+        this.teamOne
+        this.teamTwo
     }
 }
 
@@ -436,6 +436,16 @@ function get_layers(){
         }
     }
     return maps
+}
+
+function get_teams(){
+    const config = JSON.parse(fs.readFileSync("./config.json"))
+    let data = get_data(config.team_api_url)
+    let layers = {}
+    for(let layer of data){
+        layers[layer.id] = {"teamOne": layer.teamOne, "teamTwo": layer.teamTwo}
+    }
+    return layers
 }
 
 function save_mapweights(){
@@ -550,9 +560,7 @@ function get_data(url){
 
 // Test Stuff here
 if (require.main === module) {
-    //fix_unavailables()
-    let config = build_config()
-    initialize_maps(config)
+    console.log(get_teams()["Skorpo_AAS_v1"])
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config, get_dist };
