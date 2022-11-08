@@ -74,7 +74,6 @@ function initialize_maps(config){
 
             //pre-calculate layervote weights
             maps.push(map)
-
         }else{
             console.log(`WARNING: No layers available for map '${map_name}'`)
         }
@@ -290,8 +289,8 @@ class Map{
             for(let layer of this.layers[mode]){
                 layer.lock_time = 0
             }
+            this.new_weight(mode)
         }
-        this.new_weight()
     }
 
     /**
@@ -343,7 +342,8 @@ class Map{
         //let modes = Object.keys(this.layers)
         let modes = this.av_modes()
         if(mode){
-            if(!(mode in this.layers)){
+            if(!(modes.includes(mode))){
+                //console.log(`INFO: can't add mapvote weights to ${this.name} for mode ${mode}, mode is unavailable`)
                 return
             }
             modes = [mode]
@@ -363,7 +363,7 @@ class Map{
         let means = {}
         let weights = {}
         let temp = {}
-        for(let mode of Object.keys(votesum)){
+        for(let mode in votesum){
             means[mode] = 1/votesum[mode].length*utils.sumArr(votesum[mode])
             for(let v of votesum[mode]){
                 if(weights[mode]) weights[mode].push(Math.exp(-Math.pow(means[mode] - v, 2)))
@@ -425,7 +425,7 @@ class Layer{
         if(this.current_lock_time >= 1){
             this.current_lock_time--;
             if(this.current_lock_time <= 0){
-                this.map.new_weight()
+                this.map.new_weight(this.mode)
             }
         }
     }
@@ -441,7 +441,7 @@ class Layer{
         }else{
             this.current_lock_time = this.lock_time
         }
-        this.map.new_weight()
+        this.map.new_weight(this.mode)
     }
 }
 
