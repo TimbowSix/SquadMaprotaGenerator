@@ -76,11 +76,16 @@ class Maprota {
      * @returns {data.Layer}
      */
     choose_layer_from_map(map, mode, weighted=true){
-        let weight = null
+        let weights = null
+        const layers = map.layers[mode]
         if(weighted && this.config["use_vote_weight"]){
-            weight = map.vote_weights_by_mode[mode]
+            weights = []
+            for(let layer of layers){
+                weights.push(layer.vote_weight)
+            }
+            weights = utils.normalize(weights)
         }
-        let layer =  utils.choice(map.layers[mode], weight)
+        let layer =  utils.choice(map.layers[mode], weights)
         // Add Layer Locktime
         if(this.config["layer_locktime"] > 0){
             layer.map.lock_layer(layer)
@@ -118,7 +123,11 @@ class Maprota {
         }
 
         // check teams
-        let latest = this.layers.slice(this.layers.length-this.config.max_same_team)
+        if(this.config.max_same_team < 1){
+            return maps
+        }
+        //else check
+        let latest = this.rotation.slice(this.rotation.length-this.config.max_same_team)
         let teams1 = []
         let teams2 = []
         for(let i = 0; i<latest.length; i++){
@@ -133,16 +142,16 @@ class Maprota {
         let lock_blu, lock_op
         if(teams1.every((val, i, arr) => val == arr[0])){
             if (this.config.max_same_team % 2 == 0){
-                lock_op = teams1[0]
-            }else{
                 lock_blu = teams1[0]
+            }else{
+                lock_op = teams1[0]
             }
         }
         if(teams2.every((val, i, arr) => val == arr[0])){
             if (this.config.max_same_team % 2 == 0){
-                lock_blu = teams2[0]
-            }else{
                 lock_op = teams2[0]
+            }else{
+                lock_blu = teams2[0]
             }
         }
         if(lock_blu || lock_op){
@@ -161,7 +170,6 @@ class Maprota {
                 }
             }
         }
-
         return maps
     }
     /**

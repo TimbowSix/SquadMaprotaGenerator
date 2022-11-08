@@ -1155,79 +1155,79 @@
     "blufor": "USA",
     "opfor": "MEA"
   },
-  "lashkar_RAAS_v1": {
+  "Lashkar_RAAS_v1": {
     "blufor": "USA",
     "opfor": "MEA"
   },
-  "lashkar_RAAS_v2": {
+  "Lashkar_RAAS_v2": {
     "blufor": "AA",
     "opfor": "RGF"
   },
-  "lashkar_RAAS_v4": {
+  "Lashkar_RAAS_v4": {
     "blufor": "CAF",
     "opfor": "INS"
   },
-  "lashkar_RAAS_v5": {
+  "Lashkar_RAAS_v5": {
     "blufor": "USMC",
     "opfor": "INS"
   },
-  "lashkar_RAAS_v3": {
+  "Lashkar_RAAS_v3": {
     "blufor": "AA",
     "opfor": "MEA"
   },
-  "lashkar_AAS_v1": {
+  "Lashkar_AAS_v1": {
     "blufor": "BA",
     "opfor": "RGF"
   },
-  "lashkar_AAS_v3": {
+  "Lashkar_AAS_v3": {
     "blufor": "AA",
     "opfor": "RGF"
   },
-  "lashkar_AAS_v4": {
+  "Lashkar_AAS_v4": {
     "blufor": "AA",
     "opfor": "MEA"
   },
-  "lashkar_AAS_v2": {
+  "Lashkar_AAS_v2": {
     "blufor": "USA",
     "opfor": "MEA"
   },
-  "lashkar_Insurgency_v1": {
+  "Lashkar_Insurgency_v1": {
     "blufor": "USA",
     "opfor": "INS"
   },
-  "lashkar_Invasion_v2": {
+  "Lashkar_Invasion_v2": {
     "blufor": "AA",
     "opfor": "INS"
   },
-  "lashkar_Invasion_v3": {
+  "Lashkar_Invasion_v3": {
     "blufor": "CAF",
     "opfor": "INS"
   },
-  "lashkar_Invasion_v1": {
+  "Lashkar_Invasion_v1": {
     "blufor": "USA",
     "opfor": "INS"
   },
-  "lashkar_skirmish_v1": {
+  "Lashkar_skirmish_v1": {
     "blufor": "AA",
     "opfor": "INS"
   },
-  "lashkar_TC_v1": {
+  "Lashkar_TC_v1": {
     "blufor": "BA",
     "opfor": "MEA"
   },
-  "lashkar_TC_v2": {
+  "Lashkar_TC_v2": {
     "blufor": "USA",
     "opfor": "MEA"
   },
-  "lashkar_TC_v3": {
+  "Lashkar_TC_v3": {
     "blufor": "BA",
     "opfor": "RGF"
   },
-  "lashkar_TC_v4": {
+  "Lashkar_TC_v4": {
     "blufor": "AA",
     "opfor": "RGF"
   },
-  "lashkar_TC_v5": {
+  "Lashkar_TC_v5": {
     "blufor": "CAF",
     "opfor": "INS"
   },
@@ -1312,6 +1312,10 @@
     "opfor": "MEA"
   },
   "Logar_AAS_v3": {
+    "blufor": "AUS",
+    "opfor": "RGF"
+  },
+  "Logar_AAS_v1": {
     "blufor": "RGF",
     "opfor": "MEA"
   },
