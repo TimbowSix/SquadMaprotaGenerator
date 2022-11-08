@@ -15,9 +15,9 @@ function initialize_maps(config){
         layers = get_layers()
         fs.writeFileSync("./data/layers.json", JSON.stringify(layers, null, 2))
     }else{
-        layers = require("../data/layers.json")
+        layers = JSON.parse(fs.readFileSync("../data/layers.json"))
     }
-    let bioms = require("../data/bioms.json")
+    let bioms = JSON.parse(fs.readFileSync("../data/bioms.json"))
     bioms = parse_map_size(bioms)
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
@@ -28,7 +28,14 @@ function initialize_maps(config){
             used_modes.push(mode)
         }
     }
-    const team_layers = JSON.parse(fs.readFileSync("./data/layers_teams.json"))
+    let team_layers
+    if (config["update_teams"]){
+        team_layers = get_teams()
+        fs.writeFileSync("./data/layers.json", JSON.stringify(layers, null, 2))
+    }else{
+        team_layers = JSON.parse(fs.readFileSync("./data/layers_teams.json"))
+    }
+
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
         if(!(config["maps"].includes(map_name))){
@@ -54,8 +61,8 @@ function initialize_maps(config){
                         console.log(layer.name)
                         continue
                     }
-                    l.teamOne = team_layers[layer.name]["blufor"]
-                    l.teamTwo = team_layers[layer.name]["opfor"]
+                    l.teamOne = team_layers[layer.name]["teamOne"]
+                    l.teamTwo = team_layers[layer.name]["teamTwo"]
                     map.add_layer(l)
                 }
             }
@@ -398,8 +405,8 @@ class Layer{
         this.mode = mode
         this.map = map
         this.votes = votes
-        this.team1
-        this.team2
+        this.teamOne
+        this.teamTwo
         this.vote_weight = 0
     }
     calculate_vote_weight(slope, shift){
