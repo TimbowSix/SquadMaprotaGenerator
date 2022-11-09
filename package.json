@@ -1,12 +1,12 @@
 {
-  "name": "squad-maprota-generator",
-  "version": "2.0.4",
-  "private": true,
-  "main": "main.js",
-  "scripts": {
-    "start": "node main.js"
-  },
-  "dependencies": {
-    "sync-fetch": "^0.4.2"
-  }
+    "name": "squad-maprota-generator",
+    "version": "2.0.6",
+    "private": true,
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js"
+    },
+    "dependencies": {
+        "sync-fetch": "^0.4.2"
+    }
 }
