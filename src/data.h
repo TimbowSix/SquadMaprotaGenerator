@@ -8,51 +8,50 @@
 
 /**
  * pointer to all maps
-*/
-struct rotaMap* allMaps;
+ */
+rotaMap *allMaps;
 /**
  * pointer to all layers
-*/
-struct rotaLayer* allLayers;
+ */
+rotaLayer *allLayers;
 /**
  * pointer to all modes
-*/
-struct rotaMode* allModes;
+ */
+rotaMode *allModes;
 
 /**
  * init all maps
-*/
-void initializeMaps(struct rotaConfig* conf, struct rotaMap* maps);
-
+ */
+void initializeMaps(rotaConfig *conf, rotaMap *maps);
 
 /**
  * calculating the expected distribution for every given map
-*/
-void getDist(struct rotaMap* maps, double** distances);
+ */
+void getDist(rotaMap *maps, double **distances);
 
 /**
  * parsing the mapsize in km² to a value between 0 and 1 for every given map
-*/
-void normaliseBiomMapSize(double** bioms);
+ */
+void normalizeBiomMapSize(double **bioms);
 
 /**
  * retrieves layers, votes and maps from a fetched input file
-*/
-void getLayers(struct rotaConfig* conf, struct rotaLayer* allLayers);
+ */
+void getLayers(rotaConfig *conf, rotaLayer *allLayers);
 
 /**
  * removing unavailable modes/maps und recalculating probabilities if necessary
-*/
-void fixUnavailables(struct rotaConfig* conf, struct rotaMap* maps);
+ */
+void fixUnavailable(rotaConfig *conf, rotaMap *maps);
 
-/**
+/**s
  * building a config object based on the config.json and possible overwrites
-*/
-void buildConfig(struct rotaConfig* con);
+ */
+void buildConfig(rotaConfig *con);
 
 /**
  * checking if important changes in the configuration have been made
-*/
+ */
 int checkChanges();
 
 #endif

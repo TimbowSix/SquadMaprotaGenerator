@@ -1,52 +1,79 @@
 #ifndef rota_config_h
 #define rota_config_h
 
-struct gameMode{
-    char* name;
+#define LAYER_PATH "./data/layers.json"
+#define BIOMS_PATH "./data/bioms.json"
+#define CURRENT_MAP_DIST_PATH "./data/current_map_dist.json"
+#define WEIGHT_PARAMS_PATH "./data/weight_params.json"
+#define SAVE_PATH "./data/save.json"
+#define CONFIG_PATH "./config.json"
+#define MAPS_OVERWRITE_PATH "./data/maps_overwrite.json"
+#define MODE_DIST_OVERWRITE_PATH "./data/mode_distribution_overwrite.json"
+
+typedef struct gameMode gameMode;
+struct gameMode
+{
+    char *name;
     double probability;
 };
 
-struct poolDistribution{
-    char* poolName;
+typedef struct poolDistribution poolDistribution;
+struct poolDistribution
+{
+    char *poolName;
     double probability;
 };
 
-struct modePool {
-    char* name;
-    struct gameMode* gameMods;
+typedef struct modePool modePool;
+struct modePool
+{
+    char *name;
+    gameMode *gameMods;
 };
 
-struct modeDistribution {
-    struct modePool* modePools;
-    struct poolDistribution* poolDists;
+typedef struct modeDistribution modeDistribution;
+struct modeDistribution
+{
+    modePool *modePools;
+    poolDistribution *poolDist;
     int poolSpacing;
     int spaceMain;
 };
 
-
-struct rotaConfig {
+typedef struct rotaConfig rotaConfig;
+struct rotaConfig
+{
     int numberOfRotas;
     int numberOfLayers;
     int seedLayer;
-    char* outputPath;
-    char* layerVoteApiUrl;
-    struct modeDistribution* modeDists;
-    char* maps; //list of mapsnames
+    char *outputPath;
+    char *layerVoteApiUrl;
+    modeDistribution *modeDist;
+    char *maps; // list of mapsnames
     int biomSpacing;
-    int layerLocktime;
+    int layerLockTime;
     double minBiomDistance;
-    double mapvoteSlope;
-    double mapvoteShift;
-    double layervoteSlope;
-    double layervoteShift;
+    double mapVoteSlope;
+    double mapVoteShift;
+    double layerVoteSlope;
+    double layerVoteShift;
     int useVoteWeight;
     int useMapWeight;
     int saveExpectedMapDist;
     int useLockTimeModifier;
     int autoOptimize;
-    int fixUnavailables;
+    int fixUnavailable;
     int debug;
 };
 
+/**
+ * reads config.json and returns a pointer to a rotaConfig struct
+ */
+rotaConfig *createConfig();
+
+/**
+ * free config mem
+ */
+void delConfig(rotaConfig *config);
 
 #endif
