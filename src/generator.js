@@ -115,8 +115,8 @@ class Maprota {
             maps = statistics.getValidMaps(this.all_maps, this.maps.at(-1), current_mode)
 
         }
-        // decrease layer_locktime
 
+        // decrease layer_locktime for every layer of every map
         for(let map of this.all_maps){
             map.decrease_layer_lock_time()
         }
@@ -126,7 +126,13 @@ class Maprota {
             return maps
         }
         //else check
-        let latest = this.rotation.slice(this.rotation.length-this.config.max_same_team)
+        //let latest = this.rotation.slice(this.rotation.length-this.config.max_same_team)
+        let latest = []
+        for(let i=this.rotation.length-this.config.max_same_team; i<this.rotation.length; i++){
+            if(i>=0){
+                latest.push(this.rotation[i])
+            }
+        }
         let teams1 = []
         let teams2 = []
         for(let i = 0; i<latest.length; i++){
@@ -155,17 +161,27 @@ class Maprota {
         }
         if(lock_blu || lock_op){
             for(let map of maps){
+                let lock_modes = []
                 for(let mode of map.av_modes()){
                     for(let layer of map.av_layers(mode)){
                         // unnötiger rechenaufwand, wenn von einer map mehrere layer gelockt werden
                         // relevante laufzeit auswirkung?
                         // wie oft kommt das vor?
                         if(layer.teamOne == lock_blu){
-                            layer.update_lock_time(1)
+                            layer.update_lock_time(1, false)
+                            if(!(lock_modes.includes(mode))){
+                                lock_modes.push(mode)
+                            }
                         }else if (layer.teamTwo == lock_op){
-                            layer.update_lock_time(1)
+                            layer.update_lock_time(1, false)
+                            if(!(lock_modes.includes(mode))){
+                                lock_modes.push(mode)
+                            }
                         }
                     }
+                }
+                for(let mode of lock_modes){
+                    map.new_weight(mode)
                 }
             }
         }

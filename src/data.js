@@ -247,30 +247,6 @@ class Map{
     }
 
     /**
-     * Locking a layer for the set layer_locktime, removing it from the available layers
-     * @param {Layer} layer
-     * @param {Number} locktime optional
-     */
-    /*
-    lock_layer(layer, locktime){
-        let lt = this.layer_locktime
-        if (locktime){
-            lt = locktime
-        }
-        this.locked_layers.push({"locktime": lt, "layer":layer})
-        const index = this.layers[layer.mode].indexOf(layer)
-        if(index>-1){
-            this.layers[layer.mode].splice(index, 1)
-            if(this.layers[layer.mode].length <1){
-                delete this.layers[layer.mode]
-            }
-            this.new_weight(layer.mode)
-        }else{
-            console.log(`WARNING: Layer ${layer.name} not found in Map ${this.name}`)
-        }
-    }
-    */
-    /**
      * calculating new mapvote weight sum for a specific mode
      * @param {string} mode
      */
@@ -298,8 +274,13 @@ class Map{
      */
     decrease_layer_lock_time(){
         for(let mode in this.layers){
+            let unlocked = 0
             for(let layer of this.layers[mode]){
-                layer.decrease_lock_time()
+                unlocked += layer.decrease_lock_time(false)
+            }
+            
+            if(unlocked>0){
+                this.new_weight(mode)
             }
         }
     }
@@ -420,14 +401,19 @@ class Layer{
 
     /**
     * decreasing locktime by one
+    * @param {boolean} calc_weight if new mapweight is calculated when layer is unlocked. standard=true
+    * @returns {boolean} returns true if layer is unlocked again else false, also false if already unlocked
     */
-    decrease_lock_time(){
-        if(this.current_lock_time >= 1){
-            this.current_lock_time--;
-            if(this.current_lock_time <= 0){
+    decrease_lock_time(calc_weight=true){
+        if(this.current_lock_time <= 0) return false
+        this.current_lock_time--;
+        if(this.current_lock_time <= 0){
+            if(calc_weight){
                 this.map.new_weight(this.mode)
             }
+            return true
         }
+        return false
     }
 
     /**
@@ -435,13 +421,15 @@ class Layer{
      * setting current locktime to custom locktime if given
      * @param {number} locktime optional
      */
-    update_lock_time(locktime){
+    update_lock_time(locktime, calc_weights=true){
         if(locktime){
             this.current_lock_time = locktime
         }else{
             this.current_lock_time = this.lock_time
         }
-        this.map.new_weight(this.mode)
+        if(calc_weights){
+            this.map.new_weight(this.mode)
+        }
     }
 }
 
