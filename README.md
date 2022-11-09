@@ -53,9 +53,21 @@ Anzahl an Rotas, die generiert werden sollen <br>
 
 ---
 
+### seed_layer [int]
+
+Anzahl an Seedlayern am begin der Rota <br>
+
+---
+
 ### update_layers [bool]
 
 Entscheidet, ob beim start layer/votes neu abgerufen werden sollen <br>
+
+---
+
+### update_teams [bool]
+
+Ob die Team layer neu abgerufen werden sollen <br>
 
 ---
 
@@ -71,10 +83,9 @@ Abruf Url für Layer/Votes
 
 ---
 
-### maps [array[string]]
+### team_api_url [string]
 
-Maps aus denen die Rota gebildet werden soll. Jede der aufgelisteten Maps sollten genau so heißen wie in der
-`data\bioms.json` sonst wird einen nicht übereinstimmende Map ignoriert.
+Abruf Url für Layer/Teams
 
 ---
 
@@ -115,11 +126,24 @@ kommen dürfen oder sie sich abwechseln müssen.
 
 ---
 
+### maps [array[string]]
+
+Maps aus denen die Rota gebildet werden soll. Jede der aufgelisteten Maps sollten genau so heißen wie in der
+`data\bioms.json` sonst wird einen nicht übereinstimmende Map ignoriert.
+
+---
+
 <strong>
 Einstellungen ab hier haben enorme Auswirkungen auf die Generierung
 und Verteilung. ¨Anderungen ohne genaueres Verst¨andis
 der Funktionsweise und des Ablaufs der Generierung nicht empfohlen
 </strong>
+
+---
+
+### biom_spacing [int]
+
+Wie lange ein Cluster gelockt wird.
 
 ---
 
@@ -129,9 +153,10 @@ Wie lange ein Layer gelocked wird.
 
 ---
 
-### biom_spacing [int]
+### max_same_team [int]
 
-Wie lange ein Cluster gelockt wird.
+Wie oft das selbe Team maximal hintereinander gespielt werden darf.
+0 zum Deaktivieren
 
 ---
 
@@ -206,9 +231,14 @@ Automatische Anpassung der Config, wenn ein Mode keine Maps hat oder wenn eine M
 
 ---
 
+### debug [bool]
+
+testing, nicht im Standardbetrieb verwenden
+
 ## Neue Map einfügen
 
 Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden. \
+Außerdem muss die Map in der Config unter "maps" hinzugefügt werden.\
 Beipsiel Struktur der `bioms.json': \
 
 ```json

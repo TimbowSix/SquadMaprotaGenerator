@@ -1,6 +1,6 @@
 {
-    "number_of_rotas": 1,
-    "number_of_layers": 100000,
+    "number_of_rotas": 2,
+    "number_of_layers": 30,
     "seed_layer": 2,
     "update_layers": true,
     "update_teams": true,
@@ -70,7 +70,7 @@
     "layervote_shift": 0,
     "use_vote_weight": true,
     "use_map_weight": true,
-    "save_expected_map_dist": true,
+    "save_expected_map_dist": false,
     "use_lock_time_modifier": true,
     "auto_optimize": true,
     "fix_unavailables": true,
