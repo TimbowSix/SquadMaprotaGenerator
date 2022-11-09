@@ -1557,60 +1557,60 @@
       }
     ]
   },
-  "harju": {
+  "Harju": {
     "AAS": [
       {
-        "name": "harju_AAS_v1",
+        "name": "Harju_AAS_v1",
         "votes": 1
       },
       {
-        "name": "harju_AAS_v2",
+        "name": "Harju_AAS_v2",
         "votes": 1
       }
     ],
     "RAAS": [
       {
-        "name": "harju_RAAS_v1",
+        "name": "Harju_RAAS_v1",
         "votes": 1
       },
       {
-        "name": "harju_RAAS_v2",
+        "name": "Harju_RAAS_v2",
         "votes": 1
       },
       {
-        "name": "harju_RAAS_v3",
+        "name": "Harju_RAAS_v3",
         "votes": 1
       },
       {
-        "name": "harju_RAAS_v4",
+        "name": "Harju_RAAS_v4",
         "votes": 1
       },
       {
-        "name": "harju_RAAS_v5",
+        "name": "Harju_RAAS_v5",
         "votes": 1
       }
     ],
     "Invasion": [
       {
-        "name": "harju_Invasion_v1",
+        "name": "Harju_Invasion_v1",
         "votes": 1
       },
       {
-        "name": "harju_Invasion_v2",
+        "name": "Harju_Invasion_v2",
         "votes": 1
       },
       {
-        "name": "harju_Invasion_v3",
+        "name": "Harju_Invasion_v3",
         "votes": 1
       },
       {
-        "name": "harju_Invasion_v4",
+        "name": "Harju_Invasion_v4",
         "votes": 1
       }
     ],
     "Seed": [
       {
-        "name": "harju_Seed_v1",
+        "name": "Harju_Seed_v1",
         "votes": 1
       }
     ]
