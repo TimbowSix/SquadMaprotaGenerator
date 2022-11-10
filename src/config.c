@@ -95,7 +95,7 @@ rotaConfig *createConfig()
     json_object_object_foreach(poolDist, key, val)
     {
         config->modeDist->poolDist[i] = malloc(sizeof(poolDistribution)); //@todo free after
-        config->modeDist->poolDist[i]->poolName = malloc(DEFAULT_CONFIG_STRING_LENGTH * sizeof(char));
+        config->modeDist->poolDist[i]->poolName = malloc((strlen(key) + 1) * sizeof(char));
         strcpy(config->modeDist->poolDist[i]->poolName, key);
         if (json_object_get_type(val) != json_type_double)
         {
@@ -110,7 +110,7 @@ rotaConfig *createConfig()
     json_object_object_foreach(pools, poolName, poolObj)
     {
         config->modeDist->modePools[i] = malloc(sizeof(modePool));
-        config->modeDist->modePools[i]->name = malloc(DEFAULT_CONFIG_STRING_LENGTH * sizeof(char));
+        config->modeDist->modePools[i]->name = malloc((strlen(poolName) + 1) * sizeof(char));
         strcpy(config->modeDist->modePools[i]->name, poolName);
 
         size_t modeCount = json_object_object_length(poolObj);
@@ -118,9 +118,8 @@ rotaConfig *createConfig()
         int j = 0;
         json_object_object_foreach(poolObj, modeName, modeProp)
         {
-            printf(modeName);
             config->modeDist->modePools[i]->gameMods[j] = malloc(sizeof(gameMode));
-            config->modeDist->modePools[i]->gameMods[j]->name = malloc(DEFAULT_CONFIG_STRING_LENGTH * sizeof(char));
+            config->modeDist->modePools[i]->gameMods[j]->name = malloc((strlen(modeName) + 1) * sizeof(char));
             strcpy(config->modeDist->modePools[i]->gameMods[j]->name, modeName);
             if (json_object_get_type(modeProp) != json_type_double)
             {
