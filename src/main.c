@@ -7,14 +7,17 @@
 int main(char **args)
 {
     struct json_object *object;
-    char *url = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req";
-    //  readJsonFile("../config.json", &object);
+    // char *url = "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req";
+    //   readJsonFile("../config.json", &object);
 
     // writeJsonFile("../testConfig.json", object);
     // printf("%s", json_object_to_json_string(object));
 
     ioInit();
 
-    getLayerData(url, &object);
-    printf("%s", json_object_to_json_string(object));
+    rotaConfig *config = createConfig();
+    delConfig(config);
+
+    // getLayerData(url, &object);
+    // printf("%s", json_object_to_json_string(object));
 }

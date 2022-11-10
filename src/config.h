@@ -1,14 +1,19 @@
 #ifndef rota_config_h
 #define rota_config_h
 
+#include "utils.h"
+#include "io.h"
+
 #define LAYER_PATH "./data/layers.json"
 #define BIOMS_PATH "./data/bioms.json"
 #define CURRENT_MAP_DIST_PATH "./data/current_map_dist.json"
 #define WEIGHT_PARAMS_PATH "./data/weight_params.json"
 #define SAVE_PATH "./data/save.json"
-#define CONFIG_PATH "./config.json"
+#define CONFIG_PATH "../config.json"
 #define MAPS_OVERWRITE_PATH "./data/maps_overwrite.json"
 #define MODE_DIST_OVERWRITE_PATH "./data/mode_distribution_overwrite.json"
+
+#define DEFAULT_CONFIG_STRING_LENGTH 100
 
 typedef struct gameMode gameMode;
 struct gameMode
@@ -28,14 +33,14 @@ typedef struct modePool modePool;
 struct modePool
 {
     char *name;
-    gameMode *gameMods;
+    gameMode **gameMods;
 };
 
 typedef struct modeDistribution modeDistribution;
 struct modeDistribution
 {
-    modePool *modePools;
-    poolDistribution *poolDist;
+    modePool **modePools;
+    poolDistribution **poolDist;
     int poolSpacing;
     int spaceMain;
 };
@@ -46,10 +51,12 @@ struct rotaConfig
     int numberOfRotas;
     int numberOfLayers;
     int seedLayer;
+    int updateLayer;
     char *outputPath;
     char *layerVoteApiUrl;
     modeDistribution *modeDist;
-    char *maps; // list of mapsnames
+    char **maps; // list of mapsnames
+    int mapCount;
     int biomSpacing;
     int layerLockTime;
     double minBiomDistance;

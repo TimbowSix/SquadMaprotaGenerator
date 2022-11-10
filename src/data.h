@@ -9,15 +9,15 @@
 /**
  * pointer to all maps
  */
-rotaMap *allMaps;
+extern rotaMap *allMaps;
 /**
  * pointer to all layers
  */
-rotaLayer *allLayers;
+extern rotaLayer *allLayers;
 /**
  * pointer to all modes
  */
-rotaMode *allModes;
+extern rotaMode *allModes;
 
 /**
  * init all maps

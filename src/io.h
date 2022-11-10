@@ -2,6 +2,7 @@
 #define io_h
 
 #include <json.h>
+#include "io.h"
 
 /**
  * init components globally
