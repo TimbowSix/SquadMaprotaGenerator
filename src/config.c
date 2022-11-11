@@ -89,6 +89,8 @@ rotaConfig *createConfig()
     // get space for pools and pool dist
     config->modeDist->modePools = malloc(poolLen * sizeof(modePool *));
     config->modeDist->poolDist = malloc(poolDistLen * sizeof(poolDistribution *));
+    config->modeDist->poolCount = poolLen;
+    config->modeDist->poolDistCount = poolDistLen;
 
     // get mode pool dist
     int i = 0;
@@ -112,8 +114,8 @@ rotaConfig *createConfig()
         config->modeDist->modePools[i] = malloc(sizeof(modePool));
         config->modeDist->modePools[i]->name = malloc((strlen(poolName) + 1) * sizeof(char));
         strcpy(config->modeDist->modePools[i]->name, poolName);
-
         size_t modeCount = json_object_object_length(poolObj);
+        config->modeDist->modePools[i]->poolCount = modeCount;
         config->modeDist->modePools[i]->gameMods = malloc(modeCount * sizeof(gameMode *));
         int j = 0;
         json_object_object_foreach(poolObj, modeName, modeProp)
@@ -143,6 +145,21 @@ void delConfig(rotaConfig *config)
         free(config->maps[i]);
     }
     free(config->maps);
+
+    for (int i = 0; i < config->modeDist->poolDistCount; i++)
+    {
+        free(config->modeDist->poolDist[i]);
+    }
+
+    for (int i = 0; i < config->modeDist->poolCount; i++)
+    {
+        for (int j = 0; j < config->modeDist->modePools[i]->poolCount; j++)
+        {
+            free(config->modeDist->modePools[i]->gameMods[j]);
+        }
+        free(config->modeDist->modePools[i]);
+    }
+
     // TODO free more mem
     free(config->modeDist->modePools);
     free(config->modeDist->poolDist);

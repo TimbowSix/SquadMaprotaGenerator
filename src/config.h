@@ -34,6 +34,7 @@ struct modePool
 {
     char *name;
     gameMode **gameMods;
+    int poolCount;
 };
 
 typedef struct modeDistribution modeDistribution;
@@ -43,6 +44,8 @@ struct modeDistribution
     poolDistribution **poolDist;
     int poolSpacing;
     int spaceMain;
+    int poolCount;
+    int poolDistCount;
 };
 
 typedef struct rotaConfig rotaConfig;
