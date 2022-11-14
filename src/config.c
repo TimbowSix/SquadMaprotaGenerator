@@ -101,7 +101,7 @@ rotaConfig *createConfig()
         strcpy(config->modeDist->poolDist[i]->poolName, key);
         if (json_object_get_type(val) != json_type_double)
         {
-            printf("Error config: \"%s\" has no double value", key);
+            printf("Error config: \"%s\" has no double value\n", key);
             exit(EXIT_FAILURE);
         }
         config->modeDist->poolDist[i]->probability = json_object_get_double(val);
@@ -125,7 +125,7 @@ rotaConfig *createConfig()
             strcpy(config->modeDist->modePools[i]->gameMods[j]->name, modeName);
             if (json_object_get_type(modeProp) != json_type_double)
             {
-                printf("Error config: pools \"%s\" has no double value", modeName);
+                printf("Error config: pools \"%s\" has no double value\n", modeName);
                 exit(EXIT_FAILURE);
             }
             config->modeDist->modePools[i]->gameMods[j]->probability = json_object_get_double(modeProp);
@@ -138,7 +138,7 @@ rotaConfig *createConfig()
 
     if (config->modeDist->poolCount != config->modeDist->poolDistCount)
     {
-        printf("Error config: pools count != pool dist count");
+        printf("Error config: pools count != pool dist count\n");
         exit(EXIT_FAILURE);
     }
 
@@ -152,7 +152,7 @@ rotaConfig *createConfig()
     }
     if (found == 0)
     {
-        printf("Error config: no main pool");
+        printf("Error config: no main pool\n");
         exit(EXIT_FAILURE);
     }
 
@@ -169,7 +169,7 @@ rotaConfig *createConfig()
         }
         if (found == 0)
         {
-            printf("Error config: entry \"%s\" in mode distribution cannot be found in pools", config->modeDist->poolDist[i]->poolName);
+            printf("Error config: entry \"%s\" in mode distribution cannot be found in pools\n", config->modeDist->poolDist[i]->poolName);
             exit(EXIT_FAILURE);
         }
     }
@@ -183,7 +183,7 @@ rotaConfig *createConfig()
         }
         if (sum != 1)
         {
-            printf("Error config: pool \"%s\" don't sum up to 1", config->modeDist->modePools[i]->name);
+            printf("Error config: pool \"%s\" don't sum up to 1\n", config->modeDist->modePools[i]->name);
             exit(EXIT_FAILURE);
         }
         sum = 0;
@@ -196,7 +196,7 @@ rotaConfig *createConfig()
     }
     if (sum != 1)
     {
-        printf("Error config: pool distribution don't sum up to 1");
+        printf("Error config: pool distribution don't sum up to 1\n");
         exit(EXIT_FAILURE);
     }
 

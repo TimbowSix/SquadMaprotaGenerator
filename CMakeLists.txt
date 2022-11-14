@@ -10,6 +10,7 @@ set(SOURCES
     src/rotaMap.c
     src/data.c
     src/config.c
+    src/biom.c
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

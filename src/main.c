@@ -2,6 +2,7 @@
 #include "config.h"
 #include "data.h"
 #include "io.h"
+#include "biom.h"
 #include <json.h>
 
 int main(char **args)
@@ -15,8 +16,12 @@ int main(char **args)
 
     ioInit();
 
-    rotaConfig *config = createConfig();
-    delConfig(config);
+    // rotaConfig *config = createConfig();
+    // delConfig(config);
+    biom *bioms;
+    int biomLen = getBioms(&bioms);
+    printBioms(bioms, biomLen);
+    delBioms(bioms, biomLen);
 
     // getLayerData(url, &object);
     // printf("%s", json_object_to_json_string(object));
