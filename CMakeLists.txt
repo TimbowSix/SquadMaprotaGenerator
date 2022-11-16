@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.13.0)
 
 project(MapRotaGenerator)
 
+set(INCLUDE_DIRECTORIES
+    /src
+)
+
 set(SOURCES
     src/main.c
     src/io.c
@@ -12,6 +16,7 @@ set(SOURCES
     src/config.c
     src/biom.c
 )
+include_directories(INCLUDE_DIRECTORIES)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 

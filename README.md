@@ -9,6 +9,9 @@ Weitere Informationen findet man in der [Dokumentation](doku/main.pdf).
 ## Environment
     sudo apt-get install gcc-multilib
     sudo apt-get install libcurl4-openssl-dev
+    sudo apt-get install systemtap
+    sudo apt-get install linux-headers-$(uname -r)
+    sudo apt-get install linux-image-$(uname -r)-dbg
 ## Nutzung
 
 Lokales JavaScript ausführen:

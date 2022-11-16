@@ -59,4 +59,5 @@ int getAllMapDistances(struct rotaMap *allMaps, int allMapsLen, double **distanc
             }
         }
     }
+    return 1;
 }

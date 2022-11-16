@@ -1,5 +1,5 @@
 #ifndef data_h
-#define data_H
+#define data_h
 
 #include "config.h"
 #include "rotaMap.h"
@@ -36,8 +36,21 @@ void normalizeBiomMapSize(double **bioms);
 
 /**
  * retrieves layers, votes and maps from a fetched input file
+ * only inits name and votes
  */
-void getLayers(rotaConfig *conf, rotaLayer *allLayers);
+void getLayers(rotaConfig *conf, rotaLayer **allLayers);
+
+/**
+ * save layers in file
+ * return 0 for an error 1 for ok
+ */
+int saveLayers(rotaLayer *layers, int len);
+
+/**
+ * load a layers file
+ *
+ */
+int loadLayers(rotaLayer **layers);
 
 /**
  * removing unavailable modes/maps und recalculating probabilities if necessary

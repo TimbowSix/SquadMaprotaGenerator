@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "io.h"
 
-#define LAYER_PATH "../data/layers.json"
+#define LAYER_PATH "../data/layers.rota"
 #define BIOMS_PATH "../data/bioms.json"
 #define CURRENT_MAP_DIST_PATH "../data/current_map_dist.json"
 #define WEIGHT_PARAMS_PATH "../data/weight_params.json"
