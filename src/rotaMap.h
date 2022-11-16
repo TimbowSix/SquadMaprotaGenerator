@@ -84,7 +84,7 @@ struct rotaMap
  * initializes rotaMap struct
  * allocates needed space for rotaMap struct
  */
-rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount);
+void newMap(rotaMap *map, int maxMapCount, int maxLayerCount, int maxModeCount);
 
 /**
  * deletes map

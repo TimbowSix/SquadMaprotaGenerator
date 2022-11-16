@@ -20,9 +20,9 @@ extern rotaLayer *allLayers;
 extern rotaMode *allModes;
 
 /**
- * init all maps
+ * init all maps, layers, modes etc
  */
-void initializeMaps(rotaConfig *conf, rotaMap *maps);
+void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes);
 
 /**
  * calculating the expected distribution for every given map
@@ -30,25 +30,21 @@ void initializeMaps(rotaConfig *conf, rotaMap *maps);
 void getDist(rotaMap *maps, double **distances);
 
 /**
- * parsing the mapsize in km² to a value between 0 and 1 for every given map
- */
-void normalizeBiomMapSize(double **bioms);
-
-/**
  * retrieves layers, votes and maps from a fetched input file
- * only inits name and votes
+ * only inits name and votes#
+ * returns count of layers
  */
-void getLayers(rotaConfig *conf, rotaLayer **allLayers);
+int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int modeCount);
 
 /**
  * save layers in file
  * return 0 for an error 1 for ok
  */
-int saveLayers(rotaLayer *layers, int len);
+int saveLayers(rotaLayer **layers, int len);
 
 /**
  * load a layers file
- *
+ * returns count of layers, error -1
  */
 int loadLayers(rotaLayer **layers);
 
@@ -66,5 +62,10 @@ void buildConfig(rotaConfig *con);
  * checking if important changes in the configuration have been made
  */
 int checkChanges();
+
+/**
+ * return mode count
+ */
+int getModeCount(rotaConfig *conf);
 
 #endif

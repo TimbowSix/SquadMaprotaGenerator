@@ -115,7 +115,7 @@ rotaConfig *createConfig()
         config->modeDist->modePools[i]->name = malloc((strlen(poolName) + 1) * sizeof(char));
         strcpy(config->modeDist->modePools[i]->name, poolName);
         size_t modeCount = json_object_object_length(poolObj);
-        config->modeDist->modePools[i]->poolCount = modeCount;
+        config->modeDist->modePools[i]->modeCount = modeCount;
         config->modeDist->modePools[i]->gameMods = malloc(modeCount * sizeof(gameMode *));
         int j = 0;
         json_object_object_foreach(poolObj, modeName, modeProp)
@@ -177,7 +177,7 @@ rotaConfig *createConfig()
     double sum = 0;
     for (int i = 0; i < config->modeDist->poolCount; i++)
     {
-        for (int j = 0; j < config->modeDist->modePools[i]->poolCount; j++)
+        for (int j = 0; j < config->modeDist->modePools[i]->modeCount; j++)
         {
             sum += config->modeDist->modePools[i]->gameMods[j]->probability;
         }
@@ -220,7 +220,7 @@ void delConfig(rotaConfig *config)
 
     for (int i = 0; i < config->modeDist->poolCount; i++)
     {
-        for (int j = 0; j < config->modeDist->modePools[i]->poolCount; j++)
+        for (int j = 0; j < config->modeDist->modePools[i]->modeCount; j++)
         {
             free(config->modeDist->modePools[i]->gameMods[j]);
         }

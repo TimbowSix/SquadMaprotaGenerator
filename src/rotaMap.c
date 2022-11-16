@@ -6,29 +6,19 @@
 #include "rotaMap.h"
 #include "utils.h"
 
-rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount)
+void newMap(rotaMap *map, int maxMapCount, int maxLayerCount, int maxModeCount)
 {
-    // allocate space
-    rotaMap *map = malloc(sizeof(rotaMap));
-
-    if (map == NULL)
-    {
-        return NULL;
-    }
+    map->layerCount = 0;
+    map->modeCount = 0;
 
     map->neighbour = malloc(maxMapCount * sizeof(rotaMap *));
     map->layers = malloc(maxLayerCount * sizeof(rotaLayer *));
     map->modes = malloc(maxModeCount * sizeof(rotaMode *));
+
     map->mapWeights = malloc(maxModeCount * sizeof(rotaMode *));
     map->mapVoteWeights = malloc(maxModeCount * sizeof(rotaMode *));
     map->mapVoteWeightSum = malloc(maxModeCount * sizeof(rotaMode *));
     map->sigmoidValues = malloc(4 * sizeof(double));
-
-    if (map->neighbour == NULL || map->layers == NULL || map->modes == NULL)
-    {
-        return NULL;
-    }
-    // set function pointers
 
     map->lockLayer = lockLayer;
     map->newWeight = newWeight;
@@ -40,12 +30,11 @@ rotaMap *newMap(int maxMapCount, int maxLayerCount, int maxModeCount)
     map->calcMapVoteWeight = calcMapVoteWeight;
     map->calcLayerVoteWeight = calcLayerVoteWeight;
     map->calcMapWeight = calcMapWeight;
-
-    return map;
 }
 
 void delMap(rotaMap *map)
 {
+    free(map->name);
     free(map->neighbour);
     free(map->layers);
     free(map->modes);
@@ -89,21 +78,24 @@ void decreaseLayerLockTime(rotaMap *self)
 
 void addLayer(rotaLayer *layer, rotaMap *self)
 {
-    self->layerCount++;
     self->layers[self->layerCount] = layer;
+    self->layerCount++;
 
     for (int i = 0; i < self->modeCount; i++)
     {
-        if (self->modes[i]->index == layer->mode->index)
+        if (self->modes[i] != NULL && layer->mode != NULL)
         {
-            // modes already added
-            return;
+            if (self->modes[i]->index == layer->mode->index)
+            {
+                // modes already added
+                return;
+            }
         }
     }
 
     // mode not found -> add
-    self->modeCount++;
     self->modes[self->modeCount] = layer->mode;
+    self->modeCount++;
 }
 
 void decreaseLockTime(rotaMap *self)

@@ -23,4 +23,10 @@ void delBioms(biom *b, int len);
  */
 void printBioms(biom *bioms, int len);
 
+/**
+ * normalize map size
+ * parsing the mapsize in km² to a value between 0 and 1 for every given map
+ */
+void normalizeBiomMapSize(biom **bioms, int len);
+
 #endif

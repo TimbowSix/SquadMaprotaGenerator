@@ -34,7 +34,7 @@ struct modePool
 {
     char *name;
     gameMode **gameMods;
-    int poolCount;
+    int modeCount;
 };
 
 typedef struct modeDistribution modeDistribution;
