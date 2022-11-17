@@ -6,6 +6,7 @@
 #include "biom.h"
 #include "config.h"
 #include "utils.h"
+#include "data.h"
 
 int getBioms(biom **bioms)
 {

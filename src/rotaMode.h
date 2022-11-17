@@ -7,6 +7,7 @@ struct rotaMode
 {
     int index;
     char *name;
+    double *weightParams;
 };
 
 #endif

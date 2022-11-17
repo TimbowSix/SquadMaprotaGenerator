@@ -6,18 +6,11 @@
 #include "rotaLayer.h"
 #include "io.h"
 
-/**
- * pointer to all maps
- */
-extern rotaMap *allMaps;
-/**
- * pointer to all layers
- */
-extern rotaLayer *allLayers;
-/**
- * pointer to all modes
- */
-extern rotaMode *allModes;
+typedef struct weightParam
+{
+    char *modeName;
+    double weights[WEIGHT_PARAMS_COUNT];
+} weightParam;
 
 /**
  * init all maps, layers, modes etc
@@ -67,5 +60,10 @@ int checkChanges();
  * return mode count
  */
 int getModeCount(rotaConfig *conf);
+
+/**
+ * load  weight params from file
+ */
+int loadWeightParams(weightParam **params, char *filename);
 
 #endif

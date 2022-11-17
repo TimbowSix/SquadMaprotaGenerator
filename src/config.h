@@ -4,7 +4,7 @@
 #define LAYER_PATH "../data/layers.rota"
 #define BIOMS_PATH "../data/bioms.json"
 #define CURRENT_MAP_DIST_PATH "../data/current_map_dist.rota"
-#define WEIGHT_PARAMS_PATH "../data/weight_params.json"
+#define WEIGHT_PARAMS_PATH "../data/weight_params.rota"
 #define SAVE_PATH "../data/save.json"
 #define CONFIG_PATH "../config.json"
 #define MAPS_OVERWRITE_PATH "../data/maps_overwrite.json"
@@ -13,6 +13,7 @@
 #define MAX_LAYER_NAME_LENGTH 100
 #define MAX_MAP_NAME_LENGTH 100
 #define MAX_MODE_NAME_LENGTH 100
+#define WEIGHT_PARAMS_COUNT 6
 
 #define DEFAULT_CONFIG_STRING_LENGTH 100
 

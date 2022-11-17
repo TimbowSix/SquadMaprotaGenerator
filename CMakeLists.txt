@@ -15,6 +15,7 @@ set(SOURCES
     src/data.c
     src/config.c
     src/biom.c
+    src/generator.c
 )
 include_directories(INCLUDE_DIRECTORIES)
 

@@ -14,7 +14,12 @@
 void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes)
 {
     biom *bioms;
+    weightParam *params;
+    int paramLen;
     int len;
+
+    // get weight params
+    paramLen = loadWeightParams(&params, WEIGHT_PARAMS_PATH);
 
     // bioms (map names)
     len = getBioms(&bioms);
@@ -40,6 +45,12 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
             for (int k = 0; (*modes)[modeIndex].name[k]; k++)
             {
                 (*modes)[modeIndex].name[k] = tolower((*modes)[modeIndex].name[k]);
+            }
+            // search for params by mode name
+
+            for (int k = 0; k < paramLen; k++)
+            {
+                // TODO
             }
             modeIndex++;
         }
@@ -351,4 +362,26 @@ int getModeCount(rotaConfig *conf)
         }
     }
     return modeCount;
+}
+
+int loadWeightParams(weightParam **params, char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Error can't open weight params %s\n", strerror(errno));
+        return 0;
+    }
+    fseek(file, 0L, SEEK_END);
+    size_t size = ftell(file) / sizeof(weightParam);
+    rewind(file);
+
+    (*params) = malloc(size * sizeof(weightParam));
+    int i = 0;
+    while (fread(&((*params)[i]), sizeof(weightParam), 1, file))
+    {
+        i++;
+    }
+    fclose(file);
+    return i;
 }
