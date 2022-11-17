@@ -2,12 +2,14 @@
 #include <json.h>
 #include <errno.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "data.h"
 #include "io.h"
 #include "biom.h"
 #include "rotaMap.h"
 #include "statistics.h"
+#include "utils.h"
 
 void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes)
 {
@@ -62,6 +64,9 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
         (*maps)[i].sigmoidValues[2] = conf->layerVoteSlope;
         (*maps)[i].sigmoidValues[3] = conf->layerVoteShift;
 
+        // add layers
+        // if mapname is inside layer name
+        int noLayer = 1;
         int sLen = strlen((*maps)[i].name);
         char *temp = malloc((sLen + 2) * sizeof(char));
         strcpy(temp, (*maps)[i].name);
@@ -76,14 +81,116 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
             if (r)
             {
                 (*maps)[i].addLayer(&(*layers)[j], &(*maps)[i]);
+                noLayer = 0;
             }
         }
         free(temp);
+
+        if (noLayer == 1)
+        {
+            printf("WARNING: No layers available for map %s\n", (*maps)[i].name);
+        }
+
+        // pre-calculate layer votes weights
+        (*maps)[i].calcLayerVoteWeight(&((*maps)[i]));
+    }
+
+    // init map distance
+
+    for (int i = 0; i < len; i++)
+    {
+        (*maps)[i].distances = malloc(len * sizeof(double));
+        for (int j = 0; j < len; j++)
+        {
+            (*maps)[i].distances[j] = getMapDistance(&((*maps)[i]), &((*maps)[j]));
+        }
+    }
+
+    // set neighbour & calc map vote weights
+
+    double *mapVoteWeightsSum = malloc(modeCount * sizeof(double));
+
+    for (int i = 0; i < modeCount; i++)
+    {
+        mapVoteWeightsSum[i] = 0;
+    }
+
+    for (int i = 0; i < len; i++)
+    {
+        (*maps)[i].neighbourCount = 0;
+        for (int j = 0; j < len; j++)
+        {
+            if ((*maps)[i].distances[j] < conf->minBiomDistance)
+            {
+                (*maps)[i].neighbour[(*maps)[i].neighbourCount] = &((*maps)[j]);
+                (*maps)[i].neighbourCount++;
+            }
+        }
+
+        // calc map weights
+        calcAllMapVoteWeight(&((*maps)[i]));
+        for (int j = 0; j < (*maps)[i].modeCount; j++)
+        {
+            if ((*maps)[i].modes[j] != NULL)
+            {
+                mapVoteWeightsSum[(*maps)[i].modes[j]->index] += (*maps)[i].mapVoteWeightSum[j];
+            }
+        }
+    }
+    // summed up map votes to maps
+    for (int i = 0; i < len; i++)
+    {
+        (*maps)[i].mapVoteWeightSum = mapVoteWeightsSum;
+        (*maps)[i].clusterOverlap = 0; // TODO cluster overlap
+    }
+    if (conf->saveExpectedMapDist == 1)
+    {
+        saveDist(*maps, len, CURRENT_MAP_DIST_PATH);
     }
 }
 
-void getDist(rotaMap *maps, double **distances)
+void saveDist(rotaMap *maps, int mapLen, char *filename)
 {
+    int space = 0;
+    for (int i = 0; i < mapLen; i++)
+    {
+        for (int j = 0; j < maps[i].modeCount; j++)
+        {
+            if (maps[i].modes != NULL)
+            {
+                space++;
+            }
+        }
+    }
+
+    mapDistributionForSaving *dist = malloc(space * sizeof(mapDistributionForSaving));
+
+    space = 0;
+    for (int i = 0; i < mapLen; i++)
+    {
+        for (int j = 0; j < maps[i].modeCount; j++)
+        {
+            if (maps[i].modes[j] != NULL)
+            {
+                strcpy(dist[space].mapName, maps[i].name);
+                strcpy(dist[space].modeName, maps[i].modes[j]->name);
+                dist[space].dist = maps[i].mapVoteWeights[j] / maps[i].mapVoteWeightSum[j];
+                space++;
+            }
+        }
+    }
+
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        printf("WARNING map distribution can't be saved %s \n", strerror(errno));
+        return;
+    }
+    for (int i = 0; i < space; i++)
+    {
+        fwrite(&(dist[i]), sizeof(mapDistributionForSaving), 1, file);
+    }
+    fclose(file);
 }
 
 int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int modeCount)
@@ -133,6 +240,7 @@ int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int mod
                 (*allLayers)[k].votes = (double)(json_object_get_int(json_object_array_get_idx(upArr, i)) + json_object_get_int(json_object_array_get_idx(downArr, i)));
 
                 // mode for layer
+                int modeFound = 0;
                 for (int j = 0; j < modeCount; j++)
                 {
                     int tempLen = strlen((*modes)[j].name);
@@ -147,10 +255,14 @@ int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int mod
                     {
                         // mode found
                         (*allLayers)[k].mode = &(*modes)[j];
+                        modeFound = 1;
+                        break;
                     }
                 }
-
-                k++;
+                if (modeFound == 1)
+                {
+                    k++;
+                }
             }
         }
 
@@ -206,9 +318,10 @@ int loadLayers(rotaLayer **layers)
     (*layers) = malloc(fileHeader.count * sizeof(rotaLayer));
 
     int i = 0;
-    rotaLayer layer;
     while (fread(&((*layers)[i]), sizeof(rotaLayer), 1, file))
     {
+        (*layers)[i].mode = NULL;
+        (*layers)[i].map = NULL;
         i++;
     }
     fclose(file);

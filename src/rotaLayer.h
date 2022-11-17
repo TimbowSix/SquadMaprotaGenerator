@@ -3,8 +3,7 @@
 
 #include "rotaMap.h"
 #include "rotaMode.h"
-
-#define MAX_LAYER_NAME_LENGTH 100
+#include "config.h"
 
 typedef struct rotaLayer rotaLayer;
 

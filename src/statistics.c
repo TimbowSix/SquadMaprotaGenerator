@@ -42,22 +42,9 @@ int getValidMaps(
     return counter;
 }
 
-int getAllMapDistances(struct rotaMap *allMaps, int allMapsLen, double **distances)
+double getMapDistance(rotaMap *a, rotaMap *b)
 {
-    for (int i = 0; i < allMapsLen; i++)
-    {
-        for (int j = 0; j < allMapsLen; j++)
-        {
-            if (i == j)
-            {
-                // same map
-                distances[i][j] = 0;
-            }
-            else
-            {
-                distances[i][j] = acos(calcVectorDotProduct(allMaps[i].biom, allMaps[j].biom, allMaps[i].biomLen) / (allMaps[i].biomVecLen * allMaps[j].biomVecLen));
-            }
-        }
-    }
-    return 1;
+    if (a->index == b->index)
+        return 0.0;
+    return acos(calcVectorDotProduct(a->biom, b->biom, a->biomLen) / (a->biomVecLen * b->biomVecLen));
 }

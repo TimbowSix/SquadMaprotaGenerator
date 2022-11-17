@@ -25,9 +25,9 @@ extern rotaMode *allModes;
 void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes);
 
 /**
- * calculating the expected distribution for every given map
+ * calculating the expected distribution for every given map and saves it
  */
-void getDist(rotaMap *maps, double **distances);
+void saveDist(rotaMap *maps, int mapLen, char *filename);
 
 /**
  * retrieves layers, votes and maps from a fetched input file

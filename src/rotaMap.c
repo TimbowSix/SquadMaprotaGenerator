@@ -9,7 +9,7 @@
 void newMap(rotaMap *map, int maxMapCount, int maxLayerCount, int maxModeCount)
 {
     map->layerCount = 0;
-    map->modeCount = 0;
+    map->modeCount = maxModeCount;
 
     map->neighbour = malloc(maxMapCount * sizeof(rotaMap *));
     map->layers = malloc(maxLayerCount * sizeof(rotaLayer *));
@@ -81,21 +81,8 @@ void addLayer(rotaLayer *layer, rotaMap *self)
     self->layers[self->layerCount] = layer;
     self->layerCount++;
 
-    for (int i = 0; i < self->modeCount; i++)
-    {
-        if (self->modes[i] != NULL && layer->mode != NULL)
-        {
-            if (self->modes[i]->index == layer->mode->index)
-            {
-                // modes already added
-                return;
-            }
-        }
-    }
-
     // mode not found -> add
-    self->modes[self->modeCount] = layer->mode;
-    self->modeCount++;
+    self->modes[layer->mode->index] = layer->mode;
 }
 
 void decreaseLockTime(rotaMap *self)
@@ -182,7 +169,10 @@ void calcAllMapVoteWeight(rotaMap *self)
 {
     for (int i = 0; i < self->modeCount; i++)
     {
-        calcMapVoteWeight(self->modes[i], self);
+        if (self->modes[i] != NULL)
+        {
+            calcMapVoteWeight(self->modes[i], self);
+        }
     }
 }
 

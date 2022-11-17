@@ -20,14 +20,12 @@ int getValidMaps(struct rotaMap **validMaps,
                  struct rotaMode *currentMode);
 
 /**
- * calculates all map distances to each other
- * output distances [index of map][index of other map]
+ * calculates distance between map a and b
+ * based on the biom vector len value
+ * and biom values (vector)
  *
- * NOTE map biomsVecLen must be initialized
- *      the biom array must have all the same length
- *
- * @returns 1 -> ok; 0 -> error
+ * @returns distance
  */
-int getAllMapDistances(struct rotaMap *allMaps, int allMapsLen, double **distances);
+double getMapDistance(rotaMap *a, rotaMap *b);
 
 #endif

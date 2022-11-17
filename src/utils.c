@@ -20,6 +20,7 @@ double calcVectorDotProduct(double *vecA, double *vecB, int vecLen)
     {
         sum += vecA[i] * vecB[i];
     }
+    return sum;
 }
 
 void normalize(double *arr, int len, double *sum)

@@ -46,7 +46,7 @@ struct rotaMap
     double biomVecLen;
     double *mapWeights;
     double *mapVoteWeights;
-    double **distances;
+    double *distances;
     rotaMap **neighbour;
     int neighbourCount;
     int lockTime;

@@ -4,6 +4,8 @@
 #include <json.h>
 #include <string.h>
 
+#include "config.h"
+
 /**
  * calc len of vector aka array
  */
@@ -48,5 +50,15 @@ int getJsonDoubleValue(struct json_object *ob, char *key, double *value);
  * returns 1 for success
  */
 int getJsonBoolValue(struct json_object *ob, char *key, int *value);
+
+/**
+ * for saving map dist
+ */
+typedef struct mapDistributionForSaving
+{
+    char mapName[MAX_MAP_NAME_LENGTH];
+    char modeName[MAX_MODE_NAME_LENGTH];
+    double dist;
+} mapDistributionForSaving;
 
 #endif

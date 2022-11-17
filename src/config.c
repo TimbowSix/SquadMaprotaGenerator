@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "config.h"
+#include "utils.h"
+#include "io.h"
 
 rotaConfig *createConfig()
 {
