@@ -188,54 +188,24 @@ class Metrics {
     get_patterns(size) {
         let k = size - 1;
         let current_clusters = {};
-        let buffer = [];
 
-        for (let i = 0; i < k; i++) {
-            buffer.push(this.mr.maps[i]);
-        }
-
-        for (let i = k; i < this.mr.maps.length; i++) {
-            buffer.push(this.mr.maps[i]);
+        for (let i = 0; i < this.mr.maps.length - size; i++) {
+            //key bilden
             let temp_name = '';
-            for (let j = 0; j <= k; j++) {
-                temp_name += buffer[j].name + '=>';
+            for (let j = i; j <= i + k; j++) {
+                temp_name += this.mr.maps[j].name + '=>';
             }
-            buffer.shift();
-            if (Object.keys(current_clusters).includes(temp_name)) {
-                current_clusters[temp_name]++;
+            if (temp_name in current_clusters) {
+                current_clusters[temp_name] += 1;
             } else {
                 current_clusters[temp_name] = 1;
             }
         }
 
-        //let e = this.nr_of_rotas / Math.pow(this.mr.all_maps.length, size)
-
         let temp = [];
         for (let i of Object.keys(current_clusters)) {
             temp.push(current_clusters[i]);
         }
-        /*
-        let out = {}
-        for(let t of temp){
-            if(Object.keys(out).includes(t+"")){
-                out[t+""]++
-            }else{
-                out[t+""] = 1
-            }
-        }
-
-        console.log(out)
-
-        let output = {}
-        for(let x of Object.keys(out)){
-            //output.push(out[t] / this.mr.all_maps.length*(Math.pow((1/22), (size*t))))
-            let p = (Math.pow((1/22), size))
-            //console.log("out "+out[x])
-            console.log(utils.binomial(this.nr_of_rotas, x)+" "+Math.pow(p,x)+" "+Math.pow((1-p),(this.nr_of_rotas-x)))
-            //console.log("blub "+utils.binomial(this.mr.all_maps.length, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * 22)
-            console.log((utils.binomial(this.nr_of_rotas, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * this.nr_of_rotas))
-            output[x] = (out[x] / (utils.binomial(this.nr_of_rotas, x)*Math.pow(p,x)*Math.pow((1-p),(this.nr_of_rotas-x)) * this.nr_of_rotas))
-        }*/
 
         fs.writeFileSync(
             'test_patterns_' + size + '.json',
@@ -280,7 +250,7 @@ if (require.main === module) {
     let temp = new Metrics(config);
     //fs.writeFileSync("test_moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
     //fs.writeFileSync("moving_avg.json", JSON.stringify(temp.calc_moving_average(5)))
-    //temp.get_patterns(2)
+    temp.get_patterns(2);
     //temp.get_patterns(3)
     //temp.get_patterns(4)
 }
