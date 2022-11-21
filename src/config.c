@@ -30,7 +30,7 @@ rotaConfig *createConfig()
     getJsonDoubleValue(jConfig, "mapVote_shift", &config->mapVoteShift);
     getJsonDoubleValue(jConfig, "layerVote_slope", &config->layerVoteSlope);
     getJsonDoubleValue(jConfig, "layerVote_shift", &config->layerVoteShift);
-    getJsonBoolValue(jConfig, "use_vote_weight", &config->useVoteWeight);
+    getJsonBoolValue(jConfig, "use_layer_vote_weight", &config->useLayerVoteWeight);
     getJsonBoolValue(jConfig, "use_map_weight", &config->useMapWeight);
     getJsonBoolValue(jConfig, "save_expected_map_dist", &config->saveExpectedMapDist);
     getJsonBoolValue(jConfig, "use_lock_time_modifier", &config->useLockTimeModifier);

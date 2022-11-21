@@ -1,10 +1,10 @@
 {
     "number_of_rotas": 2,
-    "number_of_layers": 30,
+    "number_of_layers": 1000000,
     "seed_layer": 2,
     "update_layers": true,
     "output_path":"./output/",
-    "layer_vote_api_url": "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req",
+    "layer_vote_api_url": "https://api.welovesquad.com/votes?format=chartjs",
     "mode_distribution":
     {
         "pools":
@@ -16,8 +16,8 @@
             },
             "intermediate":
             {
-                "Invasion": 0.8,
-                "TC": 0.2
+                "Invasion": 1.0,
+                "TC": 0.0
             },
             "rest":
             {
@@ -66,7 +66,7 @@
     "mapVote_shift": 0.0,
     "layerVote_slope": 0.2,
     "layerVote_shift": 0.0,
-    "use_vote_weight": true,
+    "use_layer_vote_weight": true,
     "use_map_weight": true,
     "save_expected_map_dist": true,
     "use_lock_time_modifier": true,

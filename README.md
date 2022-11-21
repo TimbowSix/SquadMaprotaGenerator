@@ -12,6 +12,7 @@ Weitere Informationen findet man in der [Dokumentation](doku/main.pdf).
     sudo apt-get install systemtap
     sudo apt-get install linux-headers-$(uname -r)
     sudo apt-get install linux-image-$(uname -r)-dbg
+    sudo apt-get install pkg-config
 ## Nutzung
 
 Lokales JavaScript ausführen:

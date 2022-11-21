@@ -10,10 +10,17 @@ void newMap(rotaMap *map, int maxMapCount, int maxLayerCount, int maxModeCount)
 {
     map->layerCount = 0;
     map->modeCount = maxModeCount;
+    map->currentLayersLockedCount = 0;
+    map->currentLockTime = 0;
 
     map->neighbour = malloc(maxMapCount * sizeof(rotaMap *));
     map->layers = malloc(maxLayerCount * sizeof(rotaLayer *));
     map->modes = malloc(maxModeCount * sizeof(rotaMode *));
+
+    for (int i = 0; i < maxModeCount; i++)
+    {
+        map->modes[i] = NULL;
+    }
 
     map->mapWeights = malloc(maxModeCount * sizeof(rotaMode *));
     map->mapVoteWeights = malloc(maxModeCount * sizeof(rotaMode *));
@@ -45,8 +52,12 @@ void delMap(rotaMap *map)
     free(map);
 }
 
-void lockLayer(rotaLayer *layer)
+void lockLayer(rotaLayer *layer, rotaMap *self)
 {
+    if (layer->currentLockTime == 0)
+    {
+        self->currentLayersLockedCount++;
+    }
     layer->currentLockTime = layer->lockTime;
 }
 
@@ -63,6 +74,7 @@ void resetLayerLockTime(rotaMap *self)
     {
         self->layers[i]->currentLockTime = 0;
     }
+    self->currentLayersLockedCount = 0;
 }
 
 void decreaseLayerLockTime(rotaMap *self)
@@ -72,6 +84,11 @@ void decreaseLayerLockTime(rotaMap *self)
         if (self->layers[i]->currentLockTime > 0)
         {
             self->layers[i]->currentLockTime--;
+            if (self->layers[i]->currentLockTime == 0)
+            {
+                self->currentLayersLockedCount--;
+                assert(self->currentLayersLockedCount >= 0);
+            }
         }
     }
 }
@@ -187,13 +204,13 @@ void calcLayerVoteWeight(rotaMap *self)
     }
 }
 
-double calcMapWeight(rotaMode *mode, rotaMap *self, double *params, int paramLen)
+double calcMapWeight(rotaMode *mode, rotaMap *self)
 {
-    assert(paramLen == 6);
+    assert(WEIGHT_PARAMS_COUNT == 6);
 
     double x = self->neighbourCount - 1;
     assert(x >= 0);
     assert(self->mapVoteWeightSum[mode->index] > 0);
     double y = self->mapVoteWeights[mode->index] / self->mapVoteWeightSum[mode->index];
-    return params[0] + params[1] * x + 10 * params[2] * y + params[3] * pow(x, 2) + 10 * params[4] * x * y + 100 * params[5] * pow(y, 2);
+    return mode->weightParams[0] + mode->weightParams[1] * x + 10 * mode->weightParams[2] * y + mode->weightParams[3] * pow(x, 2) + 10 * mode->weightParams[4] * x * y + 100 * mode->weightParams[5] * pow(y, 2);
 }

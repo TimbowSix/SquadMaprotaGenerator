@@ -15,7 +15,13 @@ typedef struct weightParam
 /**
  * init all maps, layers, modes etc
  */
-void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes);
+void initialize(rotaConfig *conf,
+                rotaMap **maps,
+                rotaLayer **layers,
+                rotaMode **modes,
+                int *mapsLen,
+                int *layerLen,
+                int *modeLen);
 
 /**
  * calculating the expected distribution for every given map and saves it

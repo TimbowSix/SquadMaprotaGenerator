@@ -34,7 +34,7 @@ int readJsonFile(char *path, struct json_object **object)
     jerr = json_tokener_get_error(tok);
     if (jerr != json_tokener_success)
     {
-        printf("Json parsing error %s", jerr);
+        printf("Json parsing error %u", jerr);
         return 0;
     }
 
@@ -89,9 +89,10 @@ int getLayerData(char *url, struct json_object **object)
         jerr = json_tokener_get_error(tok);
         if (jerr != json_tokener_success)
         {
-            printf("Json parsing error %s", jerr);
+            printf("Json parsing error %u\n", jerr);
             return 0;
         }
+        return 1;
     }
 
     return 0;

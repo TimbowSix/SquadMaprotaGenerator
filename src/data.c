@@ -11,7 +11,13 @@
 #include "statistics.h"
 #include "utils.h"
 
-void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode **modes)
+void initialize(rotaConfig *conf,
+                rotaMap **maps,
+                rotaLayer **layers,
+                rotaMode **modes,
+                int *mapsLen,
+                int *layerLen,
+                int *modeLen)
 {
     biom *bioms;
     weightParam *params;
@@ -24,6 +30,7 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
     // bioms (map names)
     len = getBioms(&bioms);
     normalizeBiomMapSize(&bioms, len);
+    *mapsLen = len;
     // modes
     int modeCount = getModeCount(conf);
     modeCount++; // for seed mode
@@ -40,23 +47,44 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
         {
             (*modes)[modeIndex].index = modeIndex;
             (*modes)[modeIndex].name = malloc((strlen(conf->modeDist->modePools[i]->gameMods[j]->name) + 1) * sizeof(char));
+            (*modes)[modeIndex].probability = conf->modeDist->modePools[i]->gameMods[j]->probability;
             strcpy((*modes)[modeIndex].name, conf->modeDist->modePools[i]->gameMods[j]->name);
             // to lower case
             for (int k = 0; (*modes)[modeIndex].name[k]; k++)
             {
                 (*modes)[modeIndex].name[k] = tolower((*modes)[modeIndex].name[k]);
             }
-            // search for params by mode name
-
-            for (int k = 0; k < paramLen; k++)
-            {
-                // TODO
-            }
             modeIndex++;
         }
     }
+
+    *modeLen = modeIndex;
+
+    // search for params by mode name
+    // and init weight params
+    for (int i = 0; i < modeIndex; i++)
+    {
+        int found = 0;
+        for (int k = 0; k < paramLen; k++)
+        {
+            if (strncmp((*modes)[i].name, params[k].modeName, strlen((*modes)[i].name)) == 0)
+            {
+                found = 1;
+                memcpy((*modes)[i].weightParams, params[k].weights, WEIGHT_PARAMS_COUNT * sizeof(double));
+            }
+        }
+        if (found == 0)
+        {
+            for (int l = 0; l < WEIGHT_PARAMS_COUNT; l++)
+            {
+                (*modes)[i].weightParams[l] = 1.0;
+            }
+        }
+    }
+
     // layers
     int layerCount = getLayers(conf, layers, modes, modeCount);
+    *layerLen = layerCount;
 
     // init maps
 
@@ -117,7 +145,7 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
         }
     }
 
-    // set neighbour & calc map vote weights
+    // set neighbour & calc map vote weights && locktime
 
     double *mapVoteWeightsSum = malloc(modeCount * sizeof(double));
 
@@ -144,15 +172,22 @@ void initialize(rotaConfig *conf, rotaMap **maps, rotaLayer **layers, rotaMode *
         {
             if ((*maps)[i].modes[j] != NULL)
             {
-                mapVoteWeightsSum[(*maps)[i].modes[j]->index] += (*maps)[i].mapVoteWeightSum[j];
+                mapVoteWeightsSum[(*maps)[i].modes[j]->index] += (*maps)[i].mapVoteWeights[j];
             }
         }
+        // locktime
+        (*maps)[i].lockTime = conf->biomSpacing;
     }
     // summed up map votes to maps
     for (int i = 0; i < len; i++)
     {
         (*maps)[i].mapVoteWeightSum = mapVoteWeightsSum;
         (*maps)[i].clusterOverlap = 0; // TODO cluster overlap
+        (*maps)[i].lockTimeModifier = malloc(modeCount * sizeof(int));
+        for (int j = 0; j < modeCount; j++)
+        {
+            (*maps)[i].lockTimeModifier[j] = 0;
+        }
     }
     if (conf->saveExpectedMapDist == 1)
     {
@@ -209,7 +244,11 @@ int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int mod
     if (conf->updateLayer == 1)
     {
         json_object *jLayers;
-        getLayerData(conf->layerVoteApiUrl, &jLayers);
+        if (getLayerData(conf->layerVoteApiUrl, &jLayers) == 0)
+        {
+            printf("ERROR get Layers\n");
+            exit(EXIT_FAILURE);
+        }
 
         json_object *layerNames;
         json_object *mapVotes;
@@ -249,16 +288,18 @@ int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int mod
                 }
 
                 (*allLayers)[k].votes = (double)(json_object_get_int(json_object_array_get_idx(upArr, i)) + json_object_get_int(json_object_array_get_idx(downArr, i)));
-
+                // lockTime
+                (*allLayers)[k].lockTime = conf->layerLockTime;
                 // mode for layer
                 int modeFound = 0;
                 for (int j = 0; j < modeCount; j++)
                 {
                     int tempLen = strlen((*modes)[j].name);
-                    char *temp = malloc((tempLen + 2) * sizeof(char));
-                    strcpy(temp, (*modes)[j].name);
-                    temp[tempLen] = '_';
-                    temp[tempLen] = '\0';
+                    char *temp = malloc((tempLen + 3) * sizeof(char));
+                    strcpy(&temp[1], (*modes)[j].name);
+                    temp[0] = '_';
+                    temp[tempLen + 1] = '_';
+                    temp[tempLen + 2] = '\0';
 
                     char *r = strstr((*allLayers)[k].name, temp);
 
@@ -284,13 +325,44 @@ int getLayers(rotaConfig *conf, rotaLayer **allLayers, rotaMode **modes, int mod
     else
     {
         // read from file
-        int layerCount = loadLayers(allLayers);
-        if (layerCount < 0)
+        int lCount = loadLayers(allLayers);
+        if (lCount < 0)
         {
             printf("ERROR while loading, cannot continue\n");
             exit(EXIT_FAILURE);
         }
-        return layerCount;
+        int k = 0;
+        for (int i = 0; i < lCount; i++)
+        {
+            // lockTime
+            (*allLayers)[k].lockTime = conf->layerLockTime;
+            // mode for layer
+            int modeFound = 0;
+            for (int j = 0; j < modeCount; j++)
+            {
+                int tempLen = strlen((*modes)[j].name);
+                char *temp = malloc((tempLen + 3) * sizeof(char));
+                strcpy(&temp[1], (*modes)[j].name);
+                temp[0] = '_';
+                temp[tempLen + 1] = '_';
+                temp[tempLen + 2] = '\0';
+
+                char *r = strstr((*allLayers)[k].name, temp);
+
+                if (r)
+                {
+                    // mode found
+                    (*allLayers)[k].mode = &(*modes)[j];
+                    modeFound = 1;
+                    break;
+                }
+            }
+            if (modeFound == 1)
+            {
+                k++;
+            }
+        }
+        return k;
     }
 }
 
@@ -349,6 +421,7 @@ void buildConfig(rotaConfig *con)
 
 int checkChanges()
 {
+    return 0;
 }
 
 int getModeCount(rotaConfig *conf)

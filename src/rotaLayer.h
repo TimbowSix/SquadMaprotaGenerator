@@ -1,7 +1,6 @@
-#ifndef RotaLayer_h
-#define RotaLayer_h
+#ifndef rotaLayer_h
+#define rotaLayer_h
 
-#include "rotaMap.h"
 #include "rotaMode.h"
 #include "config.h"
 
@@ -23,4 +22,11 @@ struct rotaLayerFileHeader
 {
     int count;
 };
+
+/**
+ * for debugging
+ * prints layer in console
+ */
+void printLayer(rotaLayer *layer);
+
 #endif

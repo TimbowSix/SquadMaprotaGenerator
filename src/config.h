@@ -14,6 +14,7 @@
 #define MAX_MAP_NAME_LENGTH 100
 #define MAX_MODE_NAME_LENGTH 100
 #define WEIGHT_PARAMS_COUNT 6
+#define CHOOSE_SPACE_SIZE 10000
 
 #define DEFAULT_CONFIG_STRING_LENGTH 100
 
@@ -69,7 +70,7 @@ struct rotaConfig
     double mapVoteShift;
     double layerVoteSlope;
     double layerVoteShift;
-    int useVoteWeight;
+    int useLayerVoteWeight;
     int useMapWeight;
     int saveExpectedMapDist;
     int useLockTimeModifier;

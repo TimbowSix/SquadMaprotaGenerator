@@ -18,7 +18,7 @@ double calcVectorDotProduct(double *vecA, double *vecB, int vecLen);
 
 /**
  * normalize an array of double values
- * takes sum if not NULL
+ * takes sum, set it NULL if not given
  */
 void normalize(double *arr, int len, double *sum);
 
@@ -60,5 +60,18 @@ typedef struct mapDistributionForSaving
     char modeName[MAX_MODE_NAME_LENGTH];
     double dist;
 } mapDistributionForSaving;
+
+/**
+ * weighted choice on an array with weights
+ * WARNING manipulates arr!
+ * return choosen index
+ */
+int weightedChoose(double *arr, int len, double *sum);
+
+/**
+ * init rand() with seed
+ * NOTE has to be call befor weightedChoose
+ */
+void initRandom(unsigned int seed);
 
 #endif

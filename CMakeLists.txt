@@ -16,12 +16,15 @@ set(SOURCES
     src/config.c
     src/biom.c
     src/generator.c
+    src/rotaLayer.c
 )
 include_directories(INCLUDE_DIRECTORIES)
+
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 add_subdirectory(lib)
 
-find_package(CURL REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE CURL::libcurl)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(libcurl REQUIRED IMPORTED_TARGET libcurl>=7.17.0)
+target_link_libraries(${PROJECT_NAME} PUBLIC PkgConfig::libcurl)

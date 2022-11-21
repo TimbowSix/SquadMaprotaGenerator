@@ -139,3 +139,42 @@ int getJsonBoolValue(struct json_object *ob, char *key, int *value)
         return 0;
     }
 }
+
+int weightedChoose(double *arr, int len, double *sum)
+{
+    // NOTE Walkers Alias method if this ins not fast enough
+    // TODO can be faster be providing sum
+    normalize(arr, len, sum);
+
+    for (int i = 1; i < len; i++)
+    {
+        arr[i] += arr[i - 1];
+    }
+
+    int r = rand();
+
+    double ran = (double)r / RAND_MAX;
+
+    // bin search
+    int low = 0;
+    int high = (len - 1);
+    while (high != low)
+    {
+        int mid = (low + high) / 2;
+
+        if (arr[mid] < ran)
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid;
+        }
+    }
+    return high;
+}
+
+void initRandom(unsigned int seed)
+{
+    srand(seed);
+}

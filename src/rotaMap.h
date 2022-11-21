@@ -1,5 +1,5 @@
-#ifndef Rotamap_h
-#define Rotamap_h
+#ifndef rotaMap_h
+#define rotaMap_h
 
 #include "rotaLayer.h"
 #include "rotaMode.h"
@@ -11,7 +11,7 @@ typedef struct rotaMap rotaMap;
  * name                name of the map
  * layers              list of available layers
  * layerCount          count of layers
- * modes               list of all modes
+ * modes               list of all modes index by global mode index
  * modesCount          count of modes
  * bioms               array of double biom values
  * mapWeights          array of double indexes by mode index
@@ -56,10 +56,11 @@ struct rotaMap
     double distribution;
     int clusterOverlap;
     // layer lockTime
+    int currentLayersLockedCount;
     double *mapVoteWeightSum;
     double *sigmoidValues;
 
-    void (*lockLayer)(rotaLayer *layer);
+    void (*lockLayer)(rotaLayer *layer, rotaMap *self);
 
     void (*newWeight)(rotaMode *mode, rotaMap *self);
 
@@ -77,7 +78,7 @@ struct rotaMap
 
     void (*calcLayerVoteWeight)(rotaMap *self);
 
-    double (*calcMapWeight)(rotaMode *mode, rotaMap *self, double *params, int paramLen);
+    double (*calcMapWeight)(rotaMode *mode, rotaMap *self);
 };
 
 /**
@@ -95,7 +96,7 @@ void delMap(rotaMap *map);
  * locks a layer by
  * move the layer from linkedLayers to linkedLockedLayers
  */
-void lockLayer(rotaLayer *layer);
+void lockLayer(rotaLayer *layer, rotaMap *self);
 
 /**
  * calculating new mapVote weight sum for a specific mode
@@ -149,6 +150,6 @@ void calcLayerVoteWeight(rotaMap *self);
  * calculates mapWeight for given mode based on given params
  * NOTE params has to been an amount of 6
  */
-double calcMapWeight(rotaMode *mode, rotaMap *self, double *params, int paramLen);
+double calcMapWeight(rotaMode *mode, rotaMap *self);
 
 #endif

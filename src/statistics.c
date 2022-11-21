@@ -3,40 +3,63 @@
 
 #include "statistics.h"
 #include "utils.h"
+#include "generator.h"
 
 int getValidMaps(
     struct rotaMap **validMaps,
     struct rotaMap *allMaps,
     int allMapsLen,
-    struct rotaMap *lastChoosenMap,
-    struct rotaMode *currentMode)
+    struct rotaMode *currentMode,
+    int *lockMapsCount,
+    mapRota *rota)
 {
-    if (lastChoosenMap == NULL)
-    {
-        return -1;
-    }
-
-    // decrease lockTime of map
-    for (int i = 0; i < allMapsLen; i++)
-    {
-        allMaps[i].decreaseLockTime(&allMaps[i]);
-    }
-
-    // set lockTime of neighbour and choosen map
-    for (int i = 0; i < lastChoosenMap->neighbourCount; i++)
-    {
-        lastChoosenMap->neighbour[i]->setLockTime((lastChoosenMap->neighbour[i]));
-    }
-
     int counter = 0;
     // get valid maps aka maps with lockTime 0
+    int mapsFound = 0;
+
     for (int i = 0; i < allMapsLen; i++)
     {
-        if ((allMaps[i].lockTime - allMaps[i].lockTimeModifier[currentMode->index]) <= 0)
+        if ((allMaps[i].currentLockTime - allMaps[i].lockTimeModifier[currentMode->index]) <= 0)
         {
-            validMaps[counter] = &allMaps[i];
-            counter++;
+            // check if mode is available
+            for (int j = 0; j < allMaps[i].layerCount; j++)
+            {
+                if (allMaps[i].layers[j]->currentLockTime == 0 && allMaps[i].layers[j]->mode->index == currentMode->index)
+                {
+                    validMaps[counter] = &allMaps[i];
+                    counter++;
+                    break;
+                }
+            }
+            mapsFound = 1;
         }
+
+        // decrease lockTime of map and layer
+        allMaps[i].decreaseLayerLockTime(&allMaps[i]);
+
+        if (allMaps[i].currentLockTime > 0)
+        {
+            allMaps[i].decreaseLockTime(&allMaps[i]);
+            if (allMaps[i].currentLockTime == 0)
+            {
+                (*lockMapsCount)--;
+            }
+        }
+    }
+
+    // TODO NOTE locktime wird reduziert obwohl ein mode nicht gefunden werden kann und damit auch keine maps zurückgegeben werden. so richtig ?
+
+    if (counter == 0 && mapsFound > 0)
+    {
+        // maps found but no mode
+        rota->tempModeBuffer = currentMode;
+        if (currentMode->index == 0 || currentMode->index == 1)
+        {
+            printMemColonelState(allMaps, allMapsLen);
+            printf("ERROR all Layers Locked cannot continue\n");
+            exit(EXIT_FAILURE);
+        }
+        return -1;
     }
 
     return counter;
