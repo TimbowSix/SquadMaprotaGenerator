@@ -458,7 +458,7 @@ function get_layers(){
         let map = layer_values[0]
         let mode = layer_values[1]
 
-        let data = {"name": layer, "votes": upvotes[i]+downvotes[i]}
+        let data = {"name": layer, "votes": upvotes[i]-downvotes[i]}
 
         if(map in maps){
             if(mode in maps[map]){
