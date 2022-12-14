@@ -235,6 +235,23 @@ class Maprota {
      */
     generate_rota(str_output=true, reset=true){
         if(reset) this.reset()
+
+        // Add seed layers
+        if(this.config["seed_layer"] > 0){
+            let seed_maps = []
+            for(let i = 0; i<this.config["seed_layer"]; i++){
+                if(seed_maps.length <= 0){
+                    for(let map of this.all_maps) if("Seed" in map.layers) seed_maps.push(map)
+                }
+                let seed_map = utils.choice(seed_maps)
+                let chosen_layer = this.choose_layer(seed_map.layers.Seed, false)
+                this.rotation.unshift(chosen_layer)
+                let index = seed_maps.indexOf(seed_map);
+                seed_maps.splice(index, 1)
+            }
+            this.modes.push("Seed") // block not main modes for 4 turns
+        }
+
         let mode = this.choose_mode(null, "main")
         this.modes.push(mode)
         let v_maps = this.valid_maps(mode)
@@ -266,20 +283,6 @@ class Maprota {
             this.rotation.push(layer)
         }
 
-        // Add seed layers
-        if(this.config["seed_layer"] > 0){
-            let seed_maps = []
-            for(let i = 0; i<this.config["seed_layer"]; i++){
-                if(seed_maps.length <= 0){
-                    for(let map of this.all_maps) if("Seed" in map.layers) seed_maps.push(map)
-                }
-                let seed_map = utils.choice(seed_maps)
-                let chosen_layer = this.choose_layer(seed_map.layers.Seed, false)
-                this.rotation.unshift(chosen_layer)
-                let index = seed_maps.indexOf(seed_map);
-                seed_maps.splice(index, 1)
-            }
-        }
         if(this.config.debug){
             fs.writeFileSync("./data/dist_progress.json", JSON.stringify(dist, null, 2))
         }
