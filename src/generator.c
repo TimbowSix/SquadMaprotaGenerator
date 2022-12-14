@@ -37,62 +37,56 @@ rotaMode *chooseMode(rotaConfig *conf, mapRota *rota, rotaMode *modes, int modeL
     return rota->pools[choosePoolIndex].modes[modeIndex];
 }
 
-rotaLayer *chooseLayer(rotaConfig *conf, rotaLayer *layers, int layerLen)
+rotaLayer *chooseLayer(rotaConfig *conf, rotaLayer *layers, int layerLen, double *mem)
 {
     double sum = 0;
     int count = 0;
-    double *arr = malloc(layerLen * sizeof(double));
     for (int i = 0; i < layerLen; i++)
     {
         if (conf->useLayerVoteWeight)
         {
 
             sum += layers[i].voteWeight;
-            arr[i] = layers[i].voteWeight;
+            mem[i] = layers[i].voteWeight;
         }
         else
         {
 
             sum += 1;
-            arr[i] = 1;
+            mem[i] = 1;
         }
     }
-    int c = weightedChoose(arr, layerLen, &sum);
-    free(arr);
+    int c = weightedChoose(mem, layerLen, &sum);
     return &(layers[c]);
 }
 
-rotaLayer *chooseLayerFromMap(rotaConfig *conf, rotaMap *map, rotaMode *mode)
+rotaLayer *chooseLayerFromMap(rotaConfig *conf, rotaMap *map, rotaMode *mode, double *mem, int *indexMem)
 {
     int lCount = map->layerCount - map->currentLayersLockedCount;
-    double *arr = malloc(lCount * sizeof(double));
-    int *indexArr = malloc(lCount * sizeof(int));
     double sum = 0;
     int j = 0;
     for (int i = 0; i < map->layerCount; i++)
     {
         if (map->layers[i]->currentLockTime == 0 && map->layers[i]->mode->index == mode->index)
         {
-            indexArr[j] = i;
+            indexMem[j] = i;
             if (conf->useLayerVoteWeight == 1)
             {
                 sum += map->layers[i]->voteWeight;
-                arr[j] = map->layers[i]->voteWeight;
+                mem[j] = map->layers[i]->voteWeight;
             }
             else
             {
                 sum += 1;
-                arr[j] = 1;
+                mem[j] = 1;
             }
             j++;
         }
     }
-    int choosenIndex = indexArr[weightedChoose(arr, lCount, &sum)];
+    int choosenIndex = indexMem[weightedChoose(mem, lCount, &sum)];
     // update layer locktime
     map->layers[choosenIndex]->currentLockTime = map->layers[choosenIndex]->lockTime;
     map->currentLayersLockedCount++;
-    free(arr);
-    free(indexArr);
     return map->layers[choosenIndex];
 }
 
@@ -112,21 +106,19 @@ int getAvailableMaps(rotaMap **validMaps,
     return ret;
 }
 
-rotaMap *chooseMap(rotaMap **validMaps, int mapsLen, rotaMode *currMode, int *lockedMapsCount)
+rotaMap *chooseMap(rotaMap **validMaps, int mapsLen, rotaMode *currMode, int *lockedMapsCount, double *mem)
 {
     // TODO pre allocated space for this operation
 
     double sum = 0;
-    double *arr = malloc(mapsLen * sizeof(double));
     for (int i = 0; i < mapsLen; i++)
     {
         double a = validMaps[i]->calcMapWeight(currMode, validMaps[i]);
         assert(a != 0); // for testing
-        arr[i] = a;
+        mem[i] = a;
         sum += a;
     }
-    int i = weightedChoose(arr, mapsLen, &sum);
-    free(arr);
+    int i = weightedChoose(mem, mapsLen, &sum);
 
     // set locktime
     for (int j = 0; j < validMaps[i]->neighbourCount; j++)
@@ -146,7 +138,7 @@ void reset(rotaMap *maps, int mapLen)
         maps[i].resetLayerLockTime(&maps[i]);
     }
 }
-void initMapRota(rotaConfig *conf, mapRota **rota, rotaMode *allModes, int modesLen)
+void initMapRota(rotaConfig *conf, mapRota **rota, rotaMode *allModes, int modesLen, int layerLen)
 {
     (*rota) = malloc(sizeof(mapRota));
     (*rota)->rotation = malloc(conf->numberOfLayers * sizeof(void *));
@@ -158,6 +150,8 @@ void initMapRota(rotaConfig *conf, mapRota **rota, rotaMode *allModes, int modes
     (*rota)->pools = malloc(conf->modeDist->poolDistCount * sizeof(rotaModePool));
     (*rota)->modeBuffer = NULL;
     (*rota)->tempModeBuffer = NULL;
+    (*rota)->mem = malloc(layerLen * sizeof(double));
+    (*rota)->indexMem = malloc(layerLen * sizeof(double));
 
     for (int i = 0; i < conf->modeDist->poolDistCount; i++)
     {
@@ -210,10 +204,10 @@ void printMemColonelState(rotaMap *maps, int mapsLen)
     }
 }
 
-void generateRota(rotaConfig *conf, mapRota **rota, rotaMap *maps, int mapLen, rotaMode *modes, int modeLen)
+void generateRota(rotaConfig *conf, mapRota **rota, rotaMap *maps, int mapLen, rotaMode *modes, int modeLen, int layerLen)
 {
     reset(maps, mapLen);
-    initMapRota(conf, rota, modes, modeLen);
+    initMapRota(conf, rota, modes, modeLen, layerLen);
 
     rotaMode *currMode;
     rotaMap *currMap;
@@ -233,8 +227,8 @@ void generateRota(rotaConfig *conf, mapRota **rota, rotaMap *maps, int mapLen, r
         (*rota)->modeBuffer = (*rota)->tempModeBuffer;
         (*rota)->tempModeBuffer = NULL;
 
-        currMap = chooseMap(vMaps, vMapsLen, currMode, &lockedMapsCount);
-        currLayer = chooseLayerFromMap(conf, currMap, currMode);
+        currMap = chooseMap(vMaps, vMapsLen, currMode, &lockedMapsCount, (*rota)->mem);
+        currLayer = chooseLayerFromMap(conf, currMap, currMode, (*rota)->mem, (*rota)->indexMem);
 
         // add mode map layer to rota
         // printf("%s %s %s\n", currMode->name, currMap->name, currLayer->name);

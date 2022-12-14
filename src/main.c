@@ -35,10 +35,10 @@ int main()
     rotaConfig *config = createConfig();
     initialize(config, &maps, &layers, &modes, &mapsLen, &layerLen, &modeLen);
 
-    generateRota(config, &rota, maps, mapsLen, modes, modeLen);
-    printf("Index \r\t Mode \r\t\t\t Map \r\t\t\t\t\t Layer\n");
+    generateRota(config, &rota, maps, mapsLen, modes, modeLen, layerLen);
+    /*printf("Index \r\t Mode \r\t\t\t Map \r\t\t\t\t\t Layer\n");
     for (int i = 999980; i < 1000000; i++)
     {
         printf("%i \r\t %s \r\t\t\t %s \r\t\t\t\t\t %s\n", i, rota->modes[i]->name, rota->maps[i]->name, rota->rotation[i]->name);
-    }
+    }*/
 }
