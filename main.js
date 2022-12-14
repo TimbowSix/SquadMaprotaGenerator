@@ -1,7 +1,6 @@
 const generator = require("./src/generator.js")
 const fs = require("fs")
 const optimizer = require("./src/optimizer_parallel.js")
-const crypto = require("crypto")
 const data = require("./src/data.js")
 const package = require("./package.json")
 
