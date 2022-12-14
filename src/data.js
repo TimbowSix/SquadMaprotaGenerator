@@ -15,9 +15,9 @@ function initialize_maps(config){
         layers = get_layers()
         fs.writeFileSync("./data/layers.json", JSON.stringify(layers, null, 2))
     }else{
-        layers = require("../data/layers.json")
+        layers = JSON.parse(fs.readFileSync("./data/layers.json"))
     }
-    let bioms = require("../data/bioms.json")
+    let bioms = JSON.parse(fs.readFileSync("./data/bioms.json"))
     bioms = parse_map_size(bioms)
     let distances = statistics.getAllMapDistances(bioms)
     let maps = []
@@ -28,6 +28,13 @@ function initialize_maps(config){
             used_modes.push(mode)
         }
     }
+    let team_layers
+    if (config["update_teams"]){
+        team_layers = get_teams()
+        fs.writeFileSync("./data/layers_teams.json", JSON.stringify(team_layers, null, 2))
+    }else{
+        team_layers = JSON.parse(fs.readFileSync("./data/layers_teams.json"))
+    }
 
     for (let [map_name, biom_values] of Object.entries(bioms)) {
         // skip map if unused / no layers available
@@ -37,6 +44,12 @@ function initialize_maps(config){
         if ((map_name in layers)){
             //layer for map available
             let map = new Map(map_name, biom_values, distances[map_name])
+            map.sigmoid_values = {
+                "mapvote_slope": config["mapvote_slope"],
+                "mapvote_shift":config["mapvote_shift"],
+                "layervote_slope":config["layervote_slope"],
+                "layervote_shift":config["layervote_shift"]
+            }
             for(let mode of Object.keys(layers[map_name])){
                 //skip mode if not used
                 if(!(used_modes.includes(mode))){
@@ -44,25 +57,23 @@ function initialize_maps(config){
                 }
                 for(let layer of layers[map_name][mode]){
                     let l = new Layer(layer["name"], mode, map, layer["votes"])
+                    if(!(team_layers[layer.name])){
+                        console.log(layer.name)
+                        continue
+                    }
+                    l.teamOne = team_layers[layer.name]["teamOne"]
+                    l.teamTwo = team_layers[layer.name]["teamTwo"]
+                    l.lock_time = config["layer_locktime"]
                     map.add_layer(l)
                 }
             }
 
             map.lock_time = config["biom_spacing"]
 
-            map.layer_locktime = config["layer_locktime"]
-
-            map.sigmoid_values = {
-                "mapvote_slope": config["mapvote_slope"],
-                "mapvote_shift":config["mapvote_shift"],
-                "layervote_slope":config["layervote_slope"],
-                "layervote_shift":config["layervote_shift"]
-            }
+            //map.layer_locktime = config["layer_locktime"]
 
             //pre-calculate layervote weights
-            map.calculate_vote_weights_by_mode()
             maps.push(map)
-
         }else{
             console.log(`WARNING: No layers available for map '${map_name}'`)
         }
@@ -139,6 +150,7 @@ function initialize_maps(config){
     }
     return maps
 }
+
 /**
  * calculating the expected distribution for every given map
  * @param {[Map]} maps
@@ -155,6 +167,7 @@ function get_dist(maps){
     }
     return current_map_dist
 }
+
 /**
  * parsing the mapsize in km² to a value between 0 and 1 for every given map
  * @param {object} bioms
@@ -171,50 +184,6 @@ function parse_map_size(bioms){
         bioms[map][0] = (bioms[map][0]-min)/(max-min)
     }
     return bioms
-}
-
-//redundant?
-function normalize_mapvote_weights(maps, save_expected_map_dist=false){
-    let mode_probs = {} //{mode:{map:prob}}
-    for(let map of maps){
-        for(let mode in map.mapvote_weights){
-            if(mode in mode_probs) mode_probs[mode][map.name] = map.mapvote_weights[mode]
-            else mode_probs[mode] = {[map.name]:map.mapvote_weights[mode]}
-        }
-    }
-
-    for(let mode in mode_probs){
-        let mode_weights = Object.values(mode_probs[mode])
-        mode_weights = utils.normalize(mode_weights)
-        let mode_maps = Object.keys(mode_probs[mode])
-        for(let i=0; i<mode_maps.length; i++){
-            mode_probs[mode][mode_maps[i]] = mode_weights[i]
-        }
-    }
-
-    for(let map of maps){
-        let weights = {}
-        for(let mode in map.layers){
-            weights[mode] = mode_probs[mode][map.name]
-        }
-        map.mapvote_weights = weights
-    }
-
-    if(save_expected_map_dist){
-        let map_dist = {}
-        for(let map of maps){
-            if(!(map.name in map_dist)){
-                map_dist[map.name] = {}
-            }
-            for(let mode in mode_probs){
-                if(Object.keys(mode_probs[mode]).includes(map.name)){
-                    if (map.name in map_dist) map_dist[map.name][mode] = mode_probs[mode][map.name]
-                    else map_dist[map.name] = {[mode]:mode_probs[mode][map.name]}
-                }
-            }
-        }
-        fs.writeFileSync("./data/current_map_dist.json",JSON.stringify(map_dist, null, 2))
-    }
 }
 
 class Map{
@@ -237,27 +206,46 @@ class Map{
         this.cluster_overlap = 0 //pro mode?
         // Layer Locktime
         this.mapvote_weight_sum = {}
-        this.layer_locktime = 0
-        this.locked_layers = [] //[{"locktime": 1, "layer": layer}]
-        this.sigmoid_values = {}
-    }
-    /**
-     * Locking a layer for the set layer_locktime, removing it from the available layers
-     * @param {Layer} layer
-     */
-    lock_layer(layer){
-        this.locked_layers.push({"locktime": this.layer_locktime, "layer":layer})
-        const index = this.layers[layer.mode].indexOf(layer)
-        if(index>-1){
-            this.layers[layer.mode].splice(index, 1)
-            if(this.layers[layer.mode].length <1){
-                delete this.layers[layer.mode]
-            }
-            this.new_weight(layer.mode)
-        }else{
-            console.log(`WARNING: Layer ${layer.name} not found in Map ${this.name}`)
+        //this.layer_locktime = 0
+        //this.locked_layers = [] //[{"locktime": 1, "layer": layer}]
+        this.sigmoid_values = {
+            "mapvote_slope": 1,
+            "mapvote_shift": 0,
+            "layervote_slope": 1,
+            "layervote_shift": 0
         }
     }
+
+    /**
+     * returns all currently for this map available modes
+     * @returns {[string]}
+     */
+    av_modes(){
+        let modes = []
+        for(let mode in this.layers){
+            if(this.layers[mode].some((val) => val.current_lock_time <= 0)){
+                modes.push(mode)
+            }
+        }
+        return modes
+    }
+
+    /**
+     * returns an array of all available layers of a specific mode
+     * a layer is available if current_lock_time <= 0
+     * @param {string} mode
+     * @returns {[Layer]}
+     */
+    av_layers(mode){
+        let layers = []
+        for(let layer of this.layers[mode]){
+            if(layer.current_lock_time <= 0){
+                layers.push(layer)
+            }
+        }
+        return layers
+    }
+
     /**
      * calculating new mapvote weight sum for a specific mode
      * @param {string} mode
@@ -265,52 +253,38 @@ class Map{
     new_weight(mode){
         const old_weight = this.mapvote_weights[mode]
         this.add_mapvote_weights(mode)
-        this.mapvote_weight_sum[mode] - old_weight + this.mapvote_weights[mode]
-        this.calculate_vote_weights_by_mode(mode)
+        this.mapvote_weight_sum[mode] -= old_weight
+        this.mapvote_weight_sum[mode] += this.mapvote_weights[mode]
     }
+
     /**
-     * resetting the layer locktime for every currently locked layer, making every layer available again.
+     * resetting the layer locktime for every layer, making every currently locked layer available again.
      */
     reset_layer_locktime(){
-        for(let locked_layer of this.locked_layers){
-            locked_layer.locktime = 0
+        for(let mode in this.layers){
+            for(let layer of this.layers[mode]){
+                layer.lock_time = 0
+            }
+            this.new_weight(mode)
         }
-        this.decrease_layer_lock_time()
     }
+
     /**
-     * decreasing the layer locktime by one for every locked layer.
-     * re-adding the layer to the for this map available layers if no locktime is left.
+     * decreasing the layer locktime by one for every locked layer of this map
      */
     decrease_layer_lock_time(){
-        let valid = []
-        for(let locked_layer of this.locked_layers){
-            locked_layer.locktime -= 1
-            if(locked_layer.locktime <=0){
-                valid.push(locked_layer)
+        for(let mode in this.layers){
+            let unlocked = 0
+            for(let layer of this.layers[mode]){
+                unlocked += layer.decrease_lock_time(false)
             }
-        }
-        for(let locked_layer of valid){ //remove layer from locked list
-            const index = this.locked_layers.indexOf(locked_layer)
-            if(index >-1){
-                this.locked_layers.splice(index, 1)
-            }
-            if(locked_layer.layer.mode in this.layers){
-                this.layers[locked_layer.layer.mode].push(locked_layer.layer)
-            }else{
-                this.layers[locked_layer.layer.mode] = [locked_layer.layer]
-            }
-        }
-        if(valid.length > 0){
-            let modes = new Set
-            for(let locked_layer of valid){
-                modes.add(locked_layer.layer.mode)
-            }
-            for(let mode of modes){
+            
+            if(unlocked>0){
                 this.new_weight(mode)
             }
-
         }
     }
+
     /**
      * adding a new layer as a property of this map
      * @param {Layer} layer
@@ -318,7 +292,11 @@ class Map{
     add_layer(layer){
         if (!(layer.mode in this.layers)) this.layers[layer.mode] = [layer]
         else this.layers[layer.mode].push(layer)
+        let slope = this.sigmoid_values["layervote_slope"]
+        let shift = this.sigmoid_values["layervote_shift"]
+        layer.calculate_vote_weight(slope, shift)
     }
+
     /**
      * decreasing the locktime by one
      */
@@ -327,12 +305,14 @@ class Map{
             this.current_lock_time--;
         }
     }
+
     /**
      * setting the current locktime of this map to the saved standard lock time
      */
     update_lock_time(){
         this.current_lock_time = this.lock_time
     }
+
     /**
      * Calculating the mapvote weight for a specific mode.
      * Calculating for every for this map available mode, if no mode given.
@@ -340,9 +320,11 @@ class Map{
      * @returns
      */
     add_mapvote_weights(mode){
-        let modes = Object.keys(this.layers)
+        //let modes = Object.keys(this.layers)
+        let modes = this.av_modes()
         if(mode){
-            if(!(mode in this.layers)){
+            if(!(modes.includes(mode))){
+                //console.log(`INFO: can't add mapvote weights to ${this.name} for mode ${mode}, mode is unavailable`)
                 return
             }
             modes = [mode]
@@ -356,13 +338,13 @@ class Map{
         let votesum = {}
         for(let mode of modes){
             let votes = []
-            for(let layer of this.layers[mode]) votes.push(layer.votes)
+            for(let layer of this.av_layers(mode)) votes.push(layer.votes)
             votesum[mode] = votes
         }
         let means = {}
         let weights = {}
         let temp = {}
-        for(let mode of Object.keys(votesum)){
+        for(let mode in votesum){
             means[mode] = 1/votesum[mode].length*utils.sumArr(votesum[mode])
             for(let v of votesum[mode]){
                 if(weights[mode]) weights[mode].push(Math.exp(-Math.pow(means[mode] - v, 2)))
@@ -380,29 +362,7 @@ class Map{
             this.mapvote_weights[mode] = temp[mode]
         }
     }
-    /**
-     * calculate layervotes to weights
-     * @param {string} mode mode for which the vote weight should be calculated
-     */
-    calculate_vote_weights_by_mode(mode){
-        let modes = Object.keys(this.layers)
-        if(mode){
-            if(!(mode in this.layers)){
-                return
-            }
-            modes = [mode]
-        }
-        //if (Object.entries(this.layers).length === 0) throw Error(`map '${this.name}' has no layers to calculate weights`)
-        let sigmoid_slope = this.sigmoid_values["layervote_slope"]
-        let sigmoid_shift = this.sigmoid_values["layervote_shift"]
 
-        for(let mode of modes){
-            let votes = []
-            for(let layer of this.layers[mode]) votes.push(layer.votes)
-            let weights = utils.normalize(utils.sigmoidArr(votes, sigmoid_slope, sigmoid_shift))
-            this.vote_weights_by_mode[mode] = weights
-        }
-    }
     /**
      * calculates mapweight for given mode based on given params
      * @param {string} mode Mode for which the weight is to be calculated
@@ -423,6 +383,53 @@ class Layer{
         this.mode = mode
         this.map = map
         this.votes = votes
+        this.teamOne
+        this.teamTwo
+        this.vote_weight = 0
+        this.locktime = 0
+        this.current_lock_time = 0
+    }
+
+    /**
+     * calculating layer vote weight with sigmoid function
+     * @param {*} slope sigmoid slope
+     * @param {*} shift sigmoid shift
+     */
+    calculate_vote_weight(slope, shift){
+        this.vote_weight = utils.sigmoid(this.votes, slope, shift)
+    }
+
+    /**
+    * decreasing locktime by one
+    * @param {boolean} calc_weight if new mapweight is calculated when layer is unlocked. standard=true
+    * @returns {boolean} returns true if layer is unlocked again else false, also false if already unlocked
+    */
+    decrease_lock_time(calc_weight=true){
+        if(this.current_lock_time <= 0) return false
+        this.current_lock_time--;
+        if(this.current_lock_time <= 0){
+            if(calc_weight){
+                this.map.new_weight(this.mode)
+            }
+            return true
+        }
+        return false
+    }
+
+    /**
+     * setting current locktime of this map to the saved standard lock time
+     * setting current locktime to custom locktime if given
+     * @param {number} locktime optional
+     */
+    update_lock_time(locktime, calc_weights=true){
+        if(locktime){
+            this.current_lock_time = locktime
+        }else{
+            this.current_lock_time = this.lock_time
+        }
+        if(calc_weights){
+            this.map.new_weight(this.mode)
+        }
     }
 }
 
@@ -471,6 +478,16 @@ function get_layers(){
         }
     }
     return maps
+}
+
+function get_teams(){
+    const config = JSON.parse(fs.readFileSync("./config.json"))
+    let data = get_data(config.team_api_url)
+    let layers = {}
+    for(let layer of data){
+        layers[layer.id] = {"teamOne": layer.teamOne, "teamTwo": layer.teamTwo}
+    }
+    return layers
 }
 
 function save_mapweights(){
@@ -524,6 +541,7 @@ function fix_unavailables(){
 
 
 }
+
 /**
  * building a config object based on the config.json and possible overwrites
  * @param {boolean} warning display a warning if there is anything unavailable
@@ -546,6 +564,7 @@ function build_config(warning=false){
     }
     return config
 }
+
 /**
  * checking if important changes in the configuration have been made
  * @returns {boolean}
@@ -574,6 +593,7 @@ function check_changes(){
         return true
     }else return false
 }
+
 /**
  * fetching a given url for a json file.
  * @param {string} url
@@ -585,9 +605,7 @@ function get_data(url){
 
 // Test Stuff here
 if (require.main === module) {
-    //fix_unavailables()
-    let config = build_config()
-    initialize_maps(config)
+    console.log(get_teams()["Skorpo_AAS_v1"])
 }
 
 module.exports = { Map, Layer, initialize_maps, get_layers, check_changes, build_config, get_dist };

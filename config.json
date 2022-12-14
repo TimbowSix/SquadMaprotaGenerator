@@ -3,11 +3,16 @@
     "number_of_layers": 30,
     "seed_layer": 1,
     "update_layers": true,
-    "output_path": "./output/",
-    "layer_vote_api_url": "https://api.welovesquad.com/votes?format=chartjs",
-    "mode_distribution": {
-        "pools": {
-            "main": {
+    "update_teams": true,
+    "output_path":"./output/",
+    "layer_vote_api_url": "https://welovesquad.com/wp-admin/admin-ajax.php?action=getLayerVotes_req",
+    "team_api_url": " https://api.welovesquad.com/layers/",
+    "mode_distribution":
+    {
+        "pools":
+        {
+            "main":
+            {
                 "AAS": 0.5,
                 "RAAS": 0.5
             },
@@ -55,6 +60,7 @@
     ],
     "biom_spacing": 4,
     "layer_locktime": 30,
+    "max_same_team": 1,
     "min_biom_distance": 0.4,
     "mapvote_slope": 0.15,
     "mapvote_shift": 0,
@@ -62,7 +68,7 @@
     "layervote_shift": 0,
     "use_vote_weight": true,
     "use_map_weight": true,
-    "save_expected_map_dist": true,
+    "save_expected_map_dist": false,
     "use_lock_time_modifier": true,
     "auto_optimize": true,
     "fix_unavailables": true,
