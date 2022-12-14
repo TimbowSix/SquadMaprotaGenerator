@@ -22,6 +22,7 @@ class Optimizer{
         this.config['number_of_layers'] = 50000;
         this.config['use_vote_weight'] = false;
         this.config["update_layers"] = false
+        this.config["max_same_team"] = 0
 
         this.uuid = utils.create_UUID()
 
