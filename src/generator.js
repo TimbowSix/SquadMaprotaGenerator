@@ -248,6 +248,8 @@ class Maprota {
                 this.rotation.unshift(chosen_layer)
                 let index = seed_maps.indexOf(seed_map);
                 seed_maps.splice(index, 1)
+                //lock map
+                seed_map.current_lock_time = 2
             }
             this.modes.push("Seed") // block not main modes for 4 turns
         }
