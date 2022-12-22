@@ -15,7 +15,5 @@ jobs:
         name: Build image
         run: docker build -t welovesquad/squadmaprotagenerator:latest .
       -
-        name: Run the released image with Docker
-        uses: addnab/docker-run-action@v3
-        with:
-          image: welovesquad/squadmaprotagenerator:latest
+        name: Build image
+        run: docker run welovesquad/squadmaprotagenerator:latest
