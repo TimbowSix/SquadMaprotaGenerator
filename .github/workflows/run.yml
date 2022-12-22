@@ -9,17 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Build image
+        run: docker build -t welovesquad/squadmaprotagenerator:latest .
       -
         name: Run the released image with Docker
         uses: addnab/docker-run-action@v3
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: gcr.io
-          image: gcr.io/welovesquad/squadmaprotagenerator:latest
+          image: welovesquad/squadmaprotagenerator:latest
