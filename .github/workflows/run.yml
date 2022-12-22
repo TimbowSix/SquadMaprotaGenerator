@@ -15,5 +15,5 @@ jobs:
         name: Build image
         run: docker build -t welovesquad/squadmaprotagenerator:latest .
       -
-        name: Build image
+        name: Run image
         run: docker run welovesquad/squadmaprotagenerator:latest
