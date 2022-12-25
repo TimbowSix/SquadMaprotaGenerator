@@ -168,12 +168,12 @@ class Maprota {
                         // relevante laufzeit auswirkung?
                         // wie oft kommt das vor?
                         if(layer.teamOne == lock_blu){
-                            layer.update_lock_time(1, false)
+                            layer.update_lock_time(1, false, false)
                             if(!(lock_modes.includes(mode))){
                                 lock_modes.push(mode)
                             }
                         }else if (layer.teamTwo == lock_op){
-                            layer.update_lock_time(1, false)
+                            layer.update_lock_time(1, false, false)
                             if(!(lock_modes.includes(mode))){
                                 lock_modes.push(mode)
                             }
