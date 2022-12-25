@@ -263,7 +263,7 @@ class Map{
     reset_layer_locktime(){
         for(let mode in this.layers){
             for(let layer of this.layers[mode]){
-                layer.lock_time = 0
+                layer.current_lock_time = 0
             }
             this.new_weight(mode)
         }
@@ -278,7 +278,7 @@ class Map{
             for(let layer of this.layers[mode]){
                 unlocked += layer.decrease_lock_time(false)
             }
-            
+
             if(unlocked>0){
                 this.new_weight(mode)
             }
@@ -417,11 +417,14 @@ class Layer{
     }
 
     /**
-     * setting current locktime of this map to the saved standard lock time
+     * setting current locktime of this layer to the saved standard lock time
      * setting current locktime to custom locktime if given
      * @param {number} locktime optional
      */
-    update_lock_time(locktime, calc_weights=true){
+    update_lock_time(locktime, calc_weights=true, overwrite=true){
+        if(!overwrite && this.current_lock_time > 0){
+            return
+        }
         if(locktime){
             this.current_lock_time = locktime
         }else{
