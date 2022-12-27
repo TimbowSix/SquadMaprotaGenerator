@@ -4,6 +4,9 @@
 #include <string.h>
 #include <vector>
 
+#include "RotaLayer.hpp"
+#include "RotaMode.hpp"
+
 namespace rota
 {
 
