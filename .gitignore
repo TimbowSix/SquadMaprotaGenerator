@@ -108,10 +108,3 @@ dist
 __pycache__
 *.cfg
 .vscode
-
-
-#build folder
-build
-
-#cmake folder
-CMakeFiles

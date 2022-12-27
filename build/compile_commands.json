@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/generator",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/SquadMaprota.dir/main.cpp.o -c /mnt/s/Programming/WLS/SquadMaprotaGenerator/src/generator/main.cpp",
-  "file": "/mnt/s/Programming/WLS/SquadMaprotaGenerator/src/generator/main.cpp"
-}
-]
