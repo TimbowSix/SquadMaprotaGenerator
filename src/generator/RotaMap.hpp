@@ -26,7 +26,7 @@ namespace rota
         ~RotaMap();
         std::vector<RotaMode *> availableModes();
         std::vector<RotaLayer *> availableLayer();
-        void newWeight(RotaMode *mode);
+        void newWeight(RotaMode &mode);
 
         void addLayer(RotaLayer *layer);
 
@@ -34,6 +34,8 @@ namespace rota
         void resetLockTime();
         void updateLockTime();
 
-        void calcMapVoteWeights(RotaMode *mode);
+        void calcMapVoteWeights(RotaMode &mode);
+
+        void calcMapWeights(RotaMode &mode, float params[WEIGHT_PARAMS_COUNT]);
     };
 }
