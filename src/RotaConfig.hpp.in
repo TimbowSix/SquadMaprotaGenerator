@@ -1,0 +1,2 @@
+#define ROTA_VERSION_MAJOR @SquadMaprota_VERSION_MAJOR@
+#define ROTA_VERSION_MINOR @SquadMaprota_VERSION_MINOR@
