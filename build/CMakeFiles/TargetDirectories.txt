@@ -1,0 +1,5 @@
+/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/CMakeFiles/rebuild_cache.dir
+/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/CMakeFiles/edit_cache.dir
+/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/generator/CMakeFiles/rebuild_cache.dir
+/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/generator/CMakeFiles/SquadMaprota.dir
+/mnt/s/Programming/WLS/SquadMaprotaGenerator/build/generator/CMakeFiles/edit_cache.dir

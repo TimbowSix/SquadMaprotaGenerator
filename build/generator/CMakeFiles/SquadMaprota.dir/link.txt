@@ -1,0 +1,1 @@
+/usr/bin/g++  -g   CMakeFiles/SquadMaprota.dir/main.cpp.o  -o SquadMaprota 
