@@ -4,5 +4,3 @@ set(SOURCE
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})
-
-include_directories(${PROJECT_BINARY_DIR})
