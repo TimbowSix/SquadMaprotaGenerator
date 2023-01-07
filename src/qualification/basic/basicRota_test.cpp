@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(BasicRun_Test, run){
+TEST(basicRota_test, run){
     ASSERT_TRUE(true);
 }

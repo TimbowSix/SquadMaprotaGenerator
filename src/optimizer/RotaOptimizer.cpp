@@ -8,7 +8,7 @@
 
 namespace optimizer
 {
-    double UpdateTemperature(double T0, double s, int i){
+    double RotaOptimizer::UpdateTemperature(double T0, double s, int i){
         return T0*exp(-s*i);
     }
 

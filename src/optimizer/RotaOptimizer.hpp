@@ -71,7 +71,7 @@ namespace optimizer
                 int i, step starting at zero
             Return: double
             */
-            void UpdateTemperature(double T0, double s, int i);
+            double UpdateTemperature(double T0, double s, int i);
             /*
             Summary: Generates the next state
             Params:
