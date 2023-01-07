@@ -6,7 +6,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
+//#include <boost/asio.hpp>
 
 #include "utils.hpp"
 
@@ -31,7 +31,7 @@ namespace rota
 
     RotaLayer *getLayers(std::string url, std::string req){
 
-
+        /*
         using boostTcp = boost::asio::ip::tcp;
 
         try
@@ -54,7 +54,7 @@ namespace rota
             std::ostream request_stream(&request);
             request_stream << "GET " << req << " HTTP/1.0\r\n";
             request_stream << "Host: " << url << "\r\n";
-            request_stream << "Accept: */*\r\n";
+            request_stream << "Accept: *\r\n";
             request_stream << "Connection: close\r\n\r\n";
 
             // Send the request.
@@ -112,7 +112,10 @@ namespace rota
         }
 
         return 0;
-        }
+        */
+
+       return nullptr;
+    }
 
 
 } // namespace rota

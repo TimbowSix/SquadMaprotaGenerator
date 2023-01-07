@@ -7,5 +7,5 @@ namespace rota
 {
     int weightedChoice(std::vector<float> *weights);
 
-    RotaLayer *getLayers(std::string url);
+    RotaLayer *getLayers(std::string url, std::string req);
 } // namespace rota
