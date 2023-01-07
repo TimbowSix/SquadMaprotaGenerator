@@ -1,8 +1,18 @@
+/**
+ * @file RotaModePool
+ * @brief Object representation of multiple grouped RotaMode objects
+ *
+ * @author tim3 (timbow)
+ * @author tim1 (fletschoa)
+ * @author Kay  (kayms)
+*/
+
 #pragma once
 
 #include "RotaMode.hpp"
 #include <string>
 #include <vector>
+#include <map>
 
 namespace rota
 {
@@ -11,9 +21,9 @@ namespace rota
     public:
         std::string name;
         float probability;
-        std::vector<RotaMode> modes;
+        std::map<std::string, RotaMode*> modes;
         RotaModePool(std::string name, float probability);
         ~RotaModePool();
-        void addMode(RotaMode mode);
+        void addMode(RotaMode *mode);
     };
 } // namespace rota

@@ -1,3 +1,12 @@
+/**
+ * @file RotaMode
+ * @brief Object representation of a Squad Layer Mode
+ *
+ * @author tim3 (timbow)
+ * @author tim1 (fletschoa)
+ * @author Kay  (kayms)
+*/
+
 #pragma once
 
 #include "RotaConfig.hpp"
