@@ -15,7 +15,23 @@
 
 namespace rota
 {
+    /**
+     * @brief chooses an index randomly with probability given by the values
+     *
+     * Note: the sum of all weight have to be 1
+     *
+     * @param weights list of weights
+     * @returns choosen index
+    */
     int weightedChoice(std::vector<float> *weights);
+
+
+    /**
+     * @brief normalizes all values in list
+     *
+     * @param arr list of values to normalize
+    */
+    void normalize(std::vector<float> *arr);
 
     /**
      * @brief Gets all Layers from an Endpoint via GET req. and creates a map of them
