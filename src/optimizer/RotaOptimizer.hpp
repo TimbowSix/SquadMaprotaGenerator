@@ -1,8 +1,10 @@
 #pragma once
 
+#include <boost/json/src.hpp> // for header-only
 #include <iostream>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace optimizer
 {
@@ -27,8 +29,7 @@ namespace optimizer
             slope: Temperature decrement slope
             comparisonState: The state you want to mimic with the internal weights, usually calucated from the mapvotes
             */
-            RotaOptimizer(double t0){
-                T0 = t0;
+            RotaOptimizer(){
             };
             ~RotaOptimizer(){};
             /*
@@ -36,10 +37,10 @@ namespace optimizer
             Params: 
             Return: Matrix<double>
             */
-            int GenerateSeed();
+            boost::numeric::ublas::matrix<double> GenerateSeed();
             /*
             Summary: Calculates the fitness value of the given state.
-            Params: 
+            @param : 
             matrix<double> matrix, the state to be evaluated
             Return: double
             */
@@ -66,7 +67,7 @@ namespace optimizer
             Params: 
                 double T0, initial temperature
                 double s, slope
-                int i, step
+                int i, step starting at zero
             Return: double
             */
             void UpdateTemperature(double T0, double s, int i);

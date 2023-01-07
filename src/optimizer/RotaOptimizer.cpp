@@ -1,8 +1,26 @@
 #include <iostream>
+#include <math.h>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+
 #include "RotaOptimizer.hpp"
 
-int main(void)
+namespace optimizer
 {
-    optimizer::RotaOptimizer opt(1.0);//, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atof(argv[1]));
-    return 0;
+    double UpdateTemperature(double T0, double s, int i){
+        return T0*exp(-s*i);
+    }
+
+    boost::numeric::ublas::matrix<double> GenerateSeed(){
+        boost::mt19937 gen;
+        boost::random::uniform_int_distribution<> dist(0, 1);
+        boost::numeric::ublas::matrix<double> mat (3, 3);
+        for (unsigned i = 0; i < mat.size1 (); ++ i)
+            for (unsigned j = 0; j < mat.size2 (); ++ j)
+                mat (i, j) = dist(gen);
+        return mat;
+    }
+
+
 }
