@@ -40,3 +40,7 @@ Neu bauen:
 Ausführen:
 
     ./generator
+    
+## Installieren von `cpp-httplib`:
+
+   git submodule update --init --recursive 
