@@ -5,7 +5,7 @@ project(SquadMaprota VERSION 2.2 LANGUAGES C CXX)
 enable_testing()
 
 find_package(
-    Boost REQUIRED
+    Boost 1.81.0 REQUIRED
     COMPONENTS json
 )
 
