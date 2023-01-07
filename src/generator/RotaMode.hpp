@@ -11,6 +11,7 @@ namespace rota
         std::string name;
         float probability;
         //float weightParams[WEIGHT_PARAMS_COUNT];
+        RotaMode(std::string name);
         RotaMode(std::string name, float probability /*, float *weighParams*/);
         ~RotaMode();
     };

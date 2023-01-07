@@ -2,11 +2,10 @@
 #include <stdexcept>
 #include <numeric>
 #include <random>
-#include <iostream>
-#include <istream>
-#include <ostream>
 #include <string>
-//#include <boost/asio.hpp>
+
+#include <httplib.h>
+#include <boost/json.hpp>
 
 #include "utils.hpp"
 
@@ -29,92 +28,83 @@ namespace rota
         return -1;
     }
 
-    RotaLayer *getLayers(std::string url, std::string req){
+    int getLayers(std::string url, std::string req, std::map<std::string, RotaLayer *> *layers){
 
-        /*
-        using boostTcp = boost::asio::ip::tcp;
+        namespace json = boost::json;
 
-        try
-        {
-            boost::asio::io_service io_service;
-
-            // Get a list of endpoints corresponding to the server name.
-            boostTcp::tcp::resolver resolver(io_service);
-            boostTcp::tcp::resolver::query query(url, "http");
-            boostTcp::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-
-            // Try each endpoint until we successfully establish a connection.
-            boostTcp::tcp::socket socket(io_service);
-            boost::asio::connect(socket, endpoint_iterator);
-
-            // Form the request. We specify the "Connection: close" header so that the
-            // server will close the socket after transmitting the response. This will
-            // allow us to treat all data up until the EOF as the content.
-            boost::asio::streambuf request;
-            std::ostream request_stream(&request);
-            request_stream << "GET " << req << " HTTP/1.0\r\n";
-            request_stream << "Host: " << url << "\r\n";
-            request_stream << "Accept: *\r\n";
-            request_stream << "Connection: close\r\n\r\n";
-
-            // Send the request.
-            boost::asio::write(socket, request);
-
-            // Read the response status line. The response streambuf will automatically
-            // grow to accommodate the entire line. The growth may be limited by passing
-            // a maximum size to the streambuf constructor.
-            boost::asio::streambuf response;
-            boost::asio::read_until(socket, response, "\r\n");
-
-            // Check that response is OK.
-            std::istream response_stream(&response);
-            std::string http_version;
-            response_stream >> http_version;
-            unsigned int status_code;
-            response_stream >> status_code;
-            std::string status_message;
-            std::getline(response_stream, status_message);
-            if (!response_stream || http_version.substr(0, 5) != "HTTP/")
-            {
-            std::cout << "Invalid response\n";
-            return nullptr;
-            }
-            if (status_code != 200)
-            {
-            std::cout << "Response returned with status code " << status_code << "\n";
-            return nullptr;
-            }
-
-            // Read the response headers, which are terminated by a blank line.
-            boost::asio::read_until(socket, response, "\r\n\r\n");
-
-            // Process the response headers.
-            std::string header;
-            while (std::getline(response_stream, header) && header != "\r")
-            std::cout << header << "\n";
-            std::cout << "\n";
-
-            // Write whatever content we already have to output.
-            if (response.size() > 0)
-            std::cout << &response;
-
-            // Read until EOF, writing data to output as we go.
-            boost::system::error_code error;
-            while (boost::asio::read(socket, response,
-                boost::asio::transfer_at_least(1), error))
-            std::cout << &response;
-            if (error != boost::asio::error::eof)
-            throw boost::system::system_error(error);
+        httplib::Client cli(url);
+        auto res = cli.Get(req);
+        if(res->status != 200){
+            throw std::runtime_error("Error while getting layer "+ url + req +" status:"+ std::to_string(res->status));
+            return 0;
         }
-        catch (std::exception& e)
-        {
-            std::cout << "Exception: " << e.what() << "\n";
+        json::array layerData =  json::parse(res->body).get_array();
+        int counter = 0;
+        for(int i=0;i<layerData.size(); i++){
+            json::object obj = layerData[i].get_object();
+            if(!obj["isExcluded"].as_bool()){
+                int upVotes = obj["upvotes"].as_int64();
+                int downVotes = obj["downvotes"].as_int64();
+                RotaLayer *layer = new RotaLayer((std::string)obj["layer"].as_string(), (float)(upVotes - downVotes));
+                (*layers)[layer->getName()] = layer;
+                counter++;
+            }
         }
 
         return 0;
-        */
+    }
 
-       return nullptr;
+    void injectLayerInfo(std::string url, std::string req,
+                         std::map<std::string, rota::RotaLayer*> *layers,
+                         std::map<std::string, RotaMode *> *modes,
+                         std::map<std::string, RotaTeam *> *teams){
+
+        namespace json = boost::json;
+
+
+
+        httplib::Client cli(url);
+        auto res = cli.Get(req);
+        if(res->status != 200){
+            throw std::runtime_error("Error while getting additional layer information " + url + req + " status:" + std::to_string(res->status));
+            return;
+        }
+
+        json::array data = json::parse(res->body).get_array();
+
+        for(int i=0;i<data.size();i++){
+            json::object obj = data[i].get_object();
+
+            std::string layerName = (std::string)obj["id"].as_string();
+            std::string modeName = (std::string)obj["gamemode"].as_string();
+            std::string teamOneName = (std::string)obj["teamOne"].as_string();
+            std::string teamTwoName = (std::string)obj["teamTwo"].as_string();
+
+            if(layers->find(layerName) != layers->end()){
+
+                if(modes->find(modeName) == modes->end()){
+                    //create non existing mode
+                    RotaMode *mode = new RotaMode(modeName);
+                    (*modes)[modeName] = mode;
+                }
+                (*layers)[layerName]->setMode((*modes)[modeName]);
+
+                if(teams->find(teamOneName) == teams->end()){
+                    //create non existing team
+                    RotaTeam *team = new RotaTeam(teamOneName);
+                    (*teams)[teamOneName] = team;
+                }
+                (*layers)[layerName]->setTeam((*teams)[teamOneName], 0);
+
+                if(teams->find(teamTwoName) == teams->end()){
+                    //create non existing team
+                    RotaTeam *team = new RotaTeam(teamTwoName);
+                    (*teams)[teamTwoName] = team;
+                }
+                (*layers)[layerName]->setTeam((*teams)[teamTwoName], 1);
+
+            }
+        }
     }
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 
 
 #include "RotaMode.hpp"
@@ -15,7 +16,7 @@ namespace rota
     class RotaLayer
     {
     private:
-        char *name;
+        std::string name;
         RotaMode *mode;
         RotaMap *map;
         float votes;
@@ -25,9 +26,18 @@ namespace rota
         int currLockTime;
 
     public:
-        RotaLayer();
-        ~RotaLayer();
+        RotaLayer(std::string name, float votes);
+        //~RotaLayer();
         void lock();
         void decreaseLockTime();
+
+
+        std::string getName();
+        float getVotes();
+        RotaTeam* getTeam(int index);
+        RotaMode* getMode();
+
+        void setTeam(RotaTeam *team, int index);
+        void setMode(RotaMode *mode);
     };
 }

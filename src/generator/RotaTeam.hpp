@@ -1,17 +1,20 @@
 #pragma once
 
+#include <string>
+
 namespace rota
 {
 
     class RotaTeam
     {
     private:
-        int index;
-        char *name;
+        std::string name;
 
     public:
-        RotaTeam(int index, char *name);
+        RotaTeam(std::string name);
         ~RotaTeam();
+
+        std::string getName();
     };
 
 }
