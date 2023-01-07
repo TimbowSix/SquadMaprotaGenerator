@@ -10,10 +10,10 @@ namespace rota
         this->probability = probability;
     };
 
-    RotaModePool::~RotaModePool(){}
+    RotaModePool::~RotaModePool(){};
 
-    void RotaModePool::addMode(RotaMode mode){
-        this->modes.push_back(mode);
+    void RotaModePool::addMode(RotaMode *mode){
+        this->modes[mode->name] = mode;
     };
 
 } // namespace rota
