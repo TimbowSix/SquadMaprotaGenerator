@@ -5,20 +5,18 @@
 #include "RotaModePool.hpp"
 #include <vector>
 #include <boost/json.hpp>
+#include "dataParsing.hpp"
 
 namespace rota
 {
     Maprota::Maprota(boost::json::object *config){
         this->config = config;
-        this->initializeModes();
+        parseModes(this->config, &this->modePools, &this->modes);
     }
-    Maprota::~Maprota(){}
 
-    void Maprota::initializeModes(){
+    RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){
 
-    }/*
-    RotaMode Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){
-    }*/
+    }
 
 } // namespace rota
 

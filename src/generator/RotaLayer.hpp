@@ -1,3 +1,11 @@
+/**
+ * @file RotaLayer
+ * @brief Object representation of a Squad Layer
+ *
+ * @author tim3 (timbow)
+ * @author tim1 (fletschoa)
+ * @author Kay  (kayms)
+*/
 #pragma once
 
 #include <iostream>

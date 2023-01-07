@@ -1,3 +1,11 @@
+/**
+ * @file RotaMap
+ * @brief Object representation of a Squad Map
+ *
+ * @author tim3 (timbow)
+ * @author tim1 (fletschoa)
+ * @author Kay  (kayms)
+*/
 #pragma once
 
 #include <iostream>
