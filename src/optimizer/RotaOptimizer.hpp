@@ -34,10 +34,11 @@ namespace optimizer
             ~RotaOptimizer(){};
             /*
             Summary: Generates an initial state for the optimizer to start with.
-            Params: 
+            Params: dim dimension of the square matrix
             Return: Matrix<double>
             */
-            boost::numeric::ublas::matrix<double> GenerateSeed();
+            boost::numeric::ublas::matrix<double> GenerateSeed(int dim);
+
             /*
             Summary: Calculates the fitness value of the given state.
             @param : 

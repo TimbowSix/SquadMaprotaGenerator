@@ -12,15 +12,14 @@ namespace optimizer
         return T0*exp(-s*i);
     }
 
-    boost::numeric::ublas::matrix<double> GenerateSeed(){
-        boost::mt19937 gen;
-        boost::random::uniform_int_distribution<> dist(0, 1);
-        boost::numeric::ublas::matrix<double> mat (3, 3);
+    boost::numeric::ublas::matrix<double> RotaOptimizer::GenerateSeed(int dim){
+        int dist_max = 10000;
+        boost::mt19937 gen(time(0));
+        boost::random::uniform_int_distribution<> dist(0, dist_max);
+        boost::numeric::ublas::matrix<double> mat (dim, dim);
         for (unsigned i = 0; i < mat.size1 (); ++ i)
             for (unsigned j = 0; j < mat.size2 (); ++ j)
-                mat (i, j) = dist(gen);
+                mat (i, j) = dist(gen)/((double)dist_max);
         return mat;
     }
-
-
 }
