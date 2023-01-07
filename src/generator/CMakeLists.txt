@@ -1,6 +1,8 @@
 set(SOURCE
     main.cpp
     RotaMap.cpp
+    RotaMode.cpp
+    RotaModePool.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE})
