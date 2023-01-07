@@ -22,4 +22,12 @@ namespace optimizer
                 mat (i, j) = dist(gen)/((double)dist_max);
         return mat;
     }
+
+    RotaOptimizer::RotaOptimizer(){
+
+    };
+    RotaOptimizer::~RotaOptimizer(){
+
+    };
+
 }

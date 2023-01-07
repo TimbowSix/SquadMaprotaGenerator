@@ -1,10 +1,8 @@
 #pragma once
 
-#include <boost/json/src.hpp> // for header-only
 #include <iostream>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <boost/property_tree/json_parser.hpp>
 
 namespace optimizer
 {
@@ -29,9 +27,8 @@ namespace optimizer
             slope: Temperature decrement slope
             comparisonState: The state you want to mimic with the internal weights, usually calucated from the mapvotes
             */
-            RotaOptimizer(){
-            };
-            ~RotaOptimizer(){};
+            RotaOptimizer();
+            ~RotaOptimizer();
             /*
             Summary: Generates an initial state for the optimizer to start with.
             Params: dim dimension of the square matrix
