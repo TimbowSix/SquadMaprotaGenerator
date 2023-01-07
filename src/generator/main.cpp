@@ -7,6 +7,7 @@
 
 #include "RotaConfig.hpp"
 
+
 int main(void)
 {
     std::cout << "Version " << ROTA_VERSION_MAJOR << "." << ROTA_VERSION_MINOR << std::endl;

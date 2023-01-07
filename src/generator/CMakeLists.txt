@@ -1,7 +1,9 @@
 set(SOURCE
     main.cpp
     RotaMap.cpp
+    utils.cpp
 )
+
 
 add_executable(${PROJECT_NAME} ${SOURCE})
 
