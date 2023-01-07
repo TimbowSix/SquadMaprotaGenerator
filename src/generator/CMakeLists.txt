@@ -1,11 +1,13 @@
 set(SOURCE
     main.cpp
+    #__test.cpp
     RotaMap.cpp
     RotaMode.cpp
     RotaModePool.cpp
     RotaLayer.cpp
     RotaTeam.cpp
     utils.cpp
+    dataParsing.cpp
 )
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
