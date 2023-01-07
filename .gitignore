@@ -115,3 +115,6 @@ build
 
 #cmake folder
 CMakeFiles
+
+#cpp rotaconfig
+RotaConfig.hpp
