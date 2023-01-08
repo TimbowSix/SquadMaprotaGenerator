@@ -18,8 +18,8 @@ TEST(Utils_test, weightedChoice_normal) {
 
     srand(time(0));
 
-    std::vector<float> weights = {0.1, 0.5, 0.2, 0.15, 0.05, 0};
-    int counts[5] = {0};
+    std::vector<float> weights = {0.1, 0.5, 0.2, 0.15, 0.05, 0.0};
+    int counts[6] = {0, 0, 0, 0, 0, 0};
     int rounds = 0;
     while (rounds < 1000000) {
         int val = rota::weightedChoice(&weights);
@@ -30,7 +30,8 @@ TEST(Utils_test, weightedChoice_normal) {
     }
 
     for (int i = 0; i < weights.size(); i++) {
-        EXPECT_NEAR(weights[i], (counts[i] / 1000000.0), 0.002);
+        std::cout << counts[i] << std::endl;
+        EXPECT_NEAR(weights[i], (float)counts[i] / 1000000, 0.002);
     }
 }
 

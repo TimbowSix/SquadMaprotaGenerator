@@ -10,6 +10,7 @@
 #include "utils.hpp"
 
 namespace rota {
+
 int weightedChoice(std::vector<float> *weights) {
     float weightSum = std::accumulate(weights->begin(), weights->end(), 0.0);
     weightSum =
