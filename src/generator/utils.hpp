@@ -29,9 +29,17 @@ namespace rota
     /**
      * @brief normalizes all values in list
      *
+     * sum can be used, by not using it sum = NULL
+     *
      * @param arr list of values to normalize
+     * @param sum sum of values in the vector
     */
-    void normalize(std::vector<float> *arr);
+    void normalize(std::vector<float> *arr, float *sum);
+
+    /**
+     * @brief sigmoid function
+    */
+    float sigmoid(float x, float slope, float shift);
 
     /**
      * @brief Gets all Layers from an Endpoint via GET req. and creates a map of them
