@@ -7,13 +7,13 @@
 
 namespace optimizer
 {
-    double RotaOptimizer::UpdateTemperature(double T0, double s, int i){
+    float RotaOptimizer::UpdateTemperature(float T0, float s, int i){
         return T0*exp(-s*i);
     }
 
-    boost::numeric::ublas::matrix<double> RotaOptimizer::GenerateSeed(int dim){
+    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateSeed(int dim){
         std::uniform_real_distribution<> distribute(0,1);   //uniform-dist wrapper for rng, 1 is excluded
-        boost::numeric::ublas::matrix<double> mat (dim, dim);
+        boost::numeric::ublas::matrix<float> mat (dim, dim);
         for (unsigned i = 0; i < mat.size1 (); ++ i)
             for (unsigned j = 0; j < mat.size2 (); ++ j)
                 mat (i, j) = distribute(this->generator);
