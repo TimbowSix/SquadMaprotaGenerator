@@ -12,7 +12,7 @@
 namespace rota
 {
     int weightedChoice(std::vector<float> *weights){
-        float weightSum = std::accumulate(weights->begin(), weights->end(), 0);
+        float weightSum = std::accumulate(weights->begin(), weights->end(), 0.0);
         weightSum = roundf(weightSum * 100) / 100; // round to 2 decimal places to account floating point error
         if (weightSum != 1){
             throw std::invalid_argument("Weights do not sum to 1");
