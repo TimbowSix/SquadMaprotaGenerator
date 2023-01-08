@@ -56,14 +56,12 @@ float sigmoid(float x, float slope, float shift);
  *
  * The layers in the list are only instantiated with given informations
  *
- * @param url base url of endpoint
- * @param req sub url where the GET req. is performed on
+ * @param url url of endpoint
  * @param layers empty map which get filed with all pulled layers
  *
  * @return count of pulled layers
  */
-int getLayers(std::string url, std::string req,
-              std::map<std::string, rota::RotaLayer *> *layers);
+int getLayers(std::string url, std::map<std::string, rota::RotaLayer *> *layers);
 
 /**
  * @brief Gets more infomation of layer over an other endpoint an stores them
@@ -86,16 +84,23 @@ int getLayers(std::string url, std::string req,
  *
  * Note: sorts list of layers
  *
- * @param url base url of endpoint
- * @param req sub url where the GET req. is performed on
+ * @param url url of endpoint
  * @param layers map of given Layers without additional information
  * @param modes empty map of modes
  * @param teams empty map of teams
  */
 
-void injectLayerInfo(std::string url, std::string req,
+void injectLayerInfo(std::string url,
                      std::map<std::string, rota::RotaLayer *> *layers,
                      std::map<std::string, RotaMode *> *modes,
                      std::map<std::string, RotaTeam *> *teams);
+
+/**
+ * @brief parse given url into base and sub url
+ *
+ * @param url url to parse
+ * @returns parsed base and sub url as tuple of pointers
+*/
+std::tuple<std::string, std::string> parseUrl(std::string url);
 
 } // namespace rota

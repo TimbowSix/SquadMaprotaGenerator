@@ -8,6 +8,11 @@
 #include <httplib.h>
 
 #include "utils.hpp"
+#include <tuple>
+#include <regex>
+
+#include <iostream>
+
 
 namespace rota {
 
@@ -54,15 +59,18 @@ float sigmoid(float x, float slope, float shift) {
     return 1 / (1 + exp(-arg));
 }
 
-int getLayers(std::string url, std::string req,
-              std::map<std::string, RotaLayer *> *layers) {
+int getLayers(std::string url, std::map<std::string, RotaLayer *> *layers) {
 
     namespace json = boost::json;
 
-    httplib::Client cli(url);
-    auto res = cli.Get(req);
+    std::string baseUrl;
+    std::string subUrl;
+    std::tie(baseUrl, subUrl) = parseUrl(url);
+
+    httplib::Client cli(baseUrl);
+    auto res = cli.Get(subUrl);
     if (res->status != 200) {
-        throw std::runtime_error("Error while getting layer " + url + req +
+        throw std::runtime_error("Error while getting layer " + baseUrl + subUrl +
                                  " status:" + std::to_string(res->status));
         return 0;
     }
@@ -84,18 +92,22 @@ int getLayers(std::string url, std::string req,
     return 0;
 }
 
-void injectLayerInfo(std::string url, std::string req,
+void injectLayerInfo(std::string url,
                      std::map<std::string, rota::RotaLayer *> *layers,
                      std::map<std::string, RotaMode *> *modes,
                      std::map<std::string, RotaTeam *> *teams) {
 
     namespace json = boost::json;
 
-    httplib::Client cli(url);
-    auto res = cli.Get(req);
+    std::string baseUrl;
+    std::string subUrl;
+    std::tie(baseUrl, subUrl) = parseUrl(url);
+
+    httplib::Client cli(baseUrl);
+    auto res = cli.Get(subUrl);
     if (res->status != 200) {
         throw std::runtime_error(
-            "Error while getting additional layer information " + url + req +
+            "Error while getting additional layer information " + baseUrl + subUrl +
             " status:" + std::to_string(res->status));
         return;
     }
@@ -134,6 +146,17 @@ void injectLayerInfo(std::string url, std::string req,
             (*layers)[layerName]->setTeam((*teams)[teamTwoName], 1);
         }
     }
+}
+
+std::tuple<std::string, std::string> parseUrl(std::string url){
+    std::regex pattern("^(https?://[a-zA-z]+.[a-zA-z]+.[a-zA-z]+)(.*)$");
+    std::smatch match;
+    std::regex_match(url, match, pattern);
+
+    std::string baseUrl = match[1];
+    std::string subUrl = match[2];
+
+    return std::make_tuple(baseUrl, subUrl);
 }
 
 } // namespace rota
