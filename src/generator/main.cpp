@@ -47,7 +47,7 @@ int main(void)
 
     int ret = rota::getLayers("https://api.welovesquad.com", "/votes", &layers);
     rota::injectLayerInfo("https://api.welovesquad.com", "/layers", &layers, &modes, &teams);
-
+    /*
     std::cout << ret << std::endl;
 
     for(auto const& [key, val]: layers){
@@ -60,7 +60,8 @@ int main(void)
 
     for(auto const& [key, val]: teams){
         std::cout << val->getName() << std::endl;
-    }
+    }*/
+
 
     return 0;
 }
