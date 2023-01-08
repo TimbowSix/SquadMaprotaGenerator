@@ -17,7 +17,7 @@ namespace rota
         if (weightSum != 1){
             throw std::invalid_argument("Weights do not sum to 1");
         }
-        float randomValue = (float)(rand()/RAND_MAX);
+        float randomValue = (float)rand()/RAND_MAX;
         float currentValue = 0;
         for(int i=0; i<weights->size(); i++){
             currentValue += weights->at(i);
