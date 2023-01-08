@@ -33,7 +33,7 @@ namespace rota
         if(sum != NULL){
             arrSum = *sum;
         }else{
-            arrSum = std::accumulate(arr->begin(), arr->end(), 0);
+            arrSum = std::accumulate(arr->begin(), arr->end(), 0.0);
         }
 
         if(arrSum == 0){
