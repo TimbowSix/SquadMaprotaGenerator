@@ -7,6 +7,17 @@
 
 namespace optimizer
 {
+    RotaOptimizer::RotaOptimizer(){
+        std::random_device os_seed;             // seed used by the mersenne-twister-engine
+        const uint_least32_t seed = os_seed();  
+
+        generator = std::mt19937(seed);            // the generator seeded with the random device
+
+    };
+    RotaOptimizer::~RotaOptimizer(){
+
+    };
+
     float RotaOptimizer::UpdateTemperature(float T0, float s, int i){
         return T0*exp(-s*i);
     }
@@ -20,15 +31,18 @@ namespace optimizer
         return mat;
     }
 
-    RotaOptimizer::RotaOptimizer(){
-        std::random_device os_seed;             // seed used by the mersenne-twister-engine
-        const uint_least32_t seed = os_seed();  
-
-        generator = std::mt19937(seed);            // the generator seeded with the random device
-
+    float RotaOptimizer::StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2){
+        float sum = 0.0;
+        // check dimension match
+        if(state1.size1() == state2.size1() && state1.size2() == state2.size2()){
+            for (unsigned i = 0; i < state1.size1(); ++ i)
+                // take only the first column and calculate the difference squared
+                // this is possible for EVOLVED STATES only because the columns of the initial matrices converge to the long-term probabilities
+                sum += pow(state1(i,0)-state2(i,0), 2);
+            return sum;
+        }
+        else{
+            return -1.0;
+        }
     };
-    RotaOptimizer::~RotaOptimizer(){
-
-    };
-
 }

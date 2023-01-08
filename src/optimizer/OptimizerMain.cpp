@@ -6,6 +6,5 @@
 
 int main(void){
     optimizer::RotaOptimizer opt;
-
     return 0;
 }
