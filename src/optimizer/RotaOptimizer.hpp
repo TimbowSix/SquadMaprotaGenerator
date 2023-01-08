@@ -3,6 +3,7 @@
 #include <iostream>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
+#include <random>
 
 namespace optimizer
 {
@@ -17,6 +18,8 @@ namespace optimizer
             int iterationMax;
             double slope;
             boost::numeric::ublas::matrix<double> comparisonState;
+            std::mt19937 generator;
+            std::mt19937* generator_ptr;
         public:
             /*
             T0: Initial temperature
