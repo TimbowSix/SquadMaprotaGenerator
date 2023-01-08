@@ -63,3 +63,16 @@ TEST_F(Optimizer_Fixture, StateDifferenceTest){
 
     ASSERT_NEAR(expValue, opt.StateDifference(mat1, mat2), 0.001);
 }
+
+TEST_F(Optimizer_Fixture, MatrixToProbabilityMatrixTest){
+    optimizer::RotaOptimizer opt;
+    boost::numeric::ublas::matrix<float> mat = opt.GenerateSeed(4);
+    float expValue = 1.0;
+    float sum;
+    for(unsigned j=0; j<mat.size2(); j++){
+        sum = 0.0;
+        for(unsigned i=0; i<mat.size1(); i++)
+            sum += mat(i,j);
+        ASSERT_NEAR(expValue, sum, 0.001);
+    }
+}

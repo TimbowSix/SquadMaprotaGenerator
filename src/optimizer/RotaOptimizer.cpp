@@ -28,7 +28,8 @@ namespace optimizer
         for (unsigned i = 0; i < mat.size1 (); ++ i)
             for (unsigned j = 0; j < mat.size2 (); ++ j)
                 mat (i, j) = distribute(this->generator);
-        return mat;
+
+        return MatrixToProbabilityMatrix(mat);
     }
 
     float RotaOptimizer::StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2){
@@ -44,5 +45,19 @@ namespace optimizer
         else{
             return -1.0;
         }
+
+
+    };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat){
+        float sum;
+        for(unsigned j = 0; j < mat.size2(); ++ j){
+            sum = 0.0;
+            for(unsigned i = 0; i < mat.size1(); ++ i)
+                sum += mat(i,j);
+            for(unsigned i = 0; i < mat.size1(); ++ i)
+                mat(i,j)/=sum;
+        }
+        return mat;
     };
 }

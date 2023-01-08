@@ -20,6 +20,12 @@ namespace optimizer
             boost::numeric::ublas::matrix<float> comparisonState;
             std::mt19937 generator;
             std::mt19937* generator_ptr;
+
+            /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
+            /// @param mat 
+            /// @return 
+            boost::numeric::ublas::matrix<float> MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat);
+
         public:
             /*
             T0: Initial temperature
