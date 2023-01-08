@@ -53,7 +53,7 @@ namespace optimizer
                 matrix<float> state2
             Return: float
             */
-            void StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2);
+            float StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
             Params: 

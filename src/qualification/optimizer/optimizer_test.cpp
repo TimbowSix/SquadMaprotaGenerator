@@ -10,6 +10,7 @@ class Optimizer_Fixture : public ::testing::Test
         double d;
 };
 
+// Checks for randomness and output dimension
 TEST_F(Optimizer_Fixture, GenerateSeedTest){
     int matrix_dimension = 5;
     optimizer::RotaOptimizer opt;
@@ -38,7 +39,27 @@ TEST_F(Optimizer_Fixture, UpdateTemperatureTest){
                             0.015529731466163453, 
                             2.365174956705E-10, 
                             1.1775512727142936E-11};
-
     for( unsigned i = 0; i < 6; i++)
         ASSERT_NEAR(expValues[i], opt.UpdateTemperature(T0, s, values[i]), 0.001);
+}
+
+TEST_F(Optimizer_Fixture, StateDifferenceTest){
+    optimizer::RotaOptimizer opt;
+
+    float expValue = 37.0;
+
+    boost::numeric::ublas::matrix<float> mat1(4,4);
+    boost::numeric::ublas::matrix<float> mat2(4,4);
+
+    mat1(0,0) = 1.0;
+    mat1(1,0) = 3.0;
+    mat1(2,0) = 2.0;
+    mat1(3,0) = 4.0;
+
+    mat2(0,0) = 5.0;
+    mat2(1,0) = 2.0;
+    mat2(2,0) = 4.0;
+    mat2(3,0) = 0.0;
+
+    ASSERT_NEAR(expValue, opt.StateDifference(mat1, mat2), 0.001);
 }
