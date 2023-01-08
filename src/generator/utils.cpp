@@ -21,7 +21,6 @@ int weightedChoice(std::vector<float> *weights) {
     float randomValue = (float)rand() / RAND_MAX;
     float currentValue = 0;
     for (int i = 0; i < weights->size(); i++) {
-
         currentValue += weights->at(i);
         if (randomValue <= currentValue) {
             return i;
@@ -35,7 +34,7 @@ void normalize(std::vector<float> *arr, float *sum) {
     if (sum != NULL) {
         arrSum = *sum;
     } else {
-        arrSum = std::accumulate(arr->begin(), arr->end(), 0);
+        arrSum = std::accumulate(arr->begin(), arr->end(), 0.0);
     }
 
     if (arrSum == 0) {
