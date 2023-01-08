@@ -17,7 +17,7 @@ namespace rota
         if (weightSum != 1){
             throw std::invalid_argument("Weights do not sum to 1");
         }
-        float randomValue = (float)rand()/RAND_MAX;
+        float randomValue = (float)(rand()/RAND_MAX);
         float currentValue = 0;
         for(int i=0; i<weights->size(); i++){
             currentValue += weights->at(i);
@@ -26,6 +26,30 @@ namespace rota
             }
         }
         return -1;
+    }
+
+    void normalize(std::vector<float> *arr, float *sum){
+        float arrSum;
+        if(sum != NULL){
+            arrSum = *sum;
+        }else{
+            arrSum = std::accumulate(arr->begin(), arr->end(), 0);
+        }
+
+        if(arrSum == 0){
+            for(int i=0;i<arr->size();i++){
+                (*arr)[i] = 0;
+            }
+        }else{
+            for(int i=0;i<arr->size();i++){
+                (*arr)[i] = (*arr)[i] / arrSum;
+            }
+        }
+    }
+
+    float sigmoid(float x, float slope, float shift){
+        float arg = slope*(x+shift);
+        return 1/(1+exp(-arg));
     }
 
     int getLayers(std::string url, std::string req, std::map<std::string, RotaLayer *> *layers){
