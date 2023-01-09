@@ -7,6 +7,7 @@
 #include <map>
 #include <boost/json.hpp>
 #include <regex>
+#include <algorithm>
 
 #include "RotaMode.hpp"
 #include "RotaModePool.hpp"
@@ -46,8 +47,13 @@ namespace rota
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
-        boost::json::array usedMaps = config->at("maps").as_array();
+        boost::json::array usedMapsRaw = config->at("maps").as_array();
+        std::vector<std::string> usedMaps;
+        for(int i=0; i<usedMapsRaw.size(); i++){
+            usedMaps.push_back((std::string)usedMapsRaw[i].as_string());
+        };
 
+        int locktime = config->at("biom_spacing").as_int64();
         std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
         for(auto const& [key, value] : (*layers)){
             std::smatch match;
@@ -60,6 +66,11 @@ namespace rota
             std::string map = match[1];
             std::string mode = match[2];
             std::string version = match[3];
+
+            if(std::find(usedMaps.begin(), usedMaps.end(), map) == usedMaps.end()){
+                // map doesn't exist in usedMaps, skip layer
+                continue;
+            };
             if(modes->find(mode) == modes->end()){
                 // mode doesn't exist in used modes, skip layer
                 continue;
@@ -69,6 +80,19 @@ namespace rota
                 std::cout << "WARNING: No Biom values saved for map '" << map << "'.\n";
                 continue;
             }
+
+            if(maps->find(map) == maps->end()){
+                // map doesn't exist, create map
+                std::vector<float> biomVals;
+                boost::json::array bv = biomValues.at(map).as_array();
+                for(int i=0; i<bv.size(); i++){
+                    biomVals.push_back(bv[i].as_double());
+                }
+                (*maps)[map] = new RotaMap(map, biomVals, locktime);
+            };
+            (*maps)[map]->addLayer(value);
+
+            //std::cout << map << " - " << biomValues.at(map) << std::endl;
         }
     }
 } // namespace rota
