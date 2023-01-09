@@ -7,7 +7,7 @@
 #include <boost/json.hpp>
 #include "dataParsing.hpp"
 #include "utils.hpp"
-
+#include <string>
 #include <numeric>
 
 namespace rota
@@ -15,6 +15,11 @@ namespace rota
     Maprota::Maprota(boost::json::object *config){
         this->config = config;
         parseModes(this->config, &this->modePools, &this->modes);
+        std::string voteUrl = this->config->at("layer_vote_api_url").as_string().c_str();
+        getLayers(voteUrl, &this->layers); // retrieve layer from API
+        std::string teamUrl = this->config->at("team_api_url").as_string().c_str();
+        injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
+        parseMaps(this->config, &this->maps, &this->layers);
     }
 
     RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){

@@ -7,6 +7,7 @@
 #include <vector>
 #include <boost/json.hpp>
 #include <map>
+#include "RotaTeam.hpp"
 
 namespace rota
 {
@@ -17,6 +18,8 @@ namespace rota
         std::map<std::string, RotaMap*> maps;
         std::map<std::string, RotaModePool*> modePools;
         std::map<std::string, RotaMode *> modes;
+        std::map<std::string, RotaLayer*> layers;
+        std::map<std::string, RotaTeam*> teams;
         std::vector<RotaMode*> latestModes;
         std::vector<RotaLayer*> rotation;
         std::vector<RotaMap*> latestMaps;
@@ -28,6 +31,7 @@ namespace rota
          * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
          * @param useLatestModes usage of latest modes for mode locking
          * @param customPool set pool to draw mode from
+         * @returns pointer to choosen mode
         */
         RotaMode* chooseMode(bool useLatestModes, RotaModePool *customPool);
     };

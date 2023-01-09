@@ -1,11 +1,18 @@
 #include "dataParsing.hpp"
 
-#include <boost/json.hpp>
-#include "RotaMode.hpp"
-#include "RotaModePool.hpp"
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/json.hpp>
+
+#include "RotaMode.hpp"
+#include "RotaModePool.hpp"
+#include "RotaMap.hpp"
+#include "RotaLayer.hpp"
+
+#include <iostream>
 
 namespace rota
 {
@@ -25,6 +32,14 @@ namespace rota
             }
             (*allPools)[poolName] = pool;
         }
-        //return allPools;
+    }
+
+    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers){
+        const std::filesystem::path configFile{"../../../data/bioms.json"};
+        std::ifstream ifs(configFile);
+        std::string data(std::istreambuf_iterator<char>{ifs}, {});
+        boost::json::object biomValues = boost::json::parse(data).get_object();
+
+        //std::cout << config->at("maps") << "\n";
     }
 } // namespace rota
