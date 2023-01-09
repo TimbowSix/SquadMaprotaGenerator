@@ -61,7 +61,8 @@ float sigmoid(float x, float slope, float shift);
  *
  * @return count of pulled layers
  */
-int getLayers(std::string url, std::map<std::string, rota::RotaLayer *> *layers);
+int getLayers(std::string url,
+              std::map<std::string, rota::RotaLayer *> *layers);
 
 /**
  * @brief Gets more infomation of layer over an other endpoint an stores them
@@ -100,7 +101,13 @@ void injectLayerInfo(std::string url,
  *
  * @param url url to parse
  * @returns parsed base and sub url as tuple of pointers
-*/
+ */
 std::tuple<std::string, std::string> parseUrl(std::string url);
+
+class NotImplementedException : public std::logic_error {
+  public:
+    NotImplementedException()
+        : std::logic_error{"Function not yet implemented"} {}
+};
 
 } // namespace rota

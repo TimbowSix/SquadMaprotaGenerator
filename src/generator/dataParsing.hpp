@@ -19,7 +19,15 @@ namespace rota
     /**
      * @brief parsing all used maps from config, populate them with layers and biom values
      *
-     * @param
+     * @param config config.json object
+     * @param maps empty map of RotaMaps
+     * @param layers map of layers
+     * @param modes map of modes to include
+     *
     */
-    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers);
+    void parseMaps(
+        boost::json::object *config,
+        std::map<std::string, RotaMap*> *maps,
+        std::map<std::string, RotaLayer*> *layers,
+        std::map<std::string, RotaMode*> *modes);
 } // namespace rota
