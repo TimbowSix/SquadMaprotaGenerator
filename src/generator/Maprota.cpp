@@ -19,7 +19,7 @@ namespace rota
         getLayers(voteUrl, &this->layers); // retrieve layer from API
         std::string teamUrl = this->config->at("team_api_url").as_string().c_str();
         injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
-        parseMaps(this->config, &this->maps, &this->layers);
+        parseMaps(this->config, &this->maps, &this->layers, &this->modes);
     }
 
     RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){

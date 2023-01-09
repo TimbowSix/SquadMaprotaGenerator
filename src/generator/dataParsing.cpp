@@ -40,31 +40,35 @@ namespace rota
         std::map<std::string, RotaMap*> *maps,
         std::map<std::string, RotaLayer*> *layers,
         std::map<std::string, RotaMode*> *modes){
-            
+
         const std::filesystem::path configFile{"../../../data/bioms.json"};
         std::ifstream ifs(configFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
         boost::json::array usedMaps = config->at("maps").as_array();
-        //std::cout << config->at("maps") << "\n";
+
         std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
         for(auto const& [key, value] : (*layers)){
             std::smatch match;
-            //std::cout << key << std::endl;
-            std::string layer = value->getName();
-            std::regex_match(layer, match, pattern);
+            std::string layerName = value->getName();
+            std::regex_match(layerName, match, pattern);
             if(match.empty()){
-                continue
+                // layer doesn't match layer format, skip layer
+                continue;
             };
-
             std::string map = match[1];
             std::string mode = match[2];
             std::string version = match[3];
-
-
-            std::cout << map << " " << mode << " " << version << std::endl;
-
+            if(modes->find(mode) == modes->end()){
+                // mode doesn't exist in used modes, skip layer
+                continue;
+            };
+            if(biomValues.find(map) == biomValues.end()){
+                //no biom values for map, skip map
+                std::cout << "WARNING: No Biom values saved for map '" << map << "'.\n";
+                continue;
+            }
         }
     }
 } // namespace rota
