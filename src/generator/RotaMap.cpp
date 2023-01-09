@@ -99,7 +99,7 @@ void RotaMap::calcLayerVoteWeights() {
     }
 }
 
-void RotaMap::calcNewMapVoteWeightSum(RotaMode *mode) {
+void RotaMap::calcNewMapVoteWeight(RotaMode *mode) {
     float oldWeight = this->mapVoteWeights[mode];
     this->calcMapVoteWeight(mode);
     this->mapVoteWeightSum[mode] += (this->mapVoteWeights[mode] - oldWeight);
