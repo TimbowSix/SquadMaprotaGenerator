@@ -5,47 +5,46 @@
  * @author tim3 (timbow)
  * @author tim1 (fletschoa)
  * @author Kay  (kayms)
-*/
+ */
 #pragma once
 
 #include <iostream>
 #include <string>
 
-
 #include "RotaMode.hpp"
 #include "RotaTeam.hpp"
 
+namespace rota {
+class RotaMap;
 
+class RotaLayer {
+  private:
+    std::string name;
+    RotaMode *mode;
+    RotaMap *map;
+    float votes;
+    RotaTeam *teams[2];
+    float voteWeight;
+    int lockTime;
+    int currLockTime;
 
-namespace rota
-{
-    class RotaMap;
+  public:
+    RotaLayer(std::string name, float votes);
+    //~RotaLayer();
+    void lock();
+    void decreaseLockTime();
 
-    class RotaLayer
-    {
-    private:
-        std::string name;
-        RotaMode *mode;
-        RotaMap *map;
-        float votes;
-        RotaTeam *teams[2];
-        float voteWeight;
-        int lockTime;
-        int currLockTime;
+    std::string getName();
+    float getVotes();
+    RotaTeam *getTeam(int index);
+    RotaMode *getMode();
 
-    public:
-        RotaLayer(std::string name, float votes);
-        //~RotaLayer();
-        void lock();
-        void decreaseLockTime();
+    void setTeam(RotaTeam *team, int index);
+    void setMode(RotaMode *mode);
 
-
-        std::string getName();
-        float getVotes();
-        RotaTeam* getTeam(int index);
-        RotaMode* getMode();
-
-        void setTeam(RotaTeam *team, int index);
-        void setMode(RotaMode *mode);
-    };
-}
+    // getter & setter
+    bool isLocked();
+    float getVoteWeight();
+    void setVoteWeight(float slope, float shift);
+};
+} // namespace rota

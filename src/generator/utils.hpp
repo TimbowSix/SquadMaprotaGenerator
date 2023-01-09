@@ -98,4 +98,12 @@ void injectLayerInfo(std::string url, std::string req,
                      std::map<std::string, RotaMode *> *modes,
                      std::map<std::string, RotaTeam *> *teams);
 
+// custom exception
+
+class NotImplementedException : public std::logic_error {
+  public:
+    NotImplementedException()
+        : std::logic_error{"Function not yet implemented"} {}
+};
+
 } // namespace rota

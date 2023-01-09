@@ -1,19 +1,18 @@
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-#include <string>
-#include <map>
-#include <exception>
 #include <boost/json.hpp>
+#include <exception>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <string>
 
 #include "RotaConfig.hpp"
 #include "RotaLayer.hpp"
 #include "utils.hpp"
 
-
-int main(void)
-{
-    std::cout << "Version " << ROTA_VERSION_MAJOR << "." << ROTA_VERSION_MINOR << std::endl;
+int main(void) {
+    std::cout << "Version " << ROTA_VERSION_MAJOR << "." << ROTA_VERSION_MINOR
+              << std::endl;
 
     /*
     const std::filesystem::path configFile{"../../../config.json"};
@@ -40,13 +39,13 @@ int main(void)
         std::cout << "no config file" << std::endl;
     }*/
 
-
-    std::map<std::string, rota::RotaLayer*> layers;
-    std::map<std::string, rota::RotaMode*> modes;
-    std::map<std::string, rota::RotaTeam*> teams;
+    std::map<std::string, rota::RotaLayer *> layers;
+    std::map<std::string, rota::RotaMode *> modes;
+    std::map<std::string, rota::RotaTeam *> teams;
 
     int ret = rota::getLayers("https://api.welovesquad.com", "/votes", &layers);
-    rota::injectLayerInfo("https://api.welovesquad.com", "/layers", &layers, &modes, &teams);
+    rota::injectLayerInfo("https://api.welovesquad.com", "/layers", &layers,
+                          &modes, &teams);
     /*
     std::cout << ret << std::endl;
 
@@ -61,7 +60,6 @@ int main(void)
     for(auto const& [key, val]: teams){
         std::cout << val->getName() << std::endl;
     }*/
-
 
     return 0;
 }
