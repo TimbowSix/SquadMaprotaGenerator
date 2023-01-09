@@ -5,8 +5,8 @@
     "update_layers": true,
     "update_teams": true,
     "output_path":"./output/",
-    "layer_vote_api_url": "https://api.welovesquad.com/votes?format=chartjs",
-    "team_api_url": "https://api.welovesquad.com/layers/",
+    "layer_vote_api_url": "https://api.welovesquad.com/votes",
+    "team_api_url": "https://api.welovesquad.com/layers",
     "mode_distribution":
     {
         "pools":
