@@ -1,11 +1,19 @@
 #include "dataParsing.hpp"
 
-#include <boost/json.hpp>
-#include "RotaMode.hpp"
-#include "RotaModePool.hpp"
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <map>
+#include <boost/json.hpp>
+#include <regex>
+
+#include "RotaMode.hpp"
+#include "RotaModePool.hpp"
+#include "RotaMap.hpp"
+#include "RotaLayer.hpp"
+
+#include <iostream>
 
 namespace rota
 {
@@ -25,6 +33,42 @@ namespace rota
             }
             (*allPools)[poolName] = pool;
         }
-        //return allPools;
+    }
+
+    void parseMaps(
+        boost::json::object *config,
+        std::map<std::string, RotaMap*> *maps,
+        std::map<std::string, RotaLayer*> *layers,
+        std::map<std::string, RotaMode*> *modes){
+
+        const std::filesystem::path configFile{"../../../data/bioms.json"};
+        std::ifstream ifs(configFile);
+        std::string data(std::istreambuf_iterator<char>{ifs}, {});
+        boost::json::object biomValues = boost::json::parse(data).get_object();
+
+        boost::json::array usedMaps = config->at("maps").as_array();
+
+        std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
+        for(auto const& [key, value] : (*layers)){
+            std::smatch match;
+            std::string layerName = value->getName();
+            std::regex_match(layerName, match, pattern);
+            if(match.empty()){
+                // layer doesn't match layer format, skip layer
+                continue;
+            };
+            std::string map = match[1];
+            std::string mode = match[2];
+            std::string version = match[3];
+            if(modes->find(mode) == modes->end()){
+                // mode doesn't exist in used modes, skip layer
+                continue;
+            };
+            if(biomValues.find(map) == biomValues.end()){
+                //no biom values for map, skip map
+                std::cout << "WARNING: No Biom values saved for map '" << map << "'.\n";
+                continue;
+            }
+        }
     }
 } // namespace rota

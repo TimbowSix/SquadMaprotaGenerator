@@ -43,9 +43,10 @@ int main(void) {
     std::map<std::string, rota::RotaMode *> modes;
     std::map<std::string, rota::RotaTeam *> teams;
 
-    int ret = rota::getLayers("https://api.welovesquad.com", "/votes", &layers);
-    rota::injectLayerInfo("https://api.welovesquad.com", "/layers", &layers,
-                          &modes, &teams);
+    int ret = rota::getLayers("https://api.welovesquad.com/votes", &layers);
+    rota::injectLayerInfo("https://api.welovesquad.com/layers", &layers, &modes,
+                          &teams);
+
     /*
     std::cout << ret << std::endl;
 

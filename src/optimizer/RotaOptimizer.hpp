@@ -20,6 +20,12 @@ namespace optimizer
             boost::numeric::ublas::matrix<float> comparisonState;
             std::mt19937 generator;
             std::mt19937* generator_ptr;
+
+            /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
+            /// @param mat 
+            /// @return 
+            boost::numeric::ublas::matrix<float> MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat);
+
         public:
             /*
             T0: Initial temperature
@@ -53,7 +59,7 @@ namespace optimizer
                 matrix<float> state2
             Return: float
             */
-            void StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2);
+            float StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
             Params: 
