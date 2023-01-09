@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <boost/json.hpp>
+#include <regex>
 
 #include "RotaMode.hpp"
 #include "RotaModePool.hpp"
@@ -34,12 +35,36 @@ namespace rota
         }
     }
 
-    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers){
+    void parseMaps(
+        boost::json::object *config,
+        std::map<std::string, RotaMap*> *maps,
+        std::map<std::string, RotaLayer*> *layers,
+        std::map<std::string, RotaMode*> *modes){
+            
         const std::filesystem::path configFile{"../../../data/bioms.json"};
         std::ifstream ifs(configFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
+        boost::json::array usedMaps = config->at("maps").as_array();
         //std::cout << config->at("maps") << "\n";
+        std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
+        for(auto const& [key, value] : (*layers)){
+            std::smatch match;
+            //std::cout << key << std::endl;
+            std::string layer = value->getName();
+            std::regex_match(layer, match, pattern);
+            if(match.empty()){
+                continue
+            };
+
+            std::string map = match[1];
+            std::string mode = match[2];
+            std::string version = match[3];
+
+
+            std::cout << map << " " << mode << " " << version << std::endl;
+
+        }
     }
 } // namespace rota
