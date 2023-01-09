@@ -76,3 +76,23 @@ TEST_F(Optimizer_Fixture, MatrixToProbabilityMatrixTest){
         ASSERT_NEAR(expValue, sum, 0.001);
     }
 }
+
+// Checks whether the matrix changed and if the columns still sum up to one
+TEST_F(Optimizer_Fixture, GenerateNeighbourTest){
+    optimizer::RotaOptimizer opt;
+    boost::numeric::ublas::matrix<float> mat = opt.GenerateSeed(4);
+    bool has_changed = false;
+    float sum;
+    boost::numeric::ublas::matrix<float> mat_new = opt.GenerateNeighbour(mat, 0.4, 1.0);
+    for(unsigned j=0; j<mat.size2(); j++){
+        sum = 0.0;
+        for(unsigned i=0; i<mat.size1(); i++){
+            if(!has_changed && mat(i,j) != mat_new(i,j)){
+                has_changed = true;
+            }
+            sum += mat(i,j);
+        }
+    }
+    ASSERT_NEAR(1.0, sum, 0.001);
+    ASSERT_TRUE(has_changed);
+}

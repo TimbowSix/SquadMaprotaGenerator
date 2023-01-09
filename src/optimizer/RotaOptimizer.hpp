@@ -86,7 +86,7 @@ namespace optimizer
                 float T, temperature
             Return: matrix<float>
             */
-            void GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
+            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
             /*
             Summary: Transforms a matrix consisting of un-normalised wheights into a probability matrix where each column sums up to one
             Params: 

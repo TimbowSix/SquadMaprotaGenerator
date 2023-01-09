@@ -60,4 +60,21 @@ namespace optimizer
         }
         return mat;
     };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T){
+        std::uniform_real_distribution<> distribute(0,s);
+        float random;
+        boost::numeric::ublas::matrix<float> newstate(state);
+        for(unsigned i=0; i < newstate.size1(); i++){
+            for(unsigned j=0; j < newstate.size2(); j++){
+                random = distribute(this->generator);
+                newstate(i,j) += random;
+                // All entries must be positive or zero to be a probability matrix
+                if(newstate(i,j) < 0.0){
+                    newstate(i,j) -= 2*random;
+                }
+            }
+        }
+        return MatrixToProbabilityMatrix(newstate);
+    };
 }
