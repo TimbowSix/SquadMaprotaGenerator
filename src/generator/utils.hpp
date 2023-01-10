@@ -62,7 +62,7 @@ float sigmoid(float x, float slope, float shift);
  * @return count of pulled layers
  */
 int getLayers(std::string url,
-              std::map<std::string, rota::RotaLayer *> *layers);
+              std::vector<rota::RotaLayer *> *layers);
 
 /**
  * @brief Gets more infomation of layer over an other endpoint an stores them

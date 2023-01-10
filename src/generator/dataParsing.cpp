@@ -38,10 +38,11 @@ namespace rota
     }
 
     void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes){
-        std::map<std::string, RotaLayer*> allLayers;
+        //std::map<std::string, RotaLayer*> allLayers;
+        std::vector<RotaLayer*> allLayers;
         getLayers(url, &allLayers); // get all layers from api
         std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
-        for(auto const& [key, layer] : (allLayers)){
+        for(RotaLayer* layer : allLayers){
             std::smatch match;
             std::string layerName = layer->getName();
             std::regex_match(layerName, match, pattern);
@@ -60,7 +61,7 @@ namespace rota
             };
 
             (*maps)[map]->addLayer(layer);
-            (*layers)[key] = layer; //transfer layer to map of used layers
+            (*layers)[layer->getName()] = layer; //transfer layer to map of used layers
         }
     }
 
