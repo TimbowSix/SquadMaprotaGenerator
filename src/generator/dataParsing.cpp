@@ -13,6 +13,7 @@
 #include "RotaModePool.hpp"
 #include "RotaMap.hpp"
 #include "RotaLayer.hpp"
+#include "utils.hpp"
 
 #include <iostream>
 
@@ -33,6 +34,33 @@ namespace rota
                 (*allModes)[modeName] = mode;
             }
             (*allPools)[poolName] = pool;
+        }
+    }
+
+    void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes){
+        std::map<std::string, RotaLayer*> allLayers;
+        getLayers(url, &allLayers); // get all layers from api
+        std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
+        for(auto const& [key, layer] : (allLayers)){
+            std::smatch match;
+            std::string layerName = layer->getName();
+            std::regex_match(layerName, match, pattern);
+            if(match.empty()){
+                continue; // layer doesn't match layer format, skip layer
+            };
+            std::string map = match[1];
+            std::string mode = match[2];
+            std::string version = match[3];
+
+            if (maps->find(map) == maps->end()) {
+                continue; // map doesn't exist in used maps, skip layer
+            };
+            if(modes->find(mode) == modes->end()){
+                continue; // mode doesn't exist in used modes, skip layer
+            };
+
+            (*maps)[map]->addLayer(layer);
+            (*layers)[key] = layer; //transfer layer to map of used layers
         }
     }
 
@@ -77,7 +105,7 @@ namespace rota
             };
             if(biomValues.find(map) == biomValues.end()){
                 //no biom values for map, skip map
-                std::cout << "WARNING: No Biom values saved for map '" << map << "'.\n";
+                std::cout << "WARNING: No Biom values saved for map '" << map << "'. Skipping map.\n";
                 continue;
             }
 

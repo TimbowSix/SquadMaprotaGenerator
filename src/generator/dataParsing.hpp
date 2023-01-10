@@ -17,6 +17,16 @@ namespace rota
     void parseModes(boost::json::object *config, std::map<std::string, RotaModePool *> *allPools, std::map<std::string, RotaMode *> *allModes);
 
     /**
+     * @brief requesting layers from url and parsing used layers
+     *
+     * @param url Layer API Url
+     * @param maps map of used RotaMaps
+     * @param layers empty map of used layers
+     * @param modes map of used modes
+    */
+    void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes);
+
+    /**
      * @brief parsing all used maps from config, populate them with layers and biom values
      *
      * @param config config.json object
