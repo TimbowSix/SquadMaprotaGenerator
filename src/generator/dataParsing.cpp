@@ -64,11 +64,7 @@ namespace rota
         }
     }
 
-    void parseMaps(
-        boost::json::object *config,
-        std::map<std::string, RotaMap*> *maps,
-        std::map<std::string, RotaLayer*> *layers,
-        std::map<std::string, RotaMode*> *modes){
+    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps){
 
         const std::filesystem::path configFile{"../../../data/bioms.json"};
         std::ifstream ifs(configFile);
@@ -76,51 +72,20 @@ namespace rota
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
         boost::json::array usedMapsRaw = config->at("maps").as_array();
-        std::vector<std::string> usedMaps;
-        for(int i=0; i<usedMapsRaw.size(); i++){
-            usedMaps.push_back((std::string)usedMapsRaw[i].as_string());
-        };
-
         int locktime = config->at("biom_spacing").as_int64();
-        std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
-        for(auto const& [key, value] : (*layers)){
-            std::smatch match;
-            std::string layerName = value->getName();
-            std::regex_match(layerName, match, pattern);
-            if(match.empty()){
-                // layer doesn't match layer format, skip layer
-                continue;
-            };
-            std::string map = match[1];
-            std::string mode = match[2];
-            std::string version = match[3];
-
-            if(std::find(usedMaps.begin(), usedMaps.end(), map) == usedMaps.end()){
-                // map doesn't exist in usedMaps, skip layer
-                continue;
-            };
-            if(modes->find(mode) == modes->end()){
-                // mode doesn't exist in used modes, skip layer
-                continue;
-            };
+        for(int i=0; i<usedMapsRaw.size(); i++){
+            std::string map = (std::string)usedMapsRaw[i].as_string();
             if(biomValues.find(map) == biomValues.end()){
                 //no biom values for map, skip map
                 std::cout << "WARNING: No Biom values saved for map '" << map << "'. Skipping map.\n";
                 continue;
             }
-
-            if(maps->find(map) == maps->end()){
-                // map doesn't exist, create map
-                std::vector<float> biomVals;
-                boost::json::array bv = biomValues.at(map).as_array();
-                for(int i=0; i<bv.size(); i++){
-                    biomVals.push_back(bv[i].as_double());
-                }
-                (*maps)[map] = new RotaMap(map, biomVals, locktime);
-            };
-            (*maps)[map]->addLayer(value);
-
-            //std::cout << map << " - " << biomValues.at(map) << std::endl;
+            std::vector<float> biomVals;
+            boost::json::array bv = biomValues.at(map).as_array();
+            for(int i=0; i<bv.size(); i++){
+                biomVals.push_back(bv[i].as_double());
+            }
+            (*maps)[map] = new RotaMap(map, biomVals, locktime);
         }
     }
 } // namespace rota
