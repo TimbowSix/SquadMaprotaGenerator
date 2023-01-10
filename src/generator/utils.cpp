@@ -126,8 +126,11 @@ void injectLayerInfo(std::string url,
 
             if (modes->find(modeName) == modes->end()) {
                 // create non existing mode
+                continue; // skip unused mode
+                /*
                 RotaMode *mode = new RotaMode(modeName);
                 (*modes)[modeName] = mode;
+                */
             }
             (*layers)[layerName]->setMode((*modes)[modeName]);
 
