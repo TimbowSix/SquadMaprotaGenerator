@@ -113,5 +113,6 @@ class RotaMap {
     // getter & setter
     void setLockTime(int lockTime);
     std::vector<RotaLayer *> *getLayer();
+    std::string getName();
 };
 } // namespace rota
