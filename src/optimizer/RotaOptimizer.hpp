@@ -88,13 +88,6 @@ namespace optimizer
             */
             boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
             /*
-            Summary: Transforms a matrix consisting of un-normalised wheights into a probability matrix where each column sums up to one
-            Params: 
-                matrix<float> transitionmatrix
-            Return: matrix<float>
-            */
-            void ProbabilityFromTransitionMatrix(boost::numeric::ublas::matrix<float> transitionmatrix);
-            /*
             Summary: Adds the given map-representative to the memory kernel and removes the most oldest one if the kernel length is full
             Params:
                 matrix<float> evolvedState, the already evolved state
@@ -109,14 +102,7 @@ namespace optimizer
                 int rowindex
             Return: matrix<float>, the input matrix
             */
-            void SetRowZero(boost::numeric::ublas::matrix<float> mat, int rowindex);
-            /*
-            Summary: Normalizes the columns of a matrix
-            Params:
-                matrix<float> mat
-            Return: matrix<float>, the input matrix
-            */
-            void NormalizeMat(boost::numeric::ublas::matrix<float> mat);
+            void SetRowZero(boost::numeric::ublas::matrix<float>& mat, int rowindex);
             /*
             Summary: Evolves the current state according to some procedure that imitates that map rota algorithm
             Params: 

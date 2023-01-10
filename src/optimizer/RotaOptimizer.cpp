@@ -77,4 +77,12 @@ namespace optimizer
         }
         return MatrixToProbabilityMatrix(newstate);
     };
+
+    void RotaOptimizer::SetRowZero(boost::numeric::ublas::matrix<float>& mat, int rowindex){
+        for(unsigned i=0; i < mat.size1(); i++)
+            for(unsigned j=0; j < mat.size2(); j++)
+                if(i==rowindex){
+                    mat(i,j) = 0.0;
+                }
+    };
 }
