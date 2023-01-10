@@ -1,25 +1,43 @@
 #include "Maprota.hpp"
+
+#include <vector>
+#include <boost/json.hpp>
+#include <string>
+#include <numeric>
+
 #include "RotaMode.hpp"
 #include "RotaMap.hpp"
 #include "RotaLayer.hpp"
 #include "RotaModePool.hpp"
-#include <vector>
-#include <boost/json.hpp>
 #include "dataParsing.hpp"
 #include "utils.hpp"
-#include <string>
-#include <numeric>
+
+#include <iostream>
 
 namespace rota
 {
     Maprota::Maprota(boost::json::object *config){
         this->config = config;
         parseModes(this->config, &this->modePools, &this->modes);
+        parseMaps(this->config, &this->maps); // setup all available maps
+
         std::string voteUrl = this->config->at("layer_vote_api_url").as_string().c_str();
-        getLayers(voteUrl, &this->layers); // retrieve layer from API
+        parseLayers(voteUrl, &this->maps, &this->layers, &this->modes); //request and parse layers
+
         std::string teamUrl = this->config->at("team_api_url").as_string().c_str();
         injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
-        parseMaps(this->config, &this->maps, &this->layers, &this->modes);
+
+        //remove maps without any layers
+        for(auto it = this->maps.cbegin(); it != this->maps.cend();){
+            if(it->second->getLayer()->size() == 0){
+                std::cout << "WARNING: No layers available for map '" << it->second->getName() << "'" << std::endl;
+                it = this->maps.erase(it);
+            }else{
+                it++;
+            }
+        }
+
+        // setup Team maps
     }
 
     RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){

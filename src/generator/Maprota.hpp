@@ -47,6 +47,15 @@ namespace rota
          * @brief all drawn maps in order
         */
         std::vector<RotaMap*> latestMaps;
+        /**
+         * @brief maps bluefor teams on containing layers
+        */
+       std::map<RotaTeam*, std::vector<RotaLayer*>> blueforTeams;
+       /**
+         * @brief maps opfor teams on containing layers
+        */
+       std::map<RotaTeam*, std::vector<RotaLayer*>> opforTeams;
+       
     public:
         Maprota(boost::json::object *config);
         ~Maprota() {};
