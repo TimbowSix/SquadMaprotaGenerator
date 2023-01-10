@@ -96,3 +96,33 @@ TEST_F(Optimizer_Fixture, GenerateNeighbourTest){
     ASSERT_NEAR(1.0, sum, 0.001);
     ASSERT_TRUE(has_changed);
 }
+
+TEST_F(Optimizer_Fixture, SetRowZeroTest){
+    bool row_zero = true;
+    optimizer::RotaOptimizer opt;
+    boost::numeric::ublas::matrix<float> mat(3,3);
+    mat(0,0) = 1.0;
+    mat(1,0) = 2.0;
+    mat(2,0) = 3.0;
+    mat(0,1) = 2.0;
+    mat(1,1) = 3.0;
+    mat(2,1) = 4.0;
+    mat(0,2) = 3.0;
+    mat(1,2) = 4.0;
+    mat(2,2) = 5.0;
+    boost::numeric::ublas::matrix<float> mat_expected(mat);
+    opt.SetRowZero(mat, 1);
+    float x = -1.0;
+    for (unsigned i = 0; i < mat.size1 (); ++ i){
+            for (unsigned j = 0; j < mat.size2 (); ++ j){
+                x = mat(i,j);
+                if(i == 1){
+                    row_zero = x == 0.0 && row_zero;
+                }
+                if(i != 1){
+                    row_zero = x != 0.0 && row_zero;
+                }
+            }
+    }
+    ASSERT_TRUE(row_zero);
+}
