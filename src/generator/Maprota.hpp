@@ -15,13 +15,37 @@ namespace rota
     {
     private:
         boost::json::object *config;
+        /**
+         * @brief maps all available maps to their name
+        */
         std::map<std::string, RotaMap*> maps;
+        /**
+         * @brief maps all available ModePools to their name
+        */
         std::map<std::string, RotaModePool*> modePools;
+        /**
+         * @brief maps all modes to their name
+        */
         std::map<std::string, RotaMode *> modes;
+        /**
+         * @brief maps all layers to their name
+        */
         std::map<std::string, RotaLayer*> layers;
+        /**
+         * @brief maps all teams to their name
+        */
         std::map<std::string, RotaTeam*> teams;
+        /**
+         * @brief all drawn modes in order
+        */
         std::vector<RotaMode*> latestModes;
+        /**
+         * @brief all drawn layers
+        */
         std::vector<RotaLayer*> rotation;
+        /**
+         * @brief all drawn maps in order
+        */
         std::vector<RotaMap*> latestMaps;
     public:
         Maprota(boost::json::object *config);
