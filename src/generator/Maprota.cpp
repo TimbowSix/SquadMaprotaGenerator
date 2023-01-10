@@ -36,8 +36,7 @@ namespace rota
                 it++;
             }
         }
-
-        // setup Team maps
+        parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     }
 
     RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){

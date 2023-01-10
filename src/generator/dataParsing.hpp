@@ -34,4 +34,17 @@ namespace rota
      *
     */
     void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps);
+
+    /**
+     * @brief maps every team on their containing layers
+     *
+     * @param layers map of all used layers
+     * @param blueforTeams empty map mapping all bluefor factions on their containing layers
+     * @param opforTeams empty map mapping all opfor factions on their containing layers
+    */
+    void parseTeams(
+        std::map<std::string, RotaLayer*> *layers,
+        std::map<RotaTeam*, std::vector<RotaLayer*>> *blueforTeams,
+        std::map<RotaTeam*, std::vector<RotaLayer*>> *opforTeams
+        );
 } // namespace rota

@@ -89,4 +89,27 @@ namespace rota
             (*maps)[map] = new RotaMap(map, biomVals, locktime);
         }
     }
+
+    void parseTeams(
+        std::map<std::string, RotaLayer*> *layers,
+        std::map<RotaTeam*, std::vector<RotaLayer*>> *blueforTeams,
+        std::map<RotaTeam*, std::vector<RotaLayer*>> *opforTeams)
+    {
+        for(auto const& [key, layer]: (*layers)){
+
+            RotaTeam *teamOne = layer->getTeam(0);
+            if (blueforTeams->find(teamOne) == blueforTeams->end()){
+                (*blueforTeams)[teamOne] = std::vector<RotaLayer*> {layer};
+            }else{
+                (*blueforTeams)[teamOne].push_back(layer);
+            }
+
+            RotaTeam *teamTwo = layer->getTeam(1);
+            if (opforTeams->find(teamTwo) == opforTeams->end()){
+                (*opforTeams)[teamTwo] = std::vector<RotaLayer*> {layer};
+            }else{
+                (*opforTeams)[teamTwo].push_back(layer);
+            }
+        }
+    }
 } // namespace rota
