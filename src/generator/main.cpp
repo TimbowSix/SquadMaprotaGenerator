@@ -14,6 +14,8 @@ int main(void) {
     std::cout << "Version " << ROTA_VERSION_MAJOR << "." << ROTA_VERSION_MINOR
               << std::endl;
 
+    throw rota::DennisException();
+
     /*
     const std::filesystem::path configFile{"../../../config.json"};
 
