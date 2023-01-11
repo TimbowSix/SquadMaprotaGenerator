@@ -88,7 +88,8 @@ namespace rota
 
         void lockTeams();
 
-        void decreaseAllLocktimes();
+        void decreaseMapLocktimes();
+        void decreaseLayerLocktimes();
 
         /**
          * @brief Creates a new rotation based on the parameters set in the configuration.
