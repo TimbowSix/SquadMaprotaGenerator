@@ -8,6 +8,19 @@ RotaLayer::RotaLayer(std::string name, float votes) {
     this->name = name;
     this->votes = votes;
 }
+
+void RotaLayer::lock(){
+    this->currLockTime = this->lockTime;
+}
+
+void RotaLayer::lock(unsigned int time){
+    this->currLockTime = time;
+}
+
+void RotaLayer::decreaseLockTime(){
+    this->currLockTime--;
+}
+
 // getter
 std::string RotaLayer::getName() { return this->name; }
 
