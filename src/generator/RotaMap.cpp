@@ -110,3 +110,4 @@ void RotaMap::setLockTime(int lockTime) { this->lockTime = lockTime; }
 std::vector<RotaLayer *> *RotaMap::getLayer() { return &this->layers; }
 
 std::string RotaMap::getName(){ return this->name; }
+std::map<RotaMode *, std::vector<RotaLayer *>> *RotaMap::getModeToLayers(){ return &this->modeToLayers; }
