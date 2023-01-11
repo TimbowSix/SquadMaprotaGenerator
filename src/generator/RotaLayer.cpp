@@ -1,6 +1,7 @@
 #include "RotaLayer.hpp"
 #include "utils.hpp"
 #include <assert.h>
+#include "RotaMap.hpp"
 
 using namespace rota;
 
@@ -10,15 +11,20 @@ RotaLayer::RotaLayer(std::string name, float votes) {
 }
 
 void RotaLayer::lock(){
-    this->currLockTime = this->lockTime;
+    //this->currLockTime = this->lockTime;
+    this->lock(this->lockTime);
 }
 
 void RotaLayer::lock(unsigned int time){
     this->currLockTime = time;
+    this->map->decreaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::decreaseLockTime(){
-    this->currLockTime--;
+    if(this->isLocked()){
+        this->currLockTime--;
+        if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+    }
 }
 
 // getter
