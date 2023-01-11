@@ -21,8 +21,10 @@ void RotaLayer::lock(unsigned int time){
 }
 
 void RotaLayer::decreaseLockTime(){
-    if(this->isLocked()) this->currLockTime--;
-    if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+    if(this->isLocked()){
+        this->currLockTime--;
+        if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+    }
 }
 
 // getter
