@@ -85,4 +85,25 @@ namespace optimizer
                     mat(i,j) = 0.0;
                 }
     };
+
+    void RotaOptimizer::UpdateMemoryKernel(boost::numeric::ublas::matrix<float>& evolvedState, std::vector<std::vector<float>>& kernel){
+        std::vector<float> column(evolvedState.size1());
+        // get the first column
+        for(unsigned i=0; i<evolvedState.size1(); i++){
+            column[i] = evolvedState(i,0);
+        }
+
+        // cycle kernel 
+        for(unsigned i=kernel.size(); i>0; i--){
+            for(unsigned j=0; j<kernel.size(); j++){
+                if(i>1){
+                    kernel[i-1][j] = kernel[i-2][j];
+                }
+                else{
+                    kernel[0][j] = column[j];
+                }
+
+            }
+        }
+    };
 }

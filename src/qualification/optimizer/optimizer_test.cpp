@@ -126,3 +126,28 @@ TEST_F(Optimizer_Fixture, SetRowZeroTest){
     }
     ASSERT_TRUE(row_zero);
 }
+
+TEST_F(Optimizer_Fixture, UpdateMemoryKernelTest){
+    optimizer::RotaOptimizer opt;
+    
+    std::vector<std::vector<float>> kernel;
+    kernel = {  {0.0, 1.0, 2.0},
+                {0.1, 1.1, 2.1},
+                {0.2, 1.2, 2.2}};
+
+    std::vector<std::vector<float>> temp(kernel);
+
+    boost::numeric::ublas::matrix<float> mat(3,3);
+    mat(0,0) = -1.0;
+    mat(1,0) = -2.0;
+    mat(2,0) = -3.0;
+
+    opt.UpdateMemoryKernel(mat, kernel);
+
+    for(unsigned i=0; i<3; i++){
+        ASSERT_TRUE(kernel[0][i] == mat(i,0));
+        if(i>0){
+            ASSERT_TRUE(kernel[i] == temp[i-1]);
+        }
+    }
+}

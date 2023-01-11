@@ -46,13 +46,6 @@ namespace optimizer
             boost::numeric::ublas::matrix<float> GenerateSeed(int dim);
 
             /*
-            Summary: Calculates the fitness value of the given state.
-            @param : 
-            matrix<float> matrix, the state to be evaluated
-            Return: float
-            */
-            void Fitness(boost::numeric::ublas::matrix<float> matrix);
-            /*
             Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
             Params: 
                 matrix<float> state1 
@@ -94,7 +87,7 @@ namespace optimizer
                 array kernel, the memory kernel
             Return: array, the memory kernel
             */
-            void UpdateMemoryKernel(boost::numeric::ublas::matrix<float> evolvedState, boost::numeric::ublas::matrix<float> kernel);//REPLACE KERNEL WITH ARRAY
+            void UpdateMemoryKernel(boost::numeric::ublas::matrix<float>& evolvedState, std::vector<std::vector<float>>& kernel);
             /*
             Summary: Sets the values of a matrix to zero only in the given row
             Params: 
