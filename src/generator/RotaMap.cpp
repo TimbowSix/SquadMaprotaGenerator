@@ -19,6 +19,13 @@ RotaMap::RotaMap(std::string name, std::vector<float> biomValues,
 void RotaMap::addLayer(RotaLayer *layer) {
     this->layers.push_back(layer);
     this->modeToLayers[layer->getMode()].push_back(layer);
+    if(this->availableLayers.find(layer->getMode()) == this->availableLayers.end()){
+        //create if not found
+        this->availableLayers[layer->getMode()] = 1;
+
+    }else{
+        this->availableLayers[layer->getMode()]++;
+    }
 }
 
 void RotaMap::deceaseLockTime() {
@@ -107,6 +114,18 @@ void RotaMap::calcNewMapVoteWeight(RotaMode *mode) {
     this->mapVoteWeightSum[mode] += (this->mapVoteWeights[mode] - oldWeight);
 }
 
+bool RotaMap::hasLayersAvailable(RotaMode *mode){
+    if(this->hasMode(mode)){
+        return this->availableLayers[mode] > 0;
+    }else{
+        return false;
+    }
+}
+
+bool RotaMap::hasMode(RotaMode *mode){
+    return this->availableLayers.find(mode) == this->availableLayers.end();
+}
+
 // getter & setter
 void RotaMap::setLockTime(int lockTime) { this->lockTime = lockTime; }
 std::vector<RotaLayer *> *RotaMap::getLayer() { return &this->layers; }
@@ -122,6 +141,3 @@ void RotaMap::decreaseAvailableLayers(RotaMode *mode){
     this->availableLayers[mode]--;
 }
 
-bool RotaMap::hasLayersAvailable(RotaMode *mode){
-    return this->availableLayers[mode] > 0;
-}
