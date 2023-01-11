@@ -74,9 +74,9 @@ class RotaMap {
     void resetLockTime();
 
     /**
-     * @brief locks map for given amount of rounds
-     *        use for custom locktime.
-     *        for normal lock use resetLockTime
+     * @brief locks map for given amount of rounds.
+     *        Use for custom locktime.
+     *        For normal lock use resetLockTime
      *
      * @param locktime amount of rounds to lock
     */
@@ -124,6 +124,7 @@ class RotaMap {
     std::vector<RotaLayer *> *getLayer();
     std::string getName();
     std::map<RotaMode *, std::vector<RotaLayer *>> *getModeToLayers();
+    int getLocktime();
 
 };
 } // namespace rota
