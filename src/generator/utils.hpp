@@ -8,6 +8,7 @@
  */
 
 #pragma once
+#include <exception>
 #include <map>
 #include <vector>
 
@@ -29,7 +30,7 @@ int weightedChoice(std::vector<float> *weights);
  *
  * @param length length of container to choose from. Has to be >= 1
  * @returns choosen index
-*/
+ */
 int choice(int length);
 
 /**
@@ -69,8 +70,7 @@ float sigmoid(float x, float slope, float shift);
  *
  * @return count of pulled layers
  */
-int getLayers(std::string url,
-              std::vector<rota::RotaLayer *> *layers);
+int getLayers(std::string url, std::vector<rota::RotaLayer *> *layers);
 
 /**
  * @brief Gets more infomation of layer over an other endpoint an stores them
@@ -118,9 +118,13 @@ class NotImplementedException : public std::logic_error {
         : std::logic_error{"Function not yet implemented"} {}
 };
 
-class DennisException : public std::logic_error{
+/**
+ * @brief Dennis will immer mehr Features deswegen gibt es diese exception
+ */
+class DennisException : public std::logic_error {
   public:
-    DennisException() : std::logic_error{"Wieso ist das Feature noch nicht da"}{}
+    DennisException()
+        : std::logic_error{"Wieso ist das Feature noch nicht da?"} {}
 };
 
 } // namespace rota
