@@ -35,6 +35,7 @@ namespace rota
             }
             (*allPools)[poolName] = pool;
         }
+        (*allModes)["Seed"] = new RotaMode("Seed", 1.0); //add Seeding mode
     }
 
     void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes){
