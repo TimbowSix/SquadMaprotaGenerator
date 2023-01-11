@@ -55,6 +55,10 @@ namespace rota
          * @brief maps opfor teams on containing layers
         */
        std::map<RotaTeam*, std::vector<RotaLayer*>> opforTeams;
+        /**
+         * @brief buffer currently unavailable modes
+        */
+       RotaMode *modeBuffer;
 
     public:
         Maprota(boost::json::object *config);

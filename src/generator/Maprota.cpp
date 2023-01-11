@@ -146,7 +146,7 @@ namespace rota
             this->latestModes.push_back(this->modes["Seed"]);
         }
 
-        RotaMode *modeBuffer = nullptr;
+        this->modeBuffer = nullptr;
 
 
         for(int i=0; i < this->config->at("number_of_layers").as_int64() - this->config->at("seed_layer").as_int64(); i++){
@@ -155,7 +155,7 @@ namespace rota
                 mode = chooseMode(true);
             }else{
                 mode = modeBuffer;
-                modeBuffer = nullptr;
+                this->modeBuffer = nullptr;
             }
 
             RotaMap *map = chooseMap(mode);
