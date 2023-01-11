@@ -8,7 +8,9 @@ Daher:
 
     1. Den Rota Ordner mit einer WSL Verbindung öffnen
     2. Wir brauchen boost daher (Debin/Ubuntu): sudo apt install libboost-all-dev
-    3. Eig. sollte gcc etc schon auf der WSL laufen sonst:  sudo apt install build-essential cmake gcc-multilib
+    3. Eig. sollte gcc etc schon auf der WSL laufen sonst:  sudo apt install build-essential cmake gcc-multilib libssl-dev
+    4. Install boost 1.81 mit der install Skript
+    5. git submodule update --init --recursive
 
 ## Empfohlende Plugins
 
@@ -40,7 +42,3 @@ Neu bauen:
 Ausführen:
 
     ./generator
-    
-## Installieren von `cpp-httplib`:
-
-   git submodule update --init --recursive 
