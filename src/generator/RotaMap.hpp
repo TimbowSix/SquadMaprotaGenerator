@@ -124,7 +124,7 @@ class RotaMap {
     std::vector<RotaLayer *> *getLayer();
     std::string getName();
     std::map<RotaMode *, std::vector<RotaLayer *>> *getModeToLayers();
-    int getLocktime();
+    bool isLocked();
 
 };
 } // namespace rota
