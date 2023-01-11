@@ -13,16 +13,18 @@ RotaLayer::RotaLayer(std::string name, float votes) {
 void RotaLayer::lock(){
     //this->currLockTime = this->lockTime;
     this->lock(this->lockTime);
-    this->map->decreaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::lock(unsigned int time){
     this->currLockTime = time;
+    this->map->decreaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::decreaseLockTime(){
-    if(this->isLocked()) this->currLockTime--;
-    if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+    if(this->isLocked()){
+        this->currLockTime--;
+        if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+    }
 }
 
 // getter
