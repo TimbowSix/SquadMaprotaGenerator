@@ -118,4 +118,9 @@ class NotImplementedException : public std::logic_error {
         : std::logic_error{"Function not yet implemented"} {}
 };
 
+class DennisException : public std::logic_error{
+  public:
+    DennisException() : std::logic_error{"Wieso ist das Feature noch nicht da"}{}
+};
+
 } // namespace rota
