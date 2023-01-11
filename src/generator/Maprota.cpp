@@ -93,6 +93,19 @@ namespace rota
 
     }
 
+    RotaLayer* Maprota::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
+        std::vector<float> weights;
+        std::vector<RotaLayer*> layers;
+        for(RotaLayer *layer: map->getModeToLayers()->at(mode)){
+            if(!layer->isLocked()){
+                //weights.push_back(layer->getVoteWeight());
+                layers.push_back(layer);
+            }
+        }
+        normalize(&weights, NULL);
+        return layers[weightedChoice(&weights)];
+    }
+
     void Maprota::generateRota(){
         // add seedlayer
         if(config->at("seed_layer").as_int64() > 0){
@@ -116,6 +129,7 @@ namespace rota
 
         RotaMode *mode = chooseMode(false, this->modePools["main"]);
         RotaMap *map = chooseMap(mode);
+        RotaLayer *layer = chooseLayerFromMap(map, mode);
 
     }
 

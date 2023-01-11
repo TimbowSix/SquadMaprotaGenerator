@@ -71,6 +71,8 @@ namespace rota
 
         RotaMap* chooseMap(RotaMode *mode);
 
+        RotaLayer* chooseLayerFromMap(RotaMap *map, RotaMode *mode);
+
         /**
          * @brief Creates a new rotation based on the parameters set in the configuration.
          *
