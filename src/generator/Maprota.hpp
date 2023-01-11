@@ -69,9 +69,26 @@ namespace rota
         */
         RotaMode* chooseMode(bool useLatestModes, RotaModePool *customPool);
 
+        /**
+         * @brief chooses a random map from maps with probabilities given by their weight for a given mode
+         *
+         * @param mode mode to draw from
+         * @returns chosen map
+        */
         RotaMap* chooseMap(RotaMode *mode);
 
+        /**
+         * @brief chooses a random layer from a given map for a given mode
+         *
+         * @param map map to choose from
+         * @param mode mode to choose from
+         * @return chosen layer
+        */
         RotaLayer* chooseLayerFromMap(RotaMap *map, RotaMode *mode);
+
+        void lockTeams();
+
+        void decreaseAllLocktimes();
 
         /**
          * @brief Creates a new rotation based on the parameters set in the configuration.

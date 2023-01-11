@@ -83,14 +83,13 @@ namespace rota
         std::vector<RotaMap*> availableMaps; // TODO: handle no maps available
         std::vector<float> weights;
         for(auto const& [key, map]: this->maps){
-            if(map->getLocktime() == 0 && map->getModeToLayers()->find(mode) != map->getModeToLayers()->end()){ //get all maps containing mode and are unlocked
+            if(!map->isLocked() && map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
                 availableMaps.push_back(map);
                 weights.push_back(map->calcMapWeight(mode));
             }
         }
         normalize(&weights, NULL);
         return availableMaps[weightedChoice(&weights)];
-
     }
 
     RotaLayer* Maprota::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
@@ -106,6 +105,10 @@ namespace rota
         return layers[weightedChoice(&weights)];
     }
 
+    void Maprota::decreaseAllLocktimes(){
+
+    }
+
     void Maprota::generateRota(){
         // add seedlayer
         if(config->at("seed_layer").as_int64() > 0){
@@ -119,7 +122,7 @@ namespace rota
             for(int i=0; i<this->config->at("seed_layer").as_int64(); i++){
                 int choosenMap = choice(seedMaps.size());
                 RotaMap *seedMap = seedMaps[choosenMap];
-                seedMaps.erase(seedMaps.begin() + choosenMap);
+                seedMaps.erase(seedMaps.begin() + choosenMap); //remove choosen seed map to prevent doubles
                 seedMap->lock(2);
                 std::vector<RotaLayer*> seedLayers = seedMap->getModeToLayers()->at(this->modes["Seed"]);
                 RotaLayer *chossenLayer = seedLayers[choice(seedLayers.size())];
@@ -127,10 +130,27 @@ namespace rota
             this->latestModes.push_back(this->modes["Seed"]);
         }
 
-        RotaMode *mode = chooseMode(false, this->modePools["main"]);
-        RotaMap *map = chooseMap(mode);
-        RotaLayer *layer = chooseLayerFromMap(map, mode);
+        RotaMode *modeBuffer = nullptr;
 
+
+        for(int i=0; i < this->config->at("number_of_layers").as_int64() - this->config->at("seed_layer").as_int64(); i++){
+            RotaMode *mode;
+            if(modeBuffer == nullptr){
+                mode = chooseMode(true);
+            }else{
+                mode = modeBuffer;
+                modeBuffer = nullptr;
+            }
+
+            RotaMap *map = chooseMap(mode);
+            RotaLayer *layer = chooseLayerFromMap(map, mode);
+            this->rotation.push_back(layer);
+            this->latestMaps.push_back(map);
+            this->latestModes.push_back(mode);
+            map->lock();
+            layer->lock();
+
+        }
     }
 
 } // namespace rota
