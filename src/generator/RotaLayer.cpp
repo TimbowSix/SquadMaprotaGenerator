@@ -13,11 +13,11 @@ RotaLayer::RotaLayer(std::string name, float votes) {
 void RotaLayer::lock(){
     //this->currLockTime = this->lockTime;
     this->lock(this->lockTime);
-    this->map->decreaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::lock(unsigned int time){
     this->currLockTime = time;
+    this->map->decreaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::decreaseLockTime(){
