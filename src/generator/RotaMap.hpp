@@ -59,6 +59,8 @@ class RotaMap {
      */
     float sigmoidValues[4];
 
+    std::map<RotaMode*, int> availableLayers;
+
   public:
     RotaMap(std::string name, std::vector<float> biomValues, int lockTime);
     ~RotaMap(){};
@@ -126,6 +128,11 @@ class RotaMap {
     std::string getName();
     std::map<RotaMode *, std::vector<RotaLayer *>> *getModeToLayers();
     bool isLocked();
+
+    void increaseAvailableLayers(RotaMode *mode);
+    void decreaseAvailableLayers(RotaMode *mode);
+
+    bool hasLayersAvailable(RotaMode *mode);
 
 };
 } // namespace rota

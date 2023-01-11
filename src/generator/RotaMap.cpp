@@ -114,3 +114,14 @@ std::vector<RotaLayer *> *RotaMap::getLayer() { return &this->layers; }
 std::string RotaMap::getName(){ return this->name; }
 std::map<RotaMode *, std::vector<RotaLayer *>> *RotaMap::getModeToLayers(){ return &this->modeToLayers; }
 bool RotaMap::isLocked(){ return this->currentLockTime > 0; }
+
+void RotaMap::increaseAvailableLayers(RotaMode *mode){
+    this->availableLayers[mode]++;
+}
+void RotaMap::decreaseAvailableLayers(RotaMode *mode){
+    this->availableLayers[mode]--;
+}
+
+bool RotaMap::hasLayersAvailable(RotaMode *mode){
+    return this->availableLayers[mode] > 0;
+}
