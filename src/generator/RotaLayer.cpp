@@ -16,6 +16,7 @@ void RotaLayer::lock(){
 }
 
 void RotaLayer::lock(unsigned int time){
+    assert(time > 0);
     this->currLockTime = time;
     this->map->decreaseAvailableLayers(this->mode);
 }

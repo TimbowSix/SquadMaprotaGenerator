@@ -80,13 +80,16 @@ namespace rota
     }
 
     RotaMap* Maprota::chooseMap(RotaMode *mode){
-        std::vector<RotaMap*> availableMaps; // TODO: handle no maps available
+        std::vector<RotaMap*> availableMaps;
         std::vector<float> weights;
-        for(auto const& [key, map]: this->maps){
-            if(!map->isLocked() && map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
-                availableMaps.push_back(map);
-                weights.push_back(map->calcMapWeight(mode));
+        while(weights.size() == 0){
+            for(auto const& [key, map]: this->maps){
+                if(!map->isLocked() && map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
+                    availableMaps.push_back(map);
+                    weights.push_back(map->calcMapWeight(mode));
+                }
             }
+            this->decreaseMapLocktimes();
         }
         normalize(&weights, NULL);
         return availableMaps[weightedChoice(&weights)];
@@ -105,9 +108,22 @@ namespace rota
         return layers[weightedChoice(&weights)];
     }
 
-    void Maprota::decreaseAllLocktimes(){
+    void Maprota::decreaseMapLocktimes(){
+        for(auto const& [key, map]: this->maps){
+            map->decreaseLockTime();
+        }
+    }
+
+    void Maprota::decreaseLayerLocktimes(){
+        for(auto const& [key, layer]: this->layers){
+            layer->decreaseLockTime();
+        }
+    }
+
+    void Maprota::lockTeams(){
 
     }
+
 
     void Maprota::generateRota(){
         // add seedlayer
@@ -147,9 +163,10 @@ namespace rota
             this->rotation.push_back(layer);
             this->latestMaps.push_back(map);
             this->latestModes.push_back(mode);
+            this->decreaseLayerLocktimes();
             map->lock();
             layer->lock();
-
+            this->lockTeams();
         }
     }
 

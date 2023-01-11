@@ -69,7 +69,7 @@ class RotaMap {
     /**
      * @brief deceases the current lock time of this map by 1
      */
-    void deceaseLockTime();
+    void decreaseLockTime();
 
     /**
      * @brief locks map for given amount of rounds.
