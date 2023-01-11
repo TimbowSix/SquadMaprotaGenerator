@@ -74,6 +74,15 @@ class RotaMap {
     void resetLockTime();
 
     /**
+     * @brief locks map for given amount of rounds
+     *        use for custom locktime.
+     *        for normal lock use resetLockTime
+     *
+     * @param locktime amount of rounds to lock
+    */
+    void lock(int locktime);
+
+    /**
      * @brief calculates a mode specific weight for this map
      *        based on the weighted mean of layer votes
      *

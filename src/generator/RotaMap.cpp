@@ -30,6 +30,8 @@ void RotaMap::deceaseLockTime() {
 
 void RotaMap::resetLockTime() { this->currentLockTime = this->lockTime; }
 
+void RotaMap::lock(int locktime) { this->currentLockTime = locktime; }
+
 void RotaMap::calcMapVoteWeight(RotaMode *mode) {
     if (this->layers.size() == 0) {
         std::cout << "No Layer in map " << this->name
