@@ -55,17 +55,28 @@ namespace rota
          * @brief maps opfor teams on containing layers
         */
        std::map<RotaTeam*, std::vector<RotaLayer*>> opforTeams;
-       
+
     public:
         Maprota(boost::json::object *config);
         ~Maprota() {};
 
         /**
-         * Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
+         * @brief Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
+         *
          * @param useLatestModes usage of latest modes for mode locking
          * @param customPool set pool to draw mode from
          * @returns pointer to choosen mode
         */
         RotaMode* chooseMode(bool useLatestModes, RotaModePool *customPool);
+
+        RotaMap* chooseMap(RotaMode *mode);
+
+        /**
+         * @brief Creates a new rotation based on the parameters set in the configuration.
+         *
+         * @returns rotation of layers
+        */
+        //std::vector<RotaLayer*> generateRota();
+        void generateRota();
     };
 } // namespace rota
