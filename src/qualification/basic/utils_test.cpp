@@ -30,8 +30,25 @@ TEST(Utils_test, weightedChoice_normal) {
     }
 
     for (int i = 0; i < weights.size(); i++) {
-        std::cout << counts[i] << std::endl;
+        //std::cout << counts[i] << std::endl;
         EXPECT_NEAR(weights[i], (float)counts[i] / 1000000, 0.002);
+    }
+}
+
+TEST(Utils_test, choice) {
+
+    srand(time(0));
+
+    int counts[4] = {0, 0, 0, 0};
+    for(int i=0; i<1000000; i++){
+        int val = rota::choice(4);
+        ASSERT_GE(val, 0);
+        ASSERT_LE(val, 3);
+        counts[val]++;
+    }
+
+    for (int i : counts) {
+        EXPECT_NEAR(1/i, 1/4, 0.002);
     }
 }
 
