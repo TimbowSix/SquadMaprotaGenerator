@@ -35,6 +35,13 @@ int weightedChoice(std::vector<float> *weights) {
     return -1;
 }
 
+int choice(int length){
+    assert(length >= 1);
+    float prob = 1.0/length;
+    float randomValue = (float)rand() / RAND_MAX;
+    return int(randomValue/prob);
+}
+
 void normalize(std::vector<float> *arr, float *sum) {
     float arrSum;
     if (sum != NULL) {

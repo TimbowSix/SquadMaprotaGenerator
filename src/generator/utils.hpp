@@ -25,6 +25,14 @@ namespace rota {
 int weightedChoice(std::vector<float> *weights);
 
 /**
+ * @brief chooses random index for any container of given length
+ *
+ * @param length length of container to choose from. Has to be >= 1
+ * @returns choosen index
+*/
+int choice(int length);
+
+/**
  * @brief normalizes all values in list
  *
  * sum can be used, by not using it sum = NULL
