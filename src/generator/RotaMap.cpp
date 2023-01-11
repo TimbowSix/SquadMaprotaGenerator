@@ -28,7 +28,7 @@ void RotaMap::deceaseLockTime() {
     }
 }
 
-void RotaMap::resetLockTime() { this->currentLockTime = this->lockTime; }
+void RotaMap::lock() { this->currentLockTime = this->lockTime; }
 
 void RotaMap::lock(int locktime) { this->currentLockTime = locktime; }
 

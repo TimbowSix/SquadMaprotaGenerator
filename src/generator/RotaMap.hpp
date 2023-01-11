@@ -68,10 +68,6 @@ class RotaMap {
      * @brief deceases the current lock time of this map by 1
      */
     void deceaseLockTime();
-    /**
-     * @brief resets the current back to default lock time
-     */
-    void resetLockTime();
 
     /**
      * @brief locks map for given amount of rounds.
@@ -81,6 +77,11 @@ class RotaMap {
      * @param locktime amount of rounds to lock
     */
     void lock(int locktime);
+
+    /**
+     * @brief lockes this layer for the defined lock time
+     */
+    void lock();
 
     /**
      * @brief calculates a mode specific weight for this map
