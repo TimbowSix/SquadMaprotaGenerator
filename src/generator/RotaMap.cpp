@@ -28,7 +28,7 @@ void RotaMap::addLayer(RotaLayer *layer) {
     }
 }
 
-void RotaMap::deceaseLockTime() {
+void RotaMap::decreaseLockTime() {
     this->currentLockTime--;
     if (this->currentLockTime < 0) {
         this->currentLockTime = 0;
