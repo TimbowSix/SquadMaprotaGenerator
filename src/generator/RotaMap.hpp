@@ -117,12 +117,17 @@ class RotaMap {
 
     /**
      * @brief calculates a new map vote weight for this mode
-     *        must be called wenn a layer gets locked
+     *        must be called wenn a layer gets locked or unlocked
      *        updates the mapWeightSum for a fast map weight
      *        calculation
      */
     void calcNewMapVoteWeight(RotaMode *mode);
 
+    /**
+     * @brief checks if unlocked layers for given mode are available
+     *
+     * @param mode mode to check
+    */
     bool hasLayersAvailable(RotaMode *mode);
 
     /**
