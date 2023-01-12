@@ -1,3 +1,6 @@
+#include <boost/geometry/arithmetic/dot_product.hpp>
+#include <boost/math/constants/constants.hpp>
+#include <boost/numeric/ublas/vector_expression.hpp>
 #include <cmath>
 #include <numeric>
 #include <random>
@@ -5,16 +8,17 @@
 #include <string>
 #include <vector>
 
+#include <boost/geometry.hpp>
 #include <boost/json.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 #include <httplib.h>
 
-#include "utils.hpp"
+#include <iostream>
 #include <regex>
 #include <tuple>
 
-#include <iostream>
-
 #include "RotaMap.hpp"
+#include "utils.hpp"
 
 namespace rota {
 
@@ -170,21 +174,30 @@ std::tuple<std::string, std::string> parseUrl(std::string url) {
     return std::make_tuple(baseUrl, subUrl);
 }
 
-void setNeibour(std::vector<RotaMap *> *maps, float neighbourDist) {}
-
-template <typename T> struct square {
-    T operator()(const T &Left, const T &Right) const {
-        return (Left + Right * Right);
+void setNeighbour(std::vector<RotaMap *> *maps, float neighbourDist) {
+    for (int i = 0; i < maps->size(); i++) {
+        for (int j = 0; j < maps->size(); j++) {
+            if (getMapDist((*maps)[i], (*maps)[j]) <= neighbourDist) {
+                (*maps)[i]->addNeighbour((*maps)[j]);
+            }
+        }
     }
-};
+}
 
 float getMapDist(RotaMap *map0, RotaMap *map1) {
 
-    float absVal0 = std::sqrt(std::accumulate(map0->getBiomValues()->begin(),
-                                              map0->getBiomValues()->end(), 0,
-                                              square<float>()));
+    namespace ublas = boost::numeric::ublas;
+    float a =
+        ublas::inner_prod(*map0->getBiomValues(), *map1->getBiomValues()) /
+        (ublas::norm_2(*map0->getBiomValues()) *
+         ublas::norm_2(*map1->getBiomValues()));
 
-    for (int i = 0; i < map0->getBiomValues()->size(); i++) {
+    if (a <= -1.0) {
+        return boost::math::float_constants::pi;
+    } else if (a >= 1.0) {
+        return 0;
+    } else {
+        return acos(a);
     }
 }
 

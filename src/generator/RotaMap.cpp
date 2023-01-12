@@ -12,7 +12,10 @@ using namespace rota;
 RotaMap::RotaMap(std::string name, std::vector<float> biomValues,
                  int lockTime) {
     this->name = name;
-    this->biomValues = biomValues;
+    this->biomValues.resize(biomValues.size());
+    for (int i = 0; i < biomValues.size(); i++) {
+        this->biomValues(i) = biomValues[i];
+    }
     this->lockTime = lockTime;
 }
 
@@ -144,4 +147,8 @@ void RotaMap::decreaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]--;
 }
 
-std::vector<float> *RotaMap::getBiomValues() { return &this->biomValues; }
+boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {
+    return &this->biomValues;
+}
+
+void RotaMap::addNeighbour(RotaMap *map) { this->neighbor.push_back(map); }

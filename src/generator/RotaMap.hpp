@@ -8,6 +8,7 @@
  */
 #pragma once
 
+#include <boost/numeric/ublas/vector.hpp>
 #include <iostream>
 #include <map>
 #include <string.h>
@@ -30,7 +31,7 @@ class RotaMap {
     /**
      * @brief biom properties of this maps
      */
-    std::vector<float> biomValues;
+    boost::numeric::ublas::vector<float> biomValues;
 
     /**
      * @brief a weight for this map based of layer votes
@@ -142,6 +143,7 @@ class RotaMap {
     void increaseAvailableLayers(RotaMode *mode);
     void decreaseAvailableLayers(RotaMode *mode);
 
-    std::vector<float> *getBiomValues();
+    boost::numeric::ublas::vector<float> *getBiomValues();
+    void addNeighbour(RotaMap *map);
 };
 } // namespace rota

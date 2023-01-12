@@ -119,7 +119,7 @@ std::tuple<std::string, std::string> parseUrl(std::string url);
  * @param maps all maps
  * @param neighbourDist distance to determine a neighbour of a map
  */
-void setNeibour(std::vector<RotaMap *> *maps, float neighbourDist);
+void setNeighbour(std::vector<RotaMap *> *maps, float neighbourDist);
 
 /**
  * @brief calculates the distance between to maps
