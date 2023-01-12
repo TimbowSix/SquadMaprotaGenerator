@@ -39,7 +39,7 @@ namespace rota
         parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     }
 
-    RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){
+    RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){ //TODO test
         RotaModePool *pool;
         if(customPool != nullptr){
             pool = customPool;
@@ -80,19 +80,37 @@ namespace rota
     }
 
     RotaMap* Maprota::chooseMap(RotaMode *mode){
+
+        RotaMode *fallbackMode = chooseMode(true, this->modePools["main"]); //fallback mode of main pool if maps are unavailable for given mode
+        std::vector<RotaMap*> fallbackAvailableMaps;
+        std::vector<float> fallbackWeights;
+
         std::vector<RotaMap*> availableMaps;
         std::vector<float> weights;
-        while(weights.size() == 0){
+        while(fallbackWeights.size() == 0){
             for(auto const& [key, map]: this->maps){
-                if(!map->isLocked() && map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
-                    availableMaps.push_back(map);
-                    weights.push_back(map->calcMapWeight(mode));
+                if(!map->isLocked()){
+                    if(map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
+                        availableMaps.push_back(map);
+                        weights.push_back(map->calcMapWeight(mode));
+                    }
+                    if(map->hasLayersAvailable(fallbackMode)){
+                        fallbackAvailableMaps.push_back(map);
+                        fallbackWeights.push_back(map->calcMapWeight(mode));
+                    }
                 }
             }
             this->decreaseMapLocktimes();
         }
-        normalize(&weights, NULL);
-        return availableMaps[weightedChoice(&weights)];
+        if(weights.size() == 0){
+            this->modeBuffer = mode;
+            normalize(&fallbackWeights, NULL);
+            return fallbackAvailableMaps[weightedChoice(&fallbackWeights)];
+
+        }else{
+            normalize(&weights, NULL);
+            return availableMaps[weightedChoice(&weights)];
+        }
     }
 
     RotaLayer* Maprota::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
@@ -148,7 +166,6 @@ namespace rota
 
         this->modeBuffer = nullptr;
 
-
         for(int i=0; i < this->config->at("number_of_layers").as_int64() - this->config->at("seed_layer").as_int64(); i++){
             RotaMode *mode;
             if(modeBuffer == nullptr){
@@ -157,7 +174,6 @@ namespace rota
                 mode = modeBuffer;
                 this->modeBuffer = nullptr;
             }
-
             RotaMap *map = chooseMap(mode);
             RotaLayer *layer = chooseLayerFromMap(map, mode);
             this->rotation.push_back(layer);

@@ -75,6 +75,8 @@ namespace rota
 
         /**
          * @brief chooses a random map from maps with probabilities given by their weight for a given mode
+         *        uses fallback mode of main pool if no maps are available for given mode
+         *        reduces map locktimes if no maps for either mode or fallback mode are available
          *
          * @param mode mode to draw from
          * @returns chosen map
