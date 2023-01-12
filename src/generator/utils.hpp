@@ -112,6 +112,24 @@ void injectLayerInfo(std::string url,
  */
 std::tuple<std::string, std::string> parseUrl(std::string url);
 
+/**
+ * @brief sets neightbour off a maps list, based on the neightbour distance
+ *        if a map is closer or equal to die neighbourDistance it is a neighbour
+ *
+ * @param maps all maps
+ * @param neighbourDist distance to determine a neighbour of a map
+ */
+void setNeibour(std::vector<RotaMap *> *maps, float neighbourDist);
+
+/**
+ * @brief calculates the distance between to maps
+ *
+ * @param map0
+ * @param map1
+ * @returns the distance
+ */
+float getMapDist(RotaMap *map0, RotaMap *map1);
+
 class NotImplementedException : public std::logic_error {
   public:
     NotImplementedException()

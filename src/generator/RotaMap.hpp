@@ -59,7 +59,7 @@ class RotaMap {
      */
     float sigmoidValues[4];
 
-    std::map<RotaMode*, int> availableLayers;
+    std::map<RotaMode *, int> availableLayers;
 
   public:
     RotaMap(std::string name, std::vector<float> biomValues, int lockTime);
@@ -77,7 +77,7 @@ class RotaMap {
      *        For normal lock use resetLockTime
      *
      * @param locktime amount of rounds to lock
-    */
+     */
     void lock(int locktime);
 
     /**
@@ -125,12 +125,12 @@ class RotaMap {
     bool hasLayersAvailable(RotaMode *mode);
 
     /**
-     * @brief checks if mode exists for this map. regardless if the layers are locked or not
+     * @brief checks if mode exists for this map. regardless if the layers are
+     * locked or not
      *
      * @param mode mode to check
-    */
+     */
     bool hasMode(RotaMode *mode);
-
 
     // getter & setter
     void setLockTime(int lockTime);
@@ -142,5 +142,6 @@ class RotaMap {
     void increaseAvailableLayers(RotaMode *mode);
     void decreaseAvailableLayers(RotaMode *mode);
 
+    std::vector<float> *getBiomValues();
 };
 } // namespace rota

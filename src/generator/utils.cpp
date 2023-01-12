@@ -1,3 +1,4 @@
+#include <cmath>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -8,11 +9,12 @@
 #include <httplib.h>
 
 #include "utils.hpp"
-#include <tuple>
 #include <regex>
+#include <tuple>
 
 #include <iostream>
 
+#include "RotaMap.hpp"
 
 namespace rota {
 
@@ -35,9 +37,9 @@ int weightedChoice(std::vector<float> *weights) {
     return -1;
 }
 
-int choice(int length){
+int choice(int length) {
     assert(length >= 1);
-    return rand()%length;
+    return rand() % length;
 }
 
 void normalize(std::vector<float> *arr, float *sum) {
@@ -75,7 +77,8 @@ int getLayers(std::string url, std::vector<RotaLayer *> *layers) {
     httplib::Client cli(baseUrl);
     auto res = cli.Get(subUrl);
     if (res->status != 200) {
-        throw std::runtime_error("Error while getting layer " + baseUrl + subUrl +
+        throw std::runtime_error("Error while getting layer " + baseUrl +
+                                 subUrl +
                                  " status:" + std::to_string(res->status));
         return 0;
     }
@@ -112,8 +115,8 @@ void injectLayerInfo(std::string url,
     auto res = cli.Get(subUrl);
     if (res->status != 200) {
         throw std::runtime_error(
-            "Error while getting additional layer information " + baseUrl + subUrl +
-            " status:" + std::to_string(res->status));
+            "Error while getting additional layer information " + baseUrl +
+            subUrl + " status:" + std::to_string(res->status));
         return;
     }
 
@@ -156,7 +159,7 @@ void injectLayerInfo(std::string url,
     }
 }
 
-std::tuple<std::string, std::string> parseUrl(std::string url){
+std::tuple<std::string, std::string> parseUrl(std::string url) {
     std::regex pattern("^(https?://[a-zA-z]+.[a-zA-z]+.[a-zA-z]+)(.*)$");
     std::smatch match;
     std::regex_match(url, match, pattern);
@@ -165,6 +168,24 @@ std::tuple<std::string, std::string> parseUrl(std::string url){
     std::string subUrl = match[2];
 
     return std::make_tuple(baseUrl, subUrl);
+}
+
+void setNeibour(std::vector<RotaMap *> *maps, float neighbourDist) {}
+
+template <typename T> struct square {
+    T operator()(const T &Left, const T &Right) const {
+        return (Left + Right * Right);
+    }
+};
+
+float getMapDist(RotaMap *map0, RotaMap *map1) {
+
+    float absVal0 = std::sqrt(std::accumulate(map0->getBiomValues()->begin(),
+                                              map0->getBiomValues()->end(), 0,
+                                              square<float>()));
+
+    for (int i = 0; i < map0->getBiomValues()->size(); i++) {
+    }
 }
 
 } // namespace rota
