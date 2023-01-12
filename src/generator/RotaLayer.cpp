@@ -19,12 +19,16 @@ void RotaLayer::lock(unsigned int time){
     assert(time > 0);
     this->currLockTime = time;
     this->map->decreaseAvailableLayers(this->mode);
+    this->map->calcNewMapVoteWeight(this->mode);
 }
 
 void RotaLayer::decreaseLockTime(){
     if(this->isLocked()){
         this->currLockTime--;
-        if(!this-isLocked()) this->map->increaseAvailableLayers(this->mode);
+        if(!this-isLocked()){
+            this->map->increaseAvailableLayers(this->mode);
+            this->map->calcNewMapVoteWeight(this->mode);
+        }
     }
 }
 
