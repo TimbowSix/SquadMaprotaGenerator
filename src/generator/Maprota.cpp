@@ -102,6 +102,7 @@ namespace rota
             }
             this->decreaseMapLocktimes();
         }
+        assert(fallbackWeights.size()>0);
         if(weights.size() == 0){
             this->modeBuffer = mode;
             normalize(&fallbackWeights, NULL);
@@ -139,9 +140,52 @@ namespace rota
     }
 
     void Maprota::lockTeams(){
+        int maxSameTeam = this->config->at("max_same_team").as_int64();
+        if(maxSameTeam < 1) return;
+        std::vector<RotaTeam*> teams1;
+        std::vector<RotaTeam*> teams2;
+        //get latest teams
+        for(int i=this->rotation.size()-1-maxSameTeam; i<this->rotation.size(); i++){
+            if(i%2==0){
+                teams1.push_back(this->rotation[i]->getTeam(1));
+                teams2.push_back(this->rotation[i]->getTeam(2));
+            }else{
+                teams1.push_back(this->rotation[i]->getTeam(2));
+                teams2.push_back(this->rotation[i]->getTeam(1));
+            }
+        }
+        RotaTeam *lock_blu = nullptr;
+        RotaTeam *lock_op = nullptr;
+        //check if latest teams in range maxSameTeam are all equal = team need to be locked
+        if (all_of(teams1.begin(), teams1.end(), [&] (RotaTeam *i) {return i == teams1[0];})){
+            //all are the same
+            if (maxSameTeam % 2 == 0){
+                lock_blu = teams1[0];
+            }else{
+                lock_op = teams1[0];
+            }
+        }
+        if (all_of(teams2.begin(), teams2.end(), [&] (RotaTeam *i) {return i == teams2[0];})){
+            //all are the same
+            if (maxSameTeam % 2 == 0){
+                lock_op = teams2[0];
+            }else{
+                lock_blu = teams2[0];
+            }
+        }
 
+        // lock all layers containing relevant teams
+        if(lock_blu != nullptr){
+            for(RotaLayer *layer : this->blueforTeams[lock_blu]){
+                layer->lock(1);
+            }
+        }
+        if(lock_op != nullptr){
+            for(RotaLayer *layer : this->opforTeams[lock_op]){
+                layer->lock(1);
+            }
+        }
     }
-
 
     void Maprota::generateRota(){
         // add seedlayer
