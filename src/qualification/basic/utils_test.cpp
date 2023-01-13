@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 #include <vector>
 
-#include "../../generator/RotaMap.hpp"
-#include "../../generator/utils.hpp"
+#include <RotaMap.hpp>
+#include <utils.hpp>
 
 class Utils_Fixture : public ::testing::Test {
   protected:
