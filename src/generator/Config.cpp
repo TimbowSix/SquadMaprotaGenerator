@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -41,6 +42,7 @@ Config::Config(std::string path){
     fix_unavailables = pData["fix_unavailables"].as_bool();
     pool_spacing = pData["pool_spacing"].as_int64();
     space_main = pData["space_main"].as_bool();
+    //TODO parse maps list
 }
 // getter / setter
 unsigned int Config::get_number_of_rotas() { return number_of_rotas; }
@@ -67,7 +69,7 @@ void Config::set_layer_vote_api_url(std::string value) { this->layer_vote_api_ur
 std::string Config::get_team_api_url() { return team_api_url; }
 void Config::set_team_api_url(std::string value) { this->team_api_url = value; }
 
-const std::vector<std::string>* Config::get_maps() const { return &maps; }
+std::vector<std::string>* Config::get_maps() { return &maps; }
 void Config::set_maps(std::vector<std::string> value) { this->maps = value; }
 
 unsigned int Config::get_biom_spacing() { return biom_spacing; }
@@ -79,17 +81,17 @@ void Config::set_layer_locktime(unsigned int value) { this->layer_locktime = val
 unsigned int Config::get_max_same_team() { return max_same_team; }
 void Config::set_max_same_team(unsigned int value) { this->max_same_team = value; }
 
-double Config::get_min_biom_distance() { return min_biom_distance; }
-void Config::set_min_biom_distance(double value) { this->min_biom_distance = value; }
+float Config::get_min_biom_distance() { return min_biom_distance; }
+void Config::set_min_biom_distance(float value) { this->min_biom_distance = value; }
 
-double Config::get_mapvote_slope() { return mapvote_slope; }
-void Config::set_mapvote_slope(double value) { this->mapvote_slope = value; }
+float Config::get_mapvote_slope() { return mapvote_slope; }
+void Config::set_mapvote_slope(float value) { this->mapvote_slope = value; }
 
 unsigned int Config::get_mapvote_shift() { return mapvote_shift; }
 void Config::set_mapvote_shift(unsigned int value) { this->mapvote_shift = value; }
 
-double Config::get_layervote_slope() { return layervote_slope; }
-void Config::set_layervote_slope(double value) { this->layervote_slope = value; }
+float Config::get_layervote_slope() { return layervote_slope; }
+void Config::set_layervote_slope(float value) { this->layervote_slope = value; }
 
 unsigned int Config::get_layervote_shift() { return layervote_shift; }
 void Config::set_layervote_shift(unsigned int value) { this->layervote_shift = value; }
@@ -106,7 +108,16 @@ void Config::set_auto_optimize(bool value) { this->auto_optimize = value; }
 bool Config::get_fix_unavailables() { return fix_unavailables; }
 void Config::set_fix_unavailables(bool value) { this->fix_unavailables = value; }
 
-const std::map<std::string, RotaModePool *>* Config::get_pools() const { return &pools; }
+bool Config::get_pool_spacing() { return pool_spacing; }
+void Config::set_pool_spacing(bool value){ this->pool_spacing = value; }
+
+bool Config::get_space_main(){ return space_main; }
+void Config::set_space_main(bool value){ this->space_main = value; }
+
+std::map<std::string, RotaModePool *>* Config::get_pools() { return &pools; }
 void Config::set_pools(std::map<std::string, RotaModePool *> value){ this->pools = value; }
+
+std::map<std::string, RotaMode *>* Config::get_modes(){ return &modes; }
+void Config::set_modes(std::map<std::string, RotaMode *> value) { this->modes = value; }
 
 } // namespace rota

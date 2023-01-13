@@ -16,6 +16,7 @@ set(SOURCE
     ${CMAKE_SOURCE_DIR}/src/generator/RotaTeam.cpp
     ${CMAKE_SOURCE_DIR}/src/generator/utils.cpp
     ${CMAKE_SOURCE_DIR}/src/generator/dataParsing.cpp
+    ${CMAKE_SOURCE_DIR}/src/generator/Config.cpp
     )
 
 add_executable(utils_test utils_test.cpp ${SOURCE})

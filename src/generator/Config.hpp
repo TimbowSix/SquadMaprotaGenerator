@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <boost/json.hpp>
 
 #include "RotaModePool.hpp"
@@ -118,7 +119,7 @@ class Config{
         std::map<std::string, RotaMode *> modes;
 
     public:
-        Config();
+        Config(){};
 
         /**
          * @brief directly parse config json object from given path
@@ -153,7 +154,7 @@ class Config{
         std::string get_team_api_url();
         void set_team_api_url(std::string value);
 
-        const std::vector<std::string>* get_maps() const;
+        std::vector<std::string>* get_maps();
         void set_maps(std::vector<std::string> value);
 
         unsigned int get_biom_spacing();
@@ -165,17 +166,17 @@ class Config{
         unsigned int get_max_same_team();
         void set_max_same_team(unsigned int value);
 
-        double get_min_biom_distance();
-        void set_min_biom_distance(double value);
+        float get_min_biom_distance();
+        void set_min_biom_distance(float value);
 
-        double get_mapvote_slope();
-        void set_mapvote_slope(double value);
+        float get_mapvote_slope();
+        void set_mapvote_slope(float value);
 
         unsigned int get_mapvote_shift();
         void set_mapvote_shift(unsigned int value);
 
-        double get_layervote_slope();
-        void set_layervote_slope(double value);
+        float get_layervote_slope();
+        void set_layervote_slope(float value);
 
         unsigned int get_layervote_shift();
         void set_layervote_shift(unsigned int value);
@@ -196,9 +197,12 @@ class Config{
         void set_pool_spacing(bool value);
 
         bool get_space_main();
-        void set_space_main();
+        void set_space_main(bool value);
 
-        const std::map<std::string, RotaModePool *>* get_pools() const;
+        std::map<std::string, RotaModePool *>* get_pools();
         void set_pools(std::map<std::string, RotaModePool *> value);
+
+        std::map<std::string, RotaMode *>* get_modes();
+        void set_modes(std::map<std::string, RotaMode *> value);
 };
 } // namespace rota

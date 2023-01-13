@@ -11,20 +11,23 @@
 #include "RotaModePool.hpp"
 #include "dataParsing.hpp"
 #include "utils.hpp"
+#include "Config.hpp"
 
 #include <iostream>
 
 namespace rota
 {
-    Generator::Generator(boost::json::object *config){
+    Generator::Generator(Config *config){
         this->config = config;
-        parseModes(this->config, &this->modePools, &this->modes);
+        this->modePools = (*config->get_pools());
+        this->modes = (*config->get_modes());
+        //parseModes(this->config, &this->modePools, &this->modes);
         parseMaps(this->config, &this->maps); // setup all available maps
 
-        std::string voteUrl = this->config->at("layer_vote_api_url").as_string().c_str();
+        std::string voteUrl = this->config->get_layer_vote_api_url();
         parseLayers(voteUrl, &this->maps, &this->layers, &this->modes); //request and parse layers
 
-        std::string teamUrl = this->config->at("team_api_url").as_string().c_str();
+        std::string teamUrl = this->config->get_team_api_url();
         injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
 
         //remove maps without any layers
@@ -54,7 +57,7 @@ namespace rota
         }
 
         if(useLatestModes && pool != this->modePools["main"]){
-            int poolSpacing = this->config->at("mode_distribution").at("pool_spacing").as_int64();
+            int poolSpacing = this->config->get_pool_spacing();
             std::vector<RotaMode*> *latestModes = &this->latestModes;
             if(latestModes->size() > poolSpacing){
                 *latestModes = std::vector<RotaMode*>(latestModes->begin()+latestModes->size()-poolSpacing, latestModes->end());
@@ -67,7 +70,7 @@ namespace rota
         }
         std::vector<RotaMode*> modes;
         std::vector<float> modeWeights;
-        bool spaceMain = this->config->at("mode_distribution").at("space_main").as_bool();
+        bool spaceMain = this->config->get_space_main();
         for(std::map<std::string,RotaMode*>::iterator it = pool->modes.begin(); it != pool->modes.end(); ++it) {
             if(spaceMain && pool == this->modePools["main"] && this->latestModes.size() > 0 && it->second == this->latestModes.back()){
                 continue;
@@ -140,7 +143,7 @@ namespace rota
     }
 
     void Generator::lockTeams(){
-        int maxSameTeam = this->config->at("max_same_team").as_int64();
+        int maxSameTeam = this->config->get_max_same_team();
         if(maxSameTeam < 1) return;
         std::vector<RotaTeam*> teams1;
         std::vector<RotaTeam*> teams2;
@@ -189,7 +192,7 @@ namespace rota
 
     void Generator::generateRota(){
         // add seedlayer
-        if(config->at("seed_layer").as_int64() > 0){
+        if(config->get_seed_layer() > 0){
             std::vector<RotaMap*> seedMaps;
             for(auto const& [key, map]: this->maps){
                 std::map<RotaMode *, std::vector<RotaLayer *>> *modeLayers = map->getModeToLayers();
@@ -197,7 +200,7 @@ namespace rota
                     seedMaps.push_back(map);
                 }
             }
-            for(int i=0; i<this->config->at("seed_layer").as_int64(); i++){
+            for(int i=0; i<this->config->get_seed_layer(); i++){
                 int choosenMap = choice(seedMaps.size());
                 RotaMap *seedMap = seedMaps[choosenMap];
                 seedMaps.erase(seedMaps.begin() + choosenMap); //remove choosen seed map to prevent doubles
@@ -210,7 +213,7 @@ namespace rota
 
         this->modeBuffer = nullptr;
 
-        for(int i=0; i < this->config->at("number_of_layers").as_int64() - this->config->at("seed_layer").as_int64(); i++){
+        for(int i=0; i < this->config->get_number_of_layers() - this->config->get_seed_layer(); i++){
             RotaMode *mode;
             if(modeBuffer == nullptr){
                 mode = chooseMode(true);
