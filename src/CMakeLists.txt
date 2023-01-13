@@ -2,3 +2,4 @@ configure_file(RotaConfig.hpp.in  ${CMAKE_SOURCE_DIR}/src/generator/RotaConfig.h
 add_subdirectory(generator)
 add_subdirectory(optimizer)
 add_subdirectory(qualification)
+add_subdirectory(server)

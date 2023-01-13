@@ -42,3 +42,16 @@ Neu bauen:
 Ausführen:
 
     ./generator
+
+## Create Config
+
+### Server cert
+
+sudo mkdir /etc/maprota
+sudo groupadd maprota
+sudo usermod -a -G maprota $USER
+su - $USER
+sudo chgrp maprota /etc/maprota
+sudo chmod ug+rw /etc/maprota
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/maprota/maprotaServer.key -out /etc/maprota/maprotaServer.crt
