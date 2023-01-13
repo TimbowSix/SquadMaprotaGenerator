@@ -150,5 +150,7 @@ class RotaMap {
 
     boost::numeric::ublas::vector<float> *getBiomValues();
     void addNeighbour(RotaMap *map);
+
+    void setSigmoidValues(float mapVoteSlope, float mapVoteShift, float layerVoteSlope,float layerVoteShift);
 };
 } // namespace rota

@@ -152,3 +152,10 @@ boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {
 }
 
 void RotaMap::addNeighbour(RotaMap *map) { this->neighbor.push_back(map); }
+
+void RotaMap::setSigmoidValues(float mapVoteSlope, float mapVoteShift, float layerVoteSlope,float layerVoteShift){
+    this->sigmoidValues[0] = mapVoteSlope;
+    this->sigmoidValues[1] = mapVoteShift;
+    this->sigmoidValues[2] = layerVoteSlope;
+    this->sigmoidValues[3] = layerVoteShift;
+}
