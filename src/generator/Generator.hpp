@@ -19,7 +19,11 @@ namespace rota
         /**
          * @brief maps all available maps to their name
         */
-        std::map<std::string, RotaMap*> maps;
+        std::map<std::string, RotaMap*> mapsByName;
+        /**
+         * @brief list of all maps
+        */
+        std::vector<RotaMap*> maps;
         /**
          * @brief maps all available ModePools to their name
         */
