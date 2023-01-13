@@ -68,7 +68,7 @@ namespace rota
 
     void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps){
 
-        const std::filesystem::path configFile{"../../../data/bioms.json"};
+        const std::filesystem::path configFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
         std::ifstream ifs(configFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
