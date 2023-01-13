@@ -1,4 +1,4 @@
-#include "Maprota.hpp"
+#include "Generator.hpp"
 
 #include <vector>
 #include <boost/json.hpp>
@@ -11,20 +11,23 @@
 #include "RotaModePool.hpp"
 #include "dataParsing.hpp"
 #include "utils.hpp"
+#include "Config.hpp"
 
 #include <iostream>
 
 namespace rota
 {
-    Maprota::Maprota(boost::json::object *config){
+    Generator::Generator(Config *config){
         this->config = config;
-        parseModes(this->config, &this->modePools, &this->modes);
+        this->modePools = (*config->get_pools());
+        this->modes = (*config->get_modes());
+        //parseModes(this->config, &this->modePools, &this->modes);
         parseMaps(this->config, &this->maps); // setup all available maps
 
-        std::string voteUrl = this->config->at("layer_vote_api_url").as_string().c_str();
+        std::string voteUrl = this->config->get_layer_vote_api_url();
         parseLayers(voteUrl, &this->maps, &this->layers, &this->modes); //request and parse layers
 
-        std::string teamUrl = this->config->at("team_api_url").as_string().c_str();
+        std::string teamUrl = this->config->get_team_api_url();
         injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
 
         //remove maps without any layers
@@ -39,7 +42,7 @@ namespace rota
         parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     }
 
-    RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){
+    RotaMode* Generator::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){ //TODO test
         RotaModePool *pool;
         if(customPool != nullptr){
             pool = customPool;
@@ -54,7 +57,7 @@ namespace rota
         }
 
         if(useLatestModes && pool != this->modePools["main"]){
-            int poolSpacing = this->config->at("mode_distribution").at("pool_spacing").as_int64();
+            int poolSpacing = this->config->get_pool_spacing();
             std::vector<RotaMode*> *latestModes = &this->latestModes;
             if(latestModes->size() > poolSpacing){
                 *latestModes = std::vector<RotaMode*>(latestModes->begin()+latestModes->size()-poolSpacing, latestModes->end());
@@ -67,7 +70,7 @@ namespace rota
         }
         std::vector<RotaMode*> modes;
         std::vector<float> modeWeights;
-        bool spaceMain = this->config->at("mode_distribution").at("space_main").as_bool();
+        bool spaceMain = this->config->get_space_main();
         for(std::map<std::string,RotaMode*>::iterator it = pool->modes.begin(); it != pool->modes.end(); ++it) {
             if(spaceMain && pool == this->modePools["main"] && this->latestModes.size() > 0 && it->second == this->latestModes.back()){
                 continue;
@@ -79,23 +82,42 @@ namespace rota
         return modes[weightedChoice(&modeWeights)];
     }
 
-    RotaMap* Maprota::chooseMap(RotaMode *mode){
+    RotaMap* Generator::chooseMap(RotaMode *mode){
+
+        RotaMode *fallbackMode = chooseMode(true, this->modePools["main"]); //fallback mode of main pool if maps are unavailable for given mode
+        std::vector<RotaMap*> fallbackAvailableMaps;
+        std::vector<float> fallbackWeights;
+
         std::vector<RotaMap*> availableMaps;
         std::vector<float> weights;
-        while(weights.size() == 0){
+        while(fallbackWeights.size() == 0){
             for(auto const& [key, map]: this->maps){
-                if(!map->isLocked() && map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
-                    availableMaps.push_back(map);
-                    weights.push_back(map->calcMapWeight(mode));
+                if(!map->isLocked()){
+                    if(map->hasLayersAvailable(mode)){ //get all maps containing mode and are unlocked
+                        availableMaps.push_back(map);
+                        weights.push_back(map->calcMapWeight(mode));
+                    }
+                    if(map->hasLayersAvailable(fallbackMode)){
+                        fallbackAvailableMaps.push_back(map);
+                        fallbackWeights.push_back(map->calcMapWeight(mode));
+                    }
                 }
             }
             this->decreaseMapLocktimes();
         }
-        normalize(&weights, NULL);
-        return availableMaps[weightedChoice(&weights)];
+        assert(fallbackWeights.size()>0);
+        if(weights.size() == 0){
+            this->modeBuffer = mode;
+            normalize(&fallbackWeights, NULL);
+            return fallbackAvailableMaps[weightedChoice(&fallbackWeights)];
+
+        }else{
+            normalize(&weights, NULL);
+            return availableMaps[weightedChoice(&weights)];
+        }
     }
 
-    RotaLayer* Maprota::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
+    RotaLayer* Generator::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
         std::vector<float> weights;
         std::vector<RotaLayer*> layers;
         for(RotaLayer *layer: map->getModeToLayers()->at(mode)){
@@ -108,26 +130,69 @@ namespace rota
         return layers[weightedChoice(&weights)];
     }
 
-    void Maprota::decreaseMapLocktimes(){
+    void Generator::decreaseMapLocktimes(){
         for(auto const& [key, map]: this->maps){
             map->decreaseLockTime();
         }
     }
 
-    void Maprota::decreaseLayerLocktimes(){
+    void Generator::decreaseLayerLocktimes(){
         for(auto const& [key, layer]: this->layers){
             layer->decreaseLockTime();
         }
     }
 
-    void Maprota::lockTeams(){
+    void Generator::lockTeams(){
+        int maxSameTeam = this->config->get_max_same_team();
+        if(maxSameTeam < 1) return;
+        std::vector<RotaTeam*> teams1;
+        std::vector<RotaTeam*> teams2;
+        //get latest teams
+        for(int i=this->rotation.size()-1-maxSameTeam; i<this->rotation.size(); i++){
+            if(i%2==0){
+                teams1.push_back(this->rotation[i]->getTeam(1));
+                teams2.push_back(this->rotation[i]->getTeam(2));
+            }else{
+                teams1.push_back(this->rotation[i]->getTeam(2));
+                teams2.push_back(this->rotation[i]->getTeam(1));
+            }
+        }
+        RotaTeam *lock_blu = nullptr;
+        RotaTeam *lock_op = nullptr;
+        //check if latest teams in range maxSameTeam are all equal = team need to be locked
+        if (all_of(teams1.begin(), teams1.end(), [&] (RotaTeam *i) {return i == teams1[0];})){
+            //all are the same
+            if (maxSameTeam % 2 == 0){
+                lock_blu = teams1[0];
+            }else{
+                lock_op = teams1[0];
+            }
+        }
+        if (all_of(teams2.begin(), teams2.end(), [&] (RotaTeam *i) {return i == teams2[0];})){
+            //all are the same
+            if (maxSameTeam % 2 == 0){
+                lock_op = teams2[0];
+            }else{
+                lock_blu = teams2[0];
+            }
+        }
 
+        // lock all layers containing relevant teams
+        if(lock_blu != nullptr){
+            for(RotaLayer *layer : this->blueforTeams[lock_blu]){
+                layer->lock(1);
+            }
+        }
+        if(lock_op != nullptr){
+            for(RotaLayer *layer : this->opforTeams[lock_op]){
+                layer->lock(1);
+            }
+        }
     }
 
-
-    void Maprota::generateRota(){
+    void Generator::generateRota(){
         // add seedlayer
-        if(config->at("seed_layer").as_int64() > 0){
+        if(config->get_seed_layer() > 0){
             std::vector<RotaMap*> seedMaps;
             for(auto const& [key, map]: this->maps){
                 std::map<RotaMode *, std::vector<RotaLayer *>> *modeLayers = map->getModeToLayers();
@@ -135,7 +200,7 @@ namespace rota
                     seedMaps.push_back(map);
                 }
             }
-            for(int i=0; i<this->config->at("seed_layer").as_int64(); i++){
+            for(int i=0; i<this->config->get_seed_layer(); i++){
                 int choosenMap = choice(seedMaps.size());
                 RotaMap *seedMap = seedMaps[choosenMap];
                 seedMaps.erase(seedMaps.begin() + choosenMap); //remove choosen seed map to prevent doubles
@@ -148,8 +213,7 @@ namespace rota
 
         this->modeBuffer = nullptr;
 
-
-        for(int i=0; i < this->config->at("number_of_layers").as_int64() - this->config->at("seed_layer").as_int64(); i++){
+        for(int i=0; i < this->config->get_number_of_layers() - this->config->get_seed_layer(); i++){
             RotaMode *mode;
             if(modeBuffer == nullptr){
                 mode = chooseMode(true);
@@ -157,7 +221,6 @@ namespace rota
                 mode = modeBuffer;
                 this->modeBuffer = nullptr;
             }
-
             RotaMap *map = chooseMap(mode);
             RotaLayer *layer = chooseLayerFromMap(map, mode);
             this->rotation.push_back(layer);

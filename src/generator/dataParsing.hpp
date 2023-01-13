@@ -1,9 +1,11 @@
 #pragma once
 
 #include <boost/json.hpp>
+
 #include "RotaModePool.hpp"
 #include "RotaMap.hpp"
 #include "RotaLayer.hpp"
+#include "Config.hpp"
 
 namespace rota
 {
@@ -33,7 +35,7 @@ namespace rota
      * @param maps empty map of RotaMaps
      *
     */
-    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps);
+    void parseMaps(Config *config, std::map<std::string, RotaMap*> *maps);
 
     /**
      * @brief maps every team on their containing layers

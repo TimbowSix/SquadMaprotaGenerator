@@ -8,13 +8,14 @@
 #include <boost/json.hpp>
 #include <map>
 #include "RotaTeam.hpp"
+#include "Config.hpp"
 
 namespace rota
 {
-    class Maprota
+    class Generator
     {
     private:
-        boost::json::object *config;
+        Config *config;
         /**
          * @brief maps all available maps to their name
         */
@@ -61,8 +62,7 @@ namespace rota
        RotaMode *modeBuffer;
 
     public:
-        Maprota(boost::json::object *config);
-        ~Maprota() {};
+        Generator(Config *config);
 
         /**
          * @brief Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
@@ -75,6 +75,8 @@ namespace rota
 
         /**
          * @brief chooses a random map from maps with probabilities given by their weight for a given mode
+         *        uses fallback mode of main pool if no maps are available for given mode
+         *        reduces map locktimes if no maps for either mode or fallback mode are available
          *
          * @param mode mode to draw from
          * @returns chosen map

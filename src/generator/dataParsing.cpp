@@ -9,6 +9,7 @@
 #include <regex>
 #include <algorithm>
 
+#include "Config.hpp"
 #include "RotaMode.hpp"
 #include "RotaModePool.hpp"
 #include "RotaMap.hpp"
@@ -39,6 +40,7 @@ namespace rota
     }
 
     void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes){
+        Config cfg(std::string(CONFIG_PATH)+"/config.json");
         //std::map<std::string, RotaLayer*> allLayers;
         std::vector<RotaLayer*> allLayers;
         getLayers(url, &allLayers); // get all layers from api
@@ -66,17 +68,18 @@ namespace rota
         }
     }
 
-    void parseMaps(boost::json::object *config, std::map<std::string, RotaMap*> *maps){
+    void parseMaps(Config *config, std::map<std::string, RotaMap*> *maps){
 
-        const std::filesystem::path configFile{"../../../data/bioms.json"};
+        const std::filesystem::path configFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
         std::ifstream ifs(configFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
-        boost::json::array usedMapsRaw = config->at("maps").as_array();
-        int locktime = config->at("biom_spacing").as_int64();
-        for(int i=0; i<usedMapsRaw.size(); i++){
-            std::string map = (std::string)usedMapsRaw[i].as_string();
+        int test = config->get_layer_locktime();
+        std::vector<std::string> *usedMaps = config->get_maps();
+        int locktime = config->get_biom_spacing();
+        for(std::string map : (*usedMaps)){
+            //std::string map = usedMapsRaw[i];
             if(biomValues.find(map) == biomValues.end()){
                 //no biom values for map, skip map
                 std::cout << "WARNING: No Biom values saved for map '" << map << "'. Skipping map.\n";
