@@ -8,6 +8,8 @@ set(SOURCE
     RotaTeam.cpp
     utils.cpp
     dataParsing.cpp
+    Generator.cpp
+    Config.cpp
 )
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
