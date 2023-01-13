@@ -70,14 +70,17 @@ namespace rota
 
     void parseMaps(Config *config, std::map<std::string, RotaMap*> *maps){
 
-        const std::filesystem::path configFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
-        std::ifstream ifs(configFile);
+        const std::filesystem::path biomFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
+        std::ifstream ifs(biomFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
-        int test = config->get_layer_locktime();
         std::vector<std::string> *usedMaps = config->get_maps();
         int locktime = config->get_biom_spacing();
+        float mapVoteSlope = config->get_mapvote_slope();
+        float mapVoteShift = config->get_mapvote_shift();
+        float layerVoteSlope = config->get_layervote_slope();
+        float layerVoteShift =  config->get_layervote_shift();
         for(std::string map : (*usedMaps)){
             //std::string map = usedMapsRaw[i];
             if(biomValues.find(map) == biomValues.end()){
@@ -90,7 +93,9 @@ namespace rota
             for(int i=0; i<bv.size(); i++){
                 biomVals.push_back(bv[i].as_double());
             }
-            (*maps)[map] = new RotaMap(map, biomVals, locktime);
+            RotaMap *newMap = new RotaMap(map, biomVals, locktime);
+            newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope, layerVoteShift);
+            (*maps)[map] = newMap;
         }
     }
 
