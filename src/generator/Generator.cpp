@@ -1,4 +1,4 @@
-#include "Maprota.hpp"
+#include "Generator.hpp"
 
 #include <vector>
 #include <boost/json.hpp>
@@ -16,7 +16,7 @@
 
 namespace rota
 {
-    Maprota::Maprota(boost::json::object *config){
+    Generator::Generator(boost::json::object *config){
         this->config = config;
         parseModes(this->config, &this->modePools, &this->modes);
         parseMaps(this->config, &this->maps); // setup all available maps
@@ -39,7 +39,7 @@ namespace rota
         parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     }
 
-    RotaMode* Maprota::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){ //TODO test
+    RotaMode* Generator::chooseMode(bool useLatestModes=true, RotaModePool *customPool=nullptr){ //TODO test
         RotaModePool *pool;
         if(customPool != nullptr){
             pool = customPool;
@@ -79,7 +79,7 @@ namespace rota
         return modes[weightedChoice(&modeWeights)];
     }
 
-    RotaMap* Maprota::chooseMap(RotaMode *mode){
+    RotaMap* Generator::chooseMap(RotaMode *mode){
 
         RotaMode *fallbackMode = chooseMode(true, this->modePools["main"]); //fallback mode of main pool if maps are unavailable for given mode
         std::vector<RotaMap*> fallbackAvailableMaps;
@@ -114,7 +114,7 @@ namespace rota
         }
     }
 
-    RotaLayer* Maprota::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
+    RotaLayer* Generator::chooseLayerFromMap(RotaMap *map, RotaMode *mode){
         std::vector<float> weights;
         std::vector<RotaLayer*> layers;
         for(RotaLayer *layer: map->getModeToLayers()->at(mode)){
@@ -127,19 +127,19 @@ namespace rota
         return layers[weightedChoice(&weights)];
     }
 
-    void Maprota::decreaseMapLocktimes(){
+    void Generator::decreaseMapLocktimes(){
         for(auto const& [key, map]: this->maps){
             map->decreaseLockTime();
         }
     }
 
-    void Maprota::decreaseLayerLocktimes(){
+    void Generator::decreaseLayerLocktimes(){
         for(auto const& [key, layer]: this->layers){
             layer->decreaseLockTime();
         }
     }
 
-    void Maprota::lockTeams(){
+    void Generator::lockTeams(){
         int maxSameTeam = this->config->at("max_same_team").as_int64();
         if(maxSameTeam < 1) return;
         std::vector<RotaTeam*> teams1;
@@ -187,7 +187,7 @@ namespace rota
         }
     }
 
-    void Maprota::generateRota(){
+    void Generator::generateRota(){
         // add seedlayer
         if(config->at("seed_layer").as_int64() > 0){
             std::vector<RotaMap*> seedMaps;

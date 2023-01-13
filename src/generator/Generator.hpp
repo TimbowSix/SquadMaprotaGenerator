@@ -11,7 +11,7 @@
 
 namespace rota
 {
-    class Maprota
+    class Generator
     {
     private:
         boost::json::object *config;
@@ -61,8 +61,7 @@ namespace rota
        RotaMode *modeBuffer;
 
     public:
-        Maprota(boost::json::object *config);
-        ~Maprota() {};
+        Generator(boost::json::object *config);
 
         /**
          * @brief Selects a random game mode based on the modes in the mode pools and the corresponding probabilities set in the configuration
