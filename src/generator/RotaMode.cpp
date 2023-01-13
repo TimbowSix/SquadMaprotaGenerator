@@ -4,12 +4,13 @@
 
 namespace rota
 {
-    RotaMode::RotaMode(std::string name){
-        this->name = name;
+RotaMode::RotaMode(std::string name, float probability, std::vector<float> weightParams){
+    this->name = name;
+    this->probability = probability;
+    for(int i=0; i<weightParams.size(); i++){
+        this->weightParams[i] = weightParams[i];
     }
-    RotaMode::RotaMode(std::string name, float probability){
-        this->name = name;
-        this->probability = probability;
-    }
-    RotaMode::~RotaMode(){}
+}
+
+
 } // namespace rota
