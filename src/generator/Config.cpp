@@ -19,7 +19,6 @@ Config::Config(std::string path){
     boost::json::object pData = boost::json::parse(data).get_object();
 
     parseModes(&pData, &this->pools, &this->modes);
-    //TODO Typecasting JSON Integer/Float
     number_of_rotas = pData["number_of_rotas"].as_int64();
     number_of_layers = pData["number_of_layers"].as_int64();
     seed_layer = pData["seed_layer"].as_int64();
@@ -31,17 +30,17 @@ Config::Config(std::string path){
     biom_spacing = pData["biom_spacing"].as_int64();
     layer_locktime = pData["layer_locktime"].as_int64();
     max_same_team = pData["max_same_team"].as_int64();
-    min_biom_distance = pData["min_biom_distance"].as_double();
-    mapvote_slope = pData["mapvote_slope"].as_double();
-    mapvote_shift = pData["mapvote_shift"].as_double();
-    layervote_slope = pData["layervote_slope"].as_double();
-    layervote_shift = pData["layervote_shift"].as_double();
+    min_biom_distance = pData["min_biom_distance"].is_double() ? pData["min_biom_distance"].as_double() : pData["min_biom_distance"].as_int64();
+    mapvote_slope = pData["mapvote_slope"].is_double() ? pData["mapvote_slope"].as_double() : pData["mapvote_slope"].as_int64();
+    mapvote_shift = pData["mapvote_shift"].is_double() ? pData["mapvote_shift"].as_double() : pData["mapvote_shift"].as_int64();
+    layervote_slope = pData["layervote_slope"].is_double() ? pData["layervote_slope"].as_double() : pData["layervote_slope"].as_int64();
+    layervote_shift = pData["layervote_shift"].is_double() ? pData["layervote_shift"].as_double() : pData["layervote_shift"].as_int64();
     save_expected_map_dist = pData["save_expected_map_dist"].as_bool();
     use_lock_time_modifier = pData["use_lock_time_modifier"].as_bool();
     auto_optimize = pData["auto_optimize"].as_bool();
     fix_unavailables = pData["fix_unavailables"].as_bool();
-    pool_spacing = pData["pool_spacing"].as_int64();
-    space_main = pData["space_main"].as_bool();
+    pool_spacing = pData["mode_distribution"].at("pool_spacing").as_int64();
+    space_main = pData["mode_distribution"].at("space_main").as_bool();
     //TODO parse maps list
 }
 // getter / setter

@@ -39,7 +39,8 @@ namespace rota
                 std::vector<float> weightParams;
 
                 for(boost::json::value param : allWeightParams.at(modeName).as_array()){
-                    weightParams.push_back(param.as_double());
+                    float p = param.is_double() ? param.as_double() : param.as_int64();
+                    weightParams.push_back(p);
                 }
                 assert(weightParams.size() == WEIGHT_PARAMS_COUNT);
                 RotaMode *mode = new RotaMode(modeName, modeProbability, weightParams);
