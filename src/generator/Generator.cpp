@@ -21,7 +21,6 @@ namespace rota
         this->config = config;
         this->modePools = (*config->get_pools());
         this->modes = (*config->get_modes());
-        //parseModes(this->config, &this->modePools, &this->modes);
         parseMaps(this->config, &this->mapsByName); // setup all available maps
 
         std::string voteUrl = this->config->get_layer_vote_api_url();
@@ -236,6 +235,44 @@ namespace rota
             layer->lock();
             this->lockTeams();
         }
+    }
+
+    void Generator::reset(){
+        std::vector<RotaLayer*> pastLayers;
+        this->reset(&pastLayers); // call reset with empty past layers
+    }
+    void Generator::reset(std::vector<RotaLayer*> *pastLayers){
+        this->rotation.clear();
+        this->latestMaps.clear();
+        this->latestModes.clear();
+        this->modeBuffer = nullptr;
+        for(RotaMap* map : this->maps){
+            map->unlock();
+        }
+        for(auto const& [key, layer] : this->layers){
+            layer->unlock();
+        }
+
+        // set previous layers
+        int pastLen = pastLayers->size();
+        if(pastLen == 0) return;
+        for (int i = 0; i < pastLen; i++){
+            if(pastLen-i < config->get_biom_spacing()+1){ // lock maps within biom spacing and their neighbors
+                pastLayers->at(i)->getMap()->lock(config->get_biom_spacing()-pastLen-1-i, true);
+            }
+            pastLayers->at(i)->lock(config->get_layer_locktime()-pastLen-1-i); //lock layers
+            if(pastLen-i < config->get_pool_spacing()+1){ //add modes within the range of pool spacing to latest modes
+                latestModes.push_back(pastLayers->at(i)->getMode());
+            }
+        }
+    }
+    void Generator::reset(std::vector<std::string> *latestLayers){
+        std::vector<RotaLayer*> pastLayers;
+        for(std::string layerName: (*latestLayers)){
+            RotaLayer* layer = layers[layerName]; //TODO handle layer not found
+            pastLayers.push_back(layer);
+        }
+        reset(&pastLayers);
     }
 
 } // namespace rota
