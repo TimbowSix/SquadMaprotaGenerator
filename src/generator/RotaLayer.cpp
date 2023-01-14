@@ -17,8 +17,16 @@ void RotaLayer::lock(){
 
 void RotaLayer::lock(unsigned int time){
     assert(time > 0);
-    this->currLockTime = time;
-    this->map->decreaseAvailableLayers(this->mode);
+    if (this->currLockTime < time){ // do not overwrite existing locktimes
+        this->currLockTime = time;
+        this->map->decreaseAvailableLayers(this->mode);
+        this->map->calcNewMapVoteWeight(this->mode);
+    }
+}
+
+void RotaLayer::unlock(){
+    this->currLockTime = 0;
+    this->map->increaseAvailableLayers(this->mode);
     this->map->calcNewMapVoteWeight(this->mode);
 }
 
@@ -56,3 +64,5 @@ void RotaLayer::setMode(RotaMode *mode) { this->mode = mode; }
 void RotaLayer::setVoteWeight(float slope, float shift) {
     this->voteWeight = sigmoid(this->votes, slope, shift);
 }
+
+RotaMap* RotaLayer::getMap(){ return this->map; }
