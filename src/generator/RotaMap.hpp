@@ -73,18 +73,47 @@ class RotaMap {
     void decreaseLockTime();
 
     /**
+     * @brief locks this Map and its neighbors for the defined lock time
+     *
+     * @param lockNeighbors whether neighbors should also be locked.
+     */
+    void lock();
+
+    /**
+     * @brief locks this map for the defined locktime.
+     *
+     * @param lockNeighbors whether neighbors should also be also locked for the same amount of time
+    */
+    void lock(bool lockNeighbors);
+
+    /**
      * @brief locks map for given amount of rounds.
      *        Use for custom locktime.
-     *        For normal lock use resetLockTime
      *
      * @param locktime amount of rounds to lock
      */
     void lock(int locktime);
 
     /**
-     * @brief lockes this layer for the defined lock time
+     * @brief locks map for given amount of rounds.
+     *        Use for custom locktime.
+     *        does not overwrite if locktime < existing locktime
+     *
+     *
+     * @param locktime amount of rounds to lock
+     * @param lockNeighbors whether neighbors should also be locked for the same amount of time
      */
-    void lock();
+    void lock(int locktime, bool lockNeighbors);
+
+    /**
+     * @brief sets new locktime regardless of current locktime
+    */
+    void overwriteLock(int locktime);
+
+    /**
+     * @brief resets current locktime to 0
+    */
+    void unlock();
 
     /**
      * @brief calculates a mode specific weight for this map
