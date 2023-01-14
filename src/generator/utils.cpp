@@ -65,6 +65,10 @@ void normalize(std::vector<float> *arr, float *sum) {
     }
 }
 
+void normalize(std::vector<float> *arr){
+    normalize(arr, NULL);
+}
+
 float sigmoid(float x, float slope, float shift) {
     float arg = slope * (x + shift);
     return 1 / (1 + exp(-arg));
