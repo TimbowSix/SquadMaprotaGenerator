@@ -61,11 +61,11 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
             votes.push_back(layer->getVotes());
         }
     }
-    if (voteSum == 0) {
+    if (votes.size() == 0) {
         throw std::runtime_error("div by 0, in calcMapVoteWeight");
         return;
     }
-    float mean = 1 / voteSum * votes.size();
+    float mean = 1 / votes.size() * voteSum;
     float sum = 0;
     for (float val : votes) {
         float temp = exp(-std::pow(mean - val, 2));
