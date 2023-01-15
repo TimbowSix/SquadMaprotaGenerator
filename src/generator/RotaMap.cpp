@@ -39,9 +39,37 @@ void RotaMap::decreaseLockTime() {
     }
 }
 
-void RotaMap::lock() { this->currentLockTime = this->lockTime; }
+void RotaMap::lock() {
+    this->lock(this->lockTime, true);
+}
 
-void RotaMap::lock(int locktime) { this->currentLockTime = locktime; }
+void RotaMap::lock(bool lockNeighbors) {
+    this->lock(this->lockTime, lockNeighbors);
+}
+
+void RotaMap::lock(int locktime){
+    this->lock(locktime, false);
+}
+
+void RotaMap::lock(int locktime, bool lockNeighbors) {
+    assert(locktime > 0);
+    if (this->currentLockTime < locktime){ // do not overwrite existing locktimes
+        this->currentLockTime = locktime;
+
+        if(lockNeighbors){
+            for(RotaMap* map : this->neighbor){
+                map->lock(false);
+            }
+        }
+    }
+}
+
+void RotaMap::overwriteLock(int locktime){
+    assert(locktime > 0);
+    this->currentLockTime = locktime;
+}
+
+void RotaMap::unlock() { this->currentLockTime = 0; }
 
 void RotaMap::calcMapVoteWeight(RotaMode *mode) {
     if (this->layers.size() == 0) {
@@ -152,3 +180,10 @@ boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {
 }
 
 void RotaMap::addNeighbour(RotaMap *map) { this->neighbor.push_back(map); }
+
+void RotaMap::setSigmoidValues(float mapVoteSlope, float mapVoteShift, float layerVoteSlope,float layerVoteShift){
+    this->sigmoidValues[0] = mapVoteSlope;
+    this->sigmoidValues[1] = mapVoteShift;
+    this->sigmoidValues[2] = layerVoteSlope;
+    this->sigmoidValues[3] = layerVoteShift;
+}

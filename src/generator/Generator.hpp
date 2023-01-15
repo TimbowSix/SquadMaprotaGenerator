@@ -19,7 +19,11 @@ namespace rota
         /**
          * @brief maps all available maps to their name
         */
-        std::map<std::string, RotaMap*> maps;
+        std::map<std::string, RotaMap*> mapsByName;
+        /**
+         * @brief list of all maps
+        */
+        std::vector<RotaMap*> maps;
         /**
          * @brief maps all available ModePools to their name
         */
@@ -104,5 +108,19 @@ namespace rota
         */
         //std::vector<RotaLayer*> generateRota();
         void generateRota();
+
+        /**
+         * @brief resets all temporary values used for generation
+        */
+        void reset();
+        /**
+         * @brief resets all temporary values used for generation and sets given previous layers
+        */
+        void reset(std::vector<RotaLayer*> *pastLayers);
+        /**
+         * @brief resets all temporary values used for generation
+         *        parses and sets given previous layers
+        */
+        void reset(std::vector<std::string> *pastLayers);
     };
 } // namespace rota

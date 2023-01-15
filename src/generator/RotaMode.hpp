@@ -11,16 +11,17 @@
 
 #include "RotaConfig.hpp"
 #include <string>
+#include <vector>
 
 namespace rota {
 class RotaMode {
+
   public:
     std::string name;
     float probability;
     float weightParams[WEIGHT_PARAMS_COUNT];
-    RotaMode(std::string name);
-    RotaMode(std::string name, float probability /*, float *weighParams*/);
-    ~RotaMode();
+    RotaMode(std::string name, float probability , std::vector<float> weightParams);
+    ~RotaMode() {};
 };
 
 } // namespace rota

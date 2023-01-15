@@ -22,6 +22,12 @@ namespace rota
 {
     void parseModes(boost::json::object *config, std::map<std::string, RotaModePool *> *allPools, std::map<std::string, RotaMode *> *allModes){
         boost::json::value *pools = &config->at("mode_distribution").at("pools");
+
+        const std::filesystem::path weightParamsFile{std::string(CONFIG_PATH)+"/data/weight_params.json"};
+        std::ifstream ifs(weightParamsFile);
+        std::string data(std::istreambuf_iterator<char>{ifs}, {});
+        boost::json::object allWeightParams = boost::json::parse(data).get_object();
+
         for(auto currentPool = pools->as_object().begin(); currentPool != pools->as_object().end(); currentPool++){
             std::string poolName = currentPool->key_c_str();
             boost::json::object poolModes = currentPool->value().as_object();
@@ -30,17 +36,28 @@ namespace rota
             for(auto currentMode = poolModes.begin(); currentMode != poolModes.end(); currentMode++){
                 std::string modeName = currentMode->key_c_str();
                 float modeProbability = currentMode->value().as_double();
-                RotaMode *mode = new RotaMode(modeName, modeProbability);
+                std::vector<float> weightParams;
+
+                for(boost::json::value param : allWeightParams.at(modeName).as_array()){
+                    float p = param.is_double() ? param.as_double() : param.as_int64();
+                    weightParams.push_back(p);
+                }
+                assert(weightParams.size() == WEIGHT_PARAMS_COUNT);
+                RotaMode *mode = new RotaMode(modeName, modeProbability, weightParams);
                 pool->addMode(mode);
                 (*allModes)[modeName] = mode;
             }
             (*allPools)[poolName] = pool;
         }
-        (*allModes)["Seed"] = new RotaMode("Seed", 1.0); //add Seeding mode
+        std::vector<float> weightParams;
+        for(int i=0; i<WEIGHT_PARAMS_COUNT; i++){
+            weightParams.push_back(0.0);
+        }
+        (*allModes)["Seed"] = new RotaMode("Seed", 1.0, weightParams); //add Seeding mode
     }
 
     void parseLayers(std::string url, std::map<std::string, RotaMap*> *maps, std::map<std::string, RotaLayer*> *layers, std::map<std::string, RotaMode*> *modes){
-        Config cfg(std::string(CONFIG_PATH)+"/config.json");
+        //Config cfg(std::string(CONFIG_PATH)+"/config.json");
         //std::map<std::string, RotaLayer*> allLayers;
         std::vector<RotaLayer*> allLayers;
         getLayers(url, &allLayers); // get all layers from api
@@ -70,14 +87,17 @@ namespace rota
 
     void parseMaps(Config *config, std::map<std::string, RotaMap*> *maps){
 
-        const std::filesystem::path configFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
-        std::ifstream ifs(configFile);
+        const std::filesystem::path biomFile{std::string(CONFIG_PATH)+"/data/bioms.json"};
+        std::ifstream ifs(biomFile);
         std::string data(std::istreambuf_iterator<char>{ifs}, {});
         boost::json::object biomValues = boost::json::parse(data).get_object();
 
-        int test = config->get_layer_locktime();
         std::vector<std::string> *usedMaps = config->get_maps();
         int locktime = config->get_biom_spacing();
+        float mapVoteSlope = config->get_mapvote_slope();
+        float mapVoteShift = config->get_mapvote_shift();
+        float layerVoteSlope = config->get_layervote_slope();
+        float layerVoteShift =  config->get_layervote_shift();
         for(std::string map : (*usedMaps)){
             //std::string map = usedMapsRaw[i];
             if(biomValues.find(map) == biomValues.end()){
@@ -90,7 +110,9 @@ namespace rota
             for(int i=0; i<bv.size(); i++){
                 biomVals.push_back(bv[i].as_double());
             }
-            (*maps)[map] = new RotaMap(map, biomVals, locktime);
+            RotaMap *newMap = new RotaMap(map, biomVals, locktime);
+            newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope, layerVoteShift);
+            (*maps)[map] = newMap;
         }
     }
 
