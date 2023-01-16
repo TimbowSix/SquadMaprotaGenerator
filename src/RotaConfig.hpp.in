@@ -2,6 +2,6 @@
 
 #define ROTA_VERSION_MAJOR @SquadMaprota_VERSION_MAJOR@
 #define ROTA_VERSION_MINOR @SquadMaprota_VERSION_MINOR@
-#define CONFIG_PATH        "@SquadMaprota_SOURCE_DIR@"
+#define CONFIG_PATH "/etc/maprota/"
 
 #define WEIGHT_PARAMS_COUNT 6

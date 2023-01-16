@@ -11,3 +11,21 @@ find_package(
 
 add_subdirectory(src)
 add_subdirectory(external)
+
+install(FILES config.json data/bioms.json DESTINATION etc/maprota)
+
+#include(InstallRequiredSystemLibraries)
+#set(CPACK_PACKAGE_VERSION_MAJOR "${SquadMaprota_VERSION_MAJOR}")
+#set(CPACK_PACKAGE_VERSION_MINOR "${SquadMaprota_VERSION_MINOR}")
+#include(CPack)
+
+# uninstall target
+if(NOT TARGET uninstall)
+  configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.txt"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+
+  add_custom_target(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
