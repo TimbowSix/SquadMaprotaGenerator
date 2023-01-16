@@ -44,6 +44,13 @@ int choice(int length);
 void normalize(std::vector<float> *arr, float *sum);
 
 /**
+ * @brief normalizes all values in list
+ *
+ * @param arr list of values to normalize
+ */
+void normalize(std::vector<float> *arr);
+
+/**
  * @brief sigmoid function
  */
 float sigmoid(float x, float slope, float shift);
