@@ -41,10 +41,9 @@ class RotaMap {
     std::map<RotaMode *, float> mapVoteWeights;
 
     /**
-     * @brief a helper sum for calculating the actual map weight
-     *        should change if a layer gets locked
+     * @brief map weights from optimizer
      */
-    std::map<RotaMode *, float> mapVoteWeightSum;
+    std::map<RotaMode *, float> mapWeights;
 
     std::map<RotaMap *, float> distances;
     std::vector<RotaMap *> neighbor;
@@ -65,6 +64,14 @@ class RotaMap {
   public:
     RotaMap(std::string name, std::vector<float> biomValues, int lockTime);
     ~RotaMap(){};
+
+    /**
+     * @brief add a Layer to this map
+     *        populates the modeToLayer map
+     *        NOTE: initialize the mapVoteWeight for this layer Mode to 1
+     *
+     * @param layer type RotaLayer
+     */
     void addLayer(RotaLayer *layer);
 
     /**
@@ -82,8 +89,9 @@ class RotaMap {
     /**
      * @brief locks this map for the defined locktime.
      *
-     * @param lockNeighbors whether neighbors should also be also locked for the same amount of time
-    */
+     * @param lockNeighbors whether neighbors should also be also locked for the
+     * same amount of time
+     */
     void lock(bool lockNeighbors);
 
     /**
@@ -101,18 +109,19 @@ class RotaMap {
      *
      *
      * @param locktime amount of rounds to lock
-     * @param lockNeighbors whether neighbors should also be locked for the same amount of time
+     * @param lockNeighbors whether neighbors should also be locked for the same
+     * amount of time
      */
     void lock(int locktime, bool lockNeighbors);
 
     /**
      * @brief sets new locktime regardless of current locktime
-    */
+     */
     void overwriteLock(int locktime);
 
     /**
      * @brief resets current locktime to 0
-    */
+     */
     void unlock();
 
     /**
@@ -131,32 +140,15 @@ class RotaMap {
     void calcAllMapVoteWeights();
 
     /**
-     * @brief calculates the map weight for a mode based on the map Vote weights
-     *
-     * @param mode
-     * @param params values which a found bei the optimizer
-     * @returns the map weight for given mode
-     */
-    float calcMapWeight(RotaMode *mode);
-
-    /**
      * @brief calculates all weight for all layers of this map
      */
     void calcLayerVoteWeights();
 
     /**
-     * @brief calculates a new map vote weight for this mode
-     *        must be called wenn a layer gets locked or unlocked
-     *        updates the mapWeightSum for a fast map weight
-     *        calculation
-     */
-    void calcNewMapVoteWeight(RotaMode *mode);
-
-    /**
      * @brief checks if unlocked layers for given mode are available
      *
      * @param mode mode to check
-    */
+     */
     bool hasLayersAvailable(RotaMode *mode);
 
     /**
@@ -173,6 +165,8 @@ class RotaMap {
     std::string getName();
     std::map<RotaMode *, std::vector<RotaLayer *>> *getModeToLayers();
     bool isLocked();
+    float getMapVoteWeight(RotaMode *mode);
+    void setMapVoteWeight(RotaMode *mode, float weight);
 
     void increaseAvailableLayers(RotaMode *mode);
     void decreaseAvailableLayers(RotaMode *mode);
@@ -180,6 +174,7 @@ class RotaMap {
     boost::numeric::ublas::vector<float> *getBiomValues();
     void addNeighbour(RotaMap *map);
 
-    void setSigmoidValues(float mapVoteSlope, float mapVoteShift, float layerVoteSlope,float layerVoteShift);
+    void setSigmoidValues(float mapVoteSlope, float mapVoteShift,
+                          float layerVoteSlope, float layerVoteShift);
 };
 } // namespace rota

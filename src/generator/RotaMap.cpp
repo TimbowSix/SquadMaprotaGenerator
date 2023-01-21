@@ -24,9 +24,10 @@ void RotaMap::addLayer(RotaLayer *layer) {
     this->modeToLayers[layer->getMode()].push_back(layer);
     if (this->availableLayers.find(layer->getMode()) ==
         this->availableLayers.end()) {
-        // create if not found
+        // create if mode not found
         this->availableLayers[layer->getMode()] = 1;
-
+        // init value for weights for this mode
+        this->mapVoteWeights[layer->getMode()] = 1;
     } else {
         this->availableLayers[layer->getMode()]++;
     }
@@ -39,32 +40,29 @@ void RotaMap::decreaseLockTime() {
     }
 }
 
-void RotaMap::lock() {
-    this->lock(this->lockTime, true);
-}
+void RotaMap::lock() { this->lock(this->lockTime, true); }
 
 void RotaMap::lock(bool lockNeighbors) {
     this->lock(this->lockTime, lockNeighbors);
 }
 
-void RotaMap::lock(int locktime){
-    this->lock(locktime, false);
-}
+void RotaMap::lock(int locktime) { this->lock(locktime, false); }
 
 void RotaMap::lock(int locktime, bool lockNeighbors) {
     assert(locktime > 0);
-    if (this->currentLockTime < locktime){ // do not overwrite existing locktimes
+    if (this->currentLockTime <
+        locktime) { // do not overwrite existing locktimes
         this->currentLockTime = locktime;
 
-        if(lockNeighbors){
-            for(RotaMap* map : this->neighbor){
+        if (lockNeighbors) {
+            for (RotaMap *map : this->neighbor) {
                 map->lock(false);
             }
         }
     }
 }
 
-void RotaMap::overwriteLock(int locktime){
+void RotaMap::overwriteLock(int locktime) {
     assert(locktime > 0);
     this->currentLockTime = locktime;
 }
@@ -93,7 +91,7 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
         throw std::runtime_error("div by 0, in calcMapVoteWeight");
         return;
     }
-    float mean = 1 / votes.size() * voteSum;
+    float mean = 1.0 / votes.size() * voteSum;
     float sum = 0;
     for (float val : votes) {
         float temp = exp(-std::pow(mean - val, 2));
@@ -121,29 +119,12 @@ void RotaMap::calcAllMapVoteWeights() {
     }
 }
 
-float RotaMap::calcMapWeight(RotaMode *mode) {
-    float x = this->neighbor.size();
-    assert(x >= 0);
-    assert(this->mapVoteWeights[mode] > 0);
-    float y = this->mapVoteWeights[mode] / this->mapVoteWeightSum[mode];
-    return mode->weightParams[0] + mode->weightParams[1] * x +
-           10 * mode->weightParams[2] * y + mode->weightParams[3] * pow(x, 2) +
-           10 * mode->weightParams[4] * x * y +
-           100 * mode->weightParams[5] * pow(y, 2);
-}
-
 void RotaMap::calcLayerVoteWeights() {
     float slope = this->sigmoidValues[2];
     float shift = this->sigmoidValues[3];
     for (RotaLayer *layer : this->layers) {
         layer->setVoteWeight(slope, shift);
     }
-}
-
-void RotaMap::calcNewMapVoteWeight(RotaMode *mode) {
-    float oldWeight = this->mapVoteWeights[mode];
-    this->calcMapVoteWeight(mode);
-    this->mapVoteWeightSum[mode] += (this->mapVoteWeights[mode] - oldWeight);
 }
 
 bool RotaMap::hasLayersAvailable(RotaMode *mode) {
@@ -181,9 +162,17 @@ boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {
 
 void RotaMap::addNeighbour(RotaMap *map) { this->neighbor.push_back(map); }
 
-void RotaMap::setSigmoidValues(float mapVoteSlope, float mapVoteShift, float layerVoteSlope,float layerVoteShift){
+void RotaMap::setSigmoidValues(float mapVoteSlope, float mapVoteShift,
+                               float layerVoteSlope, float layerVoteShift) {
     this->sigmoidValues[0] = mapVoteSlope;
     this->sigmoidValues[1] = mapVoteShift;
     this->sigmoidValues[2] = layerVoteSlope;
     this->sigmoidValues[3] = layerVoteShift;
+}
+
+float RotaMap::getMapVoteWeight(RotaMode *mode) {
+    return this->mapVoteWeights[mode];
+}
+void RotaMap::setMapVoteWeight(RotaMode *mode, float weight) {
+    this->mapVoteWeights[mode] = weight;
 }

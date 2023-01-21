@@ -115,11 +115,11 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
                 if (map->hasLayersAvailable(mode)) { // get all maps containing
                                                      // mode and are unlocked
                     availableMaps.push_back(map);
-                    weights.push_back(map->calcMapWeight(mode));
+                    weights.push_back(map->getMapVoteWeight(mode));
                 }
                 if (map->hasLayersAvailable(fallbackMode)) {
                     fallbackAvailableMaps.push_back(map);
-                    fallbackWeights.push_back(map->calcMapWeight(mode));
+                    fallbackWeights.push_back(map->getMapVoteWeight(mode));
                 }
             }
         }
