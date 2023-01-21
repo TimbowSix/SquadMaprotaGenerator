@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "RotaConfig.hpp"
+#include "GlobalConfig.hpp"
 #include <string>
 #include <vector>
 
@@ -20,8 +20,9 @@ class RotaMode {
     std::string name;
     float probability;
     float weightParams[WEIGHT_PARAMS_COUNT];
-    RotaMode(std::string name, float probability , std::vector<float> weightParams);
-    ~RotaMode() {};
+    RotaMode(std::string name, float probability,
+             std::vector<float> weightParams);
+    ~RotaMode(){};
 };
 
 } // namespace rota

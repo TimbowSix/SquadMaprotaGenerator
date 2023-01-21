@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-#include "RotaConfig.hpp"
+#include "GlobalConfig.hpp"
 #include "RotaLayer.hpp"
 #include "utils.hpp"
 
