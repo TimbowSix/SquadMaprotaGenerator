@@ -16,7 +16,7 @@ namespace optimizer
         maxEvolveSteps = 100;
         T0 = 50.0;
         stateBaseSize = 4;
-        iterationMax = 2000;
+        iterationMax = 5000;
         slope = 0.05;
     };
     RotaOptimizer::~RotaOptimizer(){
@@ -114,21 +114,36 @@ namespace optimizer
     };
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float>& state){
-        boost::numeric::ublas::matrix<float> temp;
+        boost::numeric::ublas::matrix<float> temp(state);
+        // Init trafo matrix as zero-matrix
+        boost::numeric::ublas::matrix<float> trafo(state.size1(), state.size2());
+        for(unsigned i=0; i<state.size1(); i++)
+            for(unsigned j=0; j<state.size2(); j++)
+                trafo(i,j) = 0.0;
+
+        float factor = 0.0;
         if(kernelSize == 0){// no memory kernel, only matmul necessary for state evolution
             for(unsigned i=0; i<this->maxEvolveSteps; i++)
-                if(i==0){
-                    temp = boost::numeric::ublas::prod(state, state);
-                }
-                else{
-                    temp = boost::numeric::ublas::prod(state, temp);
-                }
+                temp = boost::numeric::ublas::prod(state, temp);
         }
-        else    // finite memory kernel
+        else    // finite, non-vanishing memory kernel
         {
-            temp = state;
+            for(unsigned i=0; i<this->maxEvolveSteps; i++){
+                for(unsigned j=0; j<this->stateBaseSize; j++){
+                    for(unsigned k=0; k<this->kernelSize; k++){
+                        factor = this->memorykernel[k][j]/this->kernelSize;
+                        if(factor != 0.0){
+                            this->SetRowZero(temp, j);
+                            trafo = factor*temp;
+                            temp = state;
+                        }
+                    }
+                }
+                trafo = prod(MatrixToProbabilityMatrix(trafo),state);
+                UpdateMemoryKernel(trafo, memorykernel);
+            }
         }
-        return temp;
+        return trafo;
     };
 
     bool RotaOptimizer::AcceptMove(float fitvalue_difference){

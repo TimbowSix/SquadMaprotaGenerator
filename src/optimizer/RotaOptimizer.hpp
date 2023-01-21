@@ -4,6 +4,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <random>
+#include <map>
 
 namespace optimizer
 {
@@ -16,11 +17,13 @@ namespace optimizer
             float slope;
             std::mt19937 generator;
             std::mt19937* generator_ptr;
+            std::vector<std::vector<float>> memorykernel;
 
             /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
             /// @param mat 
             /// @return 
             boost::numeric::ublas::matrix<float> MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat);
+            std::map<int, std::vector<int>> clusters;
 
         public:
             boost::numeric::ublas::matrix<float> comparisonState;
