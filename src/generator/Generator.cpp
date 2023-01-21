@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include <RotaOptimizer.hpp>
 
 #include "RotaConfig.hpp"
 #include "RotaLayer.hpp"
@@ -13,7 +14,6 @@
 #include "RotaModePool.hpp"
 #include "dataParsing.hpp"
 #include "utils.hpp"
-
 
 #include <iostream>
 
