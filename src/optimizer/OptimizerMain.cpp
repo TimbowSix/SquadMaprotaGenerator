@@ -26,7 +26,7 @@ int main(void){
     opt.comparisonState = opt.ComparisonState_FromProbabilities({0.2, 0.3, 0.4, 0.05, 0.05});
 
     print_matrix(state);
-
+    bool DEBUG = false;
     // Calculate fit-value
     // Until either maximum iterations or some abort-condition
     for(unsigned i=0; i<opt.iterationMax; i++){   
@@ -35,12 +35,14 @@ int main(void){
         fit_buffer = opt.StateDifference(evolved_state, opt.comparisonState);
         
         // if the fit-value decreases accept, otherwise only accept with a probability > 0
-        std::cout << "fit_value: " << fit_buffer << std::endl;
+        if(DEBUG)
+            std::cout << "fit_value: " << fit_buffer << std::endl;
         if(opt.AcceptMove(fit_buffer-current_fit_val)){
             state = state_buffer;
             current_fit_val = fit_buffer;
         }
-        std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
+        if(DEBUG)
+            std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
 
         // decrease temperature, for T->0 the probability -> 0 thus the algorithm converges to a "hill-climb"
         opt.T0 = opt.UpdateTemperature(opt.T0, 0.000005, i+1);
@@ -49,8 +51,10 @@ int main(void){
         if(i != opt.maxEvolveSteps-1){
             state_buffer = opt.GenerateNeighbour(state, 2.0, 1);
         }
-        std::cout<< "T0: " << opt.T0<<std::endl;
-        std::cout << "=====================" << std::endl;
+        if(DEBUG){
+            std::cout<< "T0: " << opt.T0<<std::endl;
+            std::cout << "=====================" << std::endl;
+        }
     }
     time(&end);
     boost::numeric::ublas::matrix<float> s = opt.Evolve(state);

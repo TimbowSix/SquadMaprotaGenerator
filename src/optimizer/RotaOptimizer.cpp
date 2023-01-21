@@ -7,17 +7,31 @@
 
 namespace optimizer
 {
+    void print_matrix(boost::numeric::ublas::matrix<float> mat){
+    for(unsigned j=0; j<mat.size1(); j++){
+        for(unsigned i=0; i<mat.size2(); i++){
+                std::cout << mat(j,i) << "   ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
     RotaOptimizer::RotaOptimizer(){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
 
         generator = std::mt19937(seed);            // the generator seeded with the random device
-        kernelSize = 0;
-        maxEvolveSteps = 100;
+        kernelSize = 3;
+        maxEvolveSteps = 150;
         T0 = 50.0;
-        stateBaseSize = 4;
-        iterationMax = 5000;
+        stateBaseSize = 5;
+        iterationMax = 3000;
         slope = 0.05;
+        memorykernel = {  
+            {1.0, 0.0, 0.0, 0.0, 0.0},
+            {0.0, 0.0, 0.0, 0.0, 0.0},
+            {0.0, 0.0, 0.0, 0.0, 0.0}};
+
     };
     RotaOptimizer::~RotaOptimizer(){
 
@@ -62,7 +76,8 @@ namespace optimizer
             for(unsigned i = 0; i < mat.size1(); ++ i)
                 sum += mat(i,j);
             for(unsigned i = 0; i < mat.size1(); ++ i)
-                mat(i,j)/=sum;
+                if(mat(i,j) != 0.0)
+                    mat(i,j)/=sum;
         }
         return mat;
     };
@@ -134,7 +149,7 @@ namespace optimizer
                         factor = this->memorykernel[k][j]/this->kernelSize;
                         if(factor != 0.0){
                             this->SetRowZero(temp, j);
-                            trafo = factor*temp;
+                            trafo += factor*temp;
                             temp = state;
                         }
                     }
