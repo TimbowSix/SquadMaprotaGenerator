@@ -12,7 +12,12 @@ namespace optimizer
         const uint_least32_t seed = os_seed();  
 
         generator = std::mt19937(seed);            // the generator seeded with the random device
-
+        kernelSize = 0;
+        maxEvolveSteps = 100;
+        T0 = 50.0;
+        stateBaseSize = 4;
+        iterationMax = 100;
+        slope = 0.05;
     };
     RotaOptimizer::~RotaOptimizer(){
 
@@ -43,6 +48,7 @@ namespace optimizer
             return sum;
         }
         else{
+            std::cout << "dim missmatch" << std::endl;
             return -1.0;
         }
 
@@ -105,5 +111,39 @@ namespace optimizer
 
             }
         }
+    };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float>& state){
+        boost::numeric::ublas::matrix<float> temp;
+        if(kernelSize == 0){// no memory kernel, only matmul necessary for state evolution
+            for(unsigned i=0; i<this->maxEvolveSteps; i++)
+                if(i==0){
+                    temp = boost::numeric::ublas::prod(state, state);
+                }
+                else{
+                    temp = boost::numeric::ublas::prod(state, temp);
+                }
+        }
+        else    // finite memory kernel
+        {
+            temp = state;
+        }
+        return temp;
+    };
+
+    bool RotaOptimizer::AcceptMove(float fitvalue_difference){
+        std::uniform_real_distribution<> distribute(0,1); 
+
+        return fitvalue_difference < 0 || exp(-fitvalue_difference/this->T0) > distribute(this->generator);
+    };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::ComparisonState_FromProbabilities(std::vector<float> probabilities){
+        boost::numeric::ublas::matrix<float> mat(probabilities.size(),probabilities.size());
+        for(unsigned i=0; i<mat.size2(); i++){
+            for(unsigned j=0; j<probabilities.size(); j++){
+                mat(j,i) = probabilities[j];
+            }
+        }
+        return mat;
     };
 }

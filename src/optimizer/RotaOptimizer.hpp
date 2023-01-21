@@ -11,13 +11,9 @@ namespace optimizer
     class RotaOptimizer
     {
         private:
-            float T0;
             int kernelSize;
             int stateBaseSize;
-            int maxEvolveSteps;
-            int iterationMax;
             float slope;
-            boost::numeric::ublas::matrix<float> comparisonState;
             std::mt19937 generator;
             std::mt19937* generator_ptr;
 
@@ -27,6 +23,10 @@ namespace optimizer
             boost::numeric::ublas::matrix<float> MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat);
 
         public:
+            boost::numeric::ublas::matrix<float> comparisonState;
+            int iterationMax;
+            int maxEvolveSteps;
+            float T0;
             /*
             T0: Initial temperature
             kernelSize: Length of the memory kernel
@@ -103,6 +103,11 @@ namespace optimizer
                 map<int,matrix<float>> clusters, the map-cluster map containing which state has which neighbours
             Return: matrix<float>, a new state
             */
-            void Evolve();
+            boost::numeric::ublas::matrix<float> Evolve(boost::numeric::ublas::matrix<float>& state);
+            /*
+            Returns true if the state difference is either negative or greater than some random float in [0,1)
+            */
+            bool AcceptMove(float state_difference);
+            boost::numeric::ublas::matrix<float> ComparisonState_FromProbabilities(std::vector<float> probabilities);
     };
 };

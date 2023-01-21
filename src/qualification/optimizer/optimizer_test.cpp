@@ -151,3 +151,13 @@ TEST_F(Optimizer_Fixture, UpdateMemoryKernelTest){
         }
     }
 }
+
+TEST_F(Optimizer_Fixture, EvolveTestNoKernel){
+    optimizer::RotaOptimizer opt;
+
+    boost::numeric::ublas::matrix<float> mat = opt.GenerateSeed(3);
+    boost::numeric::ublas::matrix<float> newMat = opt.Evolve(mat);
+    for(unsigned i=0; i < mat.size1(); i++)
+        for(unsigned j=0; j < mat.size2(); j++)
+            std::cout << newMat(i,j) << std::endl;
+}
