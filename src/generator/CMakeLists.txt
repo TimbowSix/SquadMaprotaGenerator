@@ -8,7 +8,7 @@ set(SOURCE
     utils.cpp
     dataParsing.cpp
     Generator.cpp
-    Config.cpp
+    RotaConfig.cpp
 )
 SET(INCLUDES
     RotaMap.hpp
@@ -19,8 +19,8 @@ SET(INCLUDES
     utils.hpp
     dataParsing.hpp
     Generator.hpp
-    Config.hpp
     RotaConfig.hpp
+    GlobalConfig.hpp
 )
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")

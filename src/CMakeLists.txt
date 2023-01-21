@@ -1,4 +1,4 @@
-configure_file(RotaConfig.hpp.in  ${CMAKE_SOURCE_DIR}/src/generator/RotaConfig.hpp)
+configure_file(GlobalConfig.hpp.in  ${CMAKE_SOURCE_DIR}/src/generator/GlobalConfig.hpp)
 add_subdirectory(generator)
 add_subdirectory(optimizer)
 add_subdirectory(qualification)

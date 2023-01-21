@@ -5,7 +5,7 @@
 #include <httplib.h>
 #include <iostream>
 
-#include <RotaConfig.hpp>
+#include <GlobalConfig.hpp>
 
 #include "RotaServer.hpp"
 

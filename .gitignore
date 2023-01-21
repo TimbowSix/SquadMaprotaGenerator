@@ -117,4 +117,4 @@ build
 CMakeFiles
 
 #cpp rotaconfig
-RotaConfig.hpp
+GlobalConfig.hpp
