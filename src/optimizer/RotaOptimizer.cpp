@@ -16,7 +16,7 @@ namespace optimizer
         maxEvolveSteps = 100;
         T0 = 50.0;
         stateBaseSize = 4;
-        iterationMax = 100;
+        iterationMax = 2000;
         slope = 0.05;
     };
     RotaOptimizer::~RotaOptimizer(){
@@ -74,10 +74,10 @@ namespace optimizer
         for(unsigned i=0; i < newstate.size1(); i++){
             for(unsigned j=0; j < newstate.size2(); j++){
                 random = distribute(this->generator);
-                newstate(i,j) += random;
+                newstate(i,j) += random*s;
                 // All entries must be positive or zero to be a probability matrix
                 if(newstate(i,j) < 0.0){
-                    newstate(i,j) -= 2*random;
+                    newstate(i,j) -= 2*random*s;
                 }
             }
         }

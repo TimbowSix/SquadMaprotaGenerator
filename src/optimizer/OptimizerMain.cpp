@@ -20,7 +20,7 @@ int main(void){
     boost::numeric::ublas::matrix<float> state_buffer(state);
     float current_fit_val = __FLT_MAX__;
     float fit_buffer = 0.0;
-    opt.comparisonState = opt.ComparisonState_FromProbabilities({0.6, 0.1, 0.3});
+    opt.comparisonState = opt.ComparisonState_FromProbabilities({0.9, 0.05, 0.05});
 
     print_matrix(state);
 
@@ -42,17 +42,16 @@ int main(void){
         }
         std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
         // decrease temperature, for T->0 the probability -> 0 thus the algorithm converges to a "hill-climb"
-        opt.T0 = opt.UpdateTemperature(opt.T0, 0.005, i+1);
+        opt.T0 = opt.UpdateTemperature(opt.T0, 0.00001, i+1);
 
         // Step to a neighbour state of the previous state (NOT the evolved state!)
         if(i != opt.maxEvolveSteps-1){
-            state = opt.GenerateNeighbour(state, 1.0, 1);
-            state_buffer = state;
+            state_buffer = opt.GenerateNeighbour(state, 5, 1);
         }
         std::cout<< "T0: " << opt.T0<<std::endl;
         std::cout << "=====================" << std::endl;
     }
-    
+    print_matrix(opt.Evolve(state));
 
     return 0;
 }
