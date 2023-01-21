@@ -1,7 +1,7 @@
 #include "RotaLayer.hpp"
+#include "RotaMap.hpp"
 #include "utils.hpp"
 #include <assert.h>
-#include "RotaMap.hpp"
 
 using namespace rota;
 
@@ -10,32 +10,29 @@ RotaLayer::RotaLayer(std::string name, float votes) {
     this->votes = votes;
 }
 
-void RotaLayer::lock(){
-    //this->currLockTime = this->lockTime;
+void RotaLayer::lock() {
+    // this->currLockTime = this->lockTime;
     this->lock(this->lockTime);
 }
 
-void RotaLayer::lock(unsigned int time){
+void RotaLayer::lock(unsigned int time) {
     assert(time > 0);
-    if (this->currLockTime < time){ // do not overwrite existing locktimes
+    if (this->currLockTime < time) { // do not overwrite existing locktimes
         this->currLockTime = time;
         this->map->decreaseAvailableLayers(this->mode);
-        this->map->calcNewMapVoteWeight(this->mode);
     }
 }
 
-void RotaLayer::unlock(){
+void RotaLayer::unlock() {
     this->currLockTime = 0;
     this->map->increaseAvailableLayers(this->mode);
-    this->map->calcNewMapVoteWeight(this->mode);
 }
 
-void RotaLayer::decreaseLockTime(){
-    if(this->isLocked()){
+void RotaLayer::decreaseLockTime() {
+    if (this->isLocked()) {
         this->currLockTime--;
-        if(!this-isLocked()){
+        if (!this - isLocked()) {
             this->map->increaseAvailableLayers(this->mode);
-            this->map->calcNewMapVoteWeight(this->mode);
         }
     }
 }
@@ -65,4 +62,4 @@ void RotaLayer::setVoteWeight(float slope, float shift) {
     this->voteWeight = sigmoid(this->votes, slope, shift);
 }
 
-RotaMap* RotaLayer::getMap(){ return this->map; }
+RotaMap *RotaLayer::getMap() { return this->map; }
