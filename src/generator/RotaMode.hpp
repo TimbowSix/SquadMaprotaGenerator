@@ -19,8 +19,7 @@ class RotaMode {
   public:
     std::string name;
     float probability;
-    RotaMode(std::string name, float probability,
-             std::vector<float> weightParams);
+    RotaMode(std::string name, float probability);
     ~RotaMode(){};
 };
 

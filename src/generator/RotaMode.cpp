@@ -3,8 +3,7 @@
 #include <vector>
 
 namespace rota {
-RotaMode::RotaMode(std::string name, float probability,
-                   std::vector<float> weightParams) {
+RotaMode::RotaMode(std::string name, float probability) {
     this->name = name;
     this->probability = probability;
 }
