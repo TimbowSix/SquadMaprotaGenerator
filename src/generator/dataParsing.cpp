@@ -24,12 +24,13 @@ void parseModes(boost::json::object *config,
                 std::map<std::string, RotaMode *> *allModes) {
     boost::json::value *pools = &config->at("mode_distribution").at("pools");
 
+/* deprecated
     const std::filesystem::path weightParamsFile{std::string(CONFIG_PATH) +
                                                  "/data/weight_params.json"};
     std::ifstream ifs(weightParamsFile);
     std::string data(std::istreambuf_iterator<char>{ifs}, {});
     boost::json::object allWeightParams = boost::json::parse(data).get_object();
-
+    */
     for (auto currentPool = pools->as_object().begin();
          currentPool != pools->as_object().end(); currentPool++) {
         std::string poolName = currentPool->key_c_str();
@@ -43,8 +44,8 @@ void parseModes(boost::json::object *config,
              currentMode != poolModes.end(); currentMode++) {
             std::string modeName = currentMode->key_c_str();
             float modeProbability = currentMode->value().as_double();
+            /*
             std::vector<float> weightParams;
-
             for (boost::json::value param :
                  allWeightParams.at(modeName).as_array()) {
                 float p =
@@ -52,8 +53,9 @@ void parseModes(boost::json::object *config,
                 weightParams.push_back(p);
             }
             assert(weightParams.size() == WEIGHT_PARAMS_COUNT);
+            */
             RotaMode *mode =
-                new RotaMode(modeName, modeProbability, weightParams);
+                new RotaMode(modeName, modeProbability /*weightParams*/);
             pool->addMode(mode);
             (*allModes)[modeName] = mode;
         }
@@ -64,7 +66,7 @@ void parseModes(boost::json::object *config,
         weightParams.push_back(0.0);
     }
     (*allModes)["Seed"] =
-        new RotaMode("Seed", 1.0, weightParams); // add Seeding mode
+        new RotaMode("Seed", 1.0); // add Seeding mode
 }
 
 void parseLayers(std::string url, std::map<std::string, RotaMap *> *maps,
