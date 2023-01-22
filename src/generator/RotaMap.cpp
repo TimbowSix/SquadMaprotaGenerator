@@ -136,7 +136,7 @@ bool RotaMap::hasLayersAvailable(RotaMode *mode) {
 }
 
 bool RotaMap::hasMode(RotaMode *mode) {
-    return this->availableLayers.find(mode) == this->availableLayers.end();
+    return this->availableLayers.find(mode) != this->availableLayers.end();
 }
 
 // getter & setter
