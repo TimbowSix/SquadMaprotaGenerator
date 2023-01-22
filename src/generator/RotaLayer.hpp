@@ -77,7 +77,7 @@ class RotaLayer {
 
     /**
      * @brief resets current locktime to 0
-    */
+     */
     void unlock();
 
     /**
@@ -97,6 +97,8 @@ class RotaLayer {
     bool isLocked();
     float getVoteWeight();
     void setVoteWeight(float slope, float shift);
-    RotaMap* getMap();
+    RotaMap *getMap();
+    void setMap(RotaMap *map);
+    void setLockTime(int lockTime);
 };
 } // namespace rota

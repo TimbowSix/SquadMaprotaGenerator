@@ -49,7 +49,7 @@ RotaTeam *RotaLayer::getTeam(int index) {
 
 RotaMode *RotaLayer::getMode() { return this->mode; }
 
-bool RotaLayer::isLocked() { return currLockTime == 0; }
+bool RotaLayer::isLocked() { return currLockTime != 0; }
 
 // setter
 void RotaLayer::setTeam(RotaTeam *team, int index) {
@@ -63,3 +63,9 @@ void RotaLayer::setVoteWeight(float slope, float shift) {
 }
 
 RotaMap *RotaLayer::getMap() { return this->map; }
+
+void RotaLayer::setMap(RotaMap *map) { this->map = map; }
+
+void RotaLayer::setLockTime(int lockTime) { this->lockTime = lockTime; }
+
+float RotaLayer::getVoteWeight() { return this->voteWeight; }

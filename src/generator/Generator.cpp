@@ -29,7 +29,7 @@ Generator::Generator(RotaConfig *config) {
     parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers,
                 &this->modes, &this->teams); // request and parse layers
 
-    // injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); //
+    injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams);
     // populate layers with data
 
     // remove maps without any layers
@@ -51,6 +51,16 @@ Generator::Generator(RotaConfig *config) {
         }
 
         setNeighbour(&this->maps, this->config->get_min_biom_distance());
+    }
+
+    // set reference from layer to ther maps, sets lockTime, sets voteWeight
+    for (RotaMap *map : this->maps) {
+        for (RotaLayer *layer : *(map->getLayer())) {
+            layer->setMap(map);
+            layer->setLockTime(this->config->get_layer_locktime());
+            layer->setVoteWeight(this->config->get_layervote_slope(),
+                                 this->config->get_layervote_shift());
+        }
     }
 }
 
@@ -149,7 +159,7 @@ RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
     std::vector<RotaLayer *> layers;
     for (RotaLayer *layer : map->getModeToLayers()->at(mode)) {
         if (!layer->isLocked()) {
-            // weights.push_back(layer->getVoteWeight());
+            weights.push_back(layer->getVoteWeight());
             layers.push_back(layer);
         }
     }
@@ -235,12 +245,6 @@ void Generator::generateRota() {
                 choosenMap); // remove choosen seed map to prevent doubles
             seedMap->lock(2);
 
-            for (auto const [key, value] : (*seedMap->getModeToLayers())) {
-                std::cout << key->name << std::endl;
-                for (auto m : value) {
-                    std::cout << m->getName() << std::endl;
-                }
-            }
             std::vector<RotaLayer *> seedLayers =
                 seedMap->getModeToLayers()->at(this->modes["Seed"]);
             RotaLayer *chosenLayer = seedLayers[choice(seedLayers.size())];
