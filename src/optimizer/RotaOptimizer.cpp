@@ -8,9 +8,20 @@
 namespace optimizer
 {
     void print_matrix(boost::numeric::ublas::matrix<float> mat){
-    for(unsigned j=0; j<mat.size1(); j++){
-        for(unsigned i=0; i<mat.size2(); i++){
-                std::cout << mat(j,i) << "   ";
+        std::cout << "=====MATRIX=====" << std::endl;    
+        for(unsigned j=0; j<mat.size1(); j++){
+            for(unsigned i=0; i<mat.size2(); i++){
+                    std::cout << mat(j,i) << "   ";
+                }
+                std::cout << std::endl;
+            }
+        }
+
+    void print_kernel(std::vector<std::vector<float>> kernel){
+        std::cout << "=====MEMROY KERNEL=====" << std::endl;
+        for(unsigned j=0; j<kernel.size(); j++){
+            for(unsigned i=0; i<kernel[j].size(); i++){
+                std::cout << kernel[j][i] << "   ";
             }
             std::cout << std::endl;
         }
@@ -22,15 +33,21 @@ namespace optimizer
 
         generator = std::mt19937(seed);            // the generator seeded with the random device
         kernelSize = 3;
-        maxEvolveSteps = 150;
+        maxEvolveSteps = 2;
         T0 = 50.0;
         stateBaseSize = 5;
-        iterationMax = 3000;
+        iterationMax = 2;
         slope = 0.05;
         memorykernel = {  
-            {1.0, 0.0, 0.0, 0.0, 0.0},
+            {0.0, 0.0, 1.0, 0.0, 0.0},
             {0.0, 0.0, 0.0, 0.0, 0.0},
             {0.0, 0.0, 0.0, 0.0, 0.0}};
+        clusters = {
+            {0, {0, 1}}, 
+            {1, {1, 0}},
+            {2, {2}},
+            {3, {3}},
+            {4, {4}}};
 
     };
     RotaOptimizer::~RotaOptimizer(){
@@ -144,18 +161,24 @@ namespace optimizer
         else    // finite, non-vanishing memory kernel
         {
             for(unsigned i=0; i<this->maxEvolveSteps; i++){
+                trafo = 0.0*trafo;
+                temp = state;
                 for(unsigned j=0; j<this->stateBaseSize; j++){
                     for(unsigned k=0; k<this->kernelSize; k++){
                         factor = this->memorykernel[k][j]/this->kernelSize;
                         if(factor != 0.0){
-                            this->SetRowZero(temp, j);
+                            for(unsigned m=0; m<clusters[j].size(); m++){
+                                SetRowZero(temp, m);
+                            }
                             trafo += factor*temp;
                             temp = state;
                         }
                     }
                 }
                 trafo = prod(MatrixToProbabilityMatrix(trafo),state);
+                print_matrix(trafo);
                 UpdateMemoryKernel(trafo, memorykernel);
+                print_kernel(memorykernel);
             }
         }
         return trafo;
