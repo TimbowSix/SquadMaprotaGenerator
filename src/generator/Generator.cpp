@@ -157,13 +157,15 @@ RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
                                          RotaMode *mode) { // Todo Test
     std::vector<float> weights;
     std::vector<RotaLayer *> layers;
+    float sum = 0.0;
     for (RotaLayer *layer : map->getModeToLayers()->at(mode)) {
         if (!layer->isLocked()) {
+            sum += layer->getVoteWeight();
             weights.push_back(layer->getVoteWeight());
             layers.push_back(layer);
         }
     }
-    normalize(&weights, NULL);
+    normalize(&weights, &sum);
     return layers[weightedChoice(&weights)];
 }
 
