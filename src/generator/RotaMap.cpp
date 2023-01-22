@@ -156,6 +156,7 @@ void RotaMap::increaseAvailableLayers(RotaMode *mode) {
 }
 void RotaMap::decreaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]--;
+    assert(this->availableLayers[mode] >= 0);
 }
 
 boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {

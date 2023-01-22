@@ -59,6 +59,9 @@ class RotaMap {
      */
     float sigmoidValues[4];
 
+    /**
+     * @brief a counter to keep track of available layers
+     */
     std::map<RotaMode *, int> availableLayers;
 
   public:

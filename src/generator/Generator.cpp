@@ -267,6 +267,8 @@ void Generator::generateRota() {
         map->lock();
         layer->lock();
         this->lockTeams();
+
+        std::cout << layer->getName() << std::endl;
     }
 }
 
