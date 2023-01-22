@@ -28,6 +28,15 @@ class Generator {
      */
     std::map<std::string, std::vector<RotaMap *>> modeToMapList;
     /**
+     * @brief history for team 1 or team 2
+     */
+    std::vector<RotaTeam *> teamHistory[2];
+    /**
+     * @brief a counter for both team with increases if a team is
+     * playing the same team again
+     */
+    int sameTeamCounter[2];
+    /**
      * @brief maps all available ModePools to their name
      */
     std::map<std::string, RotaModePool *> modePools;

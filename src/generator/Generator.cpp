@@ -2,6 +2,7 @@
 
 #include <boost/json.hpp>
 #include <numeric>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -54,6 +55,7 @@ Generator::Generator(RotaConfig *config) {
     }
 
     // set reference from layer to ther maps, sets lockTime, sets voteWeight
+    // inits teamToLayerList
     for (RotaMap *map : this->maps) {
         for (RotaLayer *layer : *(map->getLayer())) {
             layer->setMap(map);
@@ -165,6 +167,11 @@ RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
             layers.push_back(layer);
         }
     }
+    if (weights.size() <= 0) {
+        throw std::runtime_error("No Layer available for mode: " + mode->name +
+                                 " choosen map: " + map->getName());
+    }
+
     normalize(&weights, &sum);
     return layers[weightedChoice(&weights)];
 }
@@ -185,50 +192,19 @@ void Generator::lockTeams() { // TODO test?
     int maxSameTeam = this->config->get_max_same_team();
     if (maxSameTeam < 1)
         return;
-    std::vector<RotaTeam *> teams1;
-    std::vector<RotaTeam *> teams2;
-    // get latest teams
-    for (int i = this->rotation.size() - 1 - maxSameTeam;
-         i < this->rotation.size(); i++) {
-        if (i % 2 == 0) {
-            teams1.push_back(this->rotation[i]->getTeam(1));
-            teams2.push_back(this->rotation[i]->getTeam(2));
-        } else {
-            teams1.push_back(this->rotation[i]->getTeam(2));
-            teams2.push_back(this->rotation[i]->getTeam(1));
-        }
-    }
-    RotaTeam *lock_blu = nullptr;
-    RotaTeam *lock_op = nullptr;
-    // check if latest teams in range maxSameTeam are all equal = team need
-    // to be locked
-    if (all_of(teams1.begin(), teams1.end(),
-               [&](RotaTeam *i) { return i == teams1[0]; })) {
-        // all are the same
-        if (maxSameTeam % 2 == 0) {
-            lock_blu = teams1[0];
-        } else {
-            lock_op = teams1[0];
-        }
-    }
-    if (all_of(teams2.begin(), teams2.end(),
-               [&](RotaTeam *i) { return i == teams2[0]; })) {
-        // all are the same
-        if (maxSameTeam % 2 == 0) {
-            lock_op = teams2[0];
-        } else {
-            lock_blu = teams2[0];
-        }
-    }
 
-    // lock all layers containing relevant teams
-    if (lock_blu != nullptr) {
-        for (RotaLayer *layer : this->blueforTeams[lock_blu]) {
+    if (this->sameTeamCounter[0] >= maxSameTeam) {
+        // lock layers with team 1
+        for (RotaLayer *layer :
+             this->blueforTeams[this->teamHistory[0].back()]) {
             layer->lock(1);
         }
     }
-    if (lock_op != nullptr) {
-        for (RotaLayer *layer : this->opforTeams[lock_op]) {
+
+    if (this->sameTeamCounter[1] >= maxSameTeam) {
+        // lock layers with team 1
+
+        for (RotaLayer *layer : this->opforTeams[this->teamHistory[1].back()]) {
             layer->lock(1);
         }
     }
@@ -257,6 +233,9 @@ void Generator::generateRota() {
 
     this->modeBuffer = nullptr;
 
+    int currTeamIndex[2] = {0, 1};
+    RotaTeam *tempTeam[2];
+
     for (int i = 0; i < this->config->get_number_of_layers() -
                             this->config->get_seed_layer();
          i++) {
@@ -272,6 +251,18 @@ void Generator::generateRota() {
         this->rotation.push_back(layer);
         this->latestMaps.push_back(map);
         this->latestModes.push_back(mode);
+
+        for (int i = 0; i < 2; i++) {
+            this->teamHistory[i].push_back(layer->getTeam(currTeamIndex[i]));
+            currTeamIndex[i] = (currTeamIndex[i] + 1) % 2;
+            if (layer->getTeam(currTeamIndex[i]) != tempTeam[i]) {
+                this->sameTeamCounter[i] = 0;
+                tempTeam[i] = layer->getTeam(currTeamIndex[i]);
+            } else {
+                this->sameTeamCounter[i]++;
+            }
+        }
+
         this->decreaseLayerLocktimes();
         map->lock();
         layer->lock();
