@@ -28,6 +28,8 @@ void RotaMap::addLayer(RotaLayer *layer) {
         this->availableLayers[layer->getMode()] = 1;
         // init value for weights for this mode
         this->mapVoteWeights[layer->getMode()] = 1;
+        // add this mode to the modes list
+        this->modes.push_back(layer->getMode());
     } else {
         this->availableLayers[layer->getMode()]++;
     }
@@ -176,3 +178,5 @@ float RotaMap::getMapVoteWeight(RotaMode *mode) {
 void RotaMap::setMapVoteWeight(RotaMode *mode, float weight) {
     this->mapVoteWeights[mode] = weight;
 }
+
+std::vector<RotaMode *> *RotaMap::getModes() { return &this->modes; }

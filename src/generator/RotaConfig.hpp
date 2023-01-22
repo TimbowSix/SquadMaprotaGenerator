@@ -122,8 +122,6 @@ class RotaConfig {
     std::map<std::string, RotaMode *> modes;
 
   public:
-    RotaConfig(){};
-
     /**
      * @brief directly parse config json object from given path
      *

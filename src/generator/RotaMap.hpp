@@ -23,7 +23,7 @@ class RotaMap {
   private:
     std::string name;
     std::vector<RotaLayer *> layers;
-
+    std::vector<RotaMode *> modes;
     /**
      * @brief maps the modes of this rotaMap to a list of layers
      */
@@ -167,6 +167,7 @@ class RotaMap {
     bool isLocked();
     float getMapVoteWeight(RotaMode *mode);
     void setMapVoteWeight(RotaMode *mode, float weight);
+    std::vector<RotaMode *> *getModes();
 
     void increaseAvailableLayers(RotaMode *mode);
     void decreaseAvailableLayers(RotaMode *mode);

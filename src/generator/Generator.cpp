@@ -26,10 +26,11 @@ Generator::Generator(RotaConfig *config) {
 
     std::string voteUrl = this->config->get_layer_vote_api_url();
     std::string teamUrl = this->config->get_team_api_url();
-    parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers, &this->modes, &this->teams); // request and parse layers
+    parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers,
+                &this->modes, &this->teams); // request and parse layers
 
-
-    //injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
+    // injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); //
+    // populate layers with data
 
     // remove maps without any layers
     for (auto it = this->mapsByName.cbegin(); it != this->mapsByName.cend();) {
@@ -44,8 +45,13 @@ Generator::Generator(RotaConfig *config) {
     parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     for (auto const &[key, map] : this->mapsByName) {
         this->maps.push_back(map);
+
+        for (RotaMode *m : *(map->getModes())) {
+            this->modeToMapList[m->name].push_back(map);
+        }
+
+        setNeighbour(&this->maps, this->config->get_min_biom_distance());
     }
-    setNeighbour(&this->maps, this->config->get_min_biom_distance());
 }
 
 RotaMode *
@@ -101,8 +107,9 @@ Generator::chooseMode(bool useLatestModes = true,
 RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
 
     RotaMode *fallbackMode = chooseMode(
-        true, this->modePools["main"]); // fallback mode of main pool if maps
-                                        // are unavailable for given mode
+        true,
+        this->modePools["main"]); // fallback mode of main pool if maps
+                                  // are unavailable for given mode
     std::vector<RotaMap *> fallbackAvailableMaps;
     std::vector<float> fallbackWeights;
 
@@ -181,8 +188,8 @@ void Generator::lockTeams() { // TODO test?
     }
     RotaTeam *lock_blu = nullptr;
     RotaTeam *lock_op = nullptr;
-    // check if latest teams in range maxSameTeam are all equal = team need to
-    // be locked
+    // check if latest teams in range maxSameTeam are all equal = team need
+    // to be locked
     if (all_of(teams1.begin(), teams1.end(),
                [&](RotaTeam *i) { return i == teams1[0]; })) {
         // all are the same
@@ -218,14 +225,8 @@ void Generator::lockTeams() { // TODO test?
 void Generator::generateRota() {
     // add seedlayer
     if (config->get_seed_layer() > 0) {
-        std::vector<RotaMap *> seedMaps;
-        for (RotaMap *map : this->maps) {
-            std::map<RotaMode *, std::vector<RotaLayer *>> *modeLayers =
-                map->getModeToLayers();
-            if (map->hasMode(this->modes["Seed"])) {
-                seedMaps.push_back(map);
-            }
-        }
+        std::vector<RotaMap *> seedMaps(this->modeToMapList["Seed"]);
+
         for (int i = 0; i < this->config->get_seed_layer(); i++) {
             int choosenMap = choice(seedMaps.size());
             RotaMap *seedMap = seedMaps[choosenMap];
@@ -234,9 +235,9 @@ void Generator::generateRota() {
                 choosenMap); // remove choosen seed map to prevent doubles
             seedMap->lock(2);
 
-            for(auto const [key, value] : (*seedMap->getModeToLayers())){
+            for (auto const [key, value] : (*seedMap->getModeToLayers())) {
                 std::cout << key->name << std::endl;
-                for(auto m: value){
+                for (auto m : value) {
                     std::cout << m->getName() << std::endl;
                 }
             }

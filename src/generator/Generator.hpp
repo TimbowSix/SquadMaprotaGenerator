@@ -22,6 +22,11 @@ class Generator {
      * @brief list of all maps
      */
     std::vector<RotaMap *> maps;
+
+    /**
+     * @brief a map from mode to a list of maps
+     */
+    std::map<std::string, std::vector<RotaMap *>> modeToMapList;
     /**
      * @brief maps all available ModePools to their name
      */

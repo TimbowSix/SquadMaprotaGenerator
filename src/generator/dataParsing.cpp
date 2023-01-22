@@ -24,13 +24,14 @@ void parseModes(boost::json::object *config,
                 std::map<std::string, RotaMode *> *allModes) {
     boost::json::value *pools = &config->at("mode_distribution").at("pools");
 
-/* deprecated
-    const std::filesystem::path weightParamsFile{std::string(CONFIG_PATH) +
-                                                 "/data/weight_params.json"};
-    std::ifstream ifs(weightParamsFile);
-    std::string data(std::istreambuf_iterator<char>{ifs}, {});
-    boost::json::object allWeightParams = boost::json::parse(data).get_object();
-    */
+    /* deprecated
+        const std::filesystem::path weightParamsFile{std::string(CONFIG_PATH) +
+                                                     "/data/weight_params.json"};
+        std::ifstream ifs(weightParamsFile);
+        std::string data(std::istreambuf_iterator<char>{ifs}, {});
+        boost::json::object allWeightParams =
+       boost::json::parse(data).get_object();
+        */
     for (auto currentPool = pools->as_object().begin();
          currentPool != pools->as_object().end(); currentPool++) {
         std::string poolName = currentPool->key_c_str();
@@ -65,21 +66,22 @@ void parseModes(boost::json::object *config,
     for (int i = 0; i < WEIGHT_PARAMS_COUNT; i++) {
         weightParams.push_back(0.0);
     }
-    (*allModes)["Seed"] =
-        new RotaMode("Seed", 1.0); // add Seeding mode
+    (*allModes)["Seed"] = new RotaMode("Seed", 1.0); // add Seeding mode
 }
 
-void parseLayers(std::string votesUrl, std::string teamsUrl, std::map<std::string, RotaMap *> *maps,
+void parseLayers(std::string votesUrl, std::string teamsUrl,
+                 std::map<std::string, RotaMap *> *maps,
                  std::map<std::string, RotaLayer *> *layers,
                  std::map<std::string, RotaMode *> *modes,
                  std::map<std::string, RotaTeam *> *teams) {
 
     std::map<std::string, RotaLayer *> allLayers;
     getLayers(votesUrl, &allLayers); // get all layers from api
-    injectLayerInfo(teamsUrl, &allLayers, modes, teams); // populate layers with data
+    injectLayerInfo(teamsUrl, &allLayers, modes,
+                    teams); // populate layers with data
     std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
-    for (const auto & [key, layer] : allLayers){
-    //for (RotaLayer *layer : allLayers) {
+    for (const auto &[key, layer] : allLayers) {
+        // for (RotaLayer *layer : allLayers) {
         std::smatch match;
         std::string layerName = layer->getName();
         std::regex_match(layerName, match, pattern);
@@ -98,14 +100,15 @@ void parseLayers(std::string votesUrl, std::string teamsUrl, std::map<std::strin
         };
 
         (*maps)[map]->addLayer(layer);
-        (*layers)[layer->getName()] = layer; // transfer layer to map of used layers
+        (*layers)[layer->getName()] =
+            layer; // transfer layer to map of used layers
     }
 }
 
 void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps) {
 
     const std::filesystem::path biomFile{std::string(CONFIG_PATH) +
-                                         "/data/bioms.json"};
+                                         "/bioms.json"};
     std::ifstream ifs(biomFile);
     std::string data(std::istreambuf_iterator<char>{ifs}, {});
     boost::json::object biomValues = boost::json::parse(data).get_object();
