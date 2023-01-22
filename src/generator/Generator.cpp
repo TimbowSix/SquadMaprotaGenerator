@@ -25,12 +25,11 @@ Generator::Generator(RotaConfig *config) {
     parseMaps(this->config, &this->mapsByName); // setup all available maps
 
     std::string voteUrl = this->config->get_layer_vote_api_url();
-    parseLayers(voteUrl, &this->mapsByName, &this->layers,
-                &this->modes); // request and parse layers
-
     std::string teamUrl = this->config->get_team_api_url();
-    injectLayerInfo(teamUrl, &this->layers, &this->modes,
-                    &this->teams); // populate layers with data
+    parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers, &this->modes, &this->teams); // request and parse layers
+
+
+    //injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams); // populate layers with data
 
     // remove maps without any layers
     for (auto it = this->mapsByName.cbegin(); it != this->mapsByName.cend();) {
@@ -223,7 +222,7 @@ void Generator::generateRota() {
         for (RotaMap *map : this->maps) {
             std::map<RotaMode *, std::vector<RotaLayer *>> *modeLayers =
                 map->getModeToLayers();
-            if (modeLayers->find(this->modes["Seed"]) == modeLayers->end()) {
+            if (map->hasMode(this->modes["Seed"])) {
                 seedMaps.push_back(map);
             }
         }
@@ -234,9 +233,17 @@ void Generator::generateRota() {
                 seedMaps.begin() +
                 choosenMap); // remove choosen seed map to prevent doubles
             seedMap->lock(2);
+
+            for(auto const [key, value] : (*seedMap->getModeToLayers())){
+                std::cout << key->name << std::endl;
+                for(auto m: value){
+                    std::cout << m->getName() << std::endl;
+                }
+            }
             std::vector<RotaLayer *> seedLayers =
                 seedMap->getModeToLayers()->at(this->modes["Seed"]);
-            RotaLayer *chossenLayer = seedLayers[choice(seedLayers.size())];
+            RotaLayer *chosenLayer = seedLayers[choice(seedLayers.size())];
+            rotation.push_back(chosenLayer);
         }
         this->latestModes.push_back(this->modes["Seed"]);
     }

@@ -69,15 +69,17 @@ void parseModes(boost::json::object *config,
         new RotaMode("Seed", 1.0); // add Seeding mode
 }
 
-void parseLayers(std::string url, std::map<std::string, RotaMap *> *maps,
+void parseLayers(std::string votesUrl, std::string teamsUrl, std::map<std::string, RotaMap *> *maps,
                  std::map<std::string, RotaLayer *> *layers,
-                 std::map<std::string, RotaMode *> *modes) {
-    // Config cfg(std::string(CONFIG_PATH)+"/config.json");
-    // std::map<std::string, RotaLayer*> allLayers;
-    std::vector<RotaLayer *> allLayers;
-    getLayers(url, &allLayers); // get all layers from api
+                 std::map<std::string, RotaMode *> *modes,
+                 std::map<std::string, RotaTeam *> *teams) {
+
+    std::map<std::string, RotaLayer *> allLayers;
+    getLayers(votesUrl, &allLayers); // get all layers from api
+    injectLayerInfo(teamsUrl, &allLayers, modes, teams); // populate layers with data
     std::regex pattern("^([a-zA-Z]+)_([a-zA-Z]+)_([a-zA-Z0-9]+)$");
-    for (RotaLayer *layer : allLayers) {
+    for (const auto & [key, layer] : allLayers){
+    //for (RotaLayer *layer : allLayers) {
         std::smatch match;
         std::string layerName = layer->getName();
         std::regex_match(layerName, match, pattern);
@@ -96,8 +98,7 @@ void parseLayers(std::string url, std::map<std::string, RotaMap *> *maps,
         };
 
         (*maps)[map]->addLayer(layer);
-        (*layers)[layer->getName()] =
-            layer; // transfer layer to map of used layers
+        (*layers)[layer->getName()] = layer; // transfer layer to map of used layers
     }
 }
 

@@ -74,7 +74,7 @@ float sigmoid(float x, float slope, float shift) {
     return 1 / (1 + exp(-arg));
 }
 
-int getLayers(std::string url, std::vector<RotaLayer *> *layers) {
+int getLayers(std::string url, std::map<std::string, RotaLayer *> *layers) {
 
     namespace json = boost::json;
 
@@ -100,7 +100,7 @@ int getLayers(std::string url, std::vector<RotaLayer *> *layers) {
             RotaLayer *layer =
                 new RotaLayer((std::string)obj["layer"].as_string(),
                               (float)(upVotes - downVotes));
-            layers->push_back(layer);
+            (*layers)[layer->getName()] = layer;
             counter++;
         }
     }

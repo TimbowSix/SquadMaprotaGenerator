@@ -27,9 +27,10 @@ void parseModes(boost::json::object *config,
  * @param layers empty map of used layers
  * @param modes map of used modes
  */
-void parseLayers(std::string url, std::map<std::string, RotaMap *> *maps,
+void parseLayers(std::string votesUrl, std::string teamsUrl, std::map<std::string, RotaMap *> *maps,
                  std::map<std::string, RotaLayer *> *layers,
-                 std::map<std::string, RotaMode *> *modes);
+                 std::map<std::string, RotaMode *> *modes,
+                 std::map<std::string, RotaTeam *> *teams);
 
 /**
  * @brief parsing all used maps from config to RotaMap Objects
