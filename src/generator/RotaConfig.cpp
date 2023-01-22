@@ -51,6 +51,11 @@ RotaConfig::RotaConfig(std::string path) {
     pool_spacing = pData["mode_distribution"].at("pool_spacing").as_int64();
     space_main = pData["mode_distribution"].at("space_main").as_bool();
     // TODO parse maps list
+    boost::json::array usedMapsRaw = pData["maps"].as_array();
+    for(int i=0; i<usedMapsRaw.size(); i++){
+        std::string map = (std::string)usedMapsRaw[i].as_string();
+        maps.push_back(map);
+    }
 }
 // getter / setter
 unsigned int RotaConfig::get_number_of_rotas() { return number_of_rotas; }
