@@ -23,7 +23,8 @@
 namespace rota {
 
 int weightedChoice(std::vector<float> *weights) {
-    float weightSum = std::accumulate(weights->begin(), weights->end(), 0.0);
+    float weightSum = 0.0;
+    weightSum = std::accumulate(weights->begin(), weights->end(), 0.0);
     weightSum =
         roundf(weightSum * 100) /
         100; // round to 2 decimal places to account floating point error
@@ -65,9 +66,7 @@ void normalize(std::vector<float> *arr, float *sum) {
     }
 }
 
-void normalize(std::vector<float> *arr){
-    normalize(arr, NULL);
-}
+void normalize(std::vector<float> *arr) { normalize(arr, NULL); }
 
 float sigmoid(float x, float slope, float shift) {
     float arg = slope * (x + shift);

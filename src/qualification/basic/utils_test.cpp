@@ -11,9 +11,9 @@ class Utils_Fixture : public ::testing::Test {
     std::vector<float> tBiomValues1 = {0.4, 0.2, 0.1};
     std::vector<float> tBiomValues2 = {0.04, 0.8, 0.2};
 
-    rota::RotaMap m0 = rota::RotaMap("test0", tBiomValues0, 0);
-    rota::RotaMap m1 = rota::RotaMap("test1", tBiomValues1, 0);
-    rota::RotaMap m2 = rota::RotaMap("test2", tBiomValues2, 0);
+    rota::RotaMap m0 = rota::RotaMap("test0", tBiomValues0, 0, NULL);
+    rota::RotaMap m1 = rota::RotaMap("test1", tBiomValues1, 0, NULL);
+    rota::RotaMap m2 = rota::RotaMap("test2", tBiomValues2, 0, NULL);
 };
 
 TEST(Utils_test, sigmoid_test) {

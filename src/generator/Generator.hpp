@@ -37,6 +37,13 @@ class Generator {
      */
     int sameTeamCounter[2];
     /**
+     * @brief counter for each mode, how many maps are available
+     *        the first number is the count of maps which are available through
+     *        locks the second number is the count of maps with have available
+     *        layer
+     */
+    std::map<RotaMode *, int[2]> availableMaps;
+    /**
      * @brief maps all available ModePools to their name
      */
     std::map<std::string, RotaModePool *> modePools;
@@ -75,7 +82,13 @@ class Generator {
     /**
      * @brief buffer currently unavailable modes
      */
-    RotaMode *modeBuffer;
+    std::vector<RotaMode *> modeBuffer;
+
+    std::vector<RotaModePool *> defaultModePools;
+    std::vector<float> defaultPoolWeights;
+    int lastNonMainMode;
+    std::map<RotaModePool *, std::vector<float>> modeWeights;
+    std::map<RotaModePool *, std::vector<RotaMode *>> poolToModeList;
 
   public:
     Generator(RotaConfig *config);
@@ -86,16 +99,20 @@ class Generator {
      *
      * @param useLatestModes usage of latest modes for mode locking
      * @param customPool set pool to draw mode from
+     * @param ignoreModeBuff ignores the mode buffer while choosing a mode
+     * @param depth this function calls itself if necessary to prevent a endless
+     * loop the function throw a error if a depth is reached
      * @returns pointer to choosen mode
      */
-    RotaMode *chooseMode(bool useLatestModes, RotaModePool *customPool);
+    RotaMode *chooseMode(bool useLatestModes, RotaModePool *customPool,
+                         bool ignoreModeBuff, int depth);
 
     /**
      * @brief chooses a random map from maps with probabilities given by their
      * weight for a given mode uses fallback mode of main pool if no maps are
      * available for given mode reduces map locktimes if no maps for either mode
      * or fallback mode are available
-     *
+     * @param useLatestModes ?? //TODO
      * @param mode mode to draw from
      * @returns chosen map
      */
@@ -138,5 +155,7 @@ class Generator {
      *        parses and sets given previous layers
      */
     void reset(std::vector<std::string> *pastLayers);
+
+    bool mapsAvailable(RotaMode *mode);
 };
 } // namespace rota

@@ -23,7 +23,8 @@ Generator::Generator(RotaConfig *config) {
     this->config = config;
     this->modePools = (*config->get_pools());
     this->modes = (*config->get_modes());
-    parseMaps(this->config, &this->mapsByName); // setup all available maps
+    parseMaps(this->config, &this->mapsByName,
+              &this->availableMaps); // setup all available maps
 
     std::string voteUrl = this->config->get_layer_vote_api_url();
     std::string teamUrl = this->config->get_team_api_url();
@@ -48,11 +49,20 @@ Generator::Generator(RotaConfig *config) {
         this->maps.push_back(map);
 
         for (RotaMode *m : *(map->getModes())) {
+            // init modeToMapList
             this->modeToMapList[m->name].push_back(map);
+            // init availableMaps
+            if (this->availableMaps.find(m) == this->availableMaps.end()) {
+                this->availableMaps[m][0] = 1;
+                this->availableMaps[m][1] = 1;
+            } else {
+                this->availableMaps[m][0]++;
+                this->availableMaps[m][1]++;
+            }
         }
-
-        setNeighbour(&this->maps, this->config->get_min_biom_distance());
     }
+
+    setNeighbour(&this->maps, this->config->get_min_biom_distance());
 
     // set reference from layer to ther maps, sets lockTime, sets voteWeight
     // inits teamToLayerList
@@ -64,95 +74,102 @@ Generator::Generator(RotaConfig *config) {
                                  this->config->get_layervote_shift());
         }
     }
+
+    // precalculate default Rota Mode Pool weights and sum
+    for (std::map<std::string, RotaModePool *>::iterator it =
+             this->modePools.begin();
+         it != this->modePools.end(); ++it) {
+        this->defaultModePools.push_back(it->second);
+        this->defaultPoolWeights.push_back(it->second->probability);
+        // precalculate modes weights
+        float tempSum = 0.0;
+        for (auto const &x : it->second->modes) {
+            this->modeWeights[it->second].push_back(x.second->probability);
+            this->poolToModeList[it->second].push_back(x.second);
+            tempSum += x.second->probability;
+        }
+        normalize(&this->modeWeights[it->second], &tempSum);
+    }
+    this->lastNonMainMode = 0;
 }
 
-RotaMode *
-Generator::chooseMode(bool useLatestModes = true,
-                      RotaModePool *customPool = nullptr) { // TODO test
+RotaMode *Generator::chooseMode(bool useLatestModes = true,
+                                RotaModePool *customPool = nullptr,
+                                bool ignoreModeBuff = false,
+                                int depth = 0) { // TODO test
+
+    if (depth > 5) {
+        throw std::runtime_error("Error in choose Mode max depth reached");
+        return nullptr;
+    }
+
     RotaModePool *pool;
+    // choose Pool
     if (customPool != nullptr) {
         pool = customPool;
     } else {
-        std::vector<RotaModePool *> pools;
-        std::vector<float> poolWeights;
-        for (std::map<std::string, RotaModePool *>::iterator it =
-                 this->modePools.begin();
-             it != this->modePools.end(); ++it) {
-            pools.push_back(it->second);
-            poolWeights.push_back(it->second->probability);
+        // check mode buffer
+        if (!(ignoreModeBuff) && this->modeBuffer.size() > 0) {
+            // check if mode is conform with pool spacing
+            if (this->modeBuffer.back()->isMainMode ||
+                this->lastNonMainMode >= this->config->get_pool_spacing()) {
+                // check if mode has available maps
+                // TODO  force buffed mode ?
+                if (this->mapsAvailable(this->modeBuffer.back())) {
+                    RotaMode *mode = this->modeBuffer.back();
+                    this->modeBuffer.pop_back();
+                    return mode;
+                }
+            }
         }
-        pool = pools[weightedChoice(&poolWeights)];
+        pool =
+            this->defaultModePools[weightedChoice(&this->defaultPoolWeights)];
     }
 
     if (useLatestModes && pool != this->modePools["main"]) {
-        int poolSpacing = this->config->get_pool_spacing();
-        std::vector<RotaMode *> *latestModes = &this->latestModes;
-        if (latestModes->size() > poolSpacing) {
-            *latestModes = std::vector<RotaMode *>(
-                latestModes->begin() + latestModes->size() - poolSpacing,
-                latestModes->end());
-        }
-        for (RotaMode *mode : (*latestModes)) {
-            if (this->modePools["main"]->modes.find(mode->name) ==
-                this->modePools["main"]->modes.end()) {
-                pool = this->modePools["main"];
-            }
+        // check if non main mode has enough space to last one
+        if (this->config->get_pool_spacing() > this->lastNonMainMode) {
+            // not enough space change to main mode
+            pool = this->modePools["main"];
         }
     }
-    std::vector<RotaMode *> modes;
-    std::vector<float> modeWeights;
-    bool spaceMain = this->config->get_space_main();
-    for (std::map<std::string, RotaMode *>::iterator it = pool->modes.begin();
-         it != pool->modes.end(); ++it) {
-        if (spaceMain && pool == this->modePools["main"] &&
-            this->latestModes.size() > 0 &&
-            it->second == this->latestModes.back()) {
-            continue;
-        }
-        modes.push_back(it->second);
-        modeWeights.push_back(it->second->probability);
+
+    if (pool == this->modePools["main"]) {
+        this->lastNonMainMode++;
+    } else {
+        this->lastNonMainMode = 0;
     }
-    normalize(&modeWeights, NULL); // normalize in case of excluded modes
-    return modes[weightedChoice(&modeWeights)];
+    RotaMode *ret =
+        this->poolToModeList[pool][weightedChoice(&this->modeWeights[pool])];
+    // check if mode has available maps
+    if (this->mapsAvailable(ret)) {
+        return ret;
+    }
+    // no map available for this map -> mode buffer -> new mode
+    return chooseMode(useLatestModes, customPool, true, ++depth);
 }
 
 RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
 
-    RotaMode *fallbackMode = chooseMode(
-        true,
-        this->modePools["main"]); // fallback mode of main pool if maps
-                                  // are unavailable for given mode
-    std::vector<RotaMap *> fallbackAvailableMaps;
-    std::vector<float> fallbackWeights;
+    if (!this->mapsAvailable(mode)) {
+        throw std::runtime_error("no maps available for mode: " + mode->name);
+        return nullptr;
+    }
 
     std::vector<RotaMap *> availableMaps;
     std::vector<float> weights;
-    while (fallbackWeights.size() == 0) {
-        for (RotaMap *map : this->maps) {
-            if (!map->isLocked()) {
-                if (map->hasLayersAvailable(mode)) { // get all maps containing
-                                                     // mode and are unlocked
-                    availableMaps.push_back(map);
-                    weights.push_back(map->getMapVoteWeight(mode));
-                }
-                if (map->hasLayersAvailable(fallbackMode)) {
-                    fallbackAvailableMaps.push_back(map);
-                    fallbackWeights.push_back(map->getMapVoteWeight(mode));
-                }
-            }
-        }
-        this->decreaseMapLocktimes();
-    }
-    assert(fallbackWeights.size() > 0);
-    if (weights.size() == 0) {
-        this->modeBuffer = mode;
-        normalize(&fallbackWeights, NULL);
-        return fallbackAvailableMaps[weightedChoice(&fallbackWeights)];
+    float tempSum = 0.0;
 
-    } else {
-        normalize(&weights, NULL);
-        return availableMaps[weightedChoice(&weights)];
+    for (RotaMap *map : this->modeToMapList[mode->name]) {
+        if (!map->isLocked()) {
+            availableMaps.push_back(map);
+            weights.push_back(map->getMapVoteWeight(mode));
+            tempSum += map->getMapVoteWeight(mode);
+        }
     }
+
+    normalize(&weights, &tempSum);
+    return availableMaps[weightedChoice(&weights)];
 }
 
 RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
@@ -231,7 +248,7 @@ void Generator::generateRota() {
         this->latestModes.push_back(this->modes["Seed"]);
     }
 
-    this->modeBuffer = nullptr;
+    this->modeBuffer.clear();
 
     int currTeamIndex[2] = {0, 1};
     RotaTeam *tempTeam[2];
@@ -239,13 +256,7 @@ void Generator::generateRota() {
     for (int i = 0; i < this->config->get_number_of_layers() -
                             this->config->get_seed_layer();
          i++) {
-        RotaMode *mode;
-        if (modeBuffer == nullptr) {
-            mode = chooseMode(true);
-        } else {
-            mode = modeBuffer;
-            this->modeBuffer = nullptr;
-        }
+        RotaMode *mode = chooseMode(true);
         RotaMap *map = chooseMap(mode);
         RotaLayer *layer = chooseLayerFromMap(map, mode);
         this->rotation.push_back(layer);
@@ -280,7 +291,7 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
     this->rotation.clear();
     this->latestMaps.clear();
     this->latestModes.clear();
-    this->modeBuffer = nullptr;
+    this->modeBuffer.clear();
     for (RotaMap *map : this->maps) {
         map->unlock();
     }
@@ -315,6 +326,11 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
         pastLayers.push_back(layer);
     }
     reset(&pastLayers);
+}
+
+bool Generator::mapsAvailable(RotaMode *mode) {
+    return (this->availableMaps[mode][0] > 0 &&
+            this->availableMaps[mode][1] > 0);
 }
 
 } // namespace rota

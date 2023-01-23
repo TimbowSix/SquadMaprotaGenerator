@@ -9,14 +9,15 @@
 
 using namespace rota;
 
-RotaMap::RotaMap(std::string name, std::vector<float> biomValues,
-                 int lockTime) {
+RotaMap::RotaMap(std::string name, std::vector<float> biomValues, int lockTime,
+                 std::map<RotaMode *, int[2]> *availableMaps) {
     this->name = name;
     this->biomValues.resize(biomValues.size());
     for (int i = 0; i < biomValues.size(); i++) {
         this->biomValues(i) = biomValues[i];
     }
     this->lockTime = lockTime;
+    this->availableMaps = availableMaps;
 }
 
 void RotaMap::addLayer(RotaLayer *layer) {
@@ -36,24 +37,38 @@ void RotaMap::addLayer(RotaLayer *layer) {
 }
 
 void RotaMap::decreaseLockTime() {
+    if (this->currentLockTime == 1) {
+        // map gets unlocked
+        for (RotaMode *mode : this->modes) {
+            (*this->availableMaps)[mode][0]++;
+        }
+    }
     this->currentLockTime--;
     if (this->currentLockTime < 0) {
         this->currentLockTime = 0;
     }
 }
 
-void RotaMap::lock() { this->lock(this->lockTime, true); }
+void RotaMap::lock(int locktime) { this->lock(locktime, false); }
 
 void RotaMap::lock(bool lockNeighbors) {
     this->lock(this->lockTime, lockNeighbors);
 }
 
-void RotaMap::lock(int locktime) { this->lock(locktime, false); }
+void RotaMap::lock() { this->lock(this->lockTime, true); }
 
 void RotaMap::lock(int locktime, bool lockNeighbors) {
     assert(locktime > 0);
     if (this->currentLockTime <
         locktime) { // do not overwrite existing locktimes
+
+        // update counter in generator
+        if (this->currentLockTime == 0) {
+            for (RotaMode *mode : this->modes) {
+                (*this->availableMaps)[mode][0]--;
+            }
+        }
+
         this->currentLockTime = locktime;
 
         if (lockNeighbors) {
@@ -153,10 +168,17 @@ bool RotaMap::isLocked() { return this->currentLockTime > 0; }
 
 void RotaMap::increaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]++;
+    if (this->availableLayers[mode] == 1) {
+        // increase Map counter for this mode in generator
+        (*this->availableMaps)[mode][1]++;
+    }
 }
 void RotaMap::decreaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]--;
-    assert(this->availableLayers[mode] >= 0);
+    if (this->availableLayers[mode] == 0) {
+        // decrease Map counter for this mode in generator
+        (*this->availableMaps)[mode][1]--;
+    }
 }
 
 boost::numeric::ublas::vector<float> *RotaMap::getBiomValues() {

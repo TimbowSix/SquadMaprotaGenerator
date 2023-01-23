@@ -56,7 +56,8 @@ void parseModes(boost::json::object *config,
             assert(weightParams.size() == WEIGHT_PARAMS_COUNT);
             */
             RotaMode *mode =
-                new RotaMode(modeName, modeProbability /*weightParams*/);
+                new RotaMode(modeName, modeProbability,
+                             (pool->name.compare("main") == 0), pool);
             pool->addMode(mode);
             (*allModes)[modeName] = mode;
         }
@@ -66,7 +67,8 @@ void parseModes(boost::json::object *config,
     for (int i = 0; i < WEIGHT_PARAMS_COUNT; i++) {
         weightParams.push_back(0.0);
     }
-    (*allModes)["Seed"] = new RotaMode("Seed", 1.0); // add Seeding mode
+    (*allModes)["Seed"] =
+        new RotaMode("Seed", 1.0, false, NULL); // add Seeding mode
 }
 
 void parseLayers(std::string votesUrl, std::string teamsUrl,
@@ -105,7 +107,8 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
     }
 }
 
-void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps) {
+void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
+               std::map<RotaMode *, int[2]> *availableMaps) {
 
     const std::filesystem::path biomFile{std::string(CONFIG_PATH) +
                                          "/bioms.json"};
@@ -119,6 +122,18 @@ void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps) {
     float mapVoteShift = config->get_mapvote_shift();
     float layerVoteSlope = config->get_layervote_slope();
     float layerVoteShift = config->get_layervote_shift();
+
+    std::vector<float> mapSizes;
+    float tempSum = 0.0;
+
+    for (std::string map : (*usedMaps)) {
+        boost::json::array bv = biomValues.at(map).as_array();
+        mapSizes.push_back(bv[0].as_double());
+        tempSum += bv[0].as_double();
+    }
+    normalize(&mapSizes, &tempSum);
+
+    int j = 0;
     for (std::string map : (*usedMaps)) {
         // std::string map = usedMapsRaw[i];
         if (biomValues.find(map) == biomValues.end()) {
@@ -129,13 +144,15 @@ void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps) {
         }
         std::vector<float> biomVals;
         boost::json::array bv = biomValues.at(map).as_array();
-        for (int i = 0; i < bv.size(); i++) {
+        biomVals.push_back(mapSizes[j]);
+        for (int i = 1; i < bv.size(); i++) {
             biomVals.push_back(bv[i].as_double());
         }
-        RotaMap *newMap = new RotaMap(map, biomVals, locktime);
+        RotaMap *newMap = new RotaMap(map, biomVals, locktime, availableMaps);
         newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope,
                                  layerVoteShift);
         (*maps)[map] = newMap;
+        j++;
     }
 }
 

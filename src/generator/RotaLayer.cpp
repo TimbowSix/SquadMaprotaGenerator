@@ -31,9 +31,7 @@ void RotaLayer::unlock() {
 void RotaLayer::decreaseLockTime() {
     if (this->isLocked()) {
         this->currLockTime--;
-        if (!this->isLocked()) {
-            this->map->increaseAvailableLayers(this->mode);
-        }
+        this->map->increaseAvailableLayers(this->mode);
     }
 }
 

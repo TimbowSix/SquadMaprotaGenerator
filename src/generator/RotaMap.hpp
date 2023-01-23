@@ -64,8 +64,17 @@ class RotaMap {
      */
     std::map<RotaMode *, int> availableLayers;
 
+    /**
+     * @brief a pointer from generator for maintaining own count
+     *        the first number is the count of maps which are available through
+     *        locks the second number is the count of maps with have available
+     *        layer
+     */
+    std::map<RotaMode *, int[2]> *availableMaps;
+
   public:
-    RotaMap(std::string name, std::vector<float> biomValues, int lockTime);
+    RotaMap(std::string name, std::vector<float> biomValues, int lockTime,
+            std::map<RotaMode *, int[2]> *availableMaps);
     ~RotaMap(){};
 
     /**
