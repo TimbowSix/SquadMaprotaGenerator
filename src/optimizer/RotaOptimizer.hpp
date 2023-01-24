@@ -26,7 +26,7 @@ namespace optimizer
             std::map<int, std::vector<int>> clusters;
 
         public:
-            boost::numeric::ublas::matrix<float> comparisonState;
+            boost::numeric::ublas::vector<float> comparisonState;
             int iterationMax;
             int maxEvolveSteps;
             float T0;
