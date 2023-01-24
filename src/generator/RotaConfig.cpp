@@ -52,7 +52,7 @@ RotaConfig::RotaConfig(std::string path) {
     space_main = pData["mode_distribution"].at("space_main").as_bool();
     // TODO parse maps list
     boost::json::array usedMapsRaw = pData["maps"].as_array();
-    for(int i=0; i<usedMapsRaw.size(); i++){
+    for (int i = 0; i < usedMapsRaw.size(); i++) {
         std::string map = (std::string)usedMapsRaw[i].as_string();
         maps.push_back(map);
     }
@@ -155,8 +155,10 @@ void RotaConfig::set_fix_unavailables(bool value) {
     this->fix_unavailables = value;
 }
 
-bool RotaConfig::get_pool_spacing() { return pool_spacing; }
-void RotaConfig::set_pool_spacing(bool value) { this->pool_spacing = value; }
+unsigned int RotaConfig::get_pool_spacing() { return pool_spacing; }
+void RotaConfig::set_pool_spacing(unsigned int value) {
+    this->pool_spacing = value;
+}
 
 bool RotaConfig::get_space_main() { return space_main; }
 void RotaConfig::set_space_main(bool value) { this->space_main = value; }

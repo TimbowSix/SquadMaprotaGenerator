@@ -194,8 +194,8 @@ class RotaConfig {
     bool get_fix_unavailables();
     void set_fix_unavailables(bool value);
 
-    bool get_pool_spacing();
-    void set_pool_spacing(bool value);
+    unsigned int get_pool_spacing();
+    void set_pool_spacing(unsigned int value);
 
     bool get_space_main();
     void set_space_main(bool value);
