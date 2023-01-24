@@ -91,6 +91,7 @@ Generator::Generator(RotaConfig *config) {
         normalize(&this->modeWeights[it->second], &tempSum);
     }
     this->lastNonMainMode = 0;
+    this->nextMainModeIndex = 0;
 
     // printMapNeighbor(&this->maps);
 }
@@ -142,10 +143,21 @@ RotaMode *Generator::chooseMode(bool useLatestModes = true,
     } else {
         this->lastNonMainMode = 0;
     }
-    RotaMode *ret =
-        this->poolToModeList[pool][weightedChoice(&this->modeWeights[pool])];
+
+    RotaMode *ret;
+
+    if (this->config->get_space_main() && pool == this->modePools["main"]) {
+        ret = this->poolToModeList[pool][this->nextMainModeIndex];
+    } else {
+        ret = this->poolToModeList[pool]
+                                  [weightedChoice(&this->modeWeights[pool])];
+    }
     // check if mode has available maps
     if (this->mapsAvailable(ret)) {
+        if (this->config->get_space_main() && pool == this->modePools["main"]) {
+            this->nextMainModeIndex = (this->nextMainModeIndex + 1) %
+                                      this->modePools["main"]->modes.size();
+        }
         return ret;
     }
     // no map available for this map -> mode buffer -> new mode

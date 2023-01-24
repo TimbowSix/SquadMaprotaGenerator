@@ -109,6 +109,11 @@ class Generator {
      */
     std::map<RotaModePool *, std::vector<RotaMode *>> poolToModeList;
 
+    /**
+     * @brief index of the next main mode if space_main is active
+     */
+    int nextMainModeIndex;
+
   public:
     Generator(RotaConfig *config);
 
