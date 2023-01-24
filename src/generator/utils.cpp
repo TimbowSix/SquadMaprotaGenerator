@@ -204,4 +204,24 @@ float getMapDist(RotaMap *map0, RotaMap *map1) {
     }
 }
 
+void printMapNeighbor(std::vector<RotaMap *> *maps) {
+    for (RotaMap *map : *maps) {
+        std::cout << "-- " << map->getName() << " --" << std::endl;
+        std::cout << "----------------------" << std::endl;
+        for (RotaMap *nMap : *map->getNeighbor()) {
+            std::cout << nMap->getName() << std::endl;
+        }
+        std::cout << std::endl;
+    }
+}
+
+void printMemColonel(std::vector<RotaMap *> *maps) {
+    std::cout << "Map \r\t\t\t locked time" << std::endl;
+
+    for (RotaMap *map : *maps) {
+        std::cout << map->getName() << "\r\t\t\t " << map->getCurrLockTime()
+                  << std::endl;
+    }
+}
+
 } // namespace rota

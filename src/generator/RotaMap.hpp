@@ -186,6 +186,8 @@ class RotaMap {
 
     boost::numeric::ublas::vector<float> *getBiomValues();
     void addNeighbour(RotaMap *map);
+    std::vector<RotaMap *> *getNeighbor();
+    int getCurrLockTime();
 
     void setSigmoidValues(float mapVoteSlope, float mapVoteShift,
                           float layerVoteSlope, float layerVoteShift);

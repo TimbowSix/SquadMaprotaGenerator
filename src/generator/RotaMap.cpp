@@ -203,3 +203,5 @@ void RotaMap::setMapVoteWeight(RotaMode *mode, float weight) {
 }
 
 std::vector<RotaMode *> *RotaMap::getModes() { return &this->modes; }
+std::vector<RotaMap *> *RotaMap::getNeighbor() { return &this->neighbor; }
+int RotaMap::getCurrLockTime() { return this->currentLockTime; }

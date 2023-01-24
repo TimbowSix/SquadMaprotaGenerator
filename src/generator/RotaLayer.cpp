@@ -8,6 +8,7 @@ using namespace rota;
 RotaLayer::RotaLayer(std::string name, float votes) {
     this->name = name;
     this->votes = votes;
+    this->currLockTime = 0;
 }
 
 void RotaLayer::lock() {
@@ -24,14 +25,18 @@ void RotaLayer::lock(unsigned int time) {
 }
 
 void RotaLayer::unlock() {
+    if (this->isLocked()) {
+        this->map->increaseAvailableLayers(this->mode);
+    }
     this->currLockTime = 0;
-    this->map->increaseAvailableLayers(this->mode);
 }
 
 void RotaLayer::decreaseLockTime() {
     if (this->isLocked()) {
         this->currLockTime--;
-        this->map->increaseAvailableLayers(this->mode);
+        if (!this->isLocked()) {
+            this->map->increaseAvailableLayers(this->mode);
+        }
     }
 }
 

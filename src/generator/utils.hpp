@@ -152,4 +152,18 @@ class DennisException : public std::logic_error {
         : std::logic_error{"Wieso ist das Feature noch nicht da?"} {}
 };
 
+/**
+ * @brief print all maps with there neighbor maps
+ *
+ * @param maps list of all maps
+ */
+void printMapNeighbor(std::vector<RotaMap *> *maps);
+
+/**
+ * @brief print the current state of the memory colonel
+ *
+ * @param maps list of all maps
+ */
+void printMemColonel(std::vector<RotaMap *> *maps);
+
 } // namespace rota

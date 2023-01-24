@@ -91,6 +91,8 @@ Generator::Generator(RotaConfig *config) {
         normalize(&this->modeWeights[it->second], &tempSum);
     }
     this->lastNonMainMode = 0;
+
+    // printMapNeighbor(&this->maps);
 }
 
 RotaMode *Generator::chooseMode(bool useLatestModes = true,
@@ -99,6 +101,7 @@ RotaMode *Generator::chooseMode(bool useLatestModes = true,
                                 int depth = 0) { // TODO test
 
     if (depth > 5) {
+        printMemColonel(&this->maps);
         throw std::runtime_error("Error in choose Mode max depth reached");
         return nullptr;
     }
@@ -161,7 +164,7 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     float tempSum = 0.0;
 
     for (RotaMap *map : this->modeToMapList[mode->name]) {
-        if (!map->isLocked()) {
+        if (!map->isLocked() && map->hasLayersAvailable(mode)) {
             availableMaps.push_back(map);
             weights.push_back(map->getMapVoteWeight(mode));
             tempSum += map->getMapVoteWeight(mode);
@@ -274,12 +277,15 @@ void Generator::generateRota() {
             }
         }
 
+        this->decreaseMapLocktimes();
         this->decreaseLayerLocktimes();
         map->lock();
         layer->lock();
         this->lockTeams();
 
         std::cout << layer->getName() << std::endl;
+        // printMemColonel(&this->maps);
+        // std::cout << std::endl;
     }
 }
 

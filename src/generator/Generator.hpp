@@ -84,10 +84,29 @@ class Generator {
      */
     std::vector<RotaMode *> modeBuffer;
 
+    /**
+     * @brief list of normally choosen mode pools
+     */
     std::vector<RotaModePool *> defaultModePools;
+
+    /**
+     * @brief precalculated weights of default mode pools
+     */
     std::vector<float> defaultPoolWeights;
+
+    /**
+     * @brief counter for determine the distance to the last non main mode
+     */
     int lastNonMainMode;
+
+    /**
+     * @brief pre allocated map of a list of all mode weights
+     */
     std::map<RotaModePool *, std::vector<float>> modeWeights;
+
+    /**
+     * @brief pre allocated map of a modePool to a mode list
+     */
     std::map<RotaModePool *, std::vector<RotaMode *>> poolToModeList;
 
   public:
