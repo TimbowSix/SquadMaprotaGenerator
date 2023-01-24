@@ -108,7 +108,7 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
 }
 
 void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
-               std::map<RotaMode *, int[2]> *availableMaps) {
+               std::map<RotaMode *, int> *availableLayerMaps) {
 
     const std::filesystem::path biomFile{std::string(CONFIG_PATH) +
                                          "/bioms.json"};
@@ -148,7 +148,8 @@ void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
         for (int i = 1; i < bv.size(); i++) {
             biomVals.push_back(bv[i].as_double());
         }
-        RotaMap *newMap = new RotaMap(map, biomVals, locktime, availableMaps);
+        RotaMap *newMap =
+            new RotaMap(map, biomVals, locktime, availableLayerMaps);
         newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope,
                                  layerVoteShift);
         (*maps)[map] = newMap;

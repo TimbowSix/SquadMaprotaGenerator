@@ -10,14 +10,14 @@
 using namespace rota;
 
 RotaMap::RotaMap(std::string name, std::vector<float> biomValues, int lockTime,
-                 std::map<RotaMode *, int[2]> *availableMaps) {
+                 std::map<RotaMode *, int> *availableLayerMaps) {
     this->name = name;
     this->biomValues.resize(biomValues.size());
     for (int i = 0; i < biomValues.size(); i++) {
         this->biomValues(i) = biomValues[i];
     }
     this->lockTime = lockTime;
-    this->availableMaps = availableMaps;
+    this->availableLayerMaps = availableLayerMaps;
 }
 
 void RotaMap::addLayer(RotaLayer *layer) {
@@ -40,7 +40,9 @@ void RotaMap::decreaseLockTime() {
     if (this->currentLockTime == 1) {
         // map gets unlocked
         for (RotaMode *mode : this->modes) {
-            (*this->availableMaps)[mode][0]++;
+            if (this->hasLayersAvailable(mode)) {
+                (*this->availableLayerMaps)[mode]++;
+            }
         }
     }
     this->currentLockTime--;
@@ -65,7 +67,9 @@ void RotaMap::lock(int locktime, bool lockNeighbors) {
         // update counter in generator
         if (this->currentLockTime == 0) {
             for (RotaMode *mode : this->modes) {
-                (*this->availableMaps)[mode][0]--;
+                if (this->hasLayersAvailable(mode)) {
+                    (*this->availableLayerMaps)[mode]--;
+                }
             }
         }
 
@@ -168,16 +172,16 @@ bool RotaMap::isLocked() { return this->currentLockTime > 0; }
 
 void RotaMap::increaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]++;
-    if (this->availableLayers[mode] == 1) {
+    if (this->availableLayers[mode] == 1 && !this->isLocked()) {
         // increase Map counter for this mode in generator
-        (*this->availableMaps)[mode][1]++;
+        (*this->availableLayerMaps)[mode]++;
     }
 }
 void RotaMap::decreaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]--;
-    if (this->availableLayers[mode] == 0) {
+    if (this->availableLayers[mode] == 0 && !this->isLocked()) {
         // decrease Map counter for this mode in generator
-        (*this->availableMaps)[mode][1]--;
+        (*this->availableLayerMaps)[mode]--;
     }
 }
 

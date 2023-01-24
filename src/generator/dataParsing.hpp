@@ -44,7 +44,7 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
  *
  */
 void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
-               std::map<RotaMode *, int[2]> *availableMaps);
+               std::map<RotaMode *, int> *availableLayerMaps);
 
 /**
  * @brief maps every team on their containing layers

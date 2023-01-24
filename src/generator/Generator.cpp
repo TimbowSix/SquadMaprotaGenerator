@@ -24,7 +24,7 @@ Generator::Generator(RotaConfig *config) {
     this->modePools = (*config->get_pools());
     this->modes = (*config->get_modes());
     parseMaps(this->config, &this->mapsByName,
-              &this->availableMaps); // setup all available maps
+              &this->availableLayerMaps); // setup all available maps
 
     std::string voteUrl = this->config->get_layer_vote_api_url();
     std::string teamUrl = this->config->get_team_api_url();
@@ -52,12 +52,11 @@ Generator::Generator(RotaConfig *config) {
             // init modeToMapList
             this->modeToMapList[m->name].push_back(map);
             // init availableMaps
-            if (this->availableMaps.find(m) == this->availableMaps.end()) {
-                this->availableMaps[m][0] = 1;
-                this->availableMaps[m][1] = 1;
+            if (this->availableLayerMaps.find(m) ==
+                this->availableLayerMaps.end()) {
+                this->availableLayerMaps[m] = 1;
             } else {
-                this->availableMaps[m][0]++;
-                this->availableMaps[m][1]++;
+                this->availableLayerMaps[m]++;
             }
         }
     }
@@ -183,6 +182,13 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
         }
     }
 
+    if (weights.size() == 0) {
+        printMemColonel(&this->maps);
+        throw std::runtime_error("error in chooseMaps, no maps for mode " +
+                                 mode->name);
+        return nullptr;
+    }
+
     normalize(&weights, &tempSum);
     return availableMaps[weightedChoice(&weights)];
 }
@@ -295,9 +301,9 @@ void Generator::generateRota() {
         layer->lock();
         this->lockTeams();
 
-        std::cout << layer->getName() << std::endl;
-        // printMemColonel(&this->maps);
-        // std::cout << std::endl;
+        // std::cout << layer->getName() << std::endl;
+        //  printMemColonel(&this->maps);
+        //  std::cout << std::endl;
     }
 }
 
@@ -347,8 +353,7 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
 }
 
 bool Generator::mapsAvailable(RotaMode *mode) {
-    return (this->availableMaps[mode][0] > 0 &&
-            this->availableMaps[mode][1] > 0);
+    return (this->availableLayerMaps[mode] > 0);
 }
 
 } // namespace rota

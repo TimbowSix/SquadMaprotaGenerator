@@ -70,11 +70,11 @@ class RotaMap {
      *        locks the second number is the count of maps with have available
      *        layer
      */
-    std::map<RotaMode *, int[2]> *availableMaps;
+    std::map<RotaMode *, int> *availableLayerMaps;
 
   public:
     RotaMap(std::string name, std::vector<float> biomValues, int lockTime,
-            std::map<RotaMode *, int[2]> *availableMaps);
+            std::map<RotaMode *, int> *availableLayerMaps);
     ~RotaMap(){};
 
     /**

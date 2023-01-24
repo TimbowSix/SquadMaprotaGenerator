@@ -42,7 +42,7 @@ class Generator {
      *        locks the second number is the count of maps with have available
      *        layer
      */
-    std::map<RotaMode *, int[2]> availableMaps;
+    std::map<RotaMode *, int> availableLayerMaps;
     /**
      * @brief maps all available ModePools to their name
      */
