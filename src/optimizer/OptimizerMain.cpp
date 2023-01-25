@@ -31,13 +31,13 @@ int main(void){
     opt.comparisonState(0) = 0.1;
     opt.comparisonState(1) = 0.15;
     opt.comparisonState(2) = 0.05;
-    opt.comparisonState(3) = 0.05;
-    opt.comparisonState(4) = 0.03;
-    opt.comparisonState(5) = 0.06;
+    opt.comparisonState(3) = 0.1;
+    opt.comparisonState(4) = 0.08;
+    opt.comparisonState(5) = 0.11;
     opt.comparisonState(6) = 0.01;
-    opt.comparisonState(7) = 0.05;
+    opt.comparisonState(7) = 0.1;
     opt.comparisonState(8) = 0.1;
-    opt.comparisonState(9) = 0.4;
+    opt.comparisonState(9) = 0.2;
 
     print_matrix(state);
     bool DEBUG = true;
@@ -63,7 +63,7 @@ int main(void){
 
         // Step to a neighbour state of the previous state (NOT the evolved state!)
         if(i != opt.maxEvolveSteps-1){
-            state_buffer = opt.GenerateNeighbour(state, std::max(opt.T0,(float)1E-5), 1);
+            state_buffer = opt.GenerateNeighbour(state, 2, 1);
         }
         if(DEBUG){
             std::cout<< "T0: " << opt.T0<<std::endl;
