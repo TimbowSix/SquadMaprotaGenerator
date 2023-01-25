@@ -17,7 +17,7 @@ namespace optimizer
             }
         }
 
-    void print_kernel(std::vector<std::vector<float>> kernel){
+    void print_kernel(std::vector<boost::numeric::ublas::vector<float>> kernel){
         std::cout << "=====MEMROY KERNEL=====" << std::endl;
         for(unsigned j=0; j<kernel.size(); j++){
             for(unsigned i=0; i<kernel[j].size(); i++){
@@ -27,24 +27,30 @@ namespace optimizer
         }
     }
 
+    std::vector<boost::numeric::ublas::vector<float>> initMem(int dim, int baseSize){
+        std::vector<boost::numeric::ublas::vector<float>> mem(dim);
+        for(unsigned k=0; k<dim; k++){
+            mem[k] = boost::numeric::ublas::vector<float>(baseSize);
+        }
+        mem[0](0) = 1.0;
+        return mem;
+    }
+
     RotaOptimizer::RotaOptimizer(){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
 
         generator = std::mt19937(seed);            // the generator seeded with the random device
-        kernelSize = 3;
-        maxEvolveSteps = 2;
-        T0 = 50.0;
-        stateBaseSize = 5;
-        iterationMax = 2;
+        kernelSize = 4;
+        maxEvolveSteps = 1000;
+        T0 = 2.0;
+        stateBaseSize = 10;
+        iterationMax = 2000;
         slope = 0.05;
-        memorykernel = {  
-            {0.0, 0.0, 1.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0}};
+        memorykernel = initMem(kernelSize, stateBaseSize);
         clusters = {
-            {0, {0, 1}}, 
-            {1, {1, 0}},
+            {0, {0}}, 
+            {1, {1}},
             {2, {2}},
             {3, {3}},
             {4, {4}}};
@@ -59,7 +65,7 @@ namespace optimizer
     }
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateSeed(int dim){
-        std::uniform_real_distribution<> distribute(0,1);   //uniform-dist wrapper for rng, 1 is excluded
+        std::uniform_real_distribution<float> distribute(0,1);   //uniform-dist wrapper for rng, 1 is excluded
         boost::numeric::ublas::matrix<float> mat (dim, dim);
         for (unsigned i = 0; i < mat.size1 (); ++ i)
             for (unsigned j = 0; j < mat.size2 (); ++ j)
@@ -68,22 +74,14 @@ namespace optimizer
         return MatrixToProbabilityMatrix(mat);
     }
 
-    float RotaOptimizer::StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2){
+    float RotaOptimizer::StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2){
         float sum = 0.0;
         // check dimension match
-        if(state1.size1() == state2.size1() && state1.size2() == state2.size2()){
-            for (unsigned i = 0; i < state1.size1(); ++ i)
-                // take only the first column and calculate the difference squared
-                // this is possible for EVOLVED STATES only because the columns of the initial matrices converge to the long-term probabilities
-                sum += pow(state1(i,0)-state2(i,0), 2);
-            return sum;
-        }
-        else{
-            std::cout << "dim missmatch" << std::endl;
-            return -1.0;
-        }
-
-
+        for (unsigned i = 0; i < state1.size(); ++ i)
+            // take only the first column and calculate the difference squared
+            // this is possible for EVOLVED STATES only because the columns of the initial matrices converge to the long-term probabilities
+            sum += pow(state1(i)-state2(i), 2);
+        return sum;
     };
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat){
@@ -124,29 +122,50 @@ namespace optimizer
                 }
     };
 
-    void RotaOptimizer::UpdateMemoryKernel(boost::numeric::ublas::matrix<float>& evolvedState, std::vector<std::vector<float>>& kernel){
-        std::vector<float> column(evolvedState.size1());
-        // get the first column
-        for(unsigned i=0; i<evolvedState.size1(); i++){
-            column[i] = evolvedState(i,0);
-        }
-
+    void RotaOptimizer::UpdateMemoryKernel(boost::numeric::ublas::vector<float>& evolvedState, std::vector<boost::numeric::ublas::vector<float>>& kernel){
         // cycle kernel 
-        for(unsigned i=kernel.size(); i>0; i--){
-            for(unsigned j=0; j<kernel.size(); j++){
+        for(unsigned i=kernelSize; i>0; i--){
+            for(unsigned j=0; j<stateBaseSize; j++){
                 if(i>1){
-                    kernel[i-1][j] = kernel[i-2][j];
+                    kernel[i-1](j) = kernel[i-2](j);
                 }
                 else{
-                    kernel[0][j] = column[j];
+                    kernel[0](j) = evolvedState(j);
                 }
 
             }
         }
     };
 
-    boost::numeric::ublas::matrix<float> RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float>& state){
+    void choose_vector(boost::numeric::ublas::vector<float>& v, float r){
+        float temp = 0.0;
+        int index = 0;
+        bool found = false;
+        for(unsigned i=0; i<v.size(); i++){
+            temp += v(i);
+            if(temp < r || temp >= r && found){
+                v(i) = 0.0;
+            }
+            else{
+                v(i) = 1.0;
+                found = true;
+            }
+        }
+    }
+void print_vector(boost::numeric::ublas::vector<float> vec){
+    for(unsigned i=0; i<vec.size(); i++){
+        std::cout << vec(i) << std::endl;
+    }
+}
+    boost::numeric::ublas::vector<float> RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float>& state){
+        std::uniform_real_distribution<float> distribute(0,1); 
         boost::numeric::ublas::matrix<float> temp(state);
+        boost::numeric::ublas::matrix<float> state_copy(state);
+        boost::numeric::ublas::vector<float> copy_vector(stateBaseSize);
+        boost::numeric::ublas::vector<float> count_vector(stateBaseSize);
+        for(unsigned i=0; i<count_vector.size(); i++){
+            count_vector(i) = 0.0;
+        }
         // Init trafo matrix as zero-matrix
         boost::numeric::ublas::matrix<float> trafo(state.size1(), state.size2());
         for(unsigned i=0; i<state.size1(); i++)
@@ -155,37 +174,32 @@ namespace optimizer
 
         float factor = 0.0;
         if(kernelSize == 0){// no memory kernel, only matmul necessary for state evolution
-            for(unsigned i=0; i<this->maxEvolveSteps; i++)
-                temp = boost::numeric::ublas::prod(state, temp);
+            // for(unsigned i=0; i<this->maxEvolveSteps; i++)
+            //     temp = boost::numeric::ublas::prod(state, temp);
         }
         else    // finite, non-vanishing memory kernel
         {
             for(unsigned i=0; i<this->maxEvolveSteps; i++){
-                trafo = 0.0*trafo;
                 temp = state;
-                for(unsigned j=0; j<this->stateBaseSize; j++){
-                    for(unsigned k=0; k<this->kernelSize; k++){
-                        factor = this->memorykernel[k][j]/this->kernelSize;
-                        if(factor != 0.0){
-                            for(unsigned m=0; m<clusters[j].size(); m++){
-                                SetRowZero(temp, m);
-                            }
-                            trafo += factor*temp;
-                            temp = state;
+                for(unsigned j=0; j<kernelSize; j++){
+                    for(unsigned k=0; k<stateBaseSize; k++){
+                        if(memorykernel[j][k] != 0.0){
+                            SetRowZero(temp, k);
                         }
                     }
                 }
-                trafo = prod(MatrixToProbabilityMatrix(trafo),state);
-                print_matrix(trafo);
-                UpdateMemoryKernel(trafo, memorykernel);
-                print_kernel(memorykernel);
+                temp = MatrixToProbabilityMatrix(temp);
+                copy_vector = boost::numeric::ublas::prod(temp, memorykernel[0]);
+                choose_vector(copy_vector, distribute(this->generator));
+                UpdateMemoryKernel(copy_vector, memorykernel);
+                count_vector += copy_vector;
             }
         }
-        return trafo;
+        return count_vector*(1/((float)maxEvolveSteps));
     };
 
     bool RotaOptimizer::AcceptMove(float fitvalue_difference){
-        std::uniform_real_distribution<> distribute(0,1); 
+        std::uniform_real_distribution<float> distribute(0,1); 
 
         return fitvalue_difference < 0 || exp(-fitvalue_difference/this->T0) > distribute(this->generator);
     };
