@@ -114,6 +114,11 @@ class Generator {
      */
     int nextMainModeIndex;
 
+    /**
+     * @brief seed of rota
+     */
+    time_t seed;
+
   public:
     Generator(RotaConfig *config);
 
@@ -181,5 +186,6 @@ class Generator {
     void reset(std::vector<std::string> *pastLayers);
 
     bool mapsAvailable(RotaMode *mode);
+    time_t getSeed();
 };
 } // namespace rota

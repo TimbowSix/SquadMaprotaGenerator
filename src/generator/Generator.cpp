@@ -93,6 +93,7 @@ Generator::Generator(RotaConfig *config) {
     this->nextMainModeIndex = 0;
 
     // printMapNeighbor(&this->maps);
+    this->seed = time(NULL);
 }
 
 RotaMode *Generator::chooseMode(bool useLatestModes = true,
@@ -249,6 +250,8 @@ void Generator::lockTeams() { // TODO test?
 }
 
 void Generator::generateRota() {
+    // set seed
+    srand(this->seed);
     // add seedlayer
     if (config->get_seed_layer() > 0) {
         std::vector<RotaMap *> seedMaps(this->modeToMapList["Seed"]);
@@ -312,6 +315,7 @@ void Generator::reset() {
     this->reset(&pastLayers); // call reset with empty past layers
 }
 void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
+    this->seed = time(NULL);
     this->rotation.clear();
     this->latestMaps.clear();
     this->latestModes.clear();
@@ -355,5 +359,7 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
 bool Generator::mapsAvailable(RotaMode *mode) {
     return (this->availableLayerMaps[mode] > 0);
 }
+
+time_t Generator::getSeed() { return this->seed; }
 
 } // namespace rota
