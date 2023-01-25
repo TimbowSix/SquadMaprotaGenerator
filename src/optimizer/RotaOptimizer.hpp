@@ -47,7 +47,6 @@ namespace optimizer
             Return: Matrix<float>
             */
             boost::numeric::ublas::matrix<float> GenerateSeed(int dim);
-
             /*
             Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
             Params: 
@@ -56,6 +55,14 @@ namespace optimizer
             Return: float
             */
             float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2);
+             /*
+            Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
+            Params: 
+                matrix<float> state1 
+                matrix<float> state2
+            Return: float
+            */
+            float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2, std::vector<float>& list);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
             Params: 
@@ -83,6 +90,15 @@ namespace optimizer
             Return: matrix<float>
             */
             boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
+            /*
+            Summary: Generates the next state
+            Params:
+                matrix<float> state, current state
+                float s, slope
+                float T, temperature
+            Return: matrix<float>
+            */
+            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness);
             /*
             Summary: Adds the given map-representative to the memory kernel and removes the most oldest one if the kernel length is full
             Params:

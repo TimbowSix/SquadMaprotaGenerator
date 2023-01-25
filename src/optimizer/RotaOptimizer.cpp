@@ -43,7 +43,7 @@ namespace optimizer
         generator = std::mt19937(seed);            // the generator seeded with the random device
         kernelSize = 4;
         maxEvolveSteps = 1000;
-        T0 = 2.0;
+        T0 = 4.0;
         stateBaseSize = 10;
         iterationMax = 2000;
         slope = 0.05;
@@ -84,6 +84,20 @@ namespace optimizer
         return sum;
     };
 
+    float RotaOptimizer::StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2, std::vector<float>& list){
+        float sum = 0.0;
+        float x = 0.0;
+        // check dimension match
+        for (unsigned i = 0; i < state1.size(); ++ i){
+            // take only the first column and calculate the difference squared
+            // this is possible for EVOLVED STATES only because the columns of the initial matrices converge to the long-term probabilities
+            x = pow(state1(i)-state2(i), 2);
+            sum += x;
+            list[i] = x;
+        }
+        return sum;
+    };
+
     boost::numeric::ublas::matrix<float> RotaOptimizer::MatrixToProbabilityMatrix(boost::numeric::ublas::matrix<float> mat){
         float sum;
         for(unsigned j = 0; j < mat.size2(); ++ j){
@@ -108,6 +122,23 @@ namespace optimizer
                 // All entries must be positive or zero to be a probability matrix
                 if(newstate(i,j) < 0.0){
                     newstate(i,j) -= 2*random*s;
+                }
+            }
+        }
+        return MatrixToProbabilityMatrix(newstate);
+    };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness){
+        std::uniform_real_distribution<> distribute(0,1);
+        float random;
+        boost::numeric::ublas::matrix<float> newstate(state);
+        for(unsigned i=0; i < newstate.size1(); i++){
+            for(unsigned j=0; j < newstate.size2(); j++){
+                random = distribute(this->generator)*s*sqrt(grid_fitness[i]*100);
+                newstate(i,j) += random;
+                // All entries must be positive or zero to be a probability matrix
+                if(newstate(i,j) < 0.0){
+                    newstate(i,j) -= 2*random;
                 }
             }
         }

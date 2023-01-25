@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <iostream>
+#include <fstream>
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include "RotaOptimizer.hpp"
@@ -17,6 +18,8 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
         std::cout << vec(i) << std::endl;
     }
 }
+
+
 int main(void){
     time_t start, end;
     time(&start);
@@ -38,16 +41,17 @@ int main(void){
     opt.comparisonState(7) = 0.1;
     opt.comparisonState(8) = 0.1;
     opt.comparisonState(9) = 0.2;
-
+    std::vector<float> diffList(10);
     print_matrix(state);
+    std::ofstream file;
+    file.open("data.dat");
     bool DEBUG = true;
     // Calculate fit-value
     // Until either maximum iterations or some abort-condition
     for(unsigned i=0; i<opt.iterationMax; i++){   
         // Evolve the state 
         boost::numeric::ublas::vector<float> evolved_state = opt.Evolve(state_buffer);
-        fit_buffer = opt.StateDifference(evolved_state, opt.comparisonState);
-        
+        fit_buffer = opt.StateDifference(evolved_state, opt.comparisonState, diffList);
         // if the fit-value decreases accept, otherwise only accept with a probability > 0
         if(DEBUG)
             std::cout << "fit_value: " << fit_buffer << std::endl;
@@ -55,15 +59,16 @@ int main(void){
             state = state_buffer;
             current_fit_val = fit_buffer;
         }
+        file << current_fit_val << std::endl;
         if(DEBUG)
             std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
 
         // decrease temperature, for T->0 the probability -> 0 thus the algorithm converges to a "hill-climb"
-        opt.T0 = opt.UpdateTemperature(opt.T0, 0.000005, i+1);
+        opt.T0 = opt.UpdateTemperature(opt.T0, 0.005, i+1);
 
         // Step to a neighbour state of the previous state (NOT the evolved state!)
         if(i != opt.maxEvolveSteps-1){
-            state_buffer = opt.GenerateNeighbour(state, 2, 1);
+            state_buffer = opt.GenerateNeighbour(state, 0.5, 1, diffList);
         }
         if(DEBUG){
             std::cout<< "T0: " << opt.T0<<std::endl;
@@ -76,5 +81,6 @@ int main(void){
     double time_taken = double(end - start);
     std::cout << "Time taken by program is : " << time_taken << std::endl;
     std::cout << " sec " << std::endl;
+    file.close();
     return 0;
 }
