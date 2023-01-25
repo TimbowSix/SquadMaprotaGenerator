@@ -22,6 +22,7 @@ int main(void) {
 
     std::cout << "Seed: " << gen.getSeed() << std::endl;
     gen.generateRota();
+    gen.reset();
 
     return 0;
 }

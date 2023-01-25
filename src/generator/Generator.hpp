@@ -62,7 +62,7 @@ class Generator {
     /**
      * @brief all drawn modes in order
      */
-    std::vector<RotaMode *> latestModes;
+    std::vector<RotaMode *> ModesHistory;
     /**
      * @brief all drawn layers
      */
@@ -70,7 +70,7 @@ class Generator {
     /**
      * @brief all drawn maps in order
      */
-    std::vector<RotaMap *> latestMaps;
+    std::vector<RotaMap *> MapsHistory;
     /**
      * @brief maps bluefor teams on containing layers
      */
@@ -178,7 +178,7 @@ class Generator {
      * @brief resets all temporary values used for generation and sets given
      * previous layers
      */
-    void reset(std::vector<RotaLayer *> *pastLayers);
+    void reset(std::vector<RotaLayer *> *pastLayers, time_t seed);
     /**
      * @brief resets all temporary values used for generation
      *        parses and sets given previous layers

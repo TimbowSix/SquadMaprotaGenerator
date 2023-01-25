@@ -269,7 +269,7 @@ void Generator::generateRota() {
             RotaLayer *chosenLayer = seedLayers[choice(seedLayers.size())];
             rotation.push_back(chosenLayer);
         }
-        this->latestModes.push_back(this->modes["Seed"]);
+        this->ModesHistory.push_back(this->modes["Seed"]);
     }
 
     this->modeBuffer.clear();
@@ -284,8 +284,8 @@ void Generator::generateRota() {
         RotaMap *map = chooseMap(mode);
         RotaLayer *layer = chooseLayerFromMap(map, mode);
         this->rotation.push_back(layer);
-        this->latestMaps.push_back(map);
-        this->latestModes.push_back(mode);
+        this->MapsHistory.push_back(map);
+        this->ModesHistory.push_back(mode);
 
         for (int i = 0; i < 2; i++) {
             this->teamHistory[i].push_back(layer->getTeam(currTeamIndex[i]));
@@ -305,26 +305,29 @@ void Generator::generateRota() {
         this->lockTeams();
 
         // std::cout << layer->getName() << std::endl;
-        //  printMemColonel(&this->maps);
-        //  std::cout << std::endl;
+        // printMemColonel(&this->maps);
+        // std::cout << std::endl;
     }
 }
 
 void Generator::reset() {
     std::vector<RotaLayer *> pastLayers;
-    this->reset(&pastLayers); // call reset with empty past layers
+    time_t seed = time(NULL);
+    this->reset(&pastLayers, seed); // call reset with empty past layers
 }
-void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
-    this->seed = time(NULL);
+void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
+    // this->seed = seed;
+    this->lastNonMainMode = 0;
     this->rotation.clear();
-    this->latestMaps.clear();
-    this->latestModes.clear();
+    this->MapsHistory.clear();
+    this->ModesHistory.clear();
     this->modeBuffer.clear();
-    for (RotaMap *map : this->maps) {
-        map->unlock();
-    }
+
     for (auto const &[key, layer] : this->layers) {
         layer->unlock();
+    }
+    for (RotaMap *map : this->maps) {
+        map->unlock();
     }
 
     // set previous layers
@@ -343,7 +346,7 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
         if (pastLen - i <
             config->get_pool_spacing() + 1) { // add modes within the range of
                                               // pool spacing to latest modes
-            latestModes.push_back(pastLayers->at(i)->getMode());
+            ModesHistory.push_back(pastLayers->at(i)->getMode());
         }
     }
 }
@@ -353,7 +356,8 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
         RotaLayer *layer = layers[layerName]; // TODO handle layer not found
         pastLayers.push_back(layer);
     }
-    reset(&pastLayers);
+    time_t seed = time(NULL);
+    reset(&pastLayers, seed);
 }
 
 bool Generator::mapsAvailable(RotaMode *mode) {
