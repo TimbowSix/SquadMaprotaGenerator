@@ -21,9 +21,6 @@ RotaConfig::RotaConfig(std::string path) {
     number_of_rotas = pData["number_of_rotas"].as_int64();
     number_of_layers = pData["number_of_layers"].as_int64();
     seed_layer = pData["seed_layer"].as_int64();
-    update_layers = pData["update_layers"].as_bool();
-    update_teams = pData["update_teams"].as_bool();
-    output_path = pData["output_path"].as_string();
     layer_vote_api_url = pData["layer_vote_api_url"].as_string();
     team_api_url = pData["team_api_url"].as_string();
     biom_spacing = pData["biom_spacing"].as_int64();
@@ -44,10 +41,6 @@ RotaConfig::RotaConfig(std::string path) {
     layervote_shift = pData["layervote_shift"].is_double()
                           ? pData["layervote_shift"].as_double()
                           : pData["layervote_shift"].as_int64();
-    save_expected_map_dist = pData["save_expected_map_dist"].as_bool();
-    use_lock_time_modifier = pData["use_lock_time_modifier"].as_bool();
-    auto_optimize = pData["auto_optimize"].as_bool();
-    fix_unavailables = pData["fix_unavailables"].as_bool();
     pool_spacing = pData["mode_distribution"].at("pool_spacing").as_int64();
     space_main = pData["mode_distribution"].at("space_main").as_bool();
     // TODO parse maps list
@@ -71,17 +64,6 @@ void RotaConfig::set_number_of_layers(unsigned int value) {
 unsigned int RotaConfig::get_seed_layer() { return seed_layer; }
 void RotaConfig::set_seed_layer(unsigned int value) {
     this->seed_layer = value;
-}
-
-bool RotaConfig::get_update_layers() { return update_layers; }
-void RotaConfig::set_update_layers(bool value) { this->update_layers = value; }
-
-bool RotaConfig::get_update_teams() { return update_teams; }
-void RotaConfig::set_update_teams(bool value) { this->update_teams = value; }
-
-std::string RotaConfig::get_output_path() { return output_path; }
-void RotaConfig::set_output_path(std::string value) {
-    this->output_path = value;
 }
 
 std::string RotaConfig::get_layer_vote_api_url() { return layer_vote_api_url; }
@@ -135,24 +117,6 @@ void RotaConfig::set_layervote_slope(float value) {
 unsigned int RotaConfig::get_layervote_shift() { return layervote_shift; }
 void RotaConfig::set_layervote_shift(unsigned int value) {
     this->layervote_shift = value;
-}
-
-bool RotaConfig::get_save_expected_map_dist() { return save_expected_map_dist; }
-void RotaConfig::set_save_expected_map_dist(bool value) {
-    this->save_expected_map_dist = value;
-}
-
-bool RotaConfig::get_use_lock_time_modifier() { return use_lock_time_modifier; }
-void RotaConfig::set_use_lock_time_modifier(bool value) {
-    this->use_lock_time_modifier = value;
-}
-
-bool RotaConfig::get_auto_optimize() { return auto_optimize; }
-void RotaConfig::set_auto_optimize(bool value) { this->auto_optimize = value; }
-
-bool RotaConfig::get_fix_unavailables() { return fix_unavailables; }
-void RotaConfig::set_fix_unavailables(bool value) {
-    this->fix_unavailables = value;
 }
 
 unsigned int RotaConfig::get_pool_spacing() { return pool_spacing; }

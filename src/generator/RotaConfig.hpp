@@ -31,19 +31,6 @@ class RotaConfig {
      */
     unsigned int seed_layer;
     /**
-     * @brief whether layers should be updated from the API or use locally
-     * stored
-     */
-    bool update_layers;
-    /**
-     * @brief whether teams should be updated from the API or use locally stored
-     */
-    bool update_teams;
-    /**
-     * @brief path to where generated rotation should be saved
-     */
-    std::string output_path;
-    /**
      * @brief url to the API containing all layers and their votes
      */
     std::string layer_vote_api_url;
@@ -89,19 +76,6 @@ class RotaConfig {
      * @brief sigmoind shift of layervote
      */
     float layervote_shift;
-    /**
-     * @brief
-     */
-    bool save_expected_map_dist;
-
-    bool use_lock_time_modifier;
-    /**
-     * @brief whether the optimizer should run automatically if relevant setting
-     * have changed
-     */
-    bool auto_optimize;
-
-    bool fix_unavailables;
 
     /**
      * @brief minimum number of turns between any NOT main pool modes
@@ -140,15 +114,6 @@ class RotaConfig {
     unsigned int get_seed_layer();
     void set_seed_layer(unsigned int value);
 
-    bool get_update_layers();
-    void set_update_layers(bool value);
-
-    bool get_update_teams();
-    void set_update_teams(bool value);
-
-    std::string get_output_path();
-    void set_output_path(std::string value);
-
     std::string get_layer_vote_api_url();
     void set_layer_vote_api_url(std::string value);
 
@@ -181,18 +146,6 @@ class RotaConfig {
 
     unsigned int get_layervote_shift();
     void set_layervote_shift(unsigned int value);
-
-    bool get_save_expected_map_dist();
-    void set_save_expected_map_dist(bool value);
-
-    bool get_use_lock_time_modifier();
-    void set_use_lock_time_modifier(bool value);
-
-    bool get_auto_optimize();
-    void set_auto_optimize(bool value);
-
-    bool get_fix_unavailables();
-    void set_fix_unavailables(bool value);
 
     unsigned int get_pool_spacing();
     void set_pool_spacing(unsigned int value);
