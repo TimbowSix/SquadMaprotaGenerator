@@ -17,7 +17,7 @@ namespace optimizer
             float slope;
             std::mt19937 generator;
             std::mt19937* generator_ptr;
-            std::vector<std::vector<float>> memorykernel;
+            std::vector<boost::numeric::ublas::vector<float>> memorykernel;
 
             /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
             /// @param mat 
@@ -26,7 +26,7 @@ namespace optimizer
             std::map<int, std::vector<int>> clusters;
 
         public:
-            boost::numeric::ublas::matrix<float> comparisonState;
+            boost::numeric::ublas::vector<float> comparisonState;
             int iterationMax;
             int maxEvolveSteps;
             float T0;
@@ -55,7 +55,7 @@ namespace optimizer
                 matrix<float> state2
             Return: float
             */
-            float StateDifference(boost::numeric::ublas::matrix<float> state1, boost::numeric::ublas::matrix<float> state2);
+            float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
             Params: 
@@ -90,7 +90,7 @@ namespace optimizer
                 array kernel, the memory kernel
             Return: array, the memory kernel
             */
-            void UpdateMemoryKernel(boost::numeric::ublas::matrix<float>& evolvedState, std::vector<std::vector<float>>& kernel);
+            void UpdateMemoryKernel(boost::numeric::ublas::vector<float>& evolvedState, std::vector<boost::numeric::ublas::vector<float>>& kernel);
             /*
             Summary: Sets the values of a matrix to zero only in the given row
             Params: 
@@ -106,11 +106,15 @@ namespace optimizer
                 map<int,matrix<float>> clusters, the map-cluster map containing which state has which neighbours
             Return: matrix<float>, a new state
             */
-            boost::numeric::ublas::matrix<float> Evolve(boost::numeric::ublas::matrix<float>& state);
+            boost::numeric::ublas::vector<float> Evolve(boost::numeric::ublas::matrix<float>& state);
             /*
             Returns true if the state difference is either negative or greater than some random float in [0,1)
             */
             bool AcceptMove(float state_difference);
             boost::numeric::ublas::matrix<float> ComparisonState_FromProbabilities(std::vector<float> probabilities);
+
+            std::vector<float> TakeMemoryKernelSum();
+
+            std::vector<float> ProbabilitiesFromMemoryKernel();
     };
 };
