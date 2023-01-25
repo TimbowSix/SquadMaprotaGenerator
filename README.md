@@ -14,16 +14,16 @@ TODO
 
 Die globale Config ist unter `/etc/maprota/config.json` zu finden.
 
-Eine einzele Maprota lässt sich nach dem installieren mit 
+Eine einzele Maprota lässt sich nach dem installieren mit
 ``` shell
 SquadMaprota
 ```
 erstellen.
 
-Der API Server lässt sich mit 
-``` shell 
+Der API Server lässt sich mit
+``` shell
 SquadMaprotaServer
-``` 
+```
 start
 
 
@@ -41,22 +41,22 @@ docker-compose up
 ## Selber Bauen und Installieren
 
 ```shell
-	# Alle dependencies installieren
-	sudo apt-get update
-	sudo apt-get upgrade
-	sudo apt-get install uild-essential cmake gcc-multilib libssl-dev wget
-	# Boost 1.81.0 bauen/installieren
-	sudo ./install_boost.sh
-	# submodules updaten
-	git submodule update --init --recursive
-	# build Ordner erstellen 
-	mkdir build
-	cd build
-	# bauen
-	cmake ..
-	make
-	# installieren
-	make install
+# Alle dependencies installieren
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install uild-essential cmake gcc-multilib libssl-dev wget
+# Boost 1.81.0 bauen/installieren
+sudo ./install_boost.sh
+# submodules updaten
+git submodule update --init --recursive
+# build Ordner erstellen
+mkdir build
+cd build
+# bauen
+cmake ..
+make
+# installieren
+make install
 ```
 
 
@@ -81,7 +81,7 @@ hier werden die Einstellparameter in der `data/config.json` und `data/bioms.json
 
 | Parameter           | Type   | Beschreibung                                                                                                                                                                          | Default                              |
 | ------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **number_of_rotas** | int    | Anzahl an Rotas, die generiert werden sollen                                                                                                                                          | 2                                    |
+| number_of_rotas | int    | Anzahl an Rotas, die generiert werden sollen                                                                                                                                          | 2                                    |
 | number_of_layers    | int    | Anzahl an Rotas, die generiert werden sollen                                                                                                                                          | 30                                   |
 | seed_layer          | int    | Anzal an Seedlayern am begin der Rota                                                                                                                                                 | 1                                    |
 | update_layers       | bool   | sollen neue Layer/Votes abgerufen werden                                                                                                                                              | true                                 |                                                                                                                                                                    |                                      |
@@ -183,7 +183,9 @@ Hierbei ist jedoch die tatsächliche Größe des Spielbereichs zu beachten,
 während die offiziellen Angaben von OWI die gesamte Mapgröße einbeziehen. Diese Unterscheiden sich zum Teil stark.
 Ein prominentes Beispiel hierbei wäre die Map Chora:
 
-![[chora_example.png]]
+<center>
+    <img src="./doku/manual/img/chora_example.png" alt="drawing" width="400"/>
+</center>
 Der tatsächliche Spielbereich, hier rot umrandet, nimmt nur einen Bruchteil der gesamten Map ein.\
 Die offiziell angegebene Größe bezieht jedoch die gesamte Map mit ein, was Chora zu einer der größten Karten im Spiel machen würde.
 Das ergibt im Sinne dieser Einteilung natürlich wenig Sinn.
