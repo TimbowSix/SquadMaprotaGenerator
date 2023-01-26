@@ -184,9 +184,10 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     }
 
     if (weights.size() == 0) {
-        printMemColonel(&this->maps);
+        // printMemColonel(&this->maps);
         throw std::runtime_error("error in chooseMaps, no maps for mode " +
-                                 mode->name);
+                                 mode->name + " seed " +
+                                 std::to_string(this->seed));
         return nullptr;
     }
 
@@ -316,7 +317,7 @@ void Generator::reset() {
     this->reset(&pastLayers, seed); // call reset with empty past layers
 }
 void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
-    // this->seed = seed;
+    this->seed = seed;
     this->lastNonMainMode = 0;
     this->rotation.clear();
     this->MapsHistory.clear();
@@ -365,5 +366,7 @@ bool Generator::mapsAvailable(RotaMode *mode) {
 }
 
 time_t Generator::getSeed() { return this->seed; }
+
+std::vector<RotaLayer *> *Generator::getRota() { return &this->rotation; }
 
 } // namespace rota

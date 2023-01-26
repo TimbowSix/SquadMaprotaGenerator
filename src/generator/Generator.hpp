@@ -185,6 +185,10 @@ class Generator {
     void reset(std::vector<std::string> *pastLayers);
 
     bool mapsAvailable(RotaMode *mode);
+
+    // getter & setter
     time_t getSeed();
+
+    std::vector<RotaLayer *> *getRota();
 };
 } // namespace rota
