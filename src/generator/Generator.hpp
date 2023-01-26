@@ -125,23 +125,20 @@ class Generator {
     /**
      * @brief Selects a random game mode based on the modes in the mode pools
      * and the corresponding probabilities set in the configuration
+     * considering the lock maps and layer
      *
-     * @param useLatestModes usage of latest modes for mode locking
      * @param customPool set pool to draw mode from
      * @param ignoreModeBuff ignores the mode buffer while choosing a mode
      * @param depth this function calls itself if necessary to prevent a endless
      * loop the function throw a error if a depth is reached
      * @returns pointer to choosen mode
      */
-    RotaMode *chooseMode(bool useLatestModes, RotaModePool *customPool,
-                         bool ignoreModeBuff, int depth);
+    RotaMode *chooseMode(RotaModePool *customPool, bool ignoreModeBuff,
+                         int depth);
 
     /**
      * @brief chooses a random map from maps with probabilities given by their
-     * weight for a given mode uses fallback mode of main pool if no maps are
-     * available for given mode reduces map locktimes if no maps for either mode
-     * or fallback mode are available
-     * @param useLatestModes ?? //TODO
+     * weights // TODO hier weiter machen ...
      * @param mode mode to draw from
      * @returns chosen map
      */
@@ -182,6 +179,8 @@ class Generator {
     /**
      * @brief resets all temporary values used for generation
      *        parses and sets given previous layers
+     *
+     * @throws std::out_of_range if a layer name does not exists]
      */
     void reset(std::vector<std::string> *pastLayers);
 

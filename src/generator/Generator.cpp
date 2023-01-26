@@ -96,8 +96,7 @@ Generator::Generator(RotaConfig *config) {
     this->seed = time(NULL);
 }
 
-RotaMode *Generator::chooseMode(bool useLatestModes = true,
-                                RotaModePool *customPool = nullptr,
+RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                                 bool ignoreModeBuff = false,
                                 int depth = 0) { // TODO test
 
@@ -130,7 +129,7 @@ RotaMode *Generator::chooseMode(bool useLatestModes = true,
             this->defaultModePools[weightedChoice(&this->defaultPoolWeights)];
     }
 
-    if (useLatestModes && pool != this->modePools["main"]) {
+    if (pool != this->modePools["main"]) {
         // check if non main mode has enough space to last one
         if (this->config->get_pool_spacing() > this->lastNonMainMode) {
             // not enough space change to main mode
@@ -147,6 +146,7 @@ RotaMode *Generator::chooseMode(bool useLatestModes = true,
     RotaMode *ret;
 
     if (this->config->get_space_main() && pool == this->modePools["main"]) {
+        // TODO Überarbeitung gleichverteilung
         ret = this->poolToModeList[pool][this->nextMainModeIndex];
     } else {
         ret = this->poolToModeList[pool]
@@ -161,7 +161,7 @@ RotaMode *Generator::chooseMode(bool useLatestModes = true,
         return ret;
     }
     // no map available for this map -> mode buffer -> new mode
-    return chooseMode(useLatestModes, customPool, true, ++depth);
+    return chooseMode(customPool, true, ++depth);
 }
 
 RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
@@ -280,7 +280,7 @@ void Generator::generateRota() {
     for (int i = 0; i < this->config->get_number_of_layers() -
                             this->config->get_seed_layer();
          i++) {
-        RotaMode *mode = chooseMode(true);
+        RotaMode *mode = chooseMode(nullptr, true);
         RotaMap *map = chooseMap(mode);
         RotaLayer *layer = chooseLayerFromMap(map, mode);
         this->rotation.push_back(layer);
@@ -353,7 +353,7 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
 void Generator::reset(std::vector<std::string> *latestLayers) {
     std::vector<RotaLayer *> pastLayers;
     for (std::string layerName : (*latestLayers)) {
-        RotaLayer *layer = layers[layerName]; // TODO handle layer not found
+        RotaLayer *layer = layers.at(layerName);
         pastLayers.push_back(layer);
     }
     time_t seed = time(NULL);
