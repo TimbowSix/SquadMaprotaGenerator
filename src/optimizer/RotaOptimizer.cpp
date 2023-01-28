@@ -44,6 +44,7 @@ namespace optimizer
         kernelSize = 4;
         maxEvolveSteps = 1000;
         T0 = 4.0;
+        T=4.0;
         stateBaseSize = 10;
         iterationMax = 2000;
         slope = 0.05;
@@ -62,6 +63,7 @@ namespace optimizer
 
     float RotaOptimizer::UpdateTemperature(float T0, float s, int i){
         return T0*exp(-s*i);
+        // return T0*(1-s*i);
     }
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateSeed(int dim){
@@ -130,11 +132,13 @@ namespace optimizer
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness){
         std::uniform_real_distribution<> distribute(0,1);
+        float exponent = 1.0/16.0;
         float random;
+        float factor_const = 1000000;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
             for(unsigned j=0; j < newstate.size2(); j++){
-                random = distribute(this->generator)*s*sqrt(grid_fitness[i]*100);
+                random = distribute(this->generator)*s*pow(grid_fitness[i],exponent)*1000000;
                 newstate(i,j) += random;
                 // All entries must be positive or zero to be a probability matrix
                 if(newstate(i,j) < 0.0){
@@ -232,7 +236,7 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
     bool RotaOptimizer::AcceptMove(float fitvalue_difference){
         std::uniform_real_distribution<float> distribute(0,1); 
 
-        return fitvalue_difference < 0 || exp(-fitvalue_difference/this->T0) > distribute(this->generator);
+        return fitvalue_difference < 0 || exp(-fitvalue_difference/this->T) > distribute(this->generator);
     };
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::ComparisonState_FromProbabilities(std::vector<float> probabilities){

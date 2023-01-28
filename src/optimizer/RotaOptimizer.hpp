@@ -30,6 +30,7 @@ namespace optimizer
             int iterationMax;
             int maxEvolveSteps;
             float T0;
+            float T;
             /*
             T0: Initial temperature
             kernelSize: Length of the memory kernel
