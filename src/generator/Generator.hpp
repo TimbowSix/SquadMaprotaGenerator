@@ -38,6 +38,7 @@ class Generator {
      * playing the same team again
      */
     int sameTeamCounter[2];
+    int currTeamIndex[2] = {0, 1};
     /**
      * @brief counter for each mode, how many maps are available
      *        the first number is the count of maps which are available through
@@ -115,7 +116,6 @@ class Generator {
      * @brief index of the next main mode if space_main is active
      */
     int nextMainModeIndex;
-
     /**
      * @brief seed of rota
      */

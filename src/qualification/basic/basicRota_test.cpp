@@ -74,7 +74,21 @@ TEST_F(Rota_Fixture, test_max_time_same_team) {
 
     RotaTeam *curr = nullptr;
     int counter;
+    int i = 0;
     for (RotaTeam *team : teamBlue) {
+        if (curr != team) {
+            curr = team;
+            counter = 0;
+        }
+        counter++;
+        if (counter > conf->get_max_same_team()) {
+            std::cout << i << std::endl;
+        }
+        ASSERT_LE(counter, conf->get_max_same_team());
+        i++;
+    }
+
+    for (RotaTeam *team : teamRed) {
         if (curr != team) {
             curr = team;
             counter = 0;

@@ -234,18 +234,21 @@ void Generator::lockTeams() { // TODO test?
     if (maxSameTeam < 1)
         return;
 
-    if (this->sameTeamCounter[0] >= maxSameTeam) {
+    if (this->sameTeamCounter[this->currTeamIndex[0]] >= maxSameTeam) {
         // lock layers with team 1
         for (RotaLayer *layer :
-             this->blueforTeams[this->teamHistory[0].back()]) {
+             this->blueforTeams[this->teamHistory[this->currTeamIndex[0]]
+                                    .back()]) {
             layer->lock(1);
         }
     }
 
-    if (this->sameTeamCounter[1] >= maxSameTeam) {
+    if (this->sameTeamCounter[this->currTeamIndex[1]] >= maxSameTeam) {
         // lock layers with team 1
 
-        for (RotaLayer *layer : this->opforTeams[this->teamHistory[1].back()]) {
+        for (RotaLayer *layer :
+             this->opforTeams[this->teamHistory[this->currTeamIndex[1]]
+                                  .back()]) {
             layer->lock(1);
         }
     }
@@ -276,7 +279,6 @@ void Generator::generateRota() {
 
     this->modeBuffer.clear();
 
-    int currTeamIndex[2] = {0, 1};
     RotaTeam *tempTeam[2];
 
     for (int i = 0; i < this->config->get_number_of_layers() -
@@ -290,14 +292,16 @@ void Generator::generateRota() {
         this->ModesHistory.push_back(mode);
 
         for (int i = 0; i < 2; i++) {
-            this->teamHistory[i].push_back(layer->getTeam(currTeamIndex[i]));
-            currTeamIndex[i] = (currTeamIndex[i] + 1) % 2;
-            if (layer->getTeam(currTeamIndex[i]) != tempTeam[i]) {
-                this->sameTeamCounter[i] = 0;
-                tempTeam[i] = layer->getTeam(currTeamIndex[i]);
+            this->teamHistory[i].push_back(
+                layer->getTeam(this->currTeamIndex[i]));
+
+            if (layer->getTeam(this->currTeamIndex[i]) != tempTeam[i]) {
+                this->sameTeamCounter[i] = 1;
+                tempTeam[i] = layer->getTeam(this->currTeamIndex[i]);
             } else {
                 this->sameTeamCounter[i]++;
             }
+            this->currTeamIndex[i] = (this->currTeamIndex[i] + 1) % 2;
         }
 
         this->decreaseMapLocktimes();
