@@ -29,6 +29,7 @@ void RotaMap::addLayer(RotaLayer *layer) {
         this->availableLayers[layer->getMode()] = 1;
         // init value for weights for this mode
         this->mapVoteWeights[layer->getMode()] = 1;
+        this->mapWeights[layer->getMode()] = 1;
         // add this mode to the modes list
         this->modes.push_back(layer->getMode());
     } else {
@@ -209,3 +210,9 @@ void RotaMap::setMapVoteWeight(RotaMode *mode, float weight) {
 std::vector<RotaMode *> *RotaMap::getModes() { return &this->modes; }
 std::vector<RotaMap *> *RotaMap::getNeighbor() { return &this->neighbor; }
 int RotaMap::getCurrLockTime() { return this->currentLockTime; }
+float RotaMap::getMapWeight(RotaMode *mode) {
+    return this->mapWeights.at(mode);
+}
+void RotaMap::setMapWeight(RotaMode *mode, float weight) {
+    this->mapWeights.at(mode) = weight;
+}

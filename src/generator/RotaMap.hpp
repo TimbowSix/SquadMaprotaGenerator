@@ -179,6 +179,8 @@ class RotaMap {
     bool isLocked();
     float getMapVoteWeight(RotaMode *mode);
     void setMapVoteWeight(RotaMode *mode, float weight);
+    float getMapWeight(RotaMode *mode);
+    void setMapWeight(RotaMode *mode, float weight);
     std::vector<RotaMode *> *getModes();
 
     void increaseAvailableLayers(RotaMode *mode);

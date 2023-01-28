@@ -8,6 +8,7 @@
 
 #include <RotaOptimizer.hpp>
 
+#include "OptimizerData.hpp"
 #include "RotaConfig.hpp"
 #include "RotaLayer.hpp"
 #include "RotaMap.hpp"
@@ -178,8 +179,8 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     for (RotaMap *map : this->modeToMapList[mode->name]) {
         if (!map->isLocked() && map->hasLayersAvailable(mode)) {
             availableMaps.push_back(map);
-            weights.push_back(map->getMapVoteWeight(mode));
-            tempSum += map->getMapVoteWeight(mode);
+            weights.push_back(map->getMapWeight(mode));
+            tempSum += map->getMapWeight(mode);
         }
     }
 
@@ -363,6 +364,22 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
 
 bool Generator::mapsAvailable(RotaMode *mode) {
     return (this->availableLayerMaps[mode] > 0);
+}
+
+void Generator::setMapWeights(OptData *data) {
+    for (RotaMap *map : this->maps) {
+        for (RotaMode *mode : *map->getModes()) {
+            map->setMapWeight(mode, data->data.at(map).at(mode));
+        }
+    }
+}
+
+void Generator::packOptData(OptData *data) {
+    for (RotaMap *map : this->maps) {
+        for (RotaMode *mode : *map->getModes()) {
+            data->data[map][mode] = map->getMapVoteWeight(mode);
+        }
+    }
 }
 
 time_t Generator::getSeed() { return this->seed; }

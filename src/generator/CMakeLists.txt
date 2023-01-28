@@ -21,6 +21,7 @@ SET(INCLUDES
     Generator.hpp
     RotaConfig.hpp
     GlobalConfig.hpp
+    OptimizerData.hpp
 )
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")

@@ -1,14 +1,16 @@
 #pragma once
 
+#include <boost/json.hpp>
+#include <map>
+#include <vector>
+
+#include "OptimizerData.hpp"
 #include "RotaConfig.hpp"
 #include "RotaLayer.hpp"
 #include "RotaMap.hpp"
 #include "RotaMode.hpp"
 #include "RotaModePool.hpp"
 #include "RotaTeam.hpp"
-#include <boost/json.hpp>
-#include <map>
-#include <vector>
 
 namespace rota {
 class Generator {
@@ -184,7 +186,22 @@ class Generator {
      */
     void reset(std::vector<std::string> *pastLayers);
 
+    /**
+     * @brief show if maps are for a specific mode are available
+     */
     bool mapsAvailable(RotaMode *mode);
+
+    /**
+     * @brief set map weights for all maps and modes
+     */
+    void setMapWeights(OptData *data);
+
+    /**
+     * @brief creates Data for Optimizer
+     *
+     * @param empty OptData to fill
+     */
+    void packOptData(OptData *data);
 
     // getter & setter
     time_t getSeed();
