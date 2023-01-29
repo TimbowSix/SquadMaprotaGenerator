@@ -56,8 +56,10 @@ Generator::Generator(RotaConfig *config) {
             if (this->availableLayerMaps.find(m) ==
                 this->availableLayerMaps.end()) {
                 this->availableLayerMaps[m] = 1;
+                this->resetAvailableLayerMaps[m] = 1;
             } else {
                 this->availableLayerMaps[m]++;
+                this->resetAvailableLayerMaps[m]++;
             }
         }
     }
@@ -346,18 +348,21 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
     for (int i = 0; i < pastLen; i++) {
         // lock maps
         if (pastLen - i <
-            config->get_biom_spacing() +
-                1) { // lock maps within biom spacing and their neighbors
+            this->config->get_biom_spacing()) { // lock maps within biom spacing
+                                                // and their neighbors
             pastLayers->at(i)->getMap()->lock(
-                config->get_biom_spacing() - pastLen - 1 - i, true);
+                this->config->get_biom_spacing() - (pastLen - i), true);
         }
         // lock layers
-        pastLayers->at(i)->lock(config->get_layer_locktime() - pastLen - 1 - i);
+        if (pastLen - i < this->config->get_layer_locktime()) {
+            pastLayers->at(i)->lock(this->config->get_layer_locktime() -
+                                    (pastLen - i));
+        }
 
         // update mode space counter
-        if (pastLen - i <
-            config->get_pool_spacing() + 1) { // add modes within the range of
-                                              // pool spacing to latest modes
+        if (pastLen - i < this->config->get_pool_spacing() +
+                              1) { // add modes within the range of
+                                   // pool spacing to latest modes
             if (pastLayers->at(i)->getMode()->isMainMode) {
                 this->lastNonMainMode++;
             } else {
@@ -369,13 +374,13 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
         for (int j = 0; j < 2; j++) {
             if (pastLayers->at(i)->getTeam(this->currTeamIndex[j]) !=
                 this->lastTeam[j]) {
-                this->sameTeamCounter[i] = 1;
+                this->sameTeamCounter[j] = 1;
                 this->lastTeam[j] =
                     pastLayers->at(i)->getTeam(this->currTeamIndex[j]);
             } else {
-                this->sameTeamCounter[i]++;
+                this->sameTeamCounter[j]++;
             }
-            this->currTeamIndex[i] = (this->currTeamIndex[i] + 1) % 2;
+            this->currTeamIndex[j] = (this->currTeamIndex[j] + 1) % 2;
         }
     }
 }

@@ -69,7 +69,7 @@ void RotaMap::lock(int locktime, bool lockNeighbors) {
         if (this->currentLockTime == 0) {
             for (RotaMode *mode : this->modes) {
                 if (this->hasLayersAvailable(mode)) {
-                    (*this->availableLayerMaps)[mode]--;
+                    this->availableLayerMaps->at(mode)--;
                 }
             }
         }
@@ -89,7 +89,17 @@ void RotaMap::overwriteLock(int locktime) {
     this->currentLockTime = locktime;
 }
 
-void RotaMap::unlock() { this->currentLockTime = 0; }
+void RotaMap::unlock() {
+    if (this->isLocked()) {
+        for (RotaMode *m : *this->getModes()) {
+            if (this->hasMode(m)) {
+                this->availableLayerMaps++;
+                break;
+            }
+        }
+    }
+    this->currentLockTime = 0;
+}
 
 void RotaMap::calcMapVoteWeight(RotaMode *mode) {
     if (this->layers.size() == 0) {
@@ -175,14 +185,14 @@ void RotaMap::increaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]++;
     if (this->availableLayers[mode] == 1 && !this->isLocked()) {
         // increase Map counter for this mode in generator
-        (*this->availableLayerMaps)[mode]++;
+        this->availableLayerMaps->at(mode)++;
     }
 }
 void RotaMap::decreaseAvailableLayers(RotaMode *mode) {
     this->availableLayers[mode]--;
     if (this->availableLayers[mode] == 0 && !this->isLocked()) {
         // decrease Map counter for this mode in generator
-        (*this->availableLayerMaps)[mode]--;
+        this->availableLayerMaps->at(mode)--;
     }
 }
 

@@ -47,6 +47,7 @@ class Generator {
      *        layer
      */
     std::map<RotaMode *, int> availableLayerMaps;
+    std::map<RotaMode *, int> resetAvailableLayerMaps;
     /**
      * @brief maps all available ModePools to their name
      */
