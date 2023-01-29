@@ -43,18 +43,36 @@ namespace optimizer
         generator = std::mt19937(seed);            // the generator seeded with the random device
         kernelSize = 4;
         maxEvolveSteps = 1000;
-        T0 = 4.0;
-        T=4.0;
-        stateBaseSize = 10;
-        iterationMax = 2000;
+        T0 = 0.5;
+        T=T0;
+        stateBaseSize = 22;
+        iterationMax = 1000;
         slope = 0.05;
         memorykernel = initMem(kernelSize, stateBaseSize);
         clusters = {
             {0, {0}}, 
-            {1, {1}},
+            {1, {1,11}},
             {2, {2}},
-            {3, {3}},
-            {4, {4}}};
+            {3, {3, 9, 18, 21}},
+            {4, {4, 12}},
+            {5, {5}},
+            {6, {6, 15}},
+            {7, {7}},
+            {8, {8, 3, 9}},
+            {9, {9, 3, 8}},
+            {10, {10}}, 
+            {11, {1}},
+            {12, {12, 4}},
+            {13, {13}},
+            {14, {14}},
+            {15, {15, 6}},
+            {16, {16}},
+            {17, {17}},
+            {18, {18}},
+            {19, {19, 5, 4}},
+            {20, {20}},
+            {21, {21, 3, 9}},
+            };
 
     };
     RotaOptimizer::~RotaOptimizer(){
@@ -138,7 +156,30 @@ namespace optimizer
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
             for(unsigned j=0; j < newstate.size2(); j++){
-                random = distribute(this->generator)*s*pow(grid_fitness[i],exponent)*1000000;
+                random = distribute(this->generator)*s*pow(grid_fitness[i],exponent)*factor_const;
+                newstate(i,j) += random;
+                // All entries must be positive or zero to be a probability matrix
+                if(newstate(i,j) < 0.0){
+                    newstate(i,j) -= 2*random;
+                }
+            }
+        }
+        return MatrixToProbabilityMatrix(newstate);
+    };
+
+    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent){
+        std::uniform_real_distribution<> distribute(0,1);
+        float exponent = 1.0/16.0;
+        float random;
+        float factor_const = 1;//100000000;
+        float agentmax = 0.0;
+        boost::numeric::ublas::matrix<float> newstate(state);
+        for(unsigned i=0; i < newstate.size1(); i++){
+            for(unsigned j=0; j < newstate.size2(); j++){
+                agentmax = 1;// abs(newstate(i,j) - agent(i,j));
+                random = newstate(i,j);
+                factor_const *= pow(grid_fitness[i],exponent);
+                random = distribute(this->generator)*s*factor_const*agentmax;
                 newstate(i,j) += random;
                 // All entries must be positive or zero to be a probability matrix
                 if(newstate(i,j) < 0.0){
@@ -219,7 +260,8 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
                 for(unsigned j=0; j<kernelSize; j++){
                     for(unsigned k=0; k<stateBaseSize; k++){
                         if(memorykernel[j][k] != 0.0){
-                            SetRowZero(temp, k);
+                            for(unsigned h=0; h<clusters[k].size(); h++)
+                                SetRowZero(temp, clusters[k][h]);
                         }
                     }
                 }
