@@ -418,4 +418,21 @@ time_t Generator::getSeed() { return this->seed; }
 
 std::vector<RotaLayer *> *Generator::getRota() { return &this->rotation; }
 
+void Generator::getState(MemoryColonelState *state) {
+    for (RotaMap *map : this->maps) {
+        state->mapState.push_back(map->getCurrLockTime());
+    }
+    for (auto const &x : this->layers) {
+        state->layerState.push_back(x.second->getLockTime());
+    }
+    state->genState.push_back(this->lastNonMainMode);
+    state->genState.push_back(this->sameTeamCounter[0]);
+    state->genState.push_back(this->sameTeamCounter[1]);
+    state->genState.push_back(this->currTeamIndex[0]);
+    state->genState.push_back(this->currTeamIndex[1]);
+
+    state->lastTeam[0] = this->lastTeam[0];
+    state->lastTeam[1] = this->lastTeam[1];
+}
+
 } // namespace rota

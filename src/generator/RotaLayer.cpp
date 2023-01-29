@@ -72,3 +72,5 @@ void RotaLayer::setMap(RotaMap *map) { this->map = map; }
 void RotaLayer::setLockTime(int lockTime) { this->lockTime = lockTime; }
 
 float RotaLayer::getVoteWeight() { return this->voteWeight; }
+
+int RotaLayer::getLockTime() { return this->currLockTime; }

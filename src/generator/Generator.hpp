@@ -13,6 +13,9 @@
 #include "RotaTeam.hpp"
 
 namespace rota {
+
+typedef struct MemoryColonelState MemoryColonelState;
+
 class Generator {
   private:
     RotaConfig *config;
@@ -38,8 +41,15 @@ class Generator {
      * playing the same team again
      */
     int sameTeamCounter[2];
+    /**
+     * @brief emulates the side switch of teams
+     */
     int currTeamIndex[2] = {0, 1};
+    /**
+     * @brief helper var to mem last Team
+     */
     RotaTeam *lastTeam[2];
+
     /**
      * @brief counter for each mode, how many maps are available
      *        the first number is the count of maps which are available through
@@ -207,7 +217,27 @@ class Generator {
 
     // getter & setter
     time_t getSeed();
-
     std::vector<RotaLayer *> *getRota();
+    void getState(MemoryColonelState *state);
 };
+
+struct MemoryColonelState {
+    /**
+     * @brief all locktimes
+     */
+    std::vector<int> mapState;
+    /**
+     * @brief all locktimes
+     */
+    std::vector<int> layerState;
+    /**
+     * @brief lastNonMainMode, sameTeamCounter, currTeamIndex
+     */
+    std::vector<int> genState;
+    /**
+     * @brief last choosen teams of rota
+     */
+    RotaTeam *lastTeam[2];
+};
+
 } // namespace rota

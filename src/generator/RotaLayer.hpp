@@ -100,5 +100,6 @@ class RotaLayer {
     RotaMap *getMap();
     void setMap(RotaMap *map);
     void setLockTime(int lockTime);
+    int getLockTime();
 };
 } // namespace rota
