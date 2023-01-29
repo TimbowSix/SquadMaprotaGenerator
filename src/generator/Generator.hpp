@@ -39,6 +39,7 @@ class Generator {
      */
     int sameTeamCounter[2];
     int currTeamIndex[2] = {0, 1};
+    RotaTeam *lastTeam[2];
     /**
      * @brief counter for each mode, how many maps are available
      *        the first number is the count of maps which are available through

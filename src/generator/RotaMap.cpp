@@ -28,7 +28,7 @@ void RotaMap::addLayer(RotaLayer *layer) {
         // create if mode not found
         this->availableLayers[layer->getMode()] = 1;
         // init value for weights for this mode
-        this->mapVoteWeights[layer->getMode()] = 1;
+        this->calcMapVoteWeight(layer->getMode());
         this->mapWeights[layer->getMode()] = 1;
         // add this mode to the modes list
         this->modes.push_back(layer->getMode());

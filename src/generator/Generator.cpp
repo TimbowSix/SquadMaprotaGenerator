@@ -93,7 +93,6 @@ Generator::Generator(RotaConfig *config) {
     this->lastNonMainMode = 0;
     this->nextMainModeIndex = 0;
 
-    // printMapNeighbor(&this->maps);
     this->seed = time(NULL);
 }
 
@@ -279,8 +278,6 @@ void Generator::generateRota() {
 
     this->modeBuffer.clear();
 
-    RotaTeam *tempTeam[2];
-
     for (int i = 0; i < this->config->get_number_of_layers() -
                             this->config->get_seed_layer();
          i++) {
@@ -295,9 +292,9 @@ void Generator::generateRota() {
             this->teamHistory[i].push_back(
                 layer->getTeam(this->currTeamIndex[i]));
 
-            if (layer->getTeam(this->currTeamIndex[i]) != tempTeam[i]) {
+            if (layer->getTeam(this->currTeamIndex[i]) != this->lastTeam[i]) {
                 this->sameTeamCounter[i] = 1;
-                tempTeam[i] = layer->getTeam(this->currTeamIndex[i]);
+                this->lastTeam[i] = layer->getTeam(this->currTeamIndex[i]);
             } else {
                 this->sameTeamCounter[i]++;
             }
@@ -324,10 +321,16 @@ void Generator::reset() {
 void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
     this->seed = seed;
     this->lastNonMainMode = 0;
+    this->sameTeamCounter[0] = 0;
+    this->sameTeamCounter[1] = 0;
+    this->currTeamIndex[0] = 0;
+    this->currTeamIndex[1] = 1;
     this->rotation.clear();
     this->MapsHistory.clear();
     this->ModesHistory.clear();
     this->modeBuffer.clear();
+    this->teamHistory[0].clear();
+    this->teamHistory[1].clear();
 
     for (auto const &[key, layer] : this->layers) {
         layer->unlock();
@@ -341,18 +344,38 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
     if (pastLen == 0)
         return;
     for (int i = 0; i < pastLen; i++) {
+        // lock maps
         if (pastLen - i <
             config->get_biom_spacing() +
                 1) { // lock maps within biom spacing and their neighbors
             pastLayers->at(i)->getMap()->lock(
                 config->get_biom_spacing() - pastLen - 1 - i, true);
         }
-        pastLayers->at(i)->lock(config->get_layer_locktime() - pastLen - 1 -
-                                i); // lock layers
+        // lock layers
+        pastLayers->at(i)->lock(config->get_layer_locktime() - pastLen - 1 - i);
+
+        // update mode space counter
         if (pastLen - i <
             config->get_pool_spacing() + 1) { // add modes within the range of
                                               // pool spacing to latest modes
-            ModesHistory.push_back(pastLayers->at(i)->getMode());
+            if (pastLayers->at(i)->getMode()->isMainMode) {
+                this->lastNonMainMode++;
+            } else {
+                this->lastNonMainMode = 0;
+            }
+        }
+
+        // update team counter
+        for (int j = 0; j < 2; j++) {
+            if (pastLayers->at(i)->getTeam(this->currTeamIndex[j]) !=
+                this->lastTeam[j]) {
+                this->sameTeamCounter[i] = 1;
+                this->lastTeam[j] =
+                    pastLayers->at(i)->getTeam(this->currTeamIndex[j]);
+            } else {
+                this->sameTeamCounter[i]++;
+            }
+            this->currTeamIndex[i] = (this->currTeamIndex[i] + 1) % 2;
         }
     }
 }

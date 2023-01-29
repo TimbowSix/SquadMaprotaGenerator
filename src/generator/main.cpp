@@ -21,6 +21,7 @@ int main(void) {
     rota::Generator gen(&conf);
 
     std::cout << "Seed: " << gen.getSeed() << std::endl;
+
     gen.generateRota();
     gen.reset();
 
