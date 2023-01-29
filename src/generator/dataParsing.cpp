@@ -77,6 +77,10 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
                  std::map<std::string, RotaMode *> *modes,
                  std::map<std::string, RotaTeam *> *teams) {
 
+    std::map<RotaMode*, int> modeCount;
+    for(const auto &[modeName, mode] : (*modes)){
+        modeCount[mode] = 0;
+    }
     std::map<std::string, RotaLayer *> allLayers;
     getLayers(votesUrl, &allLayers); // get all layers from api
     injectLayerInfo(teamsUrl, &allLayers, modes,
@@ -102,8 +106,14 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
         };
 
         (*maps)[map]->addLayer(layer);
-        (*layers)[layer->getName()] =
-            layer; // transfer layer to map of used layers
+        (*layers)[layer->getName()] = layer; // transfer layer to map of used layers
+        modeCount[layer->getMode()]++;
+    }
+    for(const auto &[mode, count] : modeCount){
+        if(count < 1){
+            // set prob of modes without layers to zero
+            mode->probability = 0;
+        }
     }
 }
 
