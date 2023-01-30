@@ -30,6 +30,7 @@ int main(void){
     float fit_buffer = 0.0;
     int number_agents = 4;
     std::vector<boost::numeric::ublas::matrix<float>> agents(number_agents);
+
     for(unsigned i=0; i<number_agents; i++){
         agents[i] = opt.GenerateSeed(22);
     }
@@ -74,8 +75,10 @@ int main(void){
     for(unsigned i=0; i<opt.iterationMax; i++){ 
         for(unsigned j=0; j<number_agents; j++){
             agent_index = j;
-            while(agent_index == j){
-                agent_index = dist_uniform(gen);
+            if(number_agents>1){
+                while(agent_index == j){
+                    agent_index = dist_uniform(gen);
+                }
             }
 
             state_buffer = agents[j];
@@ -105,9 +108,10 @@ int main(void){
                 std::cout<< "T: " << opt.T<<std::endl;
                 std::cout << "=====================" << std::endl;
             }
-        opt.T = opt.UpdateTemperature(opt.T0, 0.03, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.0001, i+1);
+        opt.T = opt.UpdateTemperature(opt.T0, 0.022, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.0001, i+1);
         }
     }
+    print_matrix(agents[0]);
     time(&end);
     boost::numeric::ublas::vector<float> s = opt.Evolve(agents[0]);
     print_vector(s);

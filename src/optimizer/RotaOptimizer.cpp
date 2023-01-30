@@ -43,7 +43,7 @@ namespace optimizer
         generator = std::mt19937(seed);            // the generator seeded with the random device
         kernelSize = 4;
         maxEvolveSteps = 1000;
-        T0 = 0.5;
+        T0 = 1.0;
         T=T0;
         stateBaseSize = 22;
         iterationMax = 1000;
@@ -79,6 +79,14 @@ namespace optimizer
 
     };
 
+    void SetRow(boost::numeric::ublas::matrix<float>& mat, int rowindex, float value){
+        for(unsigned i=0; i < mat.size1(); i++)
+            for(unsigned j=0; j < mat.size2(); j++)
+                if(i==rowindex){
+                    mat(i,j) = value;
+                }
+    };
+
     float RotaOptimizer::UpdateTemperature(float T0, float s, int i){
         return T0*exp(-s*i);
         // return T0*(1-s*i);
@@ -88,8 +96,7 @@ namespace optimizer
         std::uniform_real_distribution<float> distribute(0,1);   //uniform-dist wrapper for rng, 1 is excluded
         boost::numeric::ublas::matrix<float> mat (dim, dim);
         for (unsigned i = 0; i < mat.size1 (); ++ i)
-            for (unsigned j = 0; j < mat.size2 (); ++ j)
-                mat (i, j) = distribute(this->generator);
+            SetRow(mat, i, distribute(this->generator));
 
         return MatrixToProbabilityMatrix(mat);
     }
@@ -138,10 +145,10 @@ namespace optimizer
         for(unsigned i=0; i < newstate.size1(); i++){
             for(unsigned j=0; j < newstate.size2(); j++){
                 random = distribute(this->generator);
-                newstate(i,j) += random*s;
+                newstate(i,0) += random*s;
                 // All entries must be positive or zero to be a probability matrix
-                if(newstate(i,j) < 0.0){
-                    newstate(i,j) -= 2*random*s;
+                if(newstate(i,0) < 0.0){
+                    newstate(i,0) -= 2*random*s;
                 }
             }
         }
@@ -167,6 +174,7 @@ namespace optimizer
         return MatrixToProbabilityMatrix(newstate);
     };
 
+
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent){
         std::uniform_real_distribution<> distribute(0,1);
         float exponent = 1.0/16.0;
@@ -175,17 +183,21 @@ namespace optimizer
         float agentmax = 0.0;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
-            for(unsigned j=0; j < newstate.size2(); j++){
-                agentmax = 1;// abs(newstate(i,j) - agent(i,j));
-                random = newstate(i,j);
-                factor_const *= pow(grid_fitness[i],exponent);
-                random = distribute(this->generator)*s*factor_const*agentmax;
-                newstate(i,j) += random;
-                // All entries must be positive or zero to be a probability matrix
-                if(newstate(i,j) < 0.0){
-                    newstate(i,j) -= 2*random;
-                }
+            agentmax = abs(newstate(i,0) - agent(i,0));
+            random = newstate(i,0);
+            factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.001);//pow(grid_fitness[i],exponent);
+            random = distribute(this->generator)*s*factor_const*agentmax;
+            newstate(i,0) += random;
+            // All entries must be positive or zero to be a probability matrix
+            if(newstate(i,0) < 0.0){
+                SetRow(newstate, i, newstate(i,0)-2*random);
             }
+            else{
+                SetRow(newstate, i, newstate(i,0));
+            }
+            // std::cout << "===================" << std::endl;
+            // std::cout << "Factor: " << factor_const << std::endl;
+            // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
         }
         return MatrixToProbabilityMatrix(newstate);
     };
