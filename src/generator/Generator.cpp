@@ -315,6 +315,16 @@ void Generator::generateRota() {
     }
 }
 
+void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
+    for (int i = 0; i < count; i++) {
+        RotaMode *mode = chooseMode(nullptr, true);
+        RotaMap *map = chooseMap(mode);
+        RotaLayer *layer = chooseLayerFromMap(map, mode);
+        out->push_back(layer);
+        layer->lock();
+    }
+}
+
 void Generator::reset() {
     std::vector<RotaLayer *> pastLayers;
     time_t seed = time(NULL);

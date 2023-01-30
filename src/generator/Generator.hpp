@@ -182,6 +182,15 @@ class Generator {
     void generateRota();
 
     /**
+     * @brief generates x Layer based off the current generator state
+     *        this function generate suggestions for a next layer
+     *
+     * @param out list with get filled with layer suggestions
+     * @param count number of suggestion to generate
+     */
+    void generateOffer(std::vector<RotaLayer *> *out, int count);
+
+    /**
      * @brief resets all temporary values used for generation
      */
     void reset();
