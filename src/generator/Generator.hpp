@@ -135,6 +135,7 @@ class Generator {
 
   public:
     Generator(RotaConfig *config);
+    ~Generator();
 
     /**
      * @brief Selects a random game mode based on the modes in the mode pools

@@ -10,7 +10,7 @@
 
 using namespace rota;
 
-TEST(Rota_Test, test_SpaceMain) {
+TEST(RotaTest, test_SpaceMain) {
     RotaConfig conf(std::string(CONFIG_PATH) + "config.json");
 
     conf.set_number_of_layers(100000);
@@ -47,7 +47,7 @@ TEST(Rota_Test, test_numberRotaLayer) {
     ASSERT_EQ(rota->size(), conf.get_number_of_layers());
 }
 
-TEST(Rota_Test, test_max_time_same_team) {
+TEST(RotaTest, test_max_time_same_team) {
     RotaConfig conf(std::string(CONFIG_PATH) + "config.json");
 
     conf.set_number_of_layers(100000);

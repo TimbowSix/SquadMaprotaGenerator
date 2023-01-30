@@ -98,6 +98,24 @@ Generator::Generator(RotaConfig *config) {
     this->seed = time(NULL);
 }
 
+Generator::~Generator() {
+    for (auto &x : this->teams) {
+        delete x.second;
+    }
+    for (int i = 0; i < this->maps.size(); i++) {
+        delete maps[i];
+    }
+    for (auto &x : this->modePools) {
+        delete x.second;
+    }
+    for (auto &x : this->modes) {
+        delete x.second;
+    }
+    for (auto &x : this->layers) {
+        delete x.second;
+    }
+};
+
 RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                                 bool ignoreModeBuff = false,
                                 int depth = 0) { // TODO test

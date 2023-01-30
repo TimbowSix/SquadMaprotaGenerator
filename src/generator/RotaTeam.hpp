@@ -2,19 +2,17 @@
 
 #include <string>
 
-namespace rota
-{
+namespace rota {
 
-    class RotaTeam
-    {
-    private:
-        std::string name;
+class RotaTeam {
+  private:
+    std::string name;
 
-    public:
-        RotaTeam(std::string name);
-        ~RotaTeam();
+  public:
+    RotaTeam(std::string name);
+    ~RotaTeam(){};
 
-        std::string getName();
-    };
+    std::string getName();
+};
 
-}
+} // namespace rota
