@@ -19,7 +19,6 @@ class Rota_Fixture : public ::testing::Test {
     void SetUp() override {
         conf = new RotaConfig(std::string(CONFIG_PATH) + "config.json");
 
-        conf->set_number_of_rotas(1);
         conf->set_number_of_layers(100000);
         conf->set_seed_layer(1);
         conf->set_space_main(true);

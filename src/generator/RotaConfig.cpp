@@ -18,7 +18,6 @@ RotaConfig::RotaConfig(std::string path) {
     boost::json::object pData = boost::json::parse(data).get_object();
 
     parseModes(&pData, &this->pools, &this->modes);
-    number_of_rotas = pData["number_of_rotas"].as_int64();
     number_of_layers = pData["number_of_layers"].as_int64();
     seed_layer = pData["seed_layer"].as_int64();
     layer_vote_api_url = pData["layer_vote_api_url"].as_string();
@@ -51,11 +50,6 @@ RotaConfig::RotaConfig(std::string path) {
     }
 }
 // getter / setter
-unsigned int RotaConfig::get_number_of_rotas() { return number_of_rotas; }
-void RotaConfig::set_number_of_rotas(unsigned int value) {
-    this->number_of_rotas = value;
-}
-
 unsigned int RotaConfig::get_number_of_layers() { return number_of_layers; }
 void RotaConfig::set_number_of_layers(unsigned int value) {
     this->number_of_layers = value;

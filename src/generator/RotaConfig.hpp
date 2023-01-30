@@ -19,10 +19,6 @@ namespace rota {
 class RotaConfig {
   private:
     /**
-     * @brief number of rotations to generate
-     */
-    unsigned int number_of_rotas;
-    /**
      * @brief number of layers per rotation (incl. Seed layers)
      */
     unsigned int number_of_layers;
@@ -104,9 +100,6 @@ class RotaConfig {
     RotaConfig(std::string path);
 
     // getter / setter
-
-    unsigned int get_number_of_rotas();
-    void set_number_of_rotas(unsigned int value);
 
     unsigned int get_number_of_layers();
     void set_number_of_layers(unsigned int value);
