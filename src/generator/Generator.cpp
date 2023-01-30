@@ -372,7 +372,7 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
 
         // update team counter
         if (pastLayers->at(i)->getMode()->modePool != nullptr) {
-            // mode is not need aka has no pool
+            // mode is not seed aka has no pool
             for (int j = 0; j < 2; j++) {
                 if (pastLayers->at(i)->getTeam(this->currTeamIndex[j]) !=
                     this->lastTeam[j]) {
