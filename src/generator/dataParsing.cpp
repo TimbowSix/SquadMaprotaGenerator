@@ -77,8 +77,8 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
                  std::map<std::string, RotaMode *> *modes,
                  std::map<std::string, RotaTeam *> *teams) {
 
-    std::map<RotaMode*, int> modeCount;
-    for(const auto &[modeName, mode] : (*modes)){
+    std::map<RotaMode *, int> modeCount;
+    for (const auto &[modeName, mode] : (*modes)) {
         modeCount[mode] = 0;
     }
     std::map<std::string, RotaLayer *> allLayers;
@@ -106,11 +106,12 @@ void parseLayers(std::string votesUrl, std::string teamsUrl,
         };
 
         (*maps)[map]->addLayer(layer);
-        (*layers)[layer->getName()] = layer; // transfer layer to map of used layers
+        (*layers)[layer->getName()] =
+            layer; // transfer layer to map of used layers
         modeCount[layer->getMode()]++;
     }
-    for(const auto &[mode, count] : modeCount){
-        if(count < 1){
+    for (const auto &[mode, count] : modeCount) {
+        if (count < 1) {
             // set prob of modes without layers to zero
             mode->probability = 0;
         }
@@ -124,6 +125,7 @@ void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
                                          "/bioms.json"};
     std::ifstream ifs(biomFile);
     std::string data(std::istreambuf_iterator<char>{ifs}, {});
+    ifs.close();
     boost::json::object biomValues = boost::json::parse(data).get_object();
 
     std::vector<std::string> *usedMaps = config->get_maps();

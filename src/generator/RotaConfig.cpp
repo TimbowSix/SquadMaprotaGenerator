@@ -15,6 +15,7 @@ RotaConfig::RotaConfig(std::string path) {
     const std::filesystem::path configFile{path};
     std::ifstream ifs(configFile);
     std::string data(std::istreambuf_iterator<char>{ifs}, {});
+    ifs.close();
     boost::json::object pData = boost::json::parse(data).get_object();
 
     parseModes(&pData, &this->pools, &this->modes);

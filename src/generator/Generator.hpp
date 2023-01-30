@@ -182,7 +182,7 @@ class Generator {
     void generateRota();
 
     /**
-     * @brief generates x Layer based off the current generator state
+     * @brief generates x unique Layer based off the current generator state
      *        this function generate suggestions for a next layer
      *
      * @param out list with get filled with layer suggestions
