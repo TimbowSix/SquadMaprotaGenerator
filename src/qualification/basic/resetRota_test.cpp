@@ -43,10 +43,10 @@ TEST(Reset_test, test_general_with_past_layers) {
         ASSERT_EQ(stateBefor.mapState[i], stateAfter.mapState[i]) << i;
     }
     for (int i = 0; i < stateBefor.layerState.size(); i++) {
-        ASSERT_EQ(stateBefor.layerState[i], stateAfter.layerState[i]);
+        ASSERT_EQ(stateBefor.layerState[i], stateAfter.layerState[i]) << i;
     }
     for (int i = 0; i < stateBefor.genState.size(); i++) {
-        ASSERT_EQ(stateBefor.genState[i], stateAfter.genState[i]);
+        ASSERT_EQ(stateBefor.genState[i], stateAfter.genState[i]) << i;
     }
     ASSERT_EQ(stateBefor.lastTeam[0], stateAfter.lastTeam[0]);
     ASSERT_EQ(stateBefor.lastTeam[1], stateAfter.lastTeam[1]);

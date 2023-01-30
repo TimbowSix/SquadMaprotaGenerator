@@ -78,7 +78,7 @@ void RotaMap::lock(int locktime, bool lockNeighbors) {
 
         if (lockNeighbors) {
             for (RotaMap *map : this->neighbor) {
-                map->lock(false);
+                map->lock(locktime, false);
             }
         }
     }

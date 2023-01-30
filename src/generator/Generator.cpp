@@ -347,16 +347,16 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
         return;
     for (int i = 0; i < pastLen; i++) {
         // lock maps
-        if (pastLen - i <
+        if (pastLen - i <=
             this->config->get_biom_spacing()) { // lock maps within biom spacing
                                                 // and their neighbors
             pastLayers->at(i)->getMap()->lock(
-                this->config->get_biom_spacing() - (pastLen - i), true);
+                this->config->get_biom_spacing() - (pastLen - i) + 1, true);
         }
         // lock layers
-        if (pastLen - i < this->config->get_layer_locktime()) {
+        if (pastLen - i <= this->config->get_layer_locktime()) {
             pastLayers->at(i)->lock(this->config->get_layer_locktime() -
-                                    (pastLen - i));
+                                    (pastLen - i) + 1);
         }
 
         // update mode space counter
@@ -371,16 +371,19 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
         }
 
         // update team counter
-        for (int j = 0; j < 2; j++) {
-            if (pastLayers->at(i)->getTeam(this->currTeamIndex[j]) !=
-                this->lastTeam[j]) {
-                this->sameTeamCounter[j] = 1;
-                this->lastTeam[j] =
-                    pastLayers->at(i)->getTeam(this->currTeamIndex[j]);
-            } else {
-                this->sameTeamCounter[j]++;
+        if (pastLayers->at(i)->getMode()->modePool != nullptr) {
+            // mode is not need aka has no pool
+            for (int j = 0; j < 2; j++) {
+                if (pastLayers->at(i)->getTeam(this->currTeamIndex[j]) !=
+                    this->lastTeam[j]) {
+                    this->sameTeamCounter[j] = 1;
+                    this->lastTeam[j] =
+                        pastLayers->at(i)->getTeam(this->currTeamIndex[j]);
+                } else {
+                    this->sameTeamCounter[j]++;
+                }
+                this->currTeamIndex[j] = (this->currTeamIndex[j] + 1) % 2;
             }
-            this->currTeamIndex[j] = (this->currTeamIndex[j] + 1) % 2;
         }
     }
 }
