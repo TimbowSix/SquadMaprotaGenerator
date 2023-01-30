@@ -16,7 +16,7 @@ TEST(Reset_test, test_general_with_past_layers) {
     std::vector<std::string> rota;
     RotaConfig conf(std::string(CONFIG_PATH) + "config.json");
 
-    conf.set_number_of_layers(100);
+    conf.set_number_of_layers(1000);
     conf.set_seed_layer(1);
     conf.set_space_main(true);
 

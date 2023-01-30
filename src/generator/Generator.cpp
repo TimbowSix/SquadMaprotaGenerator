@@ -360,14 +360,10 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
         }
 
         // update mode space counter
-        if (pastLen - i < this->config->get_pool_spacing() +
-                              1) { // add modes within the range of
-                                   // pool spacing to latest modes
-            if (pastLayers->at(i)->getMode()->isMainMode) {
-                this->lastNonMainMode++;
-            } else {
-                this->lastNonMainMode = 0;
-            }
+        if (pastLayers->at(i)->getMode()->isMainMode) {
+            this->lastNonMainMode++;
+        } else {
+            this->lastNonMainMode = 0;
         }
 
         // update team counter
