@@ -152,11 +152,11 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
     if (pool != this->modePools["main"]) {
         // check if non main mode has enough space to last one
         if (this->config->get_pool_spacing() > this->lastNonMainMode) {
-            /* if (this->modeBuffer.size() == 0) {
-                 // add mode of not possible Pool to Mode Buffer
-                 this->modeBuffer.push_back(this->poolToModeList.at(pool).at(
-                     weightedChoice(&this->modeWeights.at(pool))));
-             }*/
+            if (this->modeBuffer.size() == 0) {
+                // add mode of not possible Pool to Mode Buffer
+                this->modeBuffer.push_back(this->poolToModeList.at(pool).at(
+                    weightedChoice(&this->modeWeights.at(pool))));
+            }
             // not enough space change to main mode
             pool = this->modePools["main"];
         }
@@ -186,7 +186,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
         return ret;
     }
     // no map available for this map -> mode buffer -> new mode
-    // this->modeBuffer.push_back(ret);
+    this->modeBuffer.push_back(ret);
     return chooseMode(customPool, true, ++depth);
 }
 
