@@ -14,5 +14,5 @@ target_link_libraries(utils_test PRIVATE GTest::GTest boost_json httplib ${PROJE
 target_include_directories(utils_test PRIVATE ../../generator/)
 
 add_test(NAME UtilsTest COMMAND utils_test)
+add_test(NAME ResetRotaTest COMMAND resetRota_test)
 add_test(NAME BasicRotaTest COMMAND basicRota_test)
-add_test(Name ResetRotaTest COMMAND resetRota_test)

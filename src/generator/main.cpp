@@ -20,10 +20,13 @@ int main(void) {
     rota::RotaConfig conf(path);
     rota::Generator gen(&conf);
 
-    std::cout << "Seed: " << gen.getSeed() << std::endl;
+    std::cout << "Seed: " << gen.getSeed() << std::endl << std::endl;
 
     gen.generateRota();
-    gen.reset();
+
+    for (rota::RotaLayer *layer : *gen.getRota()) {
+        std::cout << layer->getName() << std::endl;
+    }
 
     return 0;
 }
