@@ -18,6 +18,7 @@ RotaMap::RotaMap(std::string name, std::vector<float> biomValues, int lockTime,
     }
     this->lockTime = lockTime;
     this->availableLayerMaps = availableLayerMaps;
+    this->currentLockTime = 0;
 }
 
 void RotaMap::addLayer(RotaLayer *layer) {
