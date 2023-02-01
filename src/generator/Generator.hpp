@@ -57,7 +57,6 @@ class Generator {
      *        layer
      */
     std::map<RotaMode *, int> availableLayerMaps;
-    std::map<RotaMode *, int> resetAvailableLayerMaps;
     /**
      * @brief maps all available ModePools to their name
      */
@@ -253,6 +252,14 @@ struct MemoryColonelState {
      * @brief last choosen teams of rota
      */
     RotaTeam *lastTeam[2];
+    /**
+     * @brief state of availableLayerMaps
+     */
+    std::vector<int> layerMapLockState;
+    /**
+     *  @brief state of each availableLayer in each map
+     */
+    std::vector<int> layerLockState;
 };
 
 } // namespace rota

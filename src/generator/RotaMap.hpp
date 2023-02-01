@@ -190,6 +190,7 @@ class RotaMap {
     void addNeighbour(RotaMap *map);
     std::vector<RotaMap *> *getNeighbor();
     int getCurrLockTime();
+    std::map<RotaMode *, int> *getAvailableLayers();
 
     void setSigmoidValues(float mapVoteSlope, float mapVoteShift,
                           float layerVoteSlope, float layerVoteShift);

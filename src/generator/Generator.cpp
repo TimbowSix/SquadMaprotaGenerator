@@ -56,10 +56,8 @@ Generator::Generator(RotaConfig *config) {
             if (this->availableLayerMaps.find(m) ==
                 this->availableLayerMaps.end()) {
                 this->availableLayerMaps[m] = 1;
-                this->resetAvailableLayerMaps[m] = 1;
             } else {
                 this->availableLayerMaps[m]++;
-                this->resetAvailableLayerMaps[m]++;
             }
         }
     }
@@ -94,6 +92,8 @@ Generator::Generator(RotaConfig *config) {
     }
     this->lastNonMainMode = 0;
     this->nextMainModeIndex = 0;
+    this->sameTeamCounter[0] = 0;
+    this->sameTeamCounter[1] = 0;
 
     this->seed = time(NULL);
 }
@@ -454,10 +454,16 @@ std::vector<RotaLayer *> *Generator::getRota() { return &this->rotation; }
 void Generator::getState(MemoryColonelState *state) {
     for (RotaMap *map : this->maps) {
         state->mapState.push_back(map->getCurrLockTime());
+        for (auto const &x : *map->getAvailableLayers())
+            state->layerLockState.push_back(x.second);
     }
     for (auto const &x : this->layers) {
         state->layerState.push_back(x.second->getLockTime());
     }
+    for (auto const &x : this->availableLayerMaps) {
+        state->layerMapLockState.push_back(x.second);
+    }
+
     state->genState.push_back(this->lastNonMainMode);
     state->genState.push_back(this->sameTeamCounter[0]);
     state->genState.push_back(this->sameTeamCounter[1]);
