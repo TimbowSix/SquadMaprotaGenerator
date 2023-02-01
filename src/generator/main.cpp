@@ -32,7 +32,7 @@ int main(void) {
         std::cout << j << std::endl;
 
         gen.setRandomMapWeights();
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < 1000; i++) {
             gen.generateRota();
             for (RotaLayer *layer : *gen.getRota()) {
                 // std::cout << layer->getName() << std::endl;
@@ -46,17 +46,13 @@ int main(void) {
 
         for (RotaLayer *layer : ges) {
             if (layer->getMode()->name.compare("RAAS") == 0) {
-                if (genDist.count(layer->getMap())) {
+                if (genDist.count(layer->getMap()) == 1) {
                     genDist.at(layer->getMap())++;
                 } else {
                     genDist[layer->getMap()] = 1;
                 }
                 sum++;
             }
-            /*if (expDist.count(layer->getMap()) == 0) {
-                expDist[layer->getMap()] =
-                    layer->getMap()->getMapWeight(gen.getModes()->at("RAAS"));
-            }*/
         }
 
         for (auto const &x : genDist) {
