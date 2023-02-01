@@ -468,4 +468,14 @@ void Generator::getState(MemoryColonelState *state) {
     state->lastTeam[1] = this->lastTeam[1];
 }
 
+void Generator::setRandomMapWeights() {
+    for (RotaMap *map : this->maps) {
+        map->setMapWeight(this->modes.at("RAAS"), (float)rand() / RAND_MAX);
+    }
+}
+
+std::map<std::string, RotaMode *> *Generator::getModes() {
+    return &this->modes;
+}
+
 } // namespace rota

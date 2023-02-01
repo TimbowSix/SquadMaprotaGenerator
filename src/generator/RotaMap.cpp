@@ -43,7 +43,7 @@ void RotaMap::decreaseLockTime() {
         // map gets unlocked
         for (RotaMode *mode : this->modes) {
             if (this->hasLayersAvailable(mode)) {
-                (*this->availableLayerMaps)[mode]++;
+                this->availableLayerMaps->at(mode)++;
             }
         }
     }
@@ -93,9 +93,8 @@ void RotaMap::overwriteLock(int locktime) {
 void RotaMap::unlock() {
     if (this->isLocked()) {
         for (RotaMode *m : *this->getModes()) {
-            if (this->hasMode(m)) {
-                this->availableLayerMaps++;
-                break;
+            if (this->hasMode(m) && this->hasLayersAvailable(m)) {
+                this->availableLayerMaps->at(m)++;
             }
         }
     }

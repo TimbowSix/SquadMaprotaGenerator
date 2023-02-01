@@ -229,6 +229,11 @@ class Generator {
     time_t getSeed();
     std::vector<RotaLayer *> *getRota();
     void getState(MemoryColonelState *state);
+    /**
+     * @brief only for testing
+     */
+    void setRandomMapWeights();
+    std::map<std::string, RotaMode *> *getModes();
 };
 
 struct MemoryColonelState {
