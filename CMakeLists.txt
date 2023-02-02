@@ -15,6 +15,7 @@ add_subdirectory(external)
 install(FILES config.json data/bioms.json DESTINATION etc/maprota)
 
 include(InstallRequiredSystemLibraries)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(CPACK_PACKAGE_VERSION_MAJOR "${SquadMaprota_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${SquadMaprota_VERSION_MINOR}")
 set(CPACK_GENERATOR "DEB")

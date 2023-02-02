@@ -27,45 +27,50 @@ int main(void) {
     std::ofstream file;
     file.open(std::to_string(time(NULL)) + ".dat");
     std::vector<rota::RotaLayer *> ges;
+    std::map<RotaMap *, float> genDist;
+    std::map<RotaMap *, float>::iterator it;
 
-    for (int j = 0; j < 500; j++) {
+    for (int j = 0; j < 1000; j++) {
         std::cout << j << std::endl;
 
         gen.setRandomMapWeights();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 2000; i++) {
             gen.generateRota();
             for (RotaLayer *layer : *gen.getRota()) {
-                // std::cout << layer->getName() << std::endl;
                 ges.push_back(layer);
             }
             gen.reset();
         }
-        // std::map<RotaMap *, float> expDist;
-        std::map<RotaMap *, float> genDist;
+
         int sum = 0;
 
         for (RotaLayer *layer : ges) {
             if (layer->getMode()->name.compare("RAAS") == 0) {
-                if (genDist.count(layer->getMap()) == 1) {
-                    genDist.at(layer->getMap())++;
+                it = genDist.find(layer->getMap());
+                // file << layer->getName() << "\n";
+                if (it != genDist.end()) {
+                    genDist[layer->getMap()] += 1.0;
                 } else {
-                    genDist[layer->getMap()] = 1;
+                    genDist[layer->getMap()] = 1.0;
                 }
                 sum++;
             }
         }
 
         for (auto const &x : genDist) {
-            // std::cout << x.first->getName() << " " << x.second << std::endl;
-            genDist[x.first] = x.second / (float)sum;
+            // file << x.first->getName() << " " << x.second << std::endl;
+            genDist[x.first] = x.second / sum;
         }
+        // file << sum << "\n";
 
         for (auto const &x : genDist) {
             file << x.first->getNeighbor()->size() << ";"
                  << x.first->getMapWeight(gen.getModes()->at("RAAS")) << ";"
                  << x.second << "\n";
         }
+        // file << "\n";
         ges.clear();
+        genDist.clear();
     }
     file.close();
 

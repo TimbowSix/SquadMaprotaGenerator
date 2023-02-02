@@ -1,10 +1,14 @@
 #include "Generator.hpp"
 
 #include <boost/json.hpp>
+#include <immintrin.h>
 #include <numeric>
+#include <random>
 #include <stdexcept>
 #include <string>
+#include <sys/types.h>
 #include <vector>
+
 
 #include <RotaOptimizer.hpp>
 
@@ -145,8 +149,8 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                 }
             }
         }
-        pool =
-            this->defaultModePools[weightedChoice(&this->defaultPoolWeights)];
+        pool = this->defaultModePools[weightedChoice(&this->defaultPoolWeights,
+                                                     this->rng)];
     }
 
     if (pool != this->modePools["main"]) {
@@ -155,7 +159,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
             if (this->modeBuffer.size() == 0) {
                 // add mode of not possible Pool to Mode Buffer
                 this->modeBuffer.push_back(this->poolToModeList.at(pool).at(
-                    weightedChoice(&this->modeWeights.at(pool))));
+                    weightedChoice(&this->modeWeights.at(pool), this->rng)));
             }
             // not enough space change to main mode
             pool = this->modePools["main"];
@@ -174,8 +178,8 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
         // TODO Überarbeitung gleichverteilung
         ret = this->poolToModeList[pool][this->nextMainModeIndex];
     } else {
-        ret = this->poolToModeList[pool]
-                                  [weightedChoice(&this->modeWeights[pool])];
+        ret = this->poolToModeList[pool][weightedChoice(
+            &this->modeWeights[pool], this->rng)];
     }
     // check if mode has available maps
     if (this->mapsAvailable(ret)) {
@@ -218,7 +222,7 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     }
 
     normalize(&weights, &tempSum);
-    return availableMaps[weightedChoice(&weights)];
+    return availableMaps[weightedChoice(&weights, this->rng)];
 }
 
 RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
@@ -239,7 +243,7 @@ RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
     }
 
     normalize(&weights, &sum);
-    return layers[weightedChoice(&weights)];
+    return layers[weightedChoice(&weights, this->rng)];
 }
 
 void Generator::decreaseMapLocktimes() {
@@ -281,13 +285,13 @@ void Generator::lockTeams() { // TODO test?
 
 void Generator::generateRota() {
     // set seed
-    srand(this->seed);
+    this->rng.seed(this->seed);
     // add seedlayer
     if (config->get_seed_layer() > 0) {
         std::vector<RotaMap *> seedMaps(this->modeToMapList["Seed"]);
 
         for (int i = 0; i < this->config->get_seed_layer(); i++) {
-            int choosenMap = choice(seedMaps.size());
+            int choosenMap = choice(seedMaps.size(), this->rng);
             RotaMap *seedMap = seedMaps[choosenMap];
             seedMaps.erase(
                 seedMaps.begin() +
@@ -296,7 +300,8 @@ void Generator::generateRota() {
 
             std::vector<RotaLayer *> seedLayers =
                 seedMap->getModeToLayers()->at(this->modes["Seed"]);
-            RotaLayer *chosenLayer = seedLayers[choice(seedLayers.size())];
+            RotaLayer *chosenLayer =
+                seedLayers[choice(seedLayers.size(), this->rng)];
             rotation.push_back(chosenLayer);
         }
         this->ModesHistory.push_back(this->modes["Seed"]);
@@ -351,11 +356,15 @@ void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
 
 void Generator::reset() {
     std::vector<RotaLayer *> pastLayers;
-    time_t seed = time(NULL);
+    u_int32_t seed = time(NULL);
     this->reset(&pastLayers, seed); // call reset with empty past layers
 }
-void Generator::reset(std::vector<RotaLayer *> *pastLayers, time_t seed) {
-    this->seed = seed;
+void Generator::reset(std::vector<RotaLayer *> *pastLayers, u_int32_t seed) {
+    if (this->seed == seed) {
+        this->seed = (u_int32_t)_rdtsc();
+    } else {
+        this->seed = seed;
+    }
     this->lastNonMainMode = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
@@ -447,7 +456,7 @@ void Generator::packOptData(OptData *data) {
     }
 }
 
-time_t Generator::getSeed() { return this->seed; }
+u_int32_t Generator::getSeed() { return this->seed; }
 
 std::vector<RotaLayer *> *Generator::getRota() { return &this->rotation; }
 
@@ -475,8 +484,9 @@ void Generator::getState(MemoryColonelState *state) {
 }
 
 void Generator::setRandomMapWeights() {
+    std::uniform_real_distribution<float> dist(0, 1);
     for (RotaMap *map : this->maps) {
-        map->setMapWeight(this->modes.at("RAAS"), (float)rand() / RAND_MAX);
+        map->setMapWeight(this->modes.at("RAAS"), dist(this->rng));
     }
 }
 

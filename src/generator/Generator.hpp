@@ -2,6 +2,8 @@
 
 #include <boost/json.hpp>
 #include <map>
+#include <random>
+#include <sys/types.h>
 #include <vector>
 
 #include "OptimizerData.hpp"
@@ -130,7 +132,11 @@ class Generator {
     /**
      * @brief seed of rota
      */
-    time_t seed;
+    u_int32_t seed;
+    /**
+     * @brief random number generator
+     */
+    rotaRNG rng;
 
   public:
     Generator(RotaConfig *config);
@@ -198,7 +204,7 @@ class Generator {
      * @brief resets all temporary values used for generation and sets given
      * previous layers
      */
-    void reset(std::vector<RotaLayer *> *pastLayers, time_t seed);
+    void reset(std::vector<RotaLayer *> *pastLayers, u_int32_t seed);
     /**
      * @brief resets all temporary values used for generation
      *        parses and sets given previous layers
@@ -225,7 +231,7 @@ class Generator {
     void packOptData(OptData *data);
 
     // getter & setter
-    time_t getSeed();
+    u_int32_t getSeed();
     std::vector<RotaLayer *> *getRota();
     void getState(MemoryColonelState *state);
     /**

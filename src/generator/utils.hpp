@@ -21,9 +21,10 @@ namespace rota {
  * Note: the sum of all weight have to be 1
  *
  * @param weights list of weights
+ * @param rng random number gen engine
  * @returns choosen index
  */
-int weightedChoice(std::vector<float> *weights);
+int weightedChoice(std::vector<float> *weights, rotaRNG &rng);
 
 /**
  * @brief chooses random index for any container of given length
@@ -31,7 +32,7 @@ int weightedChoice(std::vector<float> *weights);
  * @param length length of container to choose from. Has to be >= 1
  * @returns choosen index
  */
-int choice(int length);
+int choice(int length, rotaRNG &rng);
 
 /**
  * @brief normalizes all values in list

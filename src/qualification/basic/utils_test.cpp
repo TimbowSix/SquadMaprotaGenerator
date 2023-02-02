@@ -29,13 +29,14 @@ TEST(Utils_test, sigmoid_test) {
 
 TEST(Utils_test, weightedChoice_normal) {
 
-    srand(time(0));
+    rotaRNG rng;
+    rng.seed(time(NULL));
 
     std::vector<float> weights = {0.1, 0.5, 0.2, 0.15, 0.05, 0.0};
     int counts[6] = {0, 0, 0, 0, 0, 0};
     int rounds = 0;
     while (rounds < 1000000) {
-        int val = rota::weightedChoice(&weights);
+        int val = rota::weightedChoice(&weights, rng);
         ASSERT_GE(val, 0);
         ASSERT_LE(val, 4);
         counts[val]++;
@@ -50,11 +51,12 @@ TEST(Utils_test, weightedChoice_normal) {
 
 TEST(Utils_test, choice) {
 
-    srand(time(0));
+    rotaRNG rng;
+    rng.seed(time(NULL));
 
     int counts[4] = {0, 0, 0, 0};
     for (int i = 0; i < 1000000; i++) {
-        int val = rota::choice(4);
+        int val = rota::choice(4, rng);
         ASSERT_GE(val, 0);
         ASSERT_LE(val, 3);
         counts[val]++;

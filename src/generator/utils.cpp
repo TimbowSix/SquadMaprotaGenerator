@@ -2,6 +2,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <boost/numeric/ublas/vector_expression.hpp>
 #include <cmath>
+#include <cstdint>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -17,12 +18,13 @@
 #include <regex>
 #include <tuple>
 
+#include "GlobalConfig.hpp"
 #include "RotaMap.hpp"
 #include "utils.hpp"
 
 namespace rota {
 
-int weightedChoice(std::vector<float> *weights) {
+int weightedChoice(std::vector<float> *weights, rotaRNG &rng) {
     float weightSum = 0.0;
     weightSum = std::accumulate(weights->begin(), weights->end(), 0.0);
     weightSum =
@@ -31,7 +33,8 @@ int weightedChoice(std::vector<float> *weights) {
     if (weightSum != 1) {
         throw std::invalid_argument("Weights do not sum to 1");
     }
-    float randomValue = (float)rand() / RAND_MAX;
+    std::uniform_real_distribution<> dis(0, 1.0);
+    float randomValue = dis(rng);
     float currentValue = 0;
     for (int i = 0; i < weights->size(); i++) {
         currentValue += weights->at(i);
@@ -42,9 +45,10 @@ int weightedChoice(std::vector<float> *weights) {
     return -1;
 }
 
-int choice(int length) {
+int choice(int length, rotaRNG &rng) {
     assert(length >= 1);
-    return rand() % length;
+    std::uniform_int_distribution<uint32_t> dis(0, length - 1);
+    return dis(rng);
 }
 
 void normalize(std::vector<float> *arr, float *sum) {
