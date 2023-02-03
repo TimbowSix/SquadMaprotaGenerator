@@ -42,7 +42,8 @@ int weightedChoice(std::vector<float> *weights, rotaRNG &rng) {
             return i;
         }
     }
-    return -1;
+    // return last value if currentValue cant reach 1 because of rounding errors
+    return weights->size() - 1;
 }
 
 int choice(int length, rotaRNG &rng) {
