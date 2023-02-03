@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <vector>
 
-
 #include <RotaOptimizer.hpp>
 
 #include "OptimizerData.hpp"
@@ -98,8 +97,6 @@ Generator::Generator(RotaConfig *config) {
     this->nextMainModeIndex = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
-
-    this->seed = time(NULL);
 }
 
 Generator::~Generator() {
@@ -205,7 +202,7 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     std::vector<float> weights;
     float tempSum = 0.0;
 
-    for (RotaMap *map : this->modeToMapList[mode->name]) {
+    for (RotaMap *map : this->modeToMapList.at(mode->name)) {
         if (!map->isLocked() && map->hasLayersAvailable(mode)) {
             availableMaps.push_back(map);
             weights.push_back(map->getMapWeight(mode));
@@ -222,7 +219,7 @@ RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
     }
 
     normalize(&weights, &tempSum);
-    return availableMaps[weightedChoice(&weights, this->rng)];
+    return availableMaps.at(weightedChoice(&weights, this->rng));
 }
 
 RotaLayer *Generator::chooseLayerFromMap(RotaMap *map,
@@ -285,6 +282,8 @@ void Generator::lockTeams() { // TODO test?
 
 void Generator::generateRota() {
     // set seed
+    std::random_device os_seed; // seed used by the mersenne-twister-engine
+    this->seed = os_seed();
     this->rng.seed(this->seed);
     // add seedlayer
     if (config->get_seed_layer() > 0) {
@@ -356,15 +355,9 @@ void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
 
 void Generator::reset() {
     std::vector<RotaLayer *> pastLayers;
-    u_int32_t seed = time(NULL);
     this->reset(&pastLayers, seed); // call reset with empty past layers
 }
 void Generator::reset(std::vector<RotaLayer *> *pastLayers, u_int32_t seed) {
-    if (this->seed == seed) {
-        this->seed = (u_int32_t)_rdtsc();
-    } else {
-        this->seed = seed;
-    }
     this->lastNonMainMode = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
@@ -432,7 +425,6 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
         RotaLayer *layer = layers.at(layerName);
         pastLayers.push_back(layer);
     }
-    time_t seed = time(NULL);
     reset(&pastLayers, seed);
 }
 
