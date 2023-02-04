@@ -323,12 +323,20 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
         return mat;
     };
 
+    std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in){
+        std::vector<float> v_out(v_in.size1());
+        for(unsigned i=0; i<v_in.size1(); i++){
+            v_out[i] = v_in(i,0);
+        }
+        return v_out;
+    }
+
     std::vector<float> RotaOptimizer::Run(bool debug){
         if(debug){
             time_t start, end;
             time(&start);
         }
-        std::vector<float> finalWeights;
+        
         boost::numeric::ublas::matrix<float> state(this->GenerateSeed(this->stateBaseSize));
         boost::numeric::ublas::vector<float> evolved_state(this->stateBaseSize);
         std::vector<float> diffList(this->stateBaseSize);
@@ -368,6 +376,6 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
             }
         }
 
-        return finalWeights;
+        return MatrixWeights(state);
     }
 }
