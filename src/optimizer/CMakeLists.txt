@@ -1,10 +1,12 @@
 set(SOURCE
     OptimizerMain.cpp
     RotaOptimizer.cpp
+    OptimizerConfig.cpp
 )
 
 set(INCLUDES
     RotaOptimizer.hpp
+    OptimizerConfig.hpp
 )
 
 add_executable(RotaOptimizer ${SOURCE})

@@ -6,6 +6,7 @@
 #include <random>
 #include <map>
 
+#include "OptimizerConfig.hpp"
 namespace optimizer
 {
     /// @brief Optimizer Class
@@ -30,6 +31,7 @@ namespace optimizer
             int iterationMax;
             int maxEvolveSteps;
             float T0;
+            float T;
             /*
             T0: Initial temperature
             kernelSize: Length of the memory kernel
@@ -40,6 +42,7 @@ namespace optimizer
             comparisonState: The state you want to mimic with the internal weights, usually calucated from the mapvotes
             */
             RotaOptimizer();
+            RotaOptimizer(OptimizerConfig config);
             ~RotaOptimizer();
             /*
             Summary: Generates an initial state for the optimizer to start with.
@@ -47,7 +50,6 @@ namespace optimizer
             Return: Matrix<float>
             */
             boost::numeric::ublas::matrix<float> GenerateSeed(int dim);
-
             /*
             Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
             Params: 
@@ -56,6 +58,14 @@ namespace optimizer
             Return: float
             */
             float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2);
+             /*
+            Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
+            Params: 
+                matrix<float> state1 
+                matrix<float> state2
+            Return: float
+            */
+            float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2, std::vector<float>& list);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
             Params: 
@@ -83,6 +93,18 @@ namespace optimizer
             Return: matrix<float>
             */
             boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
+            /*
+            Summary: Generates the next state
+            Params:
+                matrix<float> state, current state
+                float s, slope
+                float T, temperature
+            Return: matrix<float>
+            */
+            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness);
+            
+            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent);
+
             /*
             Summary: Adds the given map-representative to the memory kernel and removes the most oldest one if the kernel length is full
             Params:
@@ -116,5 +138,7 @@ namespace optimizer
             std::vector<float> TakeMemoryKernelSum();
 
             std::vector<float> ProbabilitiesFromMemoryKernel();
+
+            std::vector<float> Run();
     };
 };
