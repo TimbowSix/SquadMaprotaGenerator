@@ -67,15 +67,15 @@ rota::Generator *initialize() {
     OptDataIn dataIn;
     OptDataOut dataOut;
 
-    gen->packOptData(&dataIn, gen->getModes()->at("Invasion"));
+    gen->packOptData(&dataIn, gen->getModes()->at("Destruction"));
 
     optimizer::OptimizerConfig optConfig(dataIn.mapDist.size(),
                                          conf.get_biom_spacing(),
                                          dataIn.clusters, dataIn.mapDist);
 
     optimizer::RotaOptimizer opt(optConfig);
-    dataOut.mapWeights = opt.Run();
-    gen->setMapWeights(&dataOut, gen->getModes()->at("Invasion"));
+    dataOut.mapWeights = opt.Run(true);
+    gen->setMapWeights(&dataOut, gen->getModes()->at("Destruction"));
 
     return gen;
 }
