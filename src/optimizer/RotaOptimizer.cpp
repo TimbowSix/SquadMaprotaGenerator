@@ -2,6 +2,7 @@
 #include <math.h>
 #include <random>
 #include <boost/numeric/ublas/matrix.hpp>
+#include <fstream>
 
 #include "RotaOptimizer.hpp"
 
@@ -312,8 +313,50 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
         return mat;
     };
 
-    std::vector<float> RotaOptimizer::Run(){
-        std::vector<float> list;
-        return list;
+    std::vector<float> RotaOptimizer::Run(bool debug){
+        if(debug){
+            time_t start, end;
+            time(&start);
+        }
+        std::vector<float> finalWeights;
+        boost::numeric::ublas::matrix<float> state(this->GenerateSeed(this->stateBaseSize));
+        boost::numeric::ublas::vector<float> evolved_state(this->stateBaseSize);
+        std::vector<float> diffList(this->stateBaseSize);
+
+        std::ofstream file;
+        if(debug){
+            file.open("data.dat");
+        }
+
+        boost::numeric::ublas::matrix<float> state_buffer(this->GenerateSeed(this->stateBaseSize));
+
+        float current_fit_val = __FLT_MAX__;
+        float fit_buffer = 0.0;
+
+        for(unsigned i=0; i<this->iterationMax; i++){
+            evolved_state = this->Evolve(state_buffer);
+            fit_buffer = this->StateDifference(evolved_state, this->comparisonState, diffList);
+            if(debug){
+                std::cout << "fit_value: " << fit_buffer << std::endl;
+            }
+            if(this->AcceptMove(fit_buffer-current_fit_val)){
+                state = state_buffer;
+                current_fit_val = fit_buffer;
+            }
+
+            // Step to a neighbour state of the previous state (NOT the evolved state!)
+            if(i != this->maxEvolveSteps-1){
+                state_buffer = this->GenerateNeighbour(state, 1, 1, diffList, state);
+            }
+
+            if(debug){
+                file << current_fit_val << std::endl;
+                std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
+                std::cout<< "T: " << this->T<<std::endl;
+                std::cout << "=====================" << std::endl;
+            }
+        }
+
+        return finalWeights;
     }
 }

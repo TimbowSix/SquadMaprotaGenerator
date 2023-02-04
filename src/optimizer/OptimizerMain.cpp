@@ -127,45 +127,46 @@ int main(void){
     std::uniform_int_distribution<> dist_uniform(0, number_agents-1);
     // Calculate fit-value
     // Until either maximum iterations or some abort-condition
-    for(unsigned i=0; i<opt.iterationMax; i++){ 
-        for(unsigned j=0; j<number_agents; j++){
-            agent_index = j;
-            if(number_agents>1){
-                while(agent_index == j){
-                    agent_index = dist_uniform(gen);
-                }
-            }
+    opt.Run(true);
+    // for(unsigned i=0; i<opt.iterationMax; i++){ 
+    //     for(unsigned j=0; j<number_agents; j++){
+    //         agent_index = j;
+    //         if(number_agents>1){
+    //             while(agent_index == j){
+    //                 agent_index = dist_uniform(gen);
+    //             }
+    //         }
 
-            state_buffer = agents[j];
-            // Evolve the state 
-            boost::numeric::ublas::vector<float> evolved_state = opt.Evolve(state_buffer);
-            fit_buffer = opt.StateDifference(evolved_state, opt.comparisonState, diffList);
-            // if the fit-value decreases accept, otherwise only accept with a probability > 0
-            if(DEBUG)
-                std::cout << "fit_value: " << fit_buffer << std::endl;
-            if(opt.AcceptMove(fit_buffer-current_fit_val)){
-                agents[j] = state_buffer;
-                current_fit_val = fit_buffer;
-            }
-            if(j==0){
-                file << current_fit_val << std::endl;
-            }
-            if(DEBUG)
-                std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
+    //         state_buffer = agents[j];
+    //         // Evolve the state 
+    //         boost::numeric::ublas::vector<float> evolved_state = opt.Evolve(state_buffer);
+    //         fit_buffer = opt.StateDifference(evolved_state, opt.comparisonState, diffList);
+    //         // if the fit-value decreases accept, otherwise only accept with a probability > 0
+    //         if(DEBUG)
+    //             std::cout << "fit_value: " << fit_buffer << std::endl;
+    //         if(opt.AcceptMove(fit_buffer-current_fit_val)){
+    //             agents[j] = state_buffer;
+    //             current_fit_val = fit_buffer;
+    //         }
+    //         if(j==0){
+    //             file << current_fit_val << std::endl;
+    //         }
+    //         if(DEBUG)
+    //             std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
 
-            // decrease temperature, for T->0 the probability -> 0 thus the algorithm converges to a "hill-climb"
+    //         // decrease temperature, for T->0 the probability -> 0 thus the algorithm converges to a "hill-climb"
 
-            // Step to a neighbour state of the previous state (NOT the evolved state!)
-            if(i != opt.maxEvolveSteps-1){
-                state_buffer = opt.GenerateNeighbour(agents[j], 1, 1, diffList, agents[agent_index]);
-            }
-            if(DEBUG){
-                std::cout<< "T: " << opt.T<<std::endl;
-                std::cout << "=====================" << std::endl;
-            }
-        opt.T = opt.UpdateTemperature(opt.T0, 0.011, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.015, i+1);
-        }
-    }
+    //         // Step to a neighbour state of the previous state (NOT the evolved state!)
+    //         if(i != opt.maxEvolveSteps-1){
+    //             state_buffer = opt.GenerateNeighbour(agents[j], 1, 1, diffList, agents[agent_index]);
+    //         }
+    //         if(DEBUG){
+    //             std::cout<< "T: " << opt.T<<std::endl;
+    //             std::cout << "=====================" << std::endl;
+    //         }
+    //     opt.T = opt.UpdateTemperature(opt.T0, 0.011, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.015, i+1);
+    //     }
+    // }
     std::cout << "============================" << std::endl;
     print_matrix(agents[0]);
     time(&end);

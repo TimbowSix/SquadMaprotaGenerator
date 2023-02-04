@@ -139,6 +139,6 @@ namespace optimizer
 
             std::vector<float> ProbabilitiesFromMemoryKernel();
 
-            std::vector<float> Run();
+            std::vector<float> Run(bool debug=false);
     };
 };
