@@ -35,45 +35,27 @@ namespace optimizer
         mem[0](0) = 1.0;
         return mem;
     }
-
     RotaOptimizer::RotaOptimizer(){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
 
-        generator = std::mt19937(seed);            // the generator seeded with the random device
-        kernelSize = 4;
-        maxEvolveSteps = 1000;
-        T0 = 0.03;
-        T=T0;
-        stateBaseSize = 22;
-        iterationMax = 1000;
-        slope = 0.05;
-        memorykernel = initMem(kernelSize, stateBaseSize);
-        clusters = {
-            {0, {0}}, 
-            {1, {1,11}},
-            {2, {2}},
-            {3, {3, 9, 18, 21}},
-            {4, {4, 12}},
-            {5, {5}},
-            {6, {6, 15}},
-            {7, {7}},
-            {8, {8, 3, 9}},
-            {9, {9, 3, 8}},
-            {10, {10}}, 
-            {11, {1}},
-            {12, {12, 4}},
-            {13, {13}},
-            {14, {14}},
-            {15, {15, 6}},
-            {16, {16}},
-            {17, {17}},
-            {18, {18}},
-            {19, {19, 5, 4}},
-            {20, {20}},
-            {21, {21, 3, 9}},
-            };
+        this->generator = std::mt19937(seed);            // the generator seeded with the random device
+    };
+        
+    RotaOptimizer::RotaOptimizer(OptimizerConfig config){
+        std::random_device os_seed;             // seed used by the mersenne-twister-engine
+        const uint_least32_t seed = os_seed();  
 
+        this->generator = std::mt19937(seed);            // the generator seeded with the random device
+        this->kernelSize = config.kernelsize;
+        this->maxEvolveSteps = config.maxEvolveSteps;
+        this->T0 = config.T0;
+        this->T=T0;
+        this->iterationMax = config.iterationMax;
+        this->slope = config.slope;
+        this->stateBaseSize = config.stateBaseSize;
+        this->memorykernel = initMem(kernelSize, stateBaseSize);
+        this->clusters = config.clusters;
     };
     RotaOptimizer::~RotaOptimizer(){
 
@@ -109,26 +91,6 @@ namespace optimizer
             -33.03*pow(x,2)*pow(y,2)
             -1210*x*pow(y,3)
             -4025*pow(y,4);
-        // f =  -0.1029
-        //     +0.04482*x
-        //     +28.93*y
-        //     -0.01165*pow(x,2)
-        //     -9.405*x*y
-        //     -1049*pow(y,2)
-        //     -0.006852*pow(x,3)
-        //     -0.4641*pow(x,2)*y
-        //     +485.9*x*pow(y,2)
-        //     +1640*pow(y,3)
-        //     +0.000747*pow(x,4)
-        //     +0.6061*pow(x,3)*y
-        //     -40.78*pow(x,2)*pow(y,2)
-        //     -5069*x*pow(y,3)
-        //     -10530*pow(y,4)
-        //     -0.05659*pow(x,4)*y
-        //     -0.0257*pow(x,3)*pow(y,2)
-        //     +193.4*pow(x,2)*pow(y,3)
-        //     +1634*x*pow(y,4)
-        //     +23500*pow(y,5);
         return f;
     }
 

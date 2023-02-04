@@ -6,6 +6,7 @@
 #include <random>
 #include <map>
 
+#include "OptimizerConfig.hpp"
 namespace optimizer
 {
     /// @brief Optimizer Class
@@ -41,6 +42,7 @@ namespace optimizer
             comparisonState: The state you want to mimic with the internal weights, usually calucated from the mapvotes
             */
             RotaOptimizer();
+            RotaOptimizer(OptimizerConfig config);
             ~RotaOptimizer();
             /*
             Summary: Generates an initial state for the optimizer to start with.
