@@ -4,6 +4,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 
 #include "RotaOptimizer.hpp"
+#include "OptimizerConfig.hpp"
 
 void print_matrix(boost::numeric::ublas::matrix<float> mat){
     for(unsigned j=0; j<mat.size1(); j++){
@@ -23,12 +24,66 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
 int main(void){
     time_t start, end;
     time(&start);
-    optimizer::RotaOptimizer opt;
+
+    std::vector<float> comparisonState(22);
+    comparisonState[0] = 0.000331373;
+    comparisonState[1] = 0.019808;
+    comparisonState[2] = 0.0793753;
+    comparisonState[3] = 0.0855731;
+    comparisonState[4] = 0.0303223;
+    comparisonState[5] = 0.0581194;
+    comparisonState[6] = 0.0247349;
+    comparisonState[7] = 0.0852877;
+    comparisonState[8] = 0.085538;
+    comparisonState[9] = 0.0843088;
+    comparisonState[10] = 0.00304394;
+    comparisonState[11] = 0.0459895;
+    comparisonState[12] = 0.0221827;
+    comparisonState[13] = 0.0156107;
+    comparisonState[14] = 0.000810466;
+    comparisonState[15] = 0.00351631;
+    comparisonState[16] = 0.0843088;
+    comparisonState[17] = 0.0855718;
+    comparisonState[18] = 0.0793753;
+    comparisonState[19] = 0.000810466;
+    comparisonState[20] = 0.019808;
+    comparisonState[21] = 0.085573;
+
+    std::map<int, std::vector<int>> clusters = {
+            {0, {0}}, 
+            {1, {1,11}},
+            {2, {2}},
+            {3, {3, 9, 18, 21}},
+            {4, {4, 12}},
+            {5, {5}},
+            {6, {6, 15}},
+            {7, {7}},
+            {8, {8, 3, 9}},
+            {9, {9, 3, 8}},
+            {10, {10}}, 
+            {11, {1}},
+            {12, {12, 4}},
+            {13, {13}},
+            {14, {14}},
+            {15, {15, 6}},
+            {16, {16}},
+            {17, {17}},
+            {18, {18}},
+            {19, {19, 5, 4}},
+            {20, {20}},
+            {21, {21, 3, 9}},
+            };
+
+    optimizer::OptimizerConfig config(22, 4, clusters, comparisonState);
+
+    optimizer::RotaOptimizer opt(config);
 
     // Generate a seeding-state
     float current_fit_val = __FLT_MAX__;
     float fit_buffer = 0.0;
     int number_agents = 2;
+
+
     std::vector<boost::numeric::ublas::matrix<float>> agents(number_agents);
 
     // boost::numeric::ublas::matrix<float> state = opt.GenerateSeed(10);

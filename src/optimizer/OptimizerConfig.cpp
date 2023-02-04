@@ -11,4 +11,5 @@ namespace optimizer{
         this->clusters = neighbourDictionary;
         this->mapProbabilities = mapProbabilities;
     };
+    OptimizerConfig::~OptimizerConfig(){};
 }

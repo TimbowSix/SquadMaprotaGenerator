@@ -138,5 +138,7 @@ namespace optimizer
             std::vector<float> TakeMemoryKernelSum();
 
             std::vector<float> ProbabilitiesFromMemoryKernel();
+
+            std::vector<float> Run();
     };
 };

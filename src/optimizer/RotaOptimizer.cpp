@@ -312,4 +312,9 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
         }
         return mat;
     };
+
+    std::vector<float> RotaOptimizer::Run(){
+        std::vector<float> list;
+        return list;
+    }
 }
