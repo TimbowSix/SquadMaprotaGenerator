@@ -43,7 +43,7 @@ namespace optimizer
         generator = std::mt19937(seed);            // the generator seeded with the random device
         kernelSize = 4;
         maxEvolveSteps = 1000;
-        T0 = 1.0;
+        T0 = 0.03;
         T=T0;
         stateBaseSize = 22;
         iterationMax = 1000;
@@ -92,12 +92,55 @@ namespace optimizer
         // return T0*(1-s*i);
     }
 
+    float WeightFit(float x,float y){
+        float f = 0.0;
+        f =  -0.156
+            +0.1269*x
+            +29.99*y
+            -0.03288*pow(x,2)
+            -17.62*x*y
+            -426.5*pow(y,2)
+            +0.004327*pow(x,3)
+            +3.779*pow(x,2)*y
+            +301.7*x*pow(y,2)
+            +2467*pow(y,3)
+            -0.0003173*pow(x,4)
+            -0.1802*pow(x,3)*y
+            -33.03*pow(x,2)*pow(y,2)
+            -1210*x*pow(y,3)
+            -4025*pow(y,4);
+        // f =  -0.1029
+        //     +0.04482*x
+        //     +28.93*y
+        //     -0.01165*pow(x,2)
+        //     -9.405*x*y
+        //     -1049*pow(y,2)
+        //     -0.006852*pow(x,3)
+        //     -0.4641*pow(x,2)*y
+        //     +485.9*x*pow(y,2)
+        //     +1640*pow(y,3)
+        //     +0.000747*pow(x,4)
+        //     +0.6061*pow(x,3)*y
+        //     -40.78*pow(x,2)*pow(y,2)
+        //     -5069*x*pow(y,3)
+        //     -10530*pow(y,4)
+        //     -0.05659*pow(x,4)*y
+        //     -0.0257*pow(x,3)*pow(y,2)
+        //     +193.4*pow(x,2)*pow(y,3)
+        //     +1634*x*pow(y,4)
+        //     +23500*pow(y,5);
+        return f;
+    }
+
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateSeed(int dim){
         std::uniform_real_distribution<float> distribute(0,1);   //uniform-dist wrapper for rng, 1 is excluded
         boost::numeric::ublas::matrix<float> mat (dim, dim);
-        for (unsigned i = 0; i < mat.size1 (); ++ i)
-            SetRow(mat, i, distribute(this->generator));
-
+        float f = 0;
+        for (unsigned i = 0; i < mat.size1 (); ++ i){
+            //SetRow(mat, i, distribute(this->generator));
+            f=WeightFit(clusters[i].size(),comparisonState(i));
+            SetRow(mat, i, f);
+        }
         return MatrixToProbabilityMatrix(mat);
     }
 
@@ -176,28 +219,33 @@ namespace optimizer
 
 
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent){
-        std::uniform_real_distribution<> distribute(0,1);
+        std::uniform_real_distribution<> distribute(-1,1);
         float exponent = 1.0/16.0;
         float random;
-        float factor_const = 1;//100000000;
+        float factor_const = 0.0003;//100000000;
         float agentmax = 0.0;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
-            agentmax = abs(newstate(i,0) - agent(i,0));
-            random = newstate(i,0);
-            factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.001);//pow(grid_fitness[i],exponent);
-            random = distribute(this->generator)*s*factor_const*agentmax;
-            newstate(i,0) += random;
-            // All entries must be positive or zero to be a probability matrix
-            if(newstate(i,0) < 0.0){
-                SetRow(newstate, i, newstate(i,0)-2*random);
+            if(grid_fitness[i]>0.000000001){
+                agentmax = abs(newstate(i,0) - agent(i,0));
+                random = newstate(i,0);
+                // factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.01);//pow(grid_fitness[i],exponent);
+                random = distribute(this->generator)*s*factor_const*agentmax;
+                newstate(i,0) += random;
+                // All entries must be positive or zero to be a probability matrix
+                if(newstate(i,0) < 0.0){
+                    SetRow(newstate, i, newstate(i,0)-2*random);
+                }
+                else{
+                    SetRow(newstate, i, newstate(i,0));
+                }
+                // std::cout << "===================" << std::endl;
+                // std::cout << "Factor: " << factor_const << std::endl;
+                // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
             }
             else{
-                SetRow(newstate, i, newstate(i,0));
+                std::cout << "HOLD POSITION " << i << std::endl;
             }
-            // std::cout << "===================" << std::endl;
-            // std::cout << "Factor: " << factor_const << std::endl;
-            // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
         }
         return MatrixToProbabilityMatrix(newstate);
     };

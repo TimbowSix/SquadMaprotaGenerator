@@ -28,12 +28,9 @@ int main(void){
     // Generate a seeding-state
     float current_fit_val = __FLT_MAX__;
     float fit_buffer = 0.0;
-    int number_agents = 4;
+    int number_agents = 2;
     std::vector<boost::numeric::ublas::matrix<float>> agents(number_agents);
 
-    for(unsigned i=0; i<number_agents; i++){
-        agents[i] = opt.GenerateSeed(22);
-    }
     // boost::numeric::ublas::matrix<float> state = opt.GenerateSeed(10);
     boost::numeric::ublas::matrix<float> state_buffer(agents[0]);
     opt.comparisonState = boost::numeric::ublas::vector<float>(22);
@@ -59,11 +56,14 @@ int main(void){
     opt.comparisonState(19) = 0.000810466;
     opt.comparisonState(20) = 0.019808;
     opt.comparisonState(21) = 0.085573;
+    for(unsigned i=0; i<number_agents; i++){
+        agents[i] = opt.GenerateSeed(22);
+    }
     std::vector<float> diffList(22);
     print_matrix(agents[0]);
     std::ofstream file;
     file.open("data.dat");
-    bool DEBUG = true;
+    bool DEBUG = false;
     int agent_index = 0;
     std::random_device os_seed;             // seed used by the mersenne-twister-engine
     const uint_least32_t seed = os_seed();  
@@ -108,9 +108,10 @@ int main(void){
                 std::cout<< "T: " << opt.T<<std::endl;
                 std::cout << "=====================" << std::endl;
             }
-        opt.T = opt.UpdateTemperature(opt.T0, 0.022, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.0001, i+1);
+        opt.T = opt.UpdateTemperature(opt.T0, 0.011, i+1);//1.0/((float)opt.iterationMax), i+1);// 0.015, i+1);
         }
     }
+    std::cout << "============================" << std::endl;
     print_matrix(agents[0]);
     time(&end);
     boost::numeric::ublas::vector<float> s = opt.Evolve(agents[0]);
