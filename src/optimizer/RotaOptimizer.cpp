@@ -71,7 +71,6 @@ namespace optimizer
 
     float RotaOptimizer::UpdateTemperature(float T0, float s, int i){
         return T0*exp(-s*i);
-        // return T0*(1-s*i);
     }
 
     float WeightFit(float x,float y){
