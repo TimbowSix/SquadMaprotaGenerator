@@ -138,6 +138,11 @@ class Generator {
      */
     rotaRNG rng;
 
+    /**
+     * @brief generates a seed and sets the object variable
+     */
+    void generateSeed();
+
   public:
     Generator(RotaConfig *config);
     ~Generator();
@@ -204,7 +209,7 @@ class Generator {
      * @brief resets all temporary values used for generation and sets given
      * previous layers
      */
-    void reset(std::vector<RotaLayer *> *pastLayers, u_int32_t seed);
+    void reset(std::vector<RotaLayer *> *pastLayers);
     /**
      * @brief resets all temporary values used for generation
      *        parses and sets given previous layers

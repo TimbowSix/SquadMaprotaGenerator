@@ -97,6 +97,8 @@ Generator::Generator(RotaConfig *config) {
     this->nextMainModeIndex = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
+
+    this->generateSeed();
 }
 
 Generator::~Generator() {
@@ -282,8 +284,6 @@ void Generator::lockTeams() { // TODO test?
 
 void Generator::generateRota() {
     // set seed
-    std::random_device os_seed; // seed used by the mersenne-twister-engine
-    this->seed = os_seed();
     this->rng.seed(this->seed);
     // add seedlayer
     if (config->get_seed_layer() > 0) {
@@ -355,9 +355,10 @@ void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
 
 void Generator::reset() {
     std::vector<RotaLayer *> pastLayers;
-    this->reset(&pastLayers, seed); // call reset with empty past layers
+    this->reset(&pastLayers); // call reset with empty past layers
 }
-void Generator::reset(std::vector<RotaLayer *> *pastLayers, u_int32_t seed) {
+void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
+    this->generateSeed();
     this->lastNonMainMode = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
@@ -425,7 +426,7 @@ void Generator::reset(std::vector<std::string> *latestLayers) {
         RotaLayer *layer = layers.at(layerName);
         pastLayers.push_back(layer);
     }
-    reset(&pastLayers, seed);
+    reset(&pastLayers);
 }
 
 bool Generator::mapsAvailable(RotaMode *mode) {
@@ -480,6 +481,11 @@ void Generator::setRandomMapWeights() {
     for (RotaMap *map : this->maps) {
         map->setMapWeight(this->modes.at("RAAS"), dist(this->rng));
     }
+}
+
+void Generator::generateSeed() {
+    std::random_device os_seed; // seed used by the mersenne-twister-engine
+    this->seed = os_seed();
 }
 
 std::map<std::string, RotaMode *> *Generator::getModes() {

@@ -23,8 +23,14 @@ int main(void) {
     rota::Generator gen(&conf);
     std::cout << "Seed: " << gen.getSeed() << std::endl << std::endl;
 
+    gen.generateRota();
+
+    for (rota::RotaLayer *layer : *gen.getRota()) {
+        std::cout << layer->getName() << std::endl;
+    }
+
     // gen data stuff
-    std::ofstream file;
+    /*std::ofstream file;
     file.open(std::to_string(time(NULL)) + ".dat");
     std::vector<rota::RotaLayer *> ges;
     std::map<RotaMap *, float> genDist;
@@ -72,11 +78,7 @@ int main(void) {
         ges.clear();
         genDist.clear();
     }
-    file.close();
-
-    /*for (rota::RotaLayer *layer : *gen.getRota()) {
-        std::cout << layer->getName() << std::endl;
-    }*/
+    file.close();*/
 
     return 0;
 }
