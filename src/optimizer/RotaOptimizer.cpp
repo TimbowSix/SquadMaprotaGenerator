@@ -349,6 +349,7 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
                 state_buffer = this->GenerateNeighbour(state, 1, 1, diffList, state);
             }
 
+            this->T = this->UpdateTemperature(this->T0, 0.011, i+1);
             if(debug){
                 file << current_fit_val << std::endl;
                 std::cout << "accepted_state_fit_value: " << current_fit_val << std::endl;
