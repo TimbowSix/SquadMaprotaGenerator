@@ -198,7 +198,7 @@ namespace optimizer
         float agentmax = 0.0;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
-            if(grid_fitness[i]>0.00000000001){
+            // if(grid_fitness[i]>0.00000000001){
                 agentmax = abs(newstate(i,0) - agent(i,0));
                 random = newstate(i,0);
                 // factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.01);//pow(grid_fitness[i],exponent);
@@ -214,7 +214,7 @@ namespace optimizer
                 // std::cout << "===================" << std::endl;
                 // std::cout << "Factor: " << factor_const << std::endl;
                 // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
-            }
+            // }
             // else{
             //     std::cout << "HOLD POSITION " << i << std::endl;
             // }
@@ -336,7 +336,7 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
             time_t start, end;
             time(&start);
         }
-        
+
         boost::numeric::ublas::matrix<float> state(this->GenerateSeed(this->stateBaseSize));
         boost::numeric::ublas::vector<float> evolved_state(this->stateBaseSize);
         std::vector<float> diffList(this->stateBaseSize);
