@@ -36,6 +36,15 @@ namespace optimizer
         mem[0](0) = 1.0;
         return mem;
     }
+
+    boost::numeric::ublas::vector<float> ToBoost(std::vector<float> v_in){
+        boost::numeric::ublas::vector<float> v_out(v_in.size());
+        for(unsigned i=0; i<v_out.size(); i++){
+            v_out(i) = v_out[i];
+        }
+        return v_out;
+    }
+
     RotaOptimizer::RotaOptimizer(){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
@@ -57,6 +66,7 @@ namespace optimizer
         this->stateBaseSize = config.stateBaseSize;
         this->memorykernel = initMem(kernelSize, stateBaseSize);
         this->clusters = config.clusters;
+        comparisonState = ToBoost(config.mapProbabilities);
     };
     RotaOptimizer::~RotaOptimizer(){
 
@@ -188,7 +198,7 @@ namespace optimizer
         float agentmax = 0.0;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
-            if(grid_fitness[i]>0.000000001){
+            if(grid_fitness[i]>0.00000000001){
                 agentmax = abs(newstate(i,0) - agent(i,0));
                 random = newstate(i,0);
                 // factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.01);//pow(grid_fitness[i],exponent);
@@ -205,9 +215,9 @@ namespace optimizer
                 // std::cout << "Factor: " << factor_const << std::endl;
                 // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
             }
-            else{
-                std::cout << "HOLD POSITION " << i << std::endl;
-            }
+            // else{
+            //     std::cout << "HOLD POSITION " << i << std::endl;
+            // }
         }
         return MatrixToProbabilityMatrix(newstate);
     };

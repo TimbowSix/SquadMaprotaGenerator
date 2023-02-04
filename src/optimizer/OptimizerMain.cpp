@@ -78,6 +78,7 @@ int main(void){
 
     optimizer::RotaOptimizer opt(config);
 
+    print_vector(opt.comparisonState);
     // Generate a seeding-state
     float current_fit_val = __FLT_MAX__;
     float fit_buffer = 0.0;
@@ -88,29 +89,29 @@ int main(void){
 
     // boost::numeric::ublas::matrix<float> state = opt.GenerateSeed(10);
     boost::numeric::ublas::matrix<float> state_buffer(agents[0]);
-    opt.comparisonState = boost::numeric::ublas::vector<float>(22);
-    opt.comparisonState(0) = 0.000331373;
-    opt.comparisonState(1) = 0.019808;
-    opt.comparisonState(2) = 0.0793753;
-    opt.comparisonState(3) = 0.0855731;
-    opt.comparisonState(4) = 0.0303223;
-    opt.comparisonState(5) = 0.0581194;
-    opt.comparisonState(6) = 0.0247349;
-    opt.comparisonState(7) = 0.0852877;
-    opt.comparisonState(8) = 0.085538;
-    opt.comparisonState(9) = 0.0843088;
-    opt.comparisonState(10) = 0.00304394;
-    opt.comparisonState(11) = 0.0459895;
-    opt.comparisonState(12) = 0.0221827;
-    opt.comparisonState(13) = 0.0156107;
-    opt.comparisonState(14) = 0.000810466;
-    opt.comparisonState(15) = 0.00351631;
-    opt.comparisonState(16) = 0.0843088;
-    opt.comparisonState(17) = 0.0855718;
-    opt.comparisonState(18) = 0.0793753;
-    opt.comparisonState(19) = 0.000810466;
-    opt.comparisonState(20) = 0.019808;
-    opt.comparisonState(21) = 0.085573;
+    // opt.comparisonState = boost::numeric::ublas::vector<float>(22);
+    // opt.comparisonState(0) = 0.000331373;
+    // opt.comparisonState(1) = 0.019808;
+    // opt.comparisonState(2) = 0.0793753;
+    // opt.comparisonState(3) = 0.0855731;
+    // opt.comparisonState(4) = 0.0303223;
+    // opt.comparisonState(5) = 0.0581194;
+    // opt.comparisonState(6) = 0.0247349;
+    // opt.comparisonState(7) = 0.0852877;
+    // opt.comparisonState(8) = 0.085538;
+    // opt.comparisonState(9) = 0.0843088;
+    // opt.comparisonState(10) = 0.00304394;
+    // opt.comparisonState(11) = 0.0459895;
+    // opt.comparisonState(12) = 0.0221827;
+    // opt.comparisonState(13) = 0.0156107;
+    // opt.comparisonState(14) = 0.000810466;
+    // opt.comparisonState(15) = 0.00351631;
+    // opt.comparisonState(16) = 0.0843088;
+    // opt.comparisonState(17) = 0.0855718;
+    // opt.comparisonState(18) = 0.0793753;
+    // opt.comparisonState(19) = 0.000810466;
+    // opt.comparisonState(20) = 0.019808;
+    // opt.comparisonState(21) = 0.085573;
     for(unsigned i=0; i<number_agents; i++){
         agents[i] = opt.GenerateSeed(22);
     }
