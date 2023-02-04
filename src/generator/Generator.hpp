@@ -225,15 +225,19 @@ class Generator {
 
     /**
      * @brief set map weights for all maps and modes
+     *
+     * @param data data from optimizer
+     * @param mode for with mode are the new MapWeights
      */
-    void setMapWeights(OptData *data);
+    void setMapWeights(OptDataOut *data, RotaMode *mode);
 
     /**
      * @brief creates Data for Optimizer
      *
-     * @param empty OptData to fill
+     * @param data OptData to fill
+     * @param mode
      */
-    void packOptData(OptData *data);
+    void packOptData(OptDataIn *data, RotaMode *mode);
 
     // getter & setter
     u_int32_t getSeed();

@@ -48,9 +48,12 @@ Generator::Generator(RotaConfig *config) {
             it++;
         }
     }
+    int i = 0;
     parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     for (auto const &[key, map] : this->mapsByName) {
         this->maps.push_back(map);
+        map->setId(i);
+        i++;
 
         for (RotaMode *m : *(map->getModes())) {
             // init modeToMapList
@@ -433,20 +436,21 @@ bool Generator::mapsAvailable(RotaMode *mode) {
     return (this->availableLayerMaps[mode] > 0);
 }
 
-void Generator::setMapWeights(OptData *data) {
-    for (RotaMap *map : this->maps) {
-        for (RotaMode *mode : *map->getModes()) {
-            map->setMapWeight(mode, data->data.at(map).at(mode));
-        }
+void Generator::setMapWeights(OptDataOut *data, RotaMode *mode) {
+    for (int i = 0; i < this->maps.size(); i++) {
+        assert(this->maps.at(i)->getId() == i);
+        this->maps.at(i)->setMapWeight(mode, data->mapWeights.at(i));
     }
 }
 
-void Generator::packOptData(OptData *data) {
-    for (RotaMap *map : this->maps) {
-        for (RotaMode *mode : *map->getModes()) {
-            data->data[map][mode] = map->getMapVoteWeight(mode);
+void Generator::packOptData(OptDataIn *data, RotaMode *mode) {
+    for (int i = 0; i < this->maps.size(); i++) {
+        data->mapDist.push_back(this->maps.at(i)->getMapVoteWeight(mode));
+        for (RotaMap *map : *this->maps.at(i)->getNeighbor()) {
+            data->clusters[i].push_back(map->getId());
         }
     }
+    normalize(&data->mapDist);
 }
 
 u_int32_t Generator::getSeed() { return this->seed; }

@@ -1,12 +1,16 @@
 
 #include <boost/json/array.hpp>
-#define CPPHTTPLIB_OPENSSL_SUPPORT
+//#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <boost/json.hpp>
 #include <httplib.h>
 #include <iostream>
 
 #include <GlobalConfig.hpp>
 
+#include "Generator.hpp"
+#include "OptimizerConfig.hpp"
+#include "OptimizerData.hpp"
+#include "RotaOptimizer.hpp"
 #include "RotaServer.hpp"
 
 int main(int ac, char **av) {
@@ -17,11 +21,32 @@ int main(int ac, char **av) {
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << std::endl;
 
+    std::string path = std::string(CONFIG_PATH) + "config.json";
+    rota::RotaConfig conf(path);
+    rota::Generator gen(&conf);
+    time_t t = time(nullptr);
+    std::tm lastOptRun = *std::localtime(&t);
+
+    std::cout << lastOptRun.tm_hour << std::endl;
+
+    // run optimizer
+    OptDataIn dataIn;
+    OptDataOut dataOut;
+
+    gen.packOptData(&dataIn, gen.getModes()->at("RAAS"));
+
+    optimizer::OptimizerConfig optConfig(dataIn.mapDist.size(),
+                                         conf.get_biom_spacing(),
+                                         dataIn.clusters, dataIn.mapDist);
+
+    optimizer::RotaOptimizer opt(optConfig);
+    opt.Run();
+
     // need static generator object to check if a layer exists
 
     // basic Server
     // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
-    httplib::Server svr;
+    /*httplib::Server svr;
     svr.Get(
         "/getRota", [](const httplib::Request &req, httplib::Response &res) {
             if (req.has_param("pastRota")) {
@@ -45,5 +70,5 @@ int main(int ac, char **av) {
             }
         });
 
-    svr.listen("172.30.249.128", 1337); // ip der linux sub machine
+    svr.listen("172.30.249.128", 1337); // ip der linux sub machine*/
 }

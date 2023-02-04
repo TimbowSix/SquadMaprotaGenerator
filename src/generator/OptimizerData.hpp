@@ -14,8 +14,14 @@
 #include "RotaMap.hpp"
 #include "RotaMode.hpp"
 
-typedef struct OptData OptData;
+typedef struct OptDataIn OptDataIn;
+typedef struct OptDataOut OptDataOut;
 
-struct OptData {
-    std::map<rota::RotaMap *, std::map<rota::RotaMode *, float>> data;
+struct OptDataIn {
+    std::vector<float> mapDist;
+    std::map<int, std::vector<int>> clusters;
+};
+
+struct OptDataOut {
+    std::vector<float> mapWeights;
 };

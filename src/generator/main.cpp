@@ -8,6 +8,7 @@
 
 #include "Generator.hpp"
 #include "GlobalConfig.hpp"
+#include "OptimizerData.hpp"
 #include "RotaConfig.hpp"
 #include "RotaLayer.hpp"
 #include "utils.hpp"

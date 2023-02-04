@@ -21,6 +21,7 @@ namespace rota {
 
 class RotaMap {
   private:
+    int id;
     std::string name;
     std::vector<RotaLayer *> layers;
     std::vector<RotaMode *> modes;
@@ -191,6 +192,8 @@ class RotaMap {
     std::vector<RotaMap *> *getNeighbor();
     int getCurrLockTime();
     std::map<RotaMode *, int> *getAvailableLayers();
+    int getId();
+    void setId(int id);
 
     void setSigmoidValues(float mapVoteSlope, float mapVoteShift,
                           float layerVoteSlope, float layerVoteShift);
