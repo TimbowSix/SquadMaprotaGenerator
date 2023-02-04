@@ -52,8 +52,6 @@ Generator::Generator(RotaConfig *config) {
     parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
     for (auto const &[key, map] : this->mapsByName) {
         this->maps.push_back(map);
-        map->setId(i);
-        i++;
 
         for (RotaMode *m : *(map->getModes())) {
             // init modeToMapList
@@ -65,6 +63,15 @@ Generator::Generator(RotaConfig *config) {
             } else {
                 this->availableLayerMaps[m]++;
             }
+        }
+    }
+
+    // inti ids
+    for (auto const &x : this->modeToMapList) {
+        int i = 0;
+        for (RotaMap *map : x.second) {
+            map->setId(i, this->modes.at(x.first));
+            i++;
         }
     }
 
@@ -437,17 +444,34 @@ bool Generator::mapsAvailable(RotaMode *mode) {
 }
 
 void Generator::setMapWeights(OptDataOut *data, RotaMode *mode) {
-    for (int i = 0; i < this->maps.size(); i++) {
-        assert(this->maps.at(i)->getId() == i);
-        this->maps.at(i)->setMapWeight(mode, data->mapWeights.at(i));
+    int i = 0;
+    for (RotaMap *m : this->maps) {
+        if (m->hasMode(mode)) {
+            assert(m->getId(mode) == i);
+
+            for (RotaMap *map : this->maps) {
+                if (map->getId(mode) == i) {
+                    map->setMapWeight(mode, data->mapWeights.at(i));
+                    break;
+                }
+            }
+            i++;
+        }
     }
 }
 
 void Generator::packOptData(OptDataIn *data, RotaMode *mode) {
-    for (int i = 0; i < this->maps.size(); i++) {
-        data->mapDist.push_back(this->maps.at(i)->getMapVoteWeight(mode));
-        for (RotaMap *map : *this->maps.at(i)->getNeighbor()) {
-            data->clusters[i].push_back(map->getId());
+    int i = 0;
+
+    for (RotaMap *m : this->maps) {
+        if (m->hasMode(mode)) {
+            data->mapDist.push_back(m->getMapVoteWeight(mode));
+            for (RotaMap *map : *m->getNeighbor()) {
+                if (map->hasMode(mode)) {
+                    data->clusters[i].push_back(map->getId(mode));
+                }
+            }
+            i++;
         }
     }
     normalize(&data->mapDist);

@@ -230,5 +230,5 @@ void RotaMap::setMapWeight(RotaMode *mode, float weight) {
 std::map<RotaMode *, int> *RotaMap::getAvailableLayers() {
     return &this->availableLayers;
 }
-int RotaMap::getId() { return this->id; }
-void RotaMap::setId(int id) { this->id = id; }
+int RotaMap::getId(RotaMode *mode) { return this->ids.at(mode); }
+void RotaMap::setId(int id, RotaMode *mode) { this->ids[mode] = id; }

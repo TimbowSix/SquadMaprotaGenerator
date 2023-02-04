@@ -21,26 +21,7 @@ int main(int ac, char **av) {
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << std::endl;
 
-    std::string path = std::string(CONFIG_PATH) + "config.json";
-    rota::RotaConfig conf(path);
-    rota::Generator gen(&conf);
-    time_t t = time(nullptr);
-    std::tm lastOptRun = *std::localtime(&t);
-
-    std::cout << lastOptRun.tm_hour << std::endl;
-
-    // run optimizer
-    OptDataIn dataIn;
-    OptDataOut dataOut;
-
-    gen.packOptData(&dataIn, gen.getModes()->at("RAAS"));
-
-    optimizer::OptimizerConfig optConfig(dataIn.mapDist.size(),
-                                         conf.get_biom_spacing(),
-                                         dataIn.clusters, dataIn.mapDist);
-
-    optimizer::RotaOptimizer opt(optConfig);
-    opt.Run();
+    rota::Generator *gen = initialize();
 
     // need static generator object to check if a layer exists
 
@@ -71,4 +52,30 @@ int main(int ac, char **av) {
         });
 
     svr.listen("172.30.249.128", 1337); // ip der linux sub machine*/
+}
+
+rota::Generator *initialize() {
+    std::string path = std::string(CONFIG_PATH) + "config.json";
+    rota::RotaConfig conf(path);
+    rota::Generator *gen = new rota::Generator(&conf);
+    time_t t = time(nullptr);
+    std::tm lastOptRun = *std::localtime(&t);
+
+    std::cout << lastOptRun.tm_hour << std::endl;
+
+    // run optimizer
+    OptDataIn dataIn;
+    OptDataOut dataOut;
+
+    gen->packOptData(&dataIn, gen->getModes()->at("Invasion"));
+
+    optimizer::OptimizerConfig optConfig(dataIn.mapDist.size(),
+                                         conf.get_biom_spacing(),
+                                         dataIn.clusters, dataIn.mapDist);
+
+    optimizer::RotaOptimizer opt(optConfig);
+    dataOut.mapWeights = opt.Run();
+    gen->setMapWeights(&dataOut, gen->getModes()->at("Invasion"));
+
+    return gen;
 }
