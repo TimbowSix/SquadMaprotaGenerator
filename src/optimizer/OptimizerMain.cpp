@@ -118,7 +118,7 @@ int main(void){
     print_matrix(agents[0]);
     std::ofstream file;
     file.open("data.dat");
-    bool DEBUG = false;
+    bool DEBUG = true;
     int agent_index = 0;
     std::random_device os_seed;             // seed used by the mersenne-twister-engine
     const uint_least32_t seed = os_seed();  
