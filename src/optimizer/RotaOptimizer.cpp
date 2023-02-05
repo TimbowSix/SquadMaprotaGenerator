@@ -8,6 +8,7 @@
 
 namespace optimizer
 {
+    /// ===== FOR DEBUGGING =====
     void print_matrix(boost::numeric::ublas::matrix<float> mat){
         std::cout << "=====MATRIX=====" << std::endl;    
         for(unsigned j=0; j<mat.size1(); j++){
@@ -28,6 +29,12 @@ namespace optimizer
         }
     }
 
+    void print_vector(boost::numeric::ublas::vector<float> vec){
+    for(unsigned i=0; i<vec.size(); i++){
+        std::cout << vec(i) << std::endl;
+    }
+}
+    /// ===== FOR DEBUGGING =====
     std::vector<boost::numeric::ublas::vector<float>> initMem(int dim, int baseSize){
         std::vector<boost::numeric::ublas::vector<float>> mem(dim);
         for(unsigned k=0; k<dim; k++){
@@ -39,15 +46,7 @@ namespace optimizer
         mem[0](0) = 1.0;
         return mem;
     }
-
-    boost::numeric::ublas::vector<float> ToBoost(std::vector<float> v_in){
-        boost::numeric::ublas::vector<float> v_out(v_in.size());
-        for(unsigned i=0; i<v_out.size(); i++){
-            v_out(i) = v_in[i];
-        }
-        return v_out;
-    }
-
+    
     RotaOptimizer::RotaOptimizer(){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
@@ -71,11 +70,17 @@ namespace optimizer
         this->clusters = config.clusters;
         this->comparisonState = ToBoost(config.mapProbabilities);
     };
-    RotaOptimizer::~RotaOptimizer(){
+    RotaOptimizer::~RotaOptimizer(){};
 
-    };
-
-    void SetRow(boost::numeric::ublas::matrix<float>& mat, int rowindex, float value){
+    boost::numeric::ublas::vector<float> RotaOptimizer::ToBoost(std::vector<float> v_in){
+        boost::numeric::ublas::vector<float> v_out(v_in.size());
+        for(unsigned i=0; i<v_out.size(); i++){
+            v_out(i) = v_in[i];
+        }
+        return v_out;
+    }
+    
+    void RotaOptimizer::SetRow(boost::numeric::ublas::matrix<float>& mat, int rowindex, float value){
         for(unsigned i=0; i < mat.size1(); i++)
             for(unsigned j=0; j < mat.size2(); j++)
                 if(i==rowindex){
@@ -91,6 +96,9 @@ namespace optimizer
         float f = 0.0;
         float x = this->clusters[mapIndex].size();
         float y = this->comparisonState(mapIndex);
+        // This is a fourth-order polynomial fit for weight=f(#neighbours, p_map)
+        // The parameters where obtained using MATLAB, but you can use any fitting tool you like
+        // It is of upmost importance to do it this way to obtain a suitable starting point for the optimizer
         f =  -0.156
             +0.1269*x
             +29.99*y
@@ -114,22 +122,11 @@ namespace optimizer
         boost::numeric::ublas::matrix<float> mat (dim, dim);
         float f = 0;
         for (unsigned i = 0; i < mat.size1 (); ++ i){
-            //SetRow(mat, i, distribute(this->generator));
             f=this->WeightFit(i);
             SetRow(mat, i, f);
         }
         return MatrixToProbabilityMatrix(mat);
     }
-
-    float RotaOptimizer::StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2){
-        float sum = 0.0;
-        // check dimension match
-        for (unsigned i = 0; i < state1.size(); ++ i)
-            // take only the first column and calculate the difference squared
-            // this is possible for EVOLVED STATES only because the columns of the initial matrices converge to the long-term probabilities
-            sum += pow(state1(i)-state2(i), 2);
-        return sum;
-    };
 
     float RotaOptimizer::StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2, std::vector<float>& list){
         float sum = 0.0;
@@ -158,53 +155,15 @@ namespace optimizer
         return mat;
     };
 
-    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T){
-        std::uniform_real_distribution<> distribute(0,s);
-        float random;
-        boost::numeric::ublas::matrix<float> newstate(state);
-        for(unsigned i=0; i < newstate.size1(); i++){
-            for(unsigned j=0; j < newstate.size2(); j++){
-                random = distribute(this->generator);
-                newstate(i,0) += random*s;
-                // All entries must be positive or zero to be a probability matrix
-                if(newstate(i,0) < 0.0){
-                    newstate(i,0) -= 2*random*s;
-                }
-            }
-        }
-        return MatrixToProbabilityMatrix(newstate);
-    };
-
-    boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness){
-        std::uniform_real_distribution<> distribute(0,1);
-        float exponent = 1.0/16.0;
-        float random;
-        float factor_const = 1000000;
-        boost::numeric::ublas::matrix<float> newstate(state);
-        for(unsigned i=0; i < newstate.size1(); i++){
-            for(unsigned j=0; j < newstate.size2(); j++){
-                random = distribute(this->generator)*s*pow(grid_fitness[i],exponent)*factor_const;
-                newstate(i,j) += random;
-                // All entries must be positive or zero to be a probability matrix
-                if(newstate(i,j) < 0.0){
-                    newstate(i,j) -= 2*random;
-                }
-            }
-        }
-        return MatrixToProbabilityMatrix(newstate);
-    };
-
-
     boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent){
         std::uniform_real_distribution<> distribute(-1,1);
-        float exponent = 1.0/16.0;
+        // float exponent = 1.0/16.0;
         float random;
-        float factor_const = 0.00003;//100000000;
-        float agentmax = 1.0;
+        float factor_const = 0.00003;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
             random = newstate(i,0);
-            random = distribute(this->generator)*s*factor_const*agentmax;
+            random = distribute(this->generator)*s*factor_const;
             newstate(i,0) += random;
             
             // All entries must be positive or zero to be a probability matrix
@@ -216,14 +175,6 @@ namespace optimizer
             }
         }
         return MatrixToProbabilityMatrix(newstate);
-    };
-
-    void RotaOptimizer::SetRowZero(boost::numeric::ublas::matrix<float>& mat, int rowindex){
-        for(unsigned i=0; i < mat.size1(); i++)
-            for(unsigned j=0; j < mat.size2(); j++)
-                if(i==rowindex){
-                    mat(i,j) = 0.0;
-                }
     };
 
     void RotaOptimizer::UpdateMemoryKernel(boost::numeric::ublas::vector<float>& evolvedState, std::vector<boost::numeric::ublas::vector<float>>& kernel){
@@ -241,7 +192,7 @@ namespace optimizer
         }
     };
 
-    void choose_vector(boost::numeric::ublas::vector<float>& v, float r){
+    void RotaOptimizer::choose_vector(boost::numeric::ublas::vector<float>& v, float r){
         float temp = 0.0;
         int index = 0;
         bool found = false;
@@ -256,11 +207,7 @@ namespace optimizer
             }
         }
     }
-void print_vector(boost::numeric::ublas::vector<float> vec){
-    for(unsigned i=0; i<vec.size(); i++){
-        std::cout << vec(i) << std::endl;
-    }
-}
+
     boost::numeric::ublas::vector<float> RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float>& state){
         std::uniform_real_distribution<float> distribute(0,1); 
         boost::numeric::ublas::matrix<float> temp(state);
@@ -277,28 +224,21 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
                 trafo(i,j) = 0.0;
 
         float factor = 0.0;
-        if(kernelSize == 0){// no memory kernel, only matmul necessary for state evolution
-            // for(unsigned i=0; i<this->maxEvolveSteps; i++)
-            //     temp = boost::numeric::ublas::prod(state, temp);
-        }
-        else    // finite, non-vanishing memory kernel
-        {
-            for(unsigned i=0; i<this->maxEvolveSteps; i++){
-                temp = state;
-                for(unsigned j=0; j<kernelSize; j++){
-                    for(unsigned k=0; k<stateBaseSize; k++){
-                        if(memorykernel[j][k] != 0.0){
-                            for(unsigned h=0; h<clusters[k].size(); h++)
-                                SetRowZero(temp, clusters[k][h]);
-                        }
+        for(unsigned i=0; i<this->maxEvolveSteps; i++){
+            temp = state;
+            for(unsigned j=0; j<kernelSize; j++){
+                for(unsigned k=0; k<stateBaseSize; k++){
+                    if(memorykernel[j][k] != 0.0){
+                        for(unsigned h=0; h<clusters[k].size(); h++)
+                            this->SetRow(temp, clusters[k][h], 0.0);
                     }
                 }
-                temp = MatrixToProbabilityMatrix(temp);
-                copy_vector = boost::numeric::ublas::prod(temp, memorykernel[0]);
-                choose_vector(copy_vector, distribute(this->generator));
-                UpdateMemoryKernel(copy_vector, memorykernel);
-                count_vector += copy_vector;
             }
+            temp = MatrixToProbabilityMatrix(temp);
+            copy_vector = boost::numeric::ublas::prod(temp, memorykernel[0]);
+            choose_vector(copy_vector, distribute(this->generator));
+            UpdateMemoryKernel(copy_vector, memorykernel);
+            count_vector += copy_vector;
         }
         return count_vector*(1/((float)maxEvolveSteps));
     };
@@ -307,16 +247,6 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
         std::uniform_real_distribution<float> distribute(0,1); 
 
         return fitvalue_difference < 0 || exp(-fitvalue_difference/this->T) > distribute(this->generator);
-    };
-
-    boost::numeric::ublas::matrix<float> RotaOptimizer::ComparisonState_FromProbabilities(std::vector<float> probabilities){
-        boost::numeric::ublas::matrix<float> mat(probabilities.size(),probabilities.size());
-        for(unsigned i=0; i<mat.size2(); i++){
-            for(unsigned j=0; j<probabilities.size(); j++){
-                mat(j,i) = probabilities[j];
-            }
-        }
-        return mat;
     };
 
     std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in){
