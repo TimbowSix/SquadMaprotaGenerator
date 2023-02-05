@@ -35,7 +35,7 @@ namespace optimizer
     }
 }
     /// ===== FOR DEBUGGING =====
-    
+
     std::vector<boost::numeric::ublas::vector<float>> initMem(int dim, int baseSize){
         std::vector<boost::numeric::ublas::vector<float>> mem(dim);
         for(unsigned k=0; k<dim; k++){
@@ -280,8 +280,6 @@ namespace optimizer
 
         for(unsigned i=0; i<this->iterationMax; i++){
             evolved_state = this->Evolve(state_buffer);
-            print_matrix(state_buffer);
-            print_vector(evolved_state);
             fit_buffer = this->StateDifference(evolved_state, this->comparisonState, diffList);
             if(debug){
                 std::cout << "fit_value: " << fit_buffer << std::endl;
