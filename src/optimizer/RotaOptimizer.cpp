@@ -35,6 +35,7 @@ namespace optimizer
     }
 }
     /// ===== FOR DEBUGGING =====
+    
     std::vector<boost::numeric::ublas::vector<float>> initMem(int dim, int baseSize){
         std::vector<boost::numeric::ublas::vector<float>> mem(dim);
         for(unsigned k=0; k<dim; k++){
