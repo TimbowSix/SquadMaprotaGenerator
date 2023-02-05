@@ -12,7 +12,7 @@ find_package(
 add_subdirectory(src)
 add_subdirectory(external)
 
-install(FILES config.json data/bioms.json DESTINATION etc/maprota)
+install(FILES config.json data/bioms.json DESTINATION /etc/maprota)
 
 include(InstallRequiredSystemLibraries)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)

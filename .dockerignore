@@ -2,7 +2,6 @@
 .github/
 .gitignore
 .gitattributes
-node_modules/
 doku/
 output/
 build/
