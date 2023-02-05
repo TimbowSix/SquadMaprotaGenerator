@@ -6,33 +6,12 @@
 
 Weitere Informationen findet man in der [Dokumentation](doku/main.pdf).
 
-## Installieren
-
-TODO
-
 ## Nutzung
 
-Die globale Config ist unter `/etc/maprota/config.json` zu finden.
-
-Eine einzele Maprota lässt sich nach dem installieren mit
-``` shell
-SquadMaprota
-```
-erstellen.
-
-Der API Server lässt sich mit
-``` shell
-SquadMaprotaServer
-```
-start
-
-
 Als Container ausführen:
-Noch nicht verfügbar ....
 ```bash
 docker-compose up
 ```
-
 
 ## Api Schnitelle
 
@@ -56,9 +35,16 @@ cd build
 cmake ..
 make
 # installieren
-make install
+sudo make install
 ```
 
+Nach der Installation kann die Config unter  `/etc/maprota/config.json` angepasst werden.
+
+Der API Server lässt sich dann mit
+``` shell
+SquadMaprotaServer
+```
+start.
 
 ----
 # Admin Manual
@@ -77,7 +63,7 @@ eine Rota aber auch ohne die Layer zu Updaten generieren.
 
 ## Einstellparameter Übersicht
 
-hier werden die Einstellparameter in der `data/config.json` und `data/bioms.json` erklärt
+hier werden die Einstellparameter in der `config.json` und `bioms.json` erklärt
 
 | Parameter           | Type   | Beschreibung                                                                                                                                                                          | Default                              |
 | ------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
@@ -91,7 +77,7 @@ hier werden die Einstellparameter in der `data/config.json` und `data/bioms.json
 | biom_spacing        | int    | wie lange ein Map Cluster gelocket wird                                                                                                                                               | 4                                    |
 | layer_locktime      | int    | wie lange ein Layer gelocket wird                                                                                                                                                     | 30                                   |
 | max_same_team       | int    | wie lange eine Faktion hintereinander gespielt werden darf                                                                                                                            | 2                                    |
-| min_biom_distance   | float  | Map Cluster gebene Abstand                                                                                                                                                            | 0.4                                  |
+| min_biom_distance   | float  | Map Cluster gebene Abstand                                                                                                                                                            | 0.35                                  |
 | mapvote_slope       | float  | Slope der Mapvote Sigmoidfunktion                                                                                                                                                     | 0.15                                 |
 | mapvote_shift       | float  | Shift der Mapvote Sigmoidfunktion                                                                                                                                                     | 0.0                                  |
 | layervote_slope     | float  | Slope der Layervote Sigmoidfunktion                                                                                                                                                   | 0.2                                  |
@@ -103,7 +89,7 @@ hier werden die Einstellparameter in der `data/config.json` und `data/bioms.json
 
 ### mode_distribution [dict]
 
-Struktur:
+**Struktur:**
 
 **pools** [dict]
 Beinhaltet mindestens den **main** pool und es können beliebige pools hinzugefügt werden
@@ -140,9 +126,9 @@ kommen dürfen oder sie sich abwechseln müssen.
 
 ## Neue Map einfügen
 
-Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden. \
-Außerdem muss die Map in der Config unter "maps" hinzugefügt werden.\
-Beipsiel Struktur der `bioms.json': \
+Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden. 
+Außerdem muss die Map in der Config unter "maps" hinzugefügt werden.
+Beipsiel Struktur der `bioms.json` :
 
 ```json
 {
@@ -164,7 +150,7 @@ Jede Map hat 9 Biom Parameter, jeder Parameter bildet einen float wert in dem Bi
 -   Felder
 
 Jeder Map wird wird für Jedes Biom dessen Anteil mit einem Wert zwischen 0 und 1 zugewiesen.
-Es handelt sich hierbei _nicht_ um eine Prozentuale Aufteilung der Map, die Summe der Biomwerte kann also 1 problemlos überschreiten (s.o. Beispielwerte). \
+Es handelt sich hierbei _nicht_ um eine Prozentuale Aufteilung der Map, die Summe der Biomwerte kann also 1 problemlos überschreiten (s.o. Beispielwerte).
 Dabei sollte jedoch nicht nur der flächenmäßige Anteil sondern auch der Anteil am Spielgeschehen berücksichtigt werden.
 Beispielsweise hat die Map 'AlBasrah' von der Fläche nur einen verhältnismäßig kleinen Stadt-Anteil.
 Dieser hat jedoch (z.B. durch die Anordnung der Flaggenpunkte) einen starken einfluss auf das Spielgeschehen,
@@ -172,15 +158,15 @@ dementsprechend sollte hier ein höherer Stadt-Anteil gewählt werden.
 
 ### Mapgröße
 
-Die Mapgröße ist bei den Biomparametern ein Sonderfall.\
-Bei diesem handelt es sich nicht um den Anteil an der Map, sondern um größe der Map in km².\
+Die Mapgröße ist bei den Biomparametern ein Sonderfall.
+Bei diesem handelt es sich nicht um den Anteil an der Map, sondern um größe der Map in km².
 Hierbei ist jedoch die tatsächliche Größe des Spielbereichs zu beachten,
 während die offiziellen Angaben von OWI die gesamte Mapgröße einbeziehen. Diese Unterscheiden sich zum Teil stark.
 Ein prominentes Beispiel hierbei wäre die Map Chora:
 
 <center>
-    <img src="./doku/manual/img/chora_example.png" alt="drawing" width="400"/>
+<img src="./doku/manual/img/chora_example.png" alt="drawing" width="400"/>
 </center>
-Der tatsächliche Spielbereich, hier rot umrandet, nimmt nur einen Bruchteil der gesamten Map ein.\
+Der tatsächliche Spielbereich, hier rot umrandet, nimmt nur einen Bruchteil der gesamten Map ein.
 Die offiziell angegebene Größe bezieht jedoch die gesamte Map mit ein, was Chora zu einer der größten Karten im Spiel machen würde.
 Das ergibt im Sinne dieser Einteilung natürlich wenig Sinn.
