@@ -19,6 +19,7 @@ namespace optimizer
             std::mt19937 generator;
             std::mt19937* generator_ptr;
             std::vector<boost::numeric::ublas::vector<float>> memorykernel;
+            float WeightFit(int mapIndex);
 
             /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
             /// @param mat 

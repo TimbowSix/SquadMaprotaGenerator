@@ -87,8 +87,10 @@ namespace optimizer
         return T0*exp(-s*i);
     }
 
-    float WeightFit(float x,float y){
+    float RotaOptimizer::WeightFit(int mapIndex){
         float f = 0.0;
+        float x = this->clusters[mapIndex].size();
+        float y = this->comparisonState(mapIndex);
         f =  -0.156
             +0.1269*x
             +29.99*y
@@ -113,7 +115,7 @@ namespace optimizer
         float f = 0;
         for (unsigned i = 0; i < mat.size1 (); ++ i){
             //SetRow(mat, i, distribute(this->generator));
-            f=WeightFit(clusters[i].size(),comparisonState(i));
+            f=this->WeightFit(i);
             SetRow(mat, i, f);
         }
         return MatrixToProbabilityMatrix(mat);
