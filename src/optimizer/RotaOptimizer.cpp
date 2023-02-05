@@ -32,6 +32,9 @@ namespace optimizer
         std::vector<boost::numeric::ublas::vector<float>> mem(dim);
         for(unsigned k=0; k<dim; k++){
             mem[k] = boost::numeric::ublas::vector<float>(baseSize);
+            for(unsigned j=0; j<baseSize; j++){
+                mem[k](j) = 0.0;
+            }
         }
         mem[0](0) = 1.0;
         return mem;
@@ -40,7 +43,7 @@ namespace optimizer
     boost::numeric::ublas::vector<float> ToBoost(std::vector<float> v_in){
         boost::numeric::ublas::vector<float> v_out(v_in.size());
         for(unsigned i=0; i<v_out.size(); i++){
-            v_out(i) = v_out[i];
+            v_out(i) = v_in[i];
         }
         return v_out;
     }
@@ -51,7 +54,7 @@ namespace optimizer
 
         this->generator = std::mt19937(seed);            // the generator seeded with the random device
     };
-        
+            
     RotaOptimizer::RotaOptimizer(OptimizerConfig config){
         std::random_device os_seed;             // seed used by the mersenne-twister-engine
         const uint_least32_t seed = os_seed();  
@@ -66,7 +69,7 @@ namespace optimizer
         this->stateBaseSize = config.stateBaseSize;
         this->memorykernel = initMem(kernelSize, stateBaseSize);
         this->clusters = config.clusters;
-        comparisonState = ToBoost(config.mapProbabilities);
+        this->comparisonState = ToBoost(config.mapProbabilities);
     };
     RotaOptimizer::~RotaOptimizer(){
 
@@ -194,30 +197,21 @@ namespace optimizer
         std::uniform_real_distribution<> distribute(-1,1);
         float exponent = 1.0/16.0;
         float random;
-        float factor_const = 0.0003;//100000000;
-        float agentmax = 0.0;
+        float factor_const = 0.00003;//100000000;
+        float agentmax = 1.0;
         boost::numeric::ublas::matrix<float> newstate(state);
         for(unsigned i=0; i < newstate.size1(); i++){
-            // if(grid_fitness[i]>0.00000000001){
-                agentmax = abs(newstate(i,0) - agent(i,0));
-                random = newstate(i,0);
-                // factor_const = atanh(grid_fitness[i]/(*std::max_element(grid_fitness.begin(), grid_fitness.end())) - 0.01);//pow(grid_fitness[i],exponent);
-                random = distribute(this->generator)*s*factor_const*agentmax;
-                newstate(i,0) += random;
-                // All entries must be positive or zero to be a probability matrix
-                if(newstate(i,0) < 0.0){
-                    SetRow(newstate, i, newstate(i,0)-2*random);
-                }
-                else{
-                    SetRow(newstate, i, newstate(i,0));
-                }
-                // std::cout << "===================" << std::endl;
-                // std::cout << "Factor: " << factor_const << std::endl;
-                // std::cout << "diff: " << i << " | " << grid_fitness[i] << std:: endl;
-            // }
-            // else{
-            //     std::cout << "HOLD POSITION " << i << std::endl;
-            // }
+            random = newstate(i,0);
+            random = distribute(this->generator)*s*factor_const*agentmax;
+            newstate(i,0) += random;
+            
+            // All entries must be positive or zero to be a probability matrix
+            if(newstate(i,0) < 0.0){
+                SetRow(newstate, i, newstate(i,0)-2*random);
+            }
+            else{
+                SetRow(newstate, i, newstate(i,0));
+            }
         }
         return MatrixToProbabilityMatrix(newstate);
     };
@@ -353,6 +347,8 @@ void print_vector(boost::numeric::ublas::vector<float> vec){
 
         for(unsigned i=0; i<this->iterationMax; i++){
             evolved_state = this->Evolve(state_buffer);
+            print_matrix(state_buffer);
+            print_vector(evolved_state);
             fit_buffer = this->StateDifference(evolved_state, this->comparisonState, diffList);
             if(debug){
                 std::cout << "fit_value: " << fit_buffer << std::endl;
