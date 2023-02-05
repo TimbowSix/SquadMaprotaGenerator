@@ -8,7 +8,7 @@ namespace optimizer{
     class OptimizerConfig{
         private:
         public:
-            OptimizerConfig(int numberOfMaps, int memoryKernelSize, std::map<int, std::vector<int>> clusters, std::vector<float> mapProbabilities);
+            OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> clusters, std::vector<float> mapProbabilities);
             ~OptimizerConfig();
             float T0;
             int iterationMax;

@@ -74,7 +74,7 @@ int main(void){
             {21, {21, 3, 9}},
             };
 
-    optimizer::OptimizerConfig config(22, 4, clusters, comparisonState);
+    optimizer::OptimizerConfig config(4, clusters, comparisonState);
 
     optimizer::RotaOptimizer opt(config);
 

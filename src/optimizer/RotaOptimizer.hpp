@@ -19,6 +19,10 @@ namespace optimizer
             std::mt19937 generator;
             std::mt19937* generator_ptr;
             std::vector<boost::numeric::ublas::vector<float>> memorykernel;
+            float WeightFit(int mapIndex);
+            void SetRow(boost::numeric::ublas::matrix<float>& mat, int rowindex, float value);
+            boost::numeric::ublas::vector<float> ToBoost(std::vector<float> v_in);
+            void choose_vector(boost::numeric::ublas::vector<float>& v, float r);
 
             /// @brief Transforms a matrix into a probability matrix where each columns entries sum up to one.
             /// @param mat 
@@ -57,14 +61,6 @@ namespace optimizer
                 matrix<float> state2
             Return: float
             */
-            float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2);
-             /*
-            Summary: Metric on the space of states. Returns the distance between two states. Usually called energy
-            Params: 
-                matrix<float> state1 
-                matrix<float> state2
-            Return: float
-            */
             float StateDifference(boost::numeric::ublas::vector<float> state1, boost::numeric::ublas::vector<float> state2, std::vector<float>& list);
             /*
             Summary: Calculates the probability of accepting a state with positive energy difference.
@@ -84,25 +80,7 @@ namespace optimizer
             Return: float
             */
             float UpdateTemperature(float T0, float s, int i);
-            /*
-            Summary: Generates the next state
-            Params:
-                matrix<float> state, current state
-                float s, slope
-                float T, temperature
-            Return: matrix<float>
-            */
-            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T);
-            /*
-            Summary: Generates the next state
-            Params:
-                matrix<float> state, current state
-                float s, slope
-                float T, temperature
-            Return: matrix<float>
-            */
-            boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness);
-            
+
             boost::numeric::ublas::matrix<float> GenerateNeighbour(boost::numeric::ublas::matrix<float> state, float s, float T, std::vector<float> grid_fitness, boost::numeric::ublas::matrix<float>& agent);
 
             /*
