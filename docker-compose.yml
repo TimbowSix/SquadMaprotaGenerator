@@ -1,10 +1,10 @@
 version: "3"
-
 services:
   squad-maprota-generator:
     container_name: squad-maprota-generator
     image: ghcr.io/welovesquad/squadmaprotagenerator:latest
-    restart: "no"
+    ports:
+      - "69247:69247"
+    restart: always
     volumes:
-      - "./output:/home/node/app/output:rw"
-      - "./config.json:/home/node/app/config.json:ro"
+      - "./config.json:/etc/maprota/config.json:ro"

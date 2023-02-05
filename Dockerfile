@@ -16,13 +16,13 @@ COPY --chown=rota:rota . .
 RUN mkdir build && chown -R rota:rota build
 ## install boost
 RUN ./install_boost.sh
-## make rota
-##RUN apt install SquadMaprotaGenerator.deb
+## make/install rota
 
-USER rota
-RUN cd build && cmake ..
+WORKDIR /home/maprota/build
+RUN cmake ..
 RUN make -j$(nproc)
 RUN make install
+USER rota
 
-
+#todo hier noch server aufrufen
 CMD [ "/bin/bash" ]
