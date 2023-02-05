@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir -p build
-
 cd build
 if [ ! -f "boost_1_81_0_rc1.tar.gz" ];
 then
@@ -18,7 +16,7 @@ then
     cd boost_1_81_0
     ./bootstrap.sh --prefix=/usr/
     ./b2
-    sudo ./b2 install
+    ./b2 install
 else
     echo "error checksum"
 fi

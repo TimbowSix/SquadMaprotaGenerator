@@ -1,14 +1,25 @@
 ## prod stage
-FROM node:17-alpine as prod
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-WORKDIR /home/node/app
-USER node
+FROM ubuntu
 
-ARG NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+RUN apt-get update
+RUN apt-get upgrade
 
-COPY --chown=node:node package*.json ./
-RUN npm clean-install && npm cache clean --force
-COPY --chown=node:node . .
 
-CMD [ "node", "main.js" ]
+RUN useradd -d /home/maprota -Um rota
+RUN mkdir -p /home/maprota && chown -R rota:rota /home/maprota
+RUN apt install -y build-essential cmake gcc-multilib libssl-dev wget
+
+WORKDIR /home/maprota
+
+COPY --chown=rota:rota . .
+
+RUN mkdir build && chown -R rota:rota build
+## install boost
+RUN ./install_boost.sh
+## install rota
+##RUN apt install SquadMaprotaGenerator.deb
+
+USER rota
+
+
+CMD [ "/bin/bash" ]

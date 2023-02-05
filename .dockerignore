@@ -5,6 +5,8 @@
 node_modules/
 doku/
 output/
+build/
 *Dockerfile*
 *docker-compose*
 *.md
+*.dat
