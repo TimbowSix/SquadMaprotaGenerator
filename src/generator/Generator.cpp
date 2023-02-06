@@ -504,10 +504,12 @@ void Generator::getState(MemoryColonelState *state) {
     state->lastTeam[1] = this->lastTeam[1];
 }
 
-void Generator::setRandomMapWeights() {
+void Generator::setRandomMapWeights(RotaMode *mode) {
     std::uniform_real_distribution<float> dist(0, 1);
     for (RotaMap *map : this->maps) {
-        map->setMapWeight(this->modes.at("RAAS"), dist(this->rng));
+        if (map->hasMode(mode)) {
+            map->setMapWeight(mode, dist(this->rng));
+        }
     }
 }
 

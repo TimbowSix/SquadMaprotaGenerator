@@ -246,7 +246,7 @@ class Generator {
     /**
      * @brief only for testing
      */
-    void setRandomMapWeights();
+    void setRandomMapWeights(RotaMode *mode);
     std::map<std::string, RotaMode *> *getModes();
 };
 
