@@ -6,10 +6,12 @@
 #include <iostream>
 
 #include <GlobalConfig.hpp>
+#include <vector>
 
 #include "Generator.hpp"
 #include "OptimizerConfig.hpp"
 #include "OptimizerData.hpp"
+#include "RotaMode.hpp"
 #include "RotaOptimizer.hpp"
 #include "RotaServer.hpp"
 
@@ -64,17 +66,49 @@ rota::Generator *initialize() {
     std::cout << lastOptRun.tm_hour << std::endl;
 
     // run optimizer
-    OptDataIn dataIn;
-    OptDataOut dataOut;
+    std::map<rota::RotaMode *, OptDataIn *> dataIn;
+    std::map<rota::RotaMode *, OptDataOut *> dataOut;
+    std::vector<std::thread *> threads;
 
-    gen->packOptData(&dataIn, gen->getModes()->at("Insurgency"));
+    for (auto const &x : *gen->getModes()) {
+        dataIn[x.second] = new OptDataIn;
+        dataOut[x.second] = new OptDataOut;
+    }
 
-    optimizer::OptimizerConfig optConfig(conf.get_biom_spacing(),
-                                         dataIn.clusters, dataIn.mapDist);
+    for (auto const &x : dataIn) {
+        gen->packOptData(x.second, x.first);
+        std::thread *t =
+            new std::thread(&runOpt, x.second, &conf, dataOut[x.first]);
+        threads.push_back(t);
+    }
 
-    optimizer::RotaOptimizer opt(optConfig);
-    dataOut.mapWeights = opt.Run(true);
-    gen->setMapWeights(&dataOut, gen->getModes()->at("Insurgency"));
+    for (std::thread *t : threads) {
+        t->join();
+    }
+
+    for (auto const &x : dataOut) {
+        gen->setMapWeights(x.second, x.first);
+    }
+
+    // aufräumen
+    for (std::thread *t : threads) {
+        delete t;
+    }
+
+    for (auto const &x : dataIn) {
+        delete x.second;
+    }
+
+    for (auto const &x : dataOut) {
+        delete x.second;
+    }
 
     return gen;
+}
+
+void runOpt(OptDataIn *dataIn, rota::RotaConfig *conf, OptDataOut *dataOut) {
+    optimizer::OptimizerConfig optConfig(conf->get_biom_spacing(),
+                                         dataIn->clusters, dataIn->mapDist);
+    optimizer::RotaOptimizer opt(optConfig);
+    dataOut->mapWeights = opt.Run();
 }
