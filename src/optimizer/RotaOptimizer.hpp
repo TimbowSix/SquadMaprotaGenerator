@@ -16,12 +16,12 @@ class RotaOptimizer {
     float slope;
     std::mt19937 generator;
     std::mt19937 *generator_ptr;
-    std::vector<boost::numeric::ublas::vector<float>> memorykernel;
+    std::vector<boost::numeric::ublas::vector<int>> memorykernel;
     float WeightFit(int mapIndex);
     void SetRow(boost::numeric::ublas::matrix<float> &mat, int rowindex,
                 float value);
     boost::numeric::ublas::vector<float> ToBoost(std::vector<float> v_in);
-    void choose_vector(boost::numeric::ublas::vector<float> &v, float r);
+    int choose_vector(boost::numeric::ublas::vector<float> &v, float r);
 
     /// @brief Transforms a matrix into a probability matrix where each columns
     /// entries sum up to one.
@@ -85,8 +85,8 @@ class RotaOptimizer {
     Return: array, the memory kernel
     */
     void UpdateMemoryKernel(
-        boost::numeric::ublas::vector<float> &evolvedState,
-        std::vector<boost::numeric::ublas::vector<float>> &kernel);
+        int index,
+        std::vector<boost::numeric::ublas::vector<int>> &kernel);
     /*
     Summary: Evolves the current state according to some procedure that imitates
     that map rota algorithm Params: matrix<float> state map<int,matrix<float>>

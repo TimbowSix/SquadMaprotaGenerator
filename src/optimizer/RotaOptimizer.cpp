@@ -6,7 +6,7 @@
 
 #include "RotaOptimizer.hpp"
 
-#define DEBUG false
+#define DEBUG true
 
 namespace optimizer {
 /// ===== FOR DEBUGGING =====
@@ -31,22 +31,23 @@ void print_kernel(std::vector<boost::numeric::ublas::vector<float>> kernel) {
 }
 
 void print_vector(boost::numeric::ublas::vector<float> vec) {
+    std::cout << "================" << std::endl;
     for (unsigned i = 0; i < vec.size(); i++) {
         std::cout << vec(i) << std::endl;
     }
 }
 /// ===== FOR DEBUGGING =====
 
-std::vector<boost::numeric::ublas::vector<float>> initMem(int dim,
+std::vector<boost::numeric::ublas::vector<int>> initMem(int dim,
                                                           int baseSize) {
-    std::vector<boost::numeric::ublas::vector<float>> mem(dim);
+    std::vector<boost::numeric::ublas::vector<int>> mem(dim);
     for (unsigned k = 0; k < dim; k++) {
         mem[k] = boost::numeric::ublas::vector<float>(baseSize);
         for (unsigned j = 0; j < baseSize; j++) {
-            mem[k](j) = 0.0;
+            mem[k](j) = 0;
         }
     }
-    mem[0](0) = 1.0;
+    mem[0](0) = 1;
     return mem;
 }
 
@@ -107,11 +108,21 @@ float RotaOptimizer::WeightFit(int mapIndex) {
     // The parameters where obtained using MATLAB, but you can use any fitting
     // tool you like It is of upmost importance to do it this way to obtain a
     // suitable starting point for the optimizer
-    f = -0.156 + 0.1269 * x + 29.99 * y - 0.03288 * pow(x, 2) - 17.62 * x * y -
-        426.5 * pow(y, 2) + 0.004327 * pow(x, 3) + 3.779 * pow(x, 2) * y +
-        301.7 * x * pow(y, 2) + 2467 * pow(y, 3) - 0.0003173 * pow(x, 4) -
-        0.1802 * pow(x, 3) * y - 33.03 * pow(x, 2) * pow(y, 2) -
-        1210 * x * pow(y, 3) - 4025 * pow(y, 4);
+    f = -0.03916 
+    + 0.07638 * x 
+    + 5.432 * y 
+    -0.06782 * pow(x, 2) 
+    + 3.661 * x * y 
+    + 2.13 * pow(y, 2) 
+    + 0.0188 * pow(x, 3) 
+    -0.349 * pow(x, 2) * y 
+    -6.438 * x * pow(y, 2) 
+    -0.001654 * pow(x, 4) 
+    +0.05273 * pow(x, 3) * y 
+    -1.985 * pow(x, 2) * pow(y, 2);
+    if(f<0){
+        std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
+    }
     return f;
 }
 
@@ -184,37 +195,48 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
 };
 
 void RotaOptimizer::UpdateMemoryKernel(
-    boost::numeric::ublas::vector<float> &evolvedState,
-    std::vector<boost::numeric::ublas::vector<float>> &kernel) {
+    int index,
+    std::vector<boost::numeric::ublas::vector<int>> &kernel) {
     // cycle kernel
     for (unsigned i = kernelSize; i > 0; i--) {
         for (unsigned j = 0; j < stateBaseSize; j++) {
             if (i > 1) {
                 kernel[i - 1](j) = kernel[i - 2](j);
             } else {
-                kernel[0](j) = evolvedState(j);
+                kernel[0](index) = 1;
             }
         }
     }
 };
 
-void RotaOptimizer::choose_vector(boost::numeric::ublas::vector<float> &v,
+int RotaOptimizer::choose_vector(boost::numeric::ublas::vector<float> &v,
                                   float r) {
     float temp = 0.0;
     bool found = false;
-    for (unsigned i = 0; i < v.size(); i++) {
+    int i=0;
+    while(!found && i<v.size()){
         temp += v(i);
-        if (temp < r || temp >= r && found) {
+        if (!(temp < r)) {
             v(i) = 0.0;
-        } else {
-            v(i) = 1.0;
             found = true;
         }
+        i++;
     }
+    return i-1;
+    // for (unsigned i = 0; i < v.size(); i++) {
+    //     temp += v(i);
+    //     if (temp < r || temp >= r && found) {
+    //         v(i) = 0.0;
+    //     } else {
+    //         v(i) = 1.0;
+    //         found = true;
+    //     }
+    // }
 }
 
 boost::numeric::ublas::vector<float>
 RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float> &state) {
+    int mapindex = -1;
     std::uniform_real_distribution<float> distribute(0, 1);
     boost::numeric::ublas::matrix<float> temp(state);
     boost::numeric::ublas::vector<float> copy_vector(stateBaseSize);
@@ -233,11 +255,12 @@ RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float> &state) {
                 }
             }
         }
+        print_matrix(temp);
         temp = MatrixToProbabilityMatrix(temp);
         copy_vector = boost::numeric::ublas::prod(temp, memorykernel[0]);
-        choose_vector(copy_vector, distribute(this->generator));
-        UpdateMemoryKernel(copy_vector, memorykernel);
-        count_vector += copy_vector;
+        mapindex = choose_vector(copy_vector, distribute(this->generator));
+        UpdateMemoryKernel(mapindex, memorykernel);
+        count_vector(mapindex) += 1.0;
     }
     return count_vector * (1 / ((float)maxEvolveSteps));
 };
@@ -259,21 +282,20 @@ std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in) {
 
 std::vector<float> RotaOptimizer::Run(bool debug) {
 
-#if DEBUG
-    if (debug) {
-        time_t start, end;
-        time(&start);
-    }
-#endif
+    #if DEBUG
+        if (debug) {
+            time_t start, end;
+            time(&start);
+        }
+        std::ofstream file;
+        file.open("data.dat");
+    #endif
+
     boost::numeric::ublas::matrix<float> state(
         this->GenerateSeed(this->stateBaseSize));
     boost::numeric::ublas::vector<float> evolved_state(this->stateBaseSize);
     std::vector<float> diffList(this->stateBaseSize);
 
-    std::ofstream file;
-    if (debug) {
-        file.open("data.dat");
-    }
 
     boost::numeric::ublas::matrix<float> state_buffer(
         this->GenerateSeed(this->stateBaseSize));
@@ -285,9 +307,10 @@ std::vector<float> RotaOptimizer::Run(bool debug) {
         evolved_state = this->Evolve(state_buffer);
         fit_buffer = this->StateDifference(evolved_state, this->comparisonState,
                                            diffList);
-        if (debug) {
+        #if DEBUG
             std::cout << "fit_value: " << fit_buffer << std::endl;
-        }
+        #endif
+
         if (this->AcceptMove(fit_buffer - current_fit_val)) {
             state = state_buffer;
             current_fit_val = fit_buffer;
@@ -301,15 +324,15 @@ std::vector<float> RotaOptimizer::Run(bool debug) {
         }
 
         this->T = this->UpdateTemperature(this->T0, 0.011, i + 1);
-        if (debug) {
+        #if DEBUG
             file << current_fit_val << std::endl;
             std::cout << "accepted_state_fit_value: " << current_fit_val
                       << std::endl;
             std::cout << "T: " << this->T << std::endl;
             std::cout << "=====================" << std::endl;
-        }
+        #endif
     }
 
     return MatrixWeights(state);
 }
-} // namespace optimizer
+}
