@@ -20,7 +20,7 @@ void print_matrix(boost::numeric::ublas::matrix<float> mat) {
     }
 }
 
-void print_kernel(std::vector<boost::numeric::ublas::vector<float>> kernel) {
+void print_kernel(std::vector<boost::numeric::ublas::vector<int>> kernel) {
     std::cout << "=====MEMROY KERNEL=====" << std::endl;
     for (unsigned j = 0; j < kernel.size(); j++) {
         for (unsigned i = 0; i < kernel[j].size(); i++) {
@@ -108,7 +108,19 @@ float RotaOptimizer::WeightFit(int mapIndex) {
     // The parameters where obtained using MATLAB, but you can use any fitting
     // tool you like It is of upmost importance to do it this way to obtain a
     // suitable starting point for the optimizer
-    f = -0.03916 
+    // f = -0.03916 
+    // + 0.07638 * x 
+    // + 5.432 * y 
+    // -0.06782 * pow(x, 2) 
+    // + 3.661 * x * y 
+    // + 2.13 * pow(y, 2) 
+    // + 0.0188 * pow(x, 3) 
+    // -0.349 * pow(x, 2) * y 
+    // -6.438 * x * pow(y, 2) 
+    // -0.001654 * pow(x, 4) 
+    // +0.05273 * pow(x, 3) * y 
+    // -1.985 * pow(x, 2) * pow(y, 2);
+    f = 0.0
     + 0.07638 * x 
     + 5.432 * y 
     -0.06782 * pow(x, 2) 
@@ -203,7 +215,12 @@ void RotaOptimizer::UpdateMemoryKernel(
             if (i > 1) {
                 kernel[i - 1](j) = kernel[i - 2](j);
             } else {
-                kernel[0](index) = 1;
+                if(j==index){
+                    kernel[0](index) = 1;
+                }
+                else{
+                    kernel[0](j) = 0;
+                }
             }
         }
     }
@@ -255,7 +272,6 @@ RotaOptimizer::Evolve(boost::numeric::ublas::matrix<float> &state) {
                 }
             }
         }
-        print_matrix(temp);
         temp = MatrixToProbabilityMatrix(temp);
         copy_vector = boost::numeric::ublas::prod(temp, memorykernel[0]);
         mapindex = choose_vector(copy_vector, distribute(this->generator));
