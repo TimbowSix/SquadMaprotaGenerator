@@ -108,18 +108,7 @@ float RotaOptimizer::WeightFit(int mapIndex) {
     // The parameters where obtained using MATLAB, but you can use any fitting
     // tool you like It is of upmost importance to do it this way to obtain a
     // suitable starting point for the optimizer
-    // f = -0.03916 
-    // + 0.07638 * x 
-    // + 5.432 * y 
-    // -0.06782 * pow(x, 2) 
-    // + 3.661 * x * y 
-    // + 2.13 * pow(y, 2) 
-    // + 0.0188 * pow(x, 3) 
-    // -0.349 * pow(x, 2) * y 
-    // -6.438 * x * pow(y, 2) 
-    // -0.001654 * pow(x, 4) 
-    // +0.05273 * pow(x, 3) * y 
-    // -1.985 * pow(x, 2) * pow(y, 2);
+
     f = 0.0
     + 0.07638 * x 
     + 5.432 * y 
@@ -132,6 +121,10 @@ float RotaOptimizer::WeightFit(int mapIndex) {
     -0.001654 * pow(x, 4) 
     +0.05273 * pow(x, 3) * y 
     -1.985 * pow(x, 2) * pow(y, 2);
+
+    // f = 0.0
+    // + 0.06*x
+    // + 2.207*y;
     if(f<0){
         std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
     }
@@ -189,7 +182,7 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
     std::uniform_real_distribution<> distribute(-1, 1);
     // float exponent = 1.0/16.0;
     float random;
-    float factor_const = 0.00003;
+    float factor_const = 0.000007; //0.00003
     boost::numeric::ublas::matrix<float> newstate(state);
     for (unsigned i = 0; i < newstate.size1(); i++) {
         random = newstate(i, 0);
@@ -339,7 +332,7 @@ std::vector<float> RotaOptimizer::Run(bool debug) {
                 this->GenerateNeighbour(state, 1, 1, diffList, state);
         }
 
-        this->T = this->UpdateTemperature(this->T0, 0.011, i + 1);
+        this->T = this->UpdateTemperature(this->T0, 0.011, i + 1);//0.011, 0.001 destrc at 10^5 iterMax
         #if DEBUG
             file << current_fit_val << std::endl;
             std::cout << "accepted_state_fit_value: " << current_fit_val

@@ -29,7 +29,8 @@ void RotaMap::addLayer(RotaLayer *layer) {
         // create if mode not found
         this->availableLayers[layer->getMode()] = 1;
         // init value for weights for this mode
-        this->calcMapVoteWeight(layer->getMode());
+        // this->calcMapVoteWeight(layer->getMode()); // TODO kann vielleicht
+        // weg, wird später nochmal berechnet
         this->mapWeights[layer->getMode()] = 1;
         // add this mode to the modes list
         this->modes.push_back(layer->getMode());
@@ -109,11 +110,11 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
     }
 
     std::vector<float> votes;
-    std::vector<float> weights;
+    std::vector<long double> weights;
 
-    float voteSum = 0.0;
+    long double voteSum = 0.0;
 
-    for (auto layer : this->modeToLayers[mode]) {
+    for (auto layer : this->modeToLayers.at(mode)) {
         if (!layer->isLocked()) {
             voteSum += layer->getVotes();
             votes.push_back(layer->getVotes());
@@ -123,16 +124,18 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
         throw std::runtime_error("div by 0, in calcMapVoteWeight");
         return;
     }
-    float mean = 1.0 / votes.size() * voteSum;
-    float sum = 0;
+    long double mean = voteSum / votes.size();
+    long double sum = 0.0;
     for (float val : votes) {
-        float temp = exp(-std::pow(mean - val, 2));
+        long double temp = expl(-powl(static_cast<long double>(mean) -
+                                          static_cast<long double>(val),
+                                      2.0));
         weights.push_back(temp);
         sum += temp;
     }
     normalize(&weights, &sum);
 
-    float weightSum = 0;
+    long double weightSum = 0.0;
     for (int i = 0; i < weights.size(); i++) {
         weights[i] *= votes[i];
         weightSum += weights[i];
@@ -146,8 +149,8 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
 }
 
 void RotaMap::calcAllMapVoteWeights() {
-    for (auto const &[key, val] : this->modeToLayers) {
-        this->calcMapVoteWeight(key);
+    for (RotaMode *mode : this->modes) {
+        this->calcMapVoteWeight(mode);
     }
 }
 

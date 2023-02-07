@@ -43,6 +43,8 @@ int choice(int length, rotaRNG &rng);
  * @param sum sum of values in the vector
  */
 void normalize(std::vector<float> *arr, float *sum);
+void normalize(std::vector<double> *arr, double *sum);
+void normalize(std::vector<long double> *arr, long double *sum);
 
 /**
  * @brief normalizes all values in list

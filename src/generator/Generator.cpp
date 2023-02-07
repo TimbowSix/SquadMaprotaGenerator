@@ -77,15 +77,17 @@ Generator::Generator(RotaConfig *config) {
 
     setNeighbour(&this->maps, this->config->get_min_biom_distance());
 
-    // set reference from layer to ther maps, sets lockTime, sets voteWeight
-    // inits teamToLayerList
     for (RotaMap *map : this->maps) {
+        // set reference from layer to ther maps, sets lockTime, sets voteWeight
+        // inits teamToLayerList
         for (RotaLayer *layer : *(map->getLayer())) {
             layer->setMap(map);
             layer->setLockTime(this->config->get_layer_locktime());
             layer->setVoteWeight(this->config->get_layervote_slope(),
                                  this->config->get_layervote_shift());
         }
+
+        map->calcAllMapVoteWeights();
     }
 
     // precalculate default Rota Mode Pool weights and sum
