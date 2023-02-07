@@ -4,8 +4,9 @@
 #include <boost/json.hpp>
 #include <httplib.h>
 #include <iostream>
-
+#include <fstream>
 #include <GlobalConfig.hpp>
+#include <map>
 
 #include "Generator.hpp"
 #include "OptimizerConfig.hpp"
@@ -22,16 +23,22 @@ int main(int ac, char **av) {
               << ROTA_VERSION_MINOR << std::endl;
 
     rota::Generator *gen = initialize();
-
     gen->generateRota();
-
+    std::vector<rota::RotaLayer* >* rota = gen->getRota();
     std::ofstream file;
+    std::ofstream file2;
     file.open("rota.dat");
-    for (rota::RotaLayer *layer : *gen->getRota()) {
-        file << layer->getName() << "\n";
+    file2.open("weights.dat");
+    int index = 0;
+    std::map<std::string, float> weights;
+    for(int i=0; i<rota->size(); i++){
+        file << rota->at(i)->getName() << std::endl;
+        weights[rota->at(i)->getMap()->getName()] = rota->at(i)->getMap()->getMapWeight(rota->at(i)->getMode());
     }
+    for ( const auto &p : weights )
+        file2 << p.first << ": " << p.second << std::endl;
     file.close();
-
+    file2.close();
     // need static generator object to check if a layer exists
 
     // basic Server
