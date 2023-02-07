@@ -24,24 +24,26 @@ int main(void) {
     rota::Generator gen(&conf);
     std::cout << "Seed: " << gen.getSeed() << std::endl << std::endl;
 
-    gen.generateRota();
+    /*gen.generateRota();
 
     for (rota::RotaLayer *layer : *gen.getRota()) {
         std::cout << layer->getName() << std::endl;
-    }
+    }*/
 
     // gen data stuff
-    /*std::ofstream file;
+    std::ofstream file;
     file.open(std::to_string(time(NULL)) + ".dat");
     std::vector<rota::RotaLayer *> ges;
     std::map<RotaMap *, float> genDist;
     std::map<RotaMap *, float>::iterator it;
 
+    std::string modeName = "Destruction";
+
     for (int j = 0; j < 1000; j++) {
         std::cout << j << std::endl;
 
-        gen.setRandomMapWeights();
-        for (int i = 0; i < 2000; i++) {
+        gen.setRandomMapWeights(gen.getModes()->at(modeName));
+        for (int i = 0; i < 1; i++) {
             gen.generateRota();
             for (RotaLayer *layer : *gen.getRota()) {
                 ges.push_back(layer);
@@ -52,7 +54,7 @@ int main(void) {
         int sum = 0;
 
         for (RotaLayer *layer : ges) {
-            if (layer->getMode()->name.compare("RAAS") == 0) {
+            if (layer->getMode()->name.compare(modeName) == 0) {
                 it = genDist.find(layer->getMap());
                 // file << layer->getName() << "\n";
                 if (it != genDist.end()) {
@@ -72,14 +74,14 @@ int main(void) {
 
         for (auto const &x : genDist) {
             file << x.first->getNeighbor()->size() << ";"
-                 << x.first->getMapWeight(gen.getModes()->at("RAAS")) << ";"
+                 << x.first->getMapWeight(gen.getModes()->at(modeName)) << ";"
                  << x.second << "\n";
         }
         // file << "\n";
         ges.clear();
         genDist.clear();
     }
-    file.close();*/
+    file.close();
 
     return 0;
 }

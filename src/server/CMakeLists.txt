@@ -6,10 +6,10 @@ set(INCLUDES
     RotaServer.hpp
 )
 
-add_executable(RotaServer ${SOURCE})
-target_compile_features(RotaServer PRIVATE cxx_std_20 )
-target_link_libraries(RotaServer boost_json stdc++fs httplib ${PROJECT_NAME}Lib RotaOptimizerLib)
-target_include_directories(RotaServer PRIVATE ../generator/ ../optimizer/)
+add_executable(SquadMaprotaServer ${SOURCE})
+target_compile_features(SquadMaprotaServer PRIVATE cxx_std_20 )
+target_link_libraries(SquadMaprotaServer boost_json stdc++fs httplib ${PROJECT_NAME}Lib RotaOptimizerLib)
+target_include_directories(SquadMaprotaServer PRIVATE ../generator/ ../optimizer/)
 
-install(TARGETS RotaServer DESTINATION bin)
+install(TARGETS SquadMaprotaServer DESTINATION bin)
 install(FILES ${INCLUDES} DESTINATION include)

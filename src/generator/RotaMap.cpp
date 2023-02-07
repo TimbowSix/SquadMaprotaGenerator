@@ -29,7 +29,8 @@ void RotaMap::addLayer(RotaLayer *layer) {
         // create if mode not found
         this->availableLayers[layer->getMode()] = 1;
         // init value for weights for this mode
-        this->calcMapVoteWeight(layer->getMode());
+        // this->calcMapVoteWeight(layer->getMode()); // TODO kann vielleicht
+        // weg, wird später nochmal berechnet
         this->mapWeights[layer->getMode()] = 1;
         // add this mode to the modes list
         this->modes.push_back(layer->getMode());
@@ -123,8 +124,8 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
         throw std::runtime_error("div by 0, in calcMapVoteWeight");
         return;
     }
-    float mean = 1.0 / votes.size() * voteSum;
-    float sum = 0;
+    float mean = voteSum / votes.size();
+    float sum = 0.0;
     for (float val : votes) {
         float temp = exp(-std::pow(mean - val, 2));
         weights.push_back(temp);
@@ -132,7 +133,7 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
     }
     normalize(&weights, &sum);
 
-    float weightSum = 0;
+    float weightSum = 0.0;
     for (int i = 0; i < weights.size(); i++) {
         weights[i] *= votes[i];
         weightSum += weights[i];

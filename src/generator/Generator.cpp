@@ -77,9 +77,10 @@ Generator::Generator(RotaConfig *config) {
 
     setNeighbour(&this->maps, this->config->get_min_biom_distance());
 
-    // set reference from layer to ther maps, sets lockTime, sets voteWeight
-    // inits teamToLayerList
     for (RotaMap *map : this->maps) {
+        map->calcAllMapVoteWeights();
+        // set reference from layer to ther maps, sets lockTime, sets voteWeight
+        // inits teamToLayerList
         for (RotaLayer *layer : *(map->getLayer())) {
             layer->setMap(map);
             layer->setLockTime(this->config->get_layer_locktime());
@@ -504,10 +505,12 @@ void Generator::getState(MemoryColonelState *state) {
     state->lastTeam[1] = this->lastTeam[1];
 }
 
-void Generator::setRandomMapWeights() {
+void Generator::setRandomMapWeights(RotaMode *mode) {
     std::uniform_real_distribution<float> dist(0, 1);
     for (RotaMap *map : this->maps) {
-        map->setMapWeight(this->modes.at("RAAS"), dist(this->rng));
+        if (map->hasMode(mode)) {
+            map->setMapWeight(mode, dist(this->rng));
+        }
     }
 }
 
