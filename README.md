@@ -23,7 +23,7 @@ docker-compose up
 # Alle dependencies installieren
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install uild-essential cmake gcc-multilib libssl-dev wget
+sudo apt-get install build-essential cmake gcc-multilib libssl-dev wget
 # Boost 1.81.0 bauen/installieren
 sudo ./install_boost.sh
 # submodules updaten
@@ -126,7 +126,7 @@ kommen dürfen oder sie sich abwechseln müssen.
 
 ## Neue Map einfügen
 
-Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden. 
+Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden.
 Außerdem muss die Map in der Config unter "maps" hinzugefügt werden.
 Beipsiel Struktur der `bioms.json` :
 
