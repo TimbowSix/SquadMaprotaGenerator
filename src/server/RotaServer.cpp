@@ -23,6 +23,15 @@ int main(int ac, char **av) {
 
     rota::Generator *gen = initialize();
 
+    gen->generateRota();
+
+    std::ofstream file;
+    file.open("rota.dat");
+    for (rota::RotaLayer *layer : *gen->getRota()) {
+        file << layer->getName() << "\n";
+    }
+    file.close();
+
     // need static generator object to check if a layer exists
 
     // basic Server
@@ -75,6 +84,7 @@ rota::Generator *initialize() {
     optimizer::RotaOptimizer opt(optConfig);
     dataOut.mapWeights = opt.Run(true);
     gen->setMapWeights(&dataOut, gen->getModes()->at("RAAS"));
+    gen->setMapWeights(&dataOut, gen->getModes()->at("AAS"));
 
     return gen;
 }
