@@ -71,14 +71,16 @@ rota::Generator *initialize() {
     std::vector<std::thread *> threads;
 
     for (auto const &x : *gen->getModes()) {
-        dataIn[x.second] = new OptDataIn;
-        dataOut[x.second] = new OptDataOut;
+        if (x.second->modePool != nullptr && x.second->probability > 0.0) {
+            dataIn[x.second] = new OptDataIn;
+            dataOut[x.second] = new OptDataOut;
+        }
     }
 
     for (auto const &x : dataIn) {
         gen->packOptData(x.second, x.first);
         std::thread *t =
-            new std::thread(&runOpt, x.second, &conf, dataOut[x.first]);
+            new std::thread(&runOpt, *x.second, &conf, dataOut[x.first]);
         threads.push_back(t);
     }
 
@@ -106,9 +108,9 @@ rota::Generator *initialize() {
     return gen;
 }
 
-void runOpt(OptDataIn *dataIn, rota::RotaConfig *conf, OptDataOut *dataOut) {
+void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut) {
     optimizer::OptimizerConfig optConfig(conf->get_biom_spacing(),
-                                         dataIn->clusters, dataIn->mapDist);
+                                         dataIn.clusters, dataIn.mapDist);
     optimizer::RotaOptimizer opt(optConfig);
     dataOut->mapWeights = opt.Run();
 }

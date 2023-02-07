@@ -11,4 +11,4 @@
  */
 rota::Generator *initialize();
 
-void runOpt(OptDataIn *dataIn, rota::RotaConfig *conf, OptDataOut *dataOut);
+void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut);

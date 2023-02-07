@@ -450,7 +450,7 @@ void Generator::setMapWeights(OptDataOut *data, RotaMode *mode) {
             assert(m->getId(mode) == i);
 
             for (RotaMap *map : this->maps) {
-                if (map->getId(mode) == i) {
+                if (map->hasMode(mode) && map->getId(mode) == i) {
                     map->setMapWeight(mode, data->mapWeights.at(i));
                     break;
                 }
