@@ -163,7 +163,7 @@ class Generator {
 
     /**
      * @brief chooses a random map from maps with probabilities given by their
-     * weights // TODO hier weiter machen ...
+     *        weights
      * @param mode mode to draw from
      * @returns chosen map
      */
@@ -248,6 +248,7 @@ class Generator {
      */
     void setRandomMapWeights(RotaMode *mode);
     std::map<std::string, RotaMode *> *getModes();
+    std::map<std::string, RotaLayer *> *getLayerMap();
 };
 
 struct MemoryColonelState {

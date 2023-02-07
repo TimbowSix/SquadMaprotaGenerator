@@ -15,7 +15,8 @@ docker-compose up
 
 ## Api Schnitelle
 
- TODO
+ getRota -> lässt opt laufen -> generiert rota anzahl in params , params Anzahl an rotas oder pastLayers
+ getProposal -> lässt nicht opt laufen -> gen rota  , param pastLayer, count
 
 ## Selber Bauen und Installieren
 

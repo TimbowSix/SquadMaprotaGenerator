@@ -524,4 +524,8 @@ std::map<std::string, RotaMode *> *Generator::getModes() {
     return &this->modes;
 }
 
+std::map<std::string, RotaLayer *> *Generator::getLayerMap() {
+    return &this->layers;
+}
+
 } // namespace rota
