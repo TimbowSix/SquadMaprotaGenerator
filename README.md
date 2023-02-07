@@ -67,7 +67,6 @@ hier werden die Einstellparameter in der `config.json` und `bioms.json` erklärt
 
 | Parameter           | Type   | Beschreibung                                                                                                                                                                          | Default                              |
 | ------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| number_of_rotas | int    | Anzahl an Rotas, die generiert werden sollen                                                                                                                                          | 2                                    |
 | number_of_layers    | int    | Anzahl an Rotas, die generiert werden sollen                                                                                                                                          | 30                                   |
 | seed_layer          | int    | Anzal an Seedlayern am begin der Rota                                                                                                                                                 | 1                                    |
 | layer_vote_api_url  | string | Abruf URL der Layer/Votes Daten                                                                                                                                                       | "https://api.welovesquad.com/votes"  |
@@ -87,11 +86,11 @@ hier werden die Einstellparameter in der `config.json` und `bioms.json` erklärt
 
 ---
 
-### mode_distribution [dict]
+### mode_distribution [object]
 
 **Struktur:**
 
-**pools** [dict]
+**pools** [object]
 Beinhaltet mindestens den **main** pool und es können beliebige pools hinzugefügt werden
 Formart neuer Pools:
 
@@ -105,7 +104,7 @@ Formart neuer Pools:
 }
 ```
 
-**pool_distribution** [dict]
+**pool_distribution** [object]
 Wahrscheinlichkeit für die mode pools, s.o. Struktur:
 
 ```json
@@ -126,8 +125,8 @@ kommen dürfen oder sie sich abwechseln müssen.
 
 ## Neue Map einfügen
 
-Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `data/bioms.json` biom Parameter zugewiesen werden. 
-Außerdem muss die Map in der Config unter "maps" hinzugefügt werden.
+Um eine neue Map in die Generierung aufzunehmen, müssen der Map in `bioms.json` biom Parameter zugewiesen werden. 
+Außerdem muss die Map in der `config.json`  unter `maps` hinzugefügt werden.
 Beipsiel Struktur der `bioms.json` :
 
 ```json
@@ -153,7 +152,7 @@ Jeder Map wird wird für Jedes Biom dessen Anteil mit einem Wert zwischen 0 und 
 Es handelt sich hierbei _nicht_ um eine Prozentuale Aufteilung der Map, die Summe der Biomwerte kann also 1 problemlos überschreiten (s.o. Beispielwerte).
 Dabei sollte jedoch nicht nur der flächenmäßige Anteil sondern auch der Anteil am Spielgeschehen berücksichtigt werden.
 Beispielsweise hat die Map 'AlBasrah' von der Fläche nur einen verhältnismäßig kleinen Stadt-Anteil.
-Dieser hat jedoch (z.B. durch die Anordnung der Flaggenpunkte) einen starken einfluss auf das Spielgeschehen,
+Dieser hat jedoch (z.B. durch die Anordnung der Flaggenpunkte) einen starken Einfluss auf das Spielgeschehen,
 dementsprechend sollte hier ein höherer Stadt-Anteil gewählt werden.
 
 ### Mapgröße
