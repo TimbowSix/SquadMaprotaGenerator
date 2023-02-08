@@ -357,11 +357,23 @@ void Generator::generateRota() {
 }
 
 void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
+
+    int availableMaps = 0;
+    for (RotaMap *map : this->maps) {
+        if (!map->isLocked()) {
+            availableMaps++;
+        }
+    }
+    bool mapLock = availableMaps > count;
+
     for (int i = 0; i < count; i++) {
         RotaMode *mode = chooseMode(nullptr, true);
         RotaMap *map = chooseMap(mode);
         RotaLayer *layer = chooseLayerFromMap(map, mode);
         out->push_back(layer);
+        if (mapLock) {
+            map->lock();
+        }
         layer->lock();
     }
 }
