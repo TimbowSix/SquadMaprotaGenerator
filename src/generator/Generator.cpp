@@ -296,10 +296,13 @@ void Generator::lockTeams() { // TODO test?
 }
 
 void Generator::generateRota() {
+    this->generateRota(true, this->config->get_number_of_layers());
+}
+void Generator::generateRota(bool withSeed, int length) {
     // set seed
     this->rng.seed(this->seed);
     // add seedlayer
-    if (config->get_seed_layer() > 0) {
+    if (config->get_seed_layer() > 0 && withSeed) {
         std::vector<RotaMap *> seedMaps(this->modeToMapList["Seed"]);
 
         for (int i = 0; i < this->config->get_seed_layer(); i++) {
@@ -321,9 +324,11 @@ void Generator::generateRota() {
 
     this->modeBuffer.clear();
 
-    for (int i = 0; i < this->config->get_number_of_layers() -
-                            this->config->get_seed_layer();
-         i++) {
+    int l = length;
+    if (withSeed) {
+        l -= this->config->get_seed_layer();
+    }
+    for (int i = 0; i < l; i++) {
         RotaMode *mode = chooseMode(nullptr, true);
         RotaMap *map = chooseMap(mode);
         RotaLayer *layer = chooseLayerFromMap(map, mode);

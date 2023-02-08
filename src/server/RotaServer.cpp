@@ -90,7 +90,8 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
 
             if (!error) {
                 gen->reset(&pastRota);
-                gen->generateRota();
+                gen->generateRota(false, conf->get_number_of_layers() -
+                                             pastRota.size());
                 json::array ret;
                 for (rota::RotaLayer *layer : *gen->getRota()) {
                     ret.push_back(json::string(layer->getName()));

@@ -192,10 +192,12 @@ class Generator {
      * @brief Creates a new rotation based on the parameters set in the
      * configuration.
      *
+     * @param withSeed generates a rota with/without seed
+     * @param length   length of rota
      * @returns rotation of layers
      */
-    // std::vector<RotaLayer*> generateRota();
     void generateRota();
+    void generateRota(bool withSeed, int length);
 
     /**
      * @brief generates x unique Layer based off the current generator state
