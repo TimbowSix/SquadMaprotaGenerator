@@ -15,8 +15,24 @@ docker-compose up
 
 ## Api Schnitelle
 
- getRota -> lässt opt laufen -> generiert rota anzahl in params , params Anzahl an rotas oder pastLayers
- getProposal -> lässt nicht opt laufen -> gen rota  , param pastLayer, count
+**Request Format**
+Alle param values im Json-Format
+
+| Endpoint    | Method | Params                        | Description                                                  | Optimizer running |
+| ----------- | ------ | ----------------------------- | ------------------------------------------------------------ | --------------- |
+| getRota     | GET    | rotaCount [int]               | gibt `rotaCount` generierte Rotas zurück                     | true            |
+| getRota     | GET    | pastRota  [array]             | generiert eine Fortsetzung von `pastRota`                    | false           |
+| getProposal | GET    | pastRota [array], count [int] | generiert `count` Layers als Vorschlag anhand der `pastRota` | false           | 
+
+**Return Format**
+
+``` json
+{
+    "status": state,
+    "msg": value
+}
+```
+
 
 ## Selber Bauen und Installieren
 
