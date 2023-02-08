@@ -482,7 +482,7 @@ void Generator::setMapWeights(OptDataOut *data, RotaMode *mode) {
 
 void Generator::packOptData(OptDataIn *data, RotaMode *mode) {
     int i = 0;
-
+    data->modeName = mode->name;
     for (RotaMap *m : this->maps) {
         if (m->hasMode(mode)) {
             data->mapDist.push_back(m->getMapVoteWeight(mode));

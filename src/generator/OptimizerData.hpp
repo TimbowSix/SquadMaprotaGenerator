@@ -18,6 +18,7 @@ typedef struct OptDataIn OptDataIn;
 typedef struct OptDataOut OptDataOut;
 
 struct OptDataIn {
+    std::string modeName;
     std::vector<float> mapDist;
     std::map<int, std::vector<int>> clusters;
 };

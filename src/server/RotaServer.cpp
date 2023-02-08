@@ -239,8 +239,8 @@ rota::Generator *initialize() {
 
     for (auto const &x : dataIn) {
         gen->packOptData(x.second, x.first);
-        std::thread *t =
-            new std::thread(&runOpt, *x.second, conf, dataOut[x.first]);
+        std::thread *t = new std::thread(&runOpt, *x.second, conf,
+                                         dataOut[x.first], x.first->name);
         threads.push_back(t);
     }
 
@@ -268,9 +268,10 @@ rota::Generator *initialize() {
     return gen;
 }
 
-void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut) {
-    optimizer::OptimizerConfig optConfig(conf->get_biom_spacing(),
-                                         dataIn.clusters, dataIn.mapDist);
+void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut,
+            std::string modeName) {
+    optimizer::OptimizerConfig optConfig(
+        conf->get_biom_spacing(), dataIn.clusters, dataIn.mapDist, modeName);
     optimizer::RotaOptimizer opt(optConfig);
     dataOut->mapWeights = opt.Run();
 }

@@ -12,6 +12,7 @@
  */
 rota::Generator *initialize();
 
-void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut);
+void runOpt(OptDataIn dataIn, rota::RotaConfig *conf, OptDataOut *dataOut,
+            std::string modeName);
 void handleGetRota(const httplib::Request &req, httplib::Response &res);
 void handleGetProposal(const httplib::Request &req, httplib::Response &res);
