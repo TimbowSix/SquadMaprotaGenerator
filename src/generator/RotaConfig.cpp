@@ -50,6 +50,18 @@ RotaConfig::RotaConfig(std::string path) {
         maps.push_back(map);
     }
 }
+
+RotaConfig::~RotaConfig() {
+    for (auto const &x : this->pools) {
+        delete x.second;
+    }
+    this->pools.clear();
+    for (auto const &x : this->modes) {
+        delete x.second;
+    }
+    this->modes.clear();
+}
+
 // getter / setter
 unsigned int RotaConfig::get_number_of_layers() { return number_of_layers; }
 void RotaConfig::set_number_of_layers(unsigned int value) {

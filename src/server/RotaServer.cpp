@@ -15,11 +15,19 @@
 #include "Generator.hpp"
 #include "OptimizerConfig.hpp"
 #include "OptimizerData.hpp"
+#include "RotaConfig.hpp"
 #include "RotaMode.hpp"
 #include "RotaOptimizer.hpp"
 #include "RotaServer.hpp"
 
+#define TIMEOUT_WAIT_FOR_OTHER_THREAD 1000 // in sec
+
 namespace json = boost::json;
+
+std::string path = std::string(CONFIG_PATH) + "config.json";
+rota::RotaConfig *conf;
+rota::Generator *gen;
+std::mutex gen_mutex;
 
 int main(int ac, char **av) {
 
@@ -29,31 +37,37 @@ int main(int ac, char **av) {
 
     // need static generator object to check if a layer exists
 
+    std::cout << "Init generator and run optimizer" << std::endl;
+    gen = initialize();
+    gen->generateRota();
+    std::cout << "Ready" << std::endl;
+
     // basic Server
     // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
     httplib::Server svr;
     svr.Get("/getRota",
             [](const httplib::Request &req, httplib::Response &res) {
+                gen_mutex.lock();
                 handleGetRota(req, res);
+                gen_mutex.unlock();
             });
 
-    svr.Get("/GetProposal",
+    svr.Get("/getProposal",
             [](const httplib::Request &req, httplib::Response &res) {
+                gen_mutex.lock();
                 handleGetProposal(req, res);
+                gen_mutex.unlock();
             });
 
-    svr.listen("172.30.226.156", 1337); // ip der linux sub machine
+    svr.listen("172.29.43.69", 1339); // ip der linux sub machine
 }
 
 void handleGetRota(const httplib::Request &req, httplib::Response &res) {
-
-    rota::Generator *gen = initialize();
 
     json::object retObj;
 
     if (req.has_param("pastRota")) {
         bool error = false;
-        std::cout << req.get_param_value("pastRota") << std::endl;
 
         std::vector<std::string> pastRota;
         try {
@@ -83,7 +97,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                 }
 
                 retObj["status"] = 200;
-                retObj["msg"] = json::serialize(ret);
+                retObj["msg"] = ret;
             }
 
         } catch (std::exception &e) {
@@ -99,8 +113,6 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
         try {
             int count = std::stoi(req.get_param_value("rotaCount"));
             if (count > 0) {
-                // delete current generator
-                delete gen;
                 // init new generator
                 gen = initialize();
 
@@ -110,17 +122,17 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     json::array rota;
                     gen->generateRota();
                     for (rota::RotaLayer *layer : *gen->getRota()) {
-                        rota.push_back(json::string(layer->getName()));
+                        rota.push_back(json::value(layer->getName()));
                     }
                     ret.push_back(rota);
                 }
 
                 retObj["status"] = 200;
-                retObj["msg"] = json::serialize(ret);
+                retObj["msg"] = ret;
 
             } else {
                 retObj["status"] = 418;
-                retObj["msg"] = "number smaller then 0";
+                retObj["msg"] = "invalide arguments";
                 res.status = 418;
             }
         } catch (std::exception &e) {
@@ -135,11 +147,10 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
     }
 
     res.set_content(json::serialize(retObj), "text/json");
-    delete gen;
 }
 
 void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
-    rota::Generator *gen = initialize();
+
     json::object retObj;
 
     if (req.has_param("pastRota") && req.has_param("count")) {
@@ -148,7 +159,7 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
         bool error = false;
 
         try {
-            int count = std::stoi(req.get_param_value("pastRota"));
+            int count = std::stoi(req.get_param_value("count"));
             if (count > 0) {
                 json::array pastLayers =
                     json::parse(req.get_param_value("pastRota")).as_array();
@@ -177,7 +188,7 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                     }
 
                     retObj["status"] = 200;
-                    retObj["msg"] = json::serialize(r);
+                    retObj["msg"] = r;
                 }
 
             } else {
@@ -196,13 +207,15 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
         res.status = 418;
     }
     res.set_content(json::serialize(retObj), "text/json");
-    delete gen;
 }
 
 rota::Generator *initialize() {
-    std::string path = std::string(CONFIG_PATH) + "config.json";
-    rota::RotaConfig conf(path);
-    rota::Generator *gen = new rota::Generator(&conf);
+    // delete old generator and config
+    delete gen;
+    delete conf;
+
+    conf = new rota::RotaConfig((path));
+    rota::Generator *gen = new rota::Generator(conf);
 
     // run optimizer
     std::map<rota::RotaMode *, OptDataIn *> dataIn;
@@ -219,7 +232,7 @@ rota::Generator *initialize() {
     for (auto const &x : dataIn) {
         gen->packOptData(x.second, x.first);
         std::thread *t =
-            new std::thread(&runOpt, *x.second, &conf, dataOut[x.first]);
+            new std::thread(&runOpt, *x.second, conf, dataOut[x.first]);
         threads.push_back(t);
     }
 

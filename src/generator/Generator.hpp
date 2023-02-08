@@ -62,11 +62,11 @@ class Generator {
     /**
      * @brief maps all available ModePools to their name
      */
-    std::map<std::string, RotaModePool *> modePools;
+    std::map<std::string, RotaModePool *> *modePools;
     /**
      * @brief maps all modes to their name
      */
-    std::map<std::string, RotaMode *> modes;
+    std::map<std::string, RotaMode *> *modes;
     /**
      * @brief maps all layers to their name
      */
@@ -137,6 +137,11 @@ class Generator {
      * @brief random number generator
      */
     rotaRNG rng;
+
+    /**
+     * @brief hash over all layer names
+     */
+    size_t layerHash;
 
     /**
      * @brief generates a seed and sets the object variable
@@ -239,6 +244,12 @@ class Generator {
      */
     void packOptData(OptDataIn *data, RotaMode *mode);
 
+    /**
+     * @brief creates a hash over all layer names
+     *        stores it locally
+     */
+    void generateLayerHash();
+
     // getter & setter
     u_int32_t getSeed();
     std::vector<RotaLayer *> *getRota();
@@ -249,6 +260,7 @@ class Generator {
     void setRandomMapWeights(RotaMode *mode);
     std::map<std::string, RotaMode *> *getModes();
     std::map<std::string, RotaLayer *> *getLayerMap();
+    size_t getLayerHash();
 };
 
 struct MemoryColonelState {

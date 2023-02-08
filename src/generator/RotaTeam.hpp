@@ -10,7 +10,6 @@ class RotaTeam {
 
   public:
     RotaTeam(std::string name);
-    ~RotaTeam(){};
 
     std::string getName();
 };

@@ -98,6 +98,7 @@ class RotaConfig {
      * @param object config json path
      */
     RotaConfig(std::string path);
+    ~RotaConfig();
 
     // getter / setter
 

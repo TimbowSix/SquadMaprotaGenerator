@@ -25,17 +25,17 @@
 namespace rota {
 Generator::Generator(RotaConfig *config) {
     this->config = config;
-    this->modePools = (*config->get_pools());
-    this->modes = (*config->get_modes());
+    this->modePools = config->get_pools();
+    this->modes = config->get_modes();
     parseMaps(this->config, &this->mapsByName,
               &this->availableLayerMaps); // setup all available maps
 
     std::string voteUrl = this->config->get_layer_vote_api_url();
     std::string teamUrl = this->config->get_team_api_url();
-    parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers,
-                &this->modes, &this->teams); // request and parse layers
+    parseLayers(voteUrl, teamUrl, &this->mapsByName, &this->layers, this->modes,
+                &this->teams); // request and parse layers
 
-    injectLayerInfo(teamUrl, &this->layers, &this->modes, &this->teams);
+    injectLayerInfo(teamUrl, &this->layers, this->modes, &this->teams);
     // populate layers with data
 
     // remove maps without any layers
@@ -50,12 +50,12 @@ Generator::Generator(RotaConfig *config) {
     }
     int i = 0;
     parseTeams(&this->layers, &this->blueforTeams, &this->opforTeams);
-    for (auto const &[key, map] : this->mapsByName) {
-        this->maps.push_back(map);
+    for (auto const &x : this->mapsByName) {
+        this->maps.push_back(x.second);
 
-        for (RotaMode *m : *(map->getModes())) {
+        for (RotaMode *m : *(x.second->getModes())) {
             // init modeToMapList
-            this->modeToMapList[m->name].push_back(map);
+            this->modeToMapList[m->name].push_back(x.second);
             // init availableMaps
             if (this->availableLayerMaps.find(m) ==
                 this->availableLayerMaps.end()) {
@@ -70,7 +70,7 @@ Generator::Generator(RotaConfig *config) {
     for (auto const &x : this->modeToMapList) {
         int i = 0;
         for (RotaMap *map : x.second) {
-            map->setId(i, this->modes.at(x.first));
+            map->setId(i, this->modes->at(x.first));
             i++;
         }
     }
@@ -92,8 +92,8 @@ Generator::Generator(RotaConfig *config) {
 
     // precalculate default Rota Mode Pool weights and sum
     for (std::map<std::string, RotaModePool *>::iterator it =
-             this->modePools.begin();
-         it != this->modePools.end(); ++it) {
+             this->modePools->begin();
+         it != this->modePools->end(); ++it) {
         this->defaultModePools.push_back(it->second);
         this->defaultPoolWeights.push_back(it->second->probability);
         // precalculate modes weights
@@ -111,24 +111,24 @@ Generator::Generator(RotaConfig *config) {
     this->sameTeamCounter[1] = 0;
 
     this->generateSeed();
+    this->generateLayerHash();
 }
 
 Generator::~Generator() {
     for (auto &x : this->teams) {
         delete x.second;
     }
+    this->teams.clear();
+
     for (int i = 0; i < this->maps.size(); i++) {
         delete maps[i];
     }
-    for (auto &x : this->modePools) {
-        delete x.second;
-    }
-    for (auto &x : this->modes) {
-        delete x.second;
-    }
+    this->maps.clear();
+
     for (auto &x : this->layers) {
         delete x.second;
     }
+    this->layers.clear();
 };
 
 RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
@@ -164,7 +164,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                                                      this->rng)];
     }
 
-    if (pool != this->modePools["main"]) {
+    if (pool != this->modePools->at("main")) {
         // check if non main mode has enough space to last one
         if (this->config->get_pool_spacing() > this->lastNonMainMode) {
             if (this->modeBuffer.size() == 0) {
@@ -173,11 +173,11 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                     weightedChoice(&this->modeWeights.at(pool), this->rng)));
             }
             // not enough space change to main mode
-            pool = this->modePools["main"];
+            pool = this->modePools->at("main");
         }
     }
 
-    if (pool == this->modePools["main"]) {
+    if (pool == this->modePools->at("main")) {
         this->lastNonMainMode++;
     } else {
         this->lastNonMainMode = 0;
@@ -185,7 +185,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
 
     RotaMode *ret;
 
-    if (this->config->get_space_main() && pool == this->modePools["main"]) {
+    if (this->config->get_space_main() && pool == this->modePools->at("main")) {
         // TODO Überarbeitung gleichverteilung
         ret = this->poolToModeList[pool][this->nextMainModeIndex];
     } else {
@@ -194,9 +194,10 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
     }
     // check if mode has available maps
     if (this->mapsAvailable(ret)) {
-        if (this->config->get_space_main() && pool == this->modePools["main"]) {
+        if (this->config->get_space_main() &&
+            pool == this->modePools->at("main")) {
             this->nextMainModeIndex = (this->nextMainModeIndex + 1) %
-                                      this->modePools["main"]->modes.size();
+                                      this->modePools->at("main")->modes.size();
         }
         return ret;
     }
@@ -310,12 +311,12 @@ void Generator::generateRota() {
             seedMap->lock(2);
 
             std::vector<RotaLayer *> seedLayers =
-                seedMap->getModeToLayers()->at(this->modes["Seed"]);
+                seedMap->getModeToLayers()->at(this->modes->at("Seed"));
             RotaLayer *chosenLayer =
                 seedLayers[choice(seedLayers.size(), this->rng)];
             rotation.push_back(chosenLayer);
         }
-        this->ModesHistory.push_back(this->modes["Seed"]);
+        this->ModesHistory.push_back(this->modes->at("Seed"));
     }
 
     this->modeBuffer.clear();
@@ -515,17 +516,25 @@ void Generator::setRandomMapWeights(RotaMode *mode) {
     }
 }
 
+void Generator::generateLayerHash() {
+    std::string layers;
+    for (auto const &x : this->layers) {
+        layers += x.second->getName();
+    }
+    this->layerHash = std::hash<std::string>{}(layers);
+}
+
 void Generator::generateSeed() {
     std::random_device os_seed; // seed used by the mersenne-twister-engine
     this->seed = os_seed();
 }
 
-std::map<std::string, RotaMode *> *Generator::getModes() {
-    return &this->modes;
-}
+std::map<std::string, RotaMode *> *Generator::getModes() { return this->modes; }
 
 std::map<std::string, RotaLayer *> *Generator::getLayerMap() {
     return &this->layers;
 }
+
+size_t Generator::getLayerHash() { return this->layerHash; }
 
 } // namespace rota

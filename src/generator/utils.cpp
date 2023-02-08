@@ -175,22 +175,12 @@ void injectLayerInfo(std::string url,
     for (int i = 0; i < data.size(); i++) {
         json::object obj = data[i].get_object();
 
+        // TODO use json::serialize
         std::string layerName = (std::string)obj["id"].as_string();
-        std::string modeName = (std::string)obj["gamemode"].as_string();
         std::string teamOneName = (std::string)obj["teamOne"].as_string();
         std::string teamTwoName = (std::string)obj["teamTwo"].as_string();
 
         if (layers->find(layerName) != layers->end()) {
-
-            if (modes->find(modeName) == modes->end()) {
-                // create non existing mode
-                continue; // skip unused mode
-                /*
-                RotaMode *mode = new RotaMode(modeName);
-                (*modes)[modeName] = mode;
-                */
-            }
-            (*layers)[layerName]->setMode((*modes)[modeName]);
 
             if (teams->find(teamOneName) == teams->end()) {
                 // create non existing team

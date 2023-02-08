@@ -151,6 +151,7 @@ void RotaMap::calcMapVoteWeight(RotaMode *mode) {
 void RotaMap::calcAllMapVoteWeights() {
     for (RotaMode *mode : this->modes) {
         this->calcMapVoteWeight(mode);
+        this->mapWeights[mode] = 1;
     }
 }
 
