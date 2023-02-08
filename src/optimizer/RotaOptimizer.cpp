@@ -75,6 +75,7 @@ RotaOptimizer::RotaOptimizer(OptimizerConfig config) {
     this->memorykernel = initMem(kernelSize, stateBaseSize);
     this->clusters = config.clusters;
     this->comparisonState = ToBoost(config.mapProbabilities);
+    this->mode = config.modename;
 };
 RotaOptimizer::~RotaOptimizer(){};
 
@@ -109,24 +110,82 @@ float RotaOptimizer::WeightFit(int mapIndex) {
     // tool you like It is of upmost importance to do it this way to obtain a
     // suitable starting point for the optimizer
 
-    f = 0.0
-    + 0.07638 * x 
-    + 5.432 * y 
-    -0.06782 * pow(x, 2) 
-    + 3.661 * x * y 
-    + 2.13 * pow(y, 2) 
-    + 0.0188 * pow(x, 3) 
-    -0.349 * pow(x, 2) * y 
-    -6.438 * x * pow(y, 2) 
-    -0.001654 * pow(x, 4) 
-    +0.05273 * pow(x, 3) * y 
-    -1.985 * pow(x, 2) * pow(y, 2);
-
-    // f = 0.0
-    // + 0.06*x
-    // + 2.207*y;
-    if(f<0){
-        std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
+    if(this->mode == "RAAS"){
+        f = 0.0
+        + 0.07638 * x 
+        + 5.432 * y 
+        -0.06782 * pow(x, 2) 
+        + 3.661 * x * y 
+        + 2.13 * pow(y, 2) 
+        + 0.0188 * pow(x, 3) 
+        -0.349 * pow(x, 2) * y 
+        -6.438 * x * pow(y, 2) 
+        -0.001654 * pow(x, 4) 
+        +0.05273 * pow(x, 3) * y 
+        -1.985 * pow(x, 2) * pow(y, 2);
+    }
+    else if(this->mode == "AAS"){
+        f = 0.0
+        -0.2882 * x 
+        + 8.021 * y 
+        +0.1124 * pow(x, 2) 
+        + 4.775 * x * y 
+        -15.57 * pow(y, 2) 
+        -0.01256 * pow(x, 3) 
+        -0.5402 * pow(x, 2) * y 
+        -13.88 * x * pow(y, 2);
+    }
+    else if(this->mode == "Invasion"){
+        f = 0.0
+        + 0.1671 * x 
+        + 7.922 * y 
+        -0.08273 * pow(x, 2) 
+        + 2.305 * x * y 
+        +0.8738 * pow(y, 2) 
+        + 0.01196 * pow(x, 3) 
+        +0.2367 * pow(x, 2) * y 
+        -17.07 * x * pow(y, 2);
+    }
+    else if(this->mode == "TC"){
+        f = 0.0
+        +0.1917 * x 
+        + 8.706 * y 
+        -0.09457 * pow(x, 2) 
+        + 2.233 * x * y 
+        -13.64 * pow(y, 2) 
+        +0.01413 * pow(x, 3) 
+        +0.02096 * pow(x, 2) * y 
+        -11.38 * x * pow(y, 2);
+    }
+    else if(this->mode == "Insurgency"){
+        f = 0.0
+        - 0.05491 * x 
+        + 4.539 * y 
+        + 0.02275 * pow(x, 2) 
+        + 1.456 * x * y 
+        - 4.496 * pow(y, 2) 
+        - 0.001918 * pow(x, 3) 
+        -0.02101 * pow(x, 2) * y 
+        -2.708 * x * pow(y, 2);
+    }
+    else if(this->mode == "Destruction"){
+        f = 0.0
+        + 0.06*x
+        + 2.207*y;
+    }
+    else{
+        f = 0.0
+        + 0.07638 * x 
+        + 5.432 * y 
+        -0.06782 * pow(x, 2) 
+        + 3.661 * x * y 
+        + 2.13 * pow(y, 2) 
+        + 0.0188 * pow(x, 3) 
+        -0.349 * pow(x, 2) * y 
+        -6.438 * x * pow(y, 2) 
+        -0.001654 * pow(x, 4) 
+        +0.05273 * pow(x, 3) * y 
+        -1.985 * pow(x, 2) * pow(y, 2);
     }
     return f;
 }

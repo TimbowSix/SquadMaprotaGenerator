@@ -8,7 +8,7 @@ namespace optimizer{
     class OptimizerConfig{
         private:
         public:
-            OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> clusters, std::vector<float> mapProbabilities);
+            OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> clusters, std::vector<float> mapProbabilities, std::string modename);
             ~OptimizerConfig();
             float T0;
             int iterationMax;
@@ -18,5 +18,6 @@ namespace optimizer{
             float slope;
             std::map<int, std::vector<int>> clusters;
             std::vector<float> mapProbabilities;
+            std::string modename;
     };
 }

@@ -14,6 +14,7 @@ class RotaOptimizer {
     int kernelSize;
     int stateBaseSize;
     float slope;
+    std::string mode;
     std::mt19937 generator;
     std::mt19937 *generator_ptr;
     std::vector<boost::numeric::ublas::vector<int>> memorykernel;

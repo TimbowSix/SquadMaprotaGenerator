@@ -1,7 +1,7 @@
 #include "OptimizerConfig.hpp"
 
 namespace optimizer{
-    OptimizerConfig::OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> neighbourDictionary, std::vector<float> mapProbabilities){
+    OptimizerConfig::OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> neighbourDictionary, std::vector<float> mapProbabilities, std::string modename){
         this->T0 = 0.03;
         this->iterationMax = 10000;
         this->maxEvolveSteps = 1000;
@@ -20,6 +20,7 @@ namespace optimizer{
         this->slope = 0.05;
         this->clusters = neighbourDictionary;
         this->mapProbabilities = mapProbabilities;
+        this->modename = modename;
     };
     OptimizerConfig::~OptimizerConfig(){};
 }
