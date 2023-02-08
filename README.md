@@ -4,7 +4,7 @@
 
 # GooseBay-Generator
 
-Weitere Informationen findet man in der [Dokumentation](doku/main.pdf).
+Weitere Informationen ist unter [Dokumentation](doku/main.pdf) zu finden.
 
 ## Nutzung
 
@@ -15,14 +15,14 @@ docker-compose up
 
 ## Api Schnitelle
 
-**Request Format**
+**Request Format** <br>
 Alle param values im Json-Format
 
 | Endpoint    | Method | Params                        | Description                                                  | Optimizer running |
 | ----------- | ------ | ----------------------------- | ------------------------------------------------------------ | --------------- |
 | getRota     | GET    | rotaCount [int]               | gibt `rotaCount` generierte Rotas zurück                     | true            |
 | getRota     | GET    | pastRota  [array]             | generiert eine Fortsetzung von `pastRota`                    | false           |
-| getProposal | GET    | pastRota [array], count [int] | generiert `count` Layers als Vorschlag anhand der `pastRota` | false           | 
+| getProposal | GET    | pastRota [array], count [int] | generiert `count` Layers als Vorschlag anhand der `pastRota` | false           |
 
 **Return Format**
 
@@ -59,9 +59,13 @@ Nach der Installation kann die Config unter  `/etc/maprota/config.json` angepass
 
 Der API Server lässt sich dann mit
 ``` shell
+SquadMaprotaServer host port
+```
+oder
+``` shell
 SquadMaprotaServer
 ```
-start.
+start. Ohne `host` und `port` Angabe startet der Server unter `localhost:1330`.
 
 ----
 # Admin Manual

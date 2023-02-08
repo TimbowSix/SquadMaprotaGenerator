@@ -31,8 +31,18 @@ rota::Generator *gen;
 std::mutex gen_mutex;
 
 int main(int ac, char **av) {
-
-    std::cout << "Start Server" << std::endl;
+    std::string host = "localhost";
+    int port = 1330;
+    if (ac == 3) {
+        try {
+            host = std::string(av[1]);
+            port = atoi(av[2]);
+        } catch (std::exception &e) {
+            std::cerr << "invalide arguments" << std::endl;
+            return 1;
+        }
+    }
+    std::cout << "Start Server on " << host << ":" << port << std::endl;
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << std::endl;
 
@@ -65,7 +75,7 @@ int main(int ac, char **av) {
                 gen_mutex.unlock();
             });
 
-    svr.listen("172.29.43.69", 1330); // ip der linux sub machine
+    svr.listen(host, port); // ip der linux sub machine
     return 0;
 }
 
