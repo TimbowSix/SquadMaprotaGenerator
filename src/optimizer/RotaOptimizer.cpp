@@ -290,7 +290,7 @@ std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in) {
 }
 
 std::vector<float> RotaOptimizer::Run(bool debug) {
-
+    print_vector(this->comparisonState);
     #if DEBUG
         if (debug) {
             time_t start, end;
@@ -332,7 +332,7 @@ std::vector<float> RotaOptimizer::Run(bool debug) {
                 this->GenerateNeighbour(state, 1, 1, diffList, state);
         }
 
-        this->T = this->UpdateTemperature(this->T0, 0.011, i + 1);//0.011, 0.001 destrc at 10^5 iterMax
+        this->T = this->UpdateTemperature(this->T0, 0.001, i + 1);//0.011, 0.001 destrc at 10^5 iterMax
         #if DEBUG
             file << current_fit_val << std::endl;
             std::cout << "accepted_state_fit_value: " << current_fit_val

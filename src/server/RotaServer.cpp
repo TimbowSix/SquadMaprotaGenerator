@@ -7,10 +7,16 @@
 #include <exception>
 #include <httplib.h>
 #include <iostream>
+<<<<<<< HEAD
 #include <stdlib.h>
 
 #include <GlobalConfig.hpp>
 #include <vector>
+    =======
+#include <GlobalConfig.hpp>
+#include <fstream>
+#include <map>
+    >>>>>>> ccd65a44cd9b6fc692327c2fe8666f4d658c8bd1
 
 #include "Generator.hpp"
 #include "OptimizerConfig.hpp"
@@ -22,7 +28,7 @@
 
 #define TIMEOUT_WAIT_FOR_OTHER_THREAD 1000 // in sec
 
-namespace json = boost::json;
+    namespace json = boost::json;
 
 std::string path = std::string(CONFIG_PATH) + "config.json";
 rota::RotaConfig *conf;
@@ -34,8 +40,6 @@ int main(int ac, char **av) {
     std::cout << "Start Server" << std::endl;
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << std::endl;
-
-    // need static generator object to check if a layer exists
 
     std::cout << "Init generator and run optimizer" << std::endl;
     gen = initialize();
