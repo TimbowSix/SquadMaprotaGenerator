@@ -7,16 +7,11 @@
 #include <exception>
 #include <httplib.h>
 #include <iostream>
-<<<<<<< HEAD
-#include <stdlib.h>
 
-#include <GlobalConfig.hpp>
-#include <vector>
-    =======
 #include <GlobalConfig.hpp>
 #include <fstream>
 #include <map>
-    >>>>>>> ccd65a44cd9b6fc692327c2fe8666f4d658c8bd1
+#include <vector>
 
 #include "Generator.hpp"
 #include "OptimizerConfig.hpp"
@@ -28,7 +23,7 @@
 
 #define TIMEOUT_WAIT_FOR_OTHER_THREAD 1000 // in sec
 
-    namespace json = boost::json;
+namespace json = boost::json;
 
 std::string path = std::string(CONFIG_PATH) + "config.json";
 rota::RotaConfig *conf;
@@ -46,6 +41,13 @@ int main(int ac, char **av) {
     gen->generateRota();
     std::cout << "Ready" << std::endl;
 
+    std::ofstream file;
+    file.open("rota.dat");
+    for (rota::RotaLayer *layer : *gen->getRota()) {
+        file << layer->getName() << "\n";
+    }
+    file.close();
+    return 0;
     // basic Server
     // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
     httplib::Server svr;
@@ -63,7 +65,8 @@ int main(int ac, char **av) {
                 gen_mutex.unlock();
             });
 
-    svr.listen("172.29.43.69", 1337); // ip der linux sub machine
+    svr.listen("172.29.43.69", 1330); // ip der linux sub machine
+    return 0;
 }
 
 void handleGetRota(const httplib::Request &req, httplib::Response &res) {
