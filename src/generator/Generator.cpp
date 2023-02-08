@@ -206,7 +206,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
     return chooseMode(customPool, true, ++depth);
 }
 
-RotaMap *Generator::chooseMap(RotaMode *mode) { // TODO Test?
+RotaMap *Generator::chooseMap(RotaMode *mode) {
 
     if (!this->mapsAvailable(mode)) {
         throw std::runtime_error("no maps available for mode: " + mode->name);
@@ -270,7 +270,7 @@ void Generator::decreaseLayerLocktimes() {
     }
 }
 
-void Generator::lockTeams() { // TODO test?
+void Generator::lockTeams() {
     int maxSameTeam = this->config->get_max_same_team();
     if (maxSameTeam < 1)
         return;

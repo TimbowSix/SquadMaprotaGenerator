@@ -59,7 +59,7 @@ int main(int ac, char **av) {
                 gen_mutex.unlock();
             });
 
-    svr.listen("172.29.43.69", 1339); // ip der linux sub machine
+    svr.listen("172.29.43.69", 1337); // ip der linux sub machine
 }
 
 void handleGetRota(const httplib::Request &req, httplib::Response &res) {
