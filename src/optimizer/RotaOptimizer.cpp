@@ -300,15 +300,14 @@ std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in) {
 }
 
 std::vector<float> RotaOptimizer::Run(bool debug) {
-    print_vector(this->comparisonState);
-#if DEBUG
-    if (debug) {
-        time_t start, end;
-        time(&start);
-    }
-    std::ofstream file;
-    file.open("data.dat");
-#endif
+    #if DEBUG
+        if (debug) {
+            time_t start, end;
+            time(&start);
+        }
+        std::ofstream file;
+        file.open("data.dat");
+    #endif
 
     boost::numeric::ublas::matrix<float> state(
         this->GenerateSeed(this->stateBaseSize));
