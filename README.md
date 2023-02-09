@@ -68,6 +68,8 @@ SquadMaprotaServer
 start. Ohne `host` und `port` Angabe startet der Server unter `localhost:1330`.
 
 ----
+<br>
+
 # Admin Manual
 
 ## Quickstart
@@ -143,6 +145,7 @@ Entscheidet, ob 2x der selbe Mode aus dem Main pool hintereinander
 kommen dürfen oder sie sich abwechseln müssen.
 
 ---
+<br>
 
 ## Neue Map einfügen
 

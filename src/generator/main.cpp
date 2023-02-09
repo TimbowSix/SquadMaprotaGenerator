@@ -21,28 +21,30 @@ int main(void) {
 
     std::string path = std::string(CONFIG_PATH) + "config.json";
     rota::RotaConfig conf(path);
+    conf.set_number_of_layers(100000);
     rota::Generator gen(&conf);
     std::cout << "Seed: " << gen.getSeed() << std::endl << std::endl;
 
-    /*gen.generateRota();
-
-    for (rota::RotaLayer *layer : *gen.getRota()) {
-        std::cout << layer->getName() << std::endl;
-    }*/
-
     // gen data stuff
-    std::ofstream file;
-    file.open(std::to_string(time(NULL)) + ".dat");
     std::vector<rota::RotaLayer *> ges;
-    std::map<RotaMap *, float> genDist;
-    std::map<RotaMap *, float>::iterator it;
+    std::map<RotaMode *, std::map<RotaMap *, float>> genDist;
 
-    std::string modeName = "Destruction";
+    std::map<RotaMode *, int> sum;
+
+    for (auto const &x : *gen.getModes()) {
+        if (x.second->probability > 0 && x.second->modePool != nullptr) {
+            sum[x.second] = 0;
+        }
+    }
 
     for (int j = 0; j < 1000; j++) {
         std::cout << j << std::endl;
 
-        gen.setRandomMapWeights(gen.getModes()->at(modeName));
+        for (auto const &x : *gen.getModes()) {
+            if (x.second->probability > 0 && x.second->modePool != nullptr) {
+                gen.setRandomMapWeights(x.second);
+            }
+        }
         for (int i = 0; i < 1; i++) {
             gen.generateRota();
             for (RotaLayer *layer : *gen.getRota()) {
@@ -51,37 +53,48 @@ int main(void) {
             gen.reset();
         }
 
-        int sum = 0;
-
         for (RotaLayer *layer : ges) {
-            if (layer->getMode()->name.compare(modeName) == 0) {
-                it = genDist.find(layer->getMap());
+
+            if (layer->getMode()->probability > 0 &&
+                layer->getMode()->modePool != nullptr) {
+
                 // file << layer->getName() << "\n";
-                if (it != genDist.end()) {
-                    genDist[layer->getMap()] += 1.0;
+                if (genDist[layer->getMode()].count(layer->getMap())) {
+                    genDist[layer->getMode()][layer->getMap()] += 1.0;
                 } else {
-                    genDist[layer->getMap()] = 1.0;
+                    genDist[layer->getMode()][layer->getMap()] = 1.0;
                 }
-                sum++;
+                sum.at(layer->getMode())++;
             }
         }
 
         for (auto const &x : genDist) {
-            // file << x.first->getName() << " " << x.second << std::endl;
-            genDist[x.first] = x.second / sum;
+            for (auto const &y : genDist[x.first]) {
+                genDist[x.first][y.first] = y.second / sum[x.first];
+            }
         }
         // file << sum << "\n";
 
         for (auto const &x : genDist) {
-            file << x.first->getNeighbor()->size() << ";"
-                 << x.first->getMapWeight(gen.getModes()->at(modeName)) << ";"
-                 << x.second << "\n";
+
+            std::ofstream file;
+            file.open(std::string(x.first->name + ".dat"));
+            file << "neighbor; weight; distribution\n";
+
+            for (auto const &y : genDist[x.first]) {
+                file << y.first->getNeighbor()->size() << ";"
+                     << y.first->getMapWeight(x.first) << ";" << y.second
+                     << "\n";
+            }
+            file.close();
         }
         // file << "\n";
         ges.clear();
+        for (auto const &x : genDist) {
+            genDist[x.first].clear();
+        }
         genDist.clear();
     }
-    file.close();
 
     return 0;
 }
