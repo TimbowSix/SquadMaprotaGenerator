@@ -82,6 +82,7 @@ int main(int ac, char **av) {
 void handleGetRota(const httplib::Request &req, httplib::Response &res) {
 
     json::object retObj;
+    retObj["currSeed"] = gen->getSeed();
 
     if (req.has_param("pastRota")) {
         bool error = false;
@@ -134,6 +135,8 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                 // init new generator
                 gen = initialize();
 
+                retObj["currSeed"] = gen->getSeed();
+
                 json::array ret;
 
                 for (int i = 0; i < count; i++) {
@@ -170,6 +173,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
 void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
 
     json::object retObj;
+    retObj["currSeed"] = gen->getSeed();
 
     if (req.has_param("pastRota") && req.has_param("count")) {
 

@@ -28,8 +28,9 @@ Alle param values im Json-Format
 
 ``` json
 {
-    "status": state,
-    "msg": value
+    "status": "state number",
+    "currSeed" : "seed value",
+    "msg": "value"
 }
 ```
 
