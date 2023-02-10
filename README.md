@@ -77,13 +77,9 @@ start. Ohne `host` und `port` Angabe startet der Server unter `localhost:1330`.
 
 Für einen schnelle configuration kann die "config.json" anpasst werden:
 
--   gewünschte Anzahl an Rotas unter `number_of_rotas` einstellen
--   Layer pro Rota unter `number_of_layers` einstellen
--   Anzahl der Seed-Layer unter `seed_layer` einstellen
--   der Output-Ordner unter `output_path` eingestellen
-
-Die Einstellung `update_layers` sollte generell auf `true` stehen, das Skript kann
-eine Rota aber auch ohne die Layer zu Updaten generieren.
+- Layer pro Rota unter `number_of_layers` einstellen
+- Anzahl der Seed-Layer unter `seed_layer` einstellen
+- Server starten siehe oben
 
 ## Einstellparameter Übersicht
 
@@ -143,7 +139,7 @@ Mindestabstand zwischen nicht "main" pool modes
 
 **space_main** [bool]
 Entscheidet, ob 2x der selbe Mode aus dem Main pool hintereinander
-kommen dürfen oder sie sich abwechseln müssen.
+kommen dürfen oder sie sich abwechseln müssen. Wenn `true` ist momentan nur eine Gleichverteilung möglich.
 
 ---
 <br>
