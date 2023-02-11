@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/RotaServer.dir/RotaServer.cpp.o -o RotaServer  -lboost_json -lstdc++fs ../generator/libSquadMaprotaLib.a ../optimizer/libRotaOptimizerLib.a -lboost_json -lstdc++fs /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so 

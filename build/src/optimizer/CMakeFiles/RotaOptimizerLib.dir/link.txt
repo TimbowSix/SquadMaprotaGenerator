@@ -1,0 +1,2 @@
+/usr/bin/ar qc libRotaOptimizerLib.a CMakeFiles/RotaOptimizerLib.dir/OptimizerMain.cpp.o CMakeFiles/RotaOptimizerLib.dir/RotaOptimizer.cpp.o CMakeFiles/RotaOptimizerLib.dir/OptimizerConfig.cpp.o
+/usr/bin/ranlib libRotaOptimizerLib.a

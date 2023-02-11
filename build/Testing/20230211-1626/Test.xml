@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20230211-1626-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.22.1"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="KaymsMain"
+	OSRelease="5.15.79.1-microsoft-standard-WSL2"
+	OSVersion="#1 SMP Wed Nov 23 01:01:46 UTC 2022"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="23"
+	ModelID="113"
+	ProcessorCacheSize="512"
+	NumberOfLogicalCPU="24"
+	NumberOfPhysicalCPU="12"
+	TotalVirtualMemory="4096"
+	TotalPhysicalMemory="15955"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="3800.01"
+	>
+	<Testing>
+		<StartDateTime>Feb 11 17:26 CET</StartDateTime>
+		<StartTestTime>1676132793</StartTestTime>
+		<TestList>
+			<Test>./src/qualification/optimizer/OptimizerTest</Test>
+			<Test>./src/qualification/basic/UtilsTest</Test>
+			<Test>./src/qualification/basic/ResetRotaTest</Test>
+			<Test>./src/qualification/basic/BasicRotaTest</Test>
+		</TestList>
+		<Test Status="failed">
+			<Name>OptimizerTest</Name>
+			<Path>./src/qualification/optimizer</Path>
+			<FullName>./src/qualification/optimizer/OptimizerTest</FullName>
+			<FullCommandLine>/home/kayms/SquadMaprotaGenerator/build/src/qualification/optimizer/optimizer_test</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="text/string" name="Exit Code">
+					<Value>SEGFAULT</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Exit Value">
+					<Value>0</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>0.00850323</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/home/kayms/SquadMaprotaGenerator/build/src/qualification/optimizer/optimizer_test</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJxlj70OgkAQhHueYkst5GJhaauVmoBWhJgTVrzI7eHenkGfXlBD/Pmq2cxkJpsEIkMVWG1oNIYjOwvq5Cyqs75Zr9JL0OVKN+xEL5GQtThW2Aoy6VpVzlU1Cnr5lJ4LVfVq39fGRRFl84EckvfmDPqMf41Onwf4YATjKJsM5LCs3UHXLx/patiRReqyKJPQ/IS/SjeNGGvuyPuFaSUwRhkkuzU8yf/t+P0ipojltuuJHhuFYvw=</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<Test Status="passed">
+			<Name>UtilsTest</Name>
+			<Path>./src/qualification/basic</Path>
+			<FullName>./src/qualification/basic/UtilsTest</FullName>
+			<FullCommandLine>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/utils_test</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>0.0441583</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/utils_test</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJyNk0tPwzAMx+/9FD52h7W8JQ4cEIMdEA9t4jRNVWhNFpHEI0nZ2KenbUbVTc2GL3n9/LedOJNSa6E5KCZ0PIAPQwrSBSlMP9mPsun0q2TFE1sacmyMGg1zZFJcOzSayZQTcYkOretOrclTXs+yWjbJ82h209ocJtuYV1Az1gc9axZgS1GNSTQbtjaHsaR3Jj2A+lsY0gp1BaMblss9+LKr+uaEtFm9Ec1g8vYMjc07+4kVXJEo/iBvL49hCOITUHYQFFyh4AuHxd2CRI6ZJqOYDCr30hCfH46RN3RQ1B9DfH1QxMcSm7BOSxyruQWzDRo6rtdgreg/ng/iixoGV/WhHES7Pqe+NTouD2LtSoN9+W6PkqY/ObqquUei/+kDaG/ewRw83Z94qLEdMjMsaKV3P074w4BhOtm7o6qg19vp9H5U1751TaJfcZdCvQ==</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<Test Status="passed">
+			<Name>ResetRotaTest</Name>
+			<Path>./src/qualification/basic</Path>
+			<FullName>./src/qualification/basic/ResetRotaTest</FullName>
+			<FullCommandLine>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/resetRota_test</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>1.75343</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/resetRota_test</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJytUk1Lw0AQvedXzK3JoYkVpUbwUFCKSKOkiIdQwjSdpov7EXc3rf33bpJSWkWI4DvNvn07b2Z20lpKJksQyKQfwForAdFGCYrecS9MNP+ocTXDSiuLU5Kk0Sod0aclLZFHpVIlJ0vGnoZGF1HZRHmTNiwKL7s7YgHpwfMSGo3pTEftAUzNLIVeNjxiAVOulsi7e5JbppUUJJ2W7LCuvonPkqbkNHlDeBmkrwm0WJzwYVtm2XbG8x2zm7xCx3Dckzbe2yRNHpPpLSQKOgpwi4zjkhOslXZzq2AwQ8mKgbPo8Pz0Bwvw4+sLECboVeH/FwT+OL7p/HuMEfzR+Cp2crBuIXjg9fspS6iHK7WT54vw6wKARhn+8HLtvEzm84f7ZkCHt6H3Bbl75pM=</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<Test Status="passed">
+			<Name>BasicRotaTest</Name>
+			<Path>./src/qualification/basic</Path>
+			<FullName>./src/qualification/basic/BasicRotaTest</FullName>
+			<FullCommandLine>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/basicRota_test</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>6.3834</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/home/kayms/SquadMaprotaGenerator/build/src/qualification/basic/basicRota_test</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJy1k0tPwkAQgO/9FXMTD7RiNIiJBy8So2BSMB4IaYZlaDfso+4D4d+7WwwRPdgDzqGZ7sx++2WSyb1SXJUgkavOOayMlpBVWlK2xp202eTd43KEtdEOh6TIoNMmo60jo1BkpdalIEfWfU+tYVkZsyJiU8aS2d0h5pB/vXkDscfuH+01P2A9d5Qms+4h5jAUeoFiXye14UYrSSr0kuv6+kfzETQP1sUD3zpvKJlB/jqGJuZHlbRRVV4uyMTzZ9yRSd7u8/HjeHgLYw0inljADXKBC0Gw0iaMrIazESrOzgJ7Hy9PbdjQGVxfgbTnfzlNamQ0CjM8qc2BCp2b634bD4nbwnFJhcXwcYTypEK/8dDptzNrni6EZutpAJzU6hgdjQbtZlX/j893cLS5bGNjiZbNTaa9cr990jRNphWBiculV+BC3iya9q72Dj7QhprUG1qC5YoR8LCEWxawdt9chauVFst4u3dxeQWLXQCkySeKhHFd====</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<EndDateTime>Feb 11 17:26 CET</EndDateTime>
+		<EndTestTime>1676132799</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>
