@@ -6,7 +6,7 @@
 
 #include "RotaOptimizer.hpp"
 
-#define DEBUG false
+#define DEBUG true
 
 namespace optimizer {
 /// ===== FOR DEBUGGING =====
@@ -194,12 +194,12 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
     std::uniform_real_distribution<> distribute(-1, 1);
     // float exponent = 1.0/16.0;
     float random;
-    float factor_const = 0.000007; // 0.00003
+    float factor_const = 0.007; // 0.00003
     boost::numeric::ublas::matrix<float> newstate(state);
     for (unsigned i = 0; i < newstate.size1(); i++) {
         random = newstate(i, 0);
         random = distribute(this->generator) * s * factor_const;
-        newstate(i, 0) += random;
+        newstate(i, 0) += random*grid_fitness[i];
 
         // All entries must be positive or zero to be a probability matrix
         if (newstate(i, 0) < 0.0) {
