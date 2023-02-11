@@ -1,5 +1,4 @@
 {
-    "number_of_rotas": 2,
     "number_of_layers": 30,
     "seed_layer": 1,
     "layer_vote_api_url": "https://api.welovesquad.com/votes",
@@ -14,8 +13,8 @@
                 "RAAS": 0.5
             },
             "intermediate": {
-                "Invasion": 0.8,
-                "TC": 0.2
+                "Invasion": 0.5,
+                "TC": 0.5
             },
             "rest": {
                 "Insurgency": 0.9,
@@ -58,7 +57,7 @@
     "biom_spacing": 4,
     "layer_locktime": 30,
     "max_same_team": 2,
-    "min_biom_distance": 0.4,
+    "min_biom_distance": 0.35,
     "mapvote_slope": 0.15,
     "mapvote_shift": 0,
     "layervote_slope": 0.2,
