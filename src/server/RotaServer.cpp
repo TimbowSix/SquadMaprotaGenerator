@@ -50,14 +50,6 @@ int main(int ac, char **av) {
     gen = initialize();
     gen->generateRota();
     std::cout << "Ready" << std::endl;
-
-    std::ofstream file;
-    file.open("rota.dat");
-    for (rota::RotaLayer *layer : *gen->getRota()) {
-        file << layer->getName() << "\n";
-    }
-    file.close();
-    return 0;
     // basic Server
     // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
     httplib::Server svr;
