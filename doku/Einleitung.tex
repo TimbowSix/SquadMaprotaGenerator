@@ -1,12 +1,12 @@
 \section{Einleitung}
-        
+
         Der gemeine Squad Spieler mag nach der Sammlung an einiger Erfahrung gemerkt haben, dass eine abwechslungsreiche Rotation von Layern (Maprota)
-        die Qualität das Spieles deutlich verbessert. So fiel uns in der Vergangenheit auf, dass auf dem We $\heartsuit$ Squad Discord sich immer wieder 
-        Spieler über die Maprota beschwert haben. Anfangs beschwerten wir uns auch, bis wir uns das Ziel gesetzt haben, ein Programm 
-        für die Generierung einer besseren Maprota zu schreiben, bevor wir uns wieder beschweren. 
+        die Qualität das Spieles deutlich verbessert. So fiel uns in der Vergangenheit auf, dass auf dem We $\heartsuit$ Squad Discord sich immer wieder
+        Spieler über die Maprota beschwert haben. Anfangs beschwerten wir uns auch, bis wir uns das Ziel gesetzt haben, ein Programm
+        für die Generierung einer besseren Maprota zu schreiben, bevor wir uns wieder beschweren.
         Die Ziele, für das Projekt, waren schnell aufgestellt und das Problem scheint im ersten Moment einfach lösbar zu sein.
         Wir können euch nach 2 Monaten Entwicklungszeit aber sagen es ist definitiv nicht einfach! Es wäre einfacher gewesen sich weiterhin zu beschweren.
-        Die Lösung, die wir für eine bessere Maprota gefunden haben, möchten wir hier vorstellen.  
+        Die Lösung, die wir für eine bessere Maprota gefunden haben, möchten wir hier vorstellen.
 
         \subsection{Problemdarstellung}
             Aus den historischen Debatten über die Maprota wurde versucht, die Hauptprobleme hervorzuheben und werden im folgenden erklärt.
@@ -15,28 +15,31 @@
             Zur Klassifizierung werden wir nun zunächst Eckpunkte definieren welche die Qualität einer Rota bemessen sollen.
 
             Zunächst sollte sich eine Map nicht zu stark wiederholen.
-            Des Weiteren gab es in der Community bedenken, welche sich damit beschäftigen, dass nicht zu ähnliche Maps zu kurz hintereinander gespielt werden sollten. 
-            Ein Beispiel für letzteres wäre die Abfolge 
+            Des Weiteren gab es in der Community bedenken, welche sich damit beschäftigen, dass nicht zu ähnliche Maps zu kurz hintereinander gespielt werden sollten.
+            Ein Beispiel für letzteres wäre die Abfolge
             \begin{equation*}
                 \text{Sumari} \rightarrow \text{Logar Valley} \rightarrow \text{Fallujah}.
             \end{equation*}
-            Hier würden direkt nacheinander folgend drei relativ ähnliche Maps gezogen werden. 
+            Hier würden direkt nacheinander folgend drei relativ ähnliche Maps gezogen werden.
             Der Charakter dieser Maps wird im wesentlichen über die Eigenschaften \glqq{}Wüste\grqq{}, \glqq{}Stadt\grqq{}, \glqq{}Infanterie lastig/klein\grqq{} der Map definiert.
             Eine gute Rota sollte solche Map-Ketten vermeiden.
 
-            Ein weiterer wichtiger Punkt ist die Vermeidung von Mustern in der Rota. 
+            Ein weiterer wichtiger Punkt ist die Vermeidung von Mustern in der Rota.
             Das bedeutet, dass die generierten Rotas nicht deterministisch verteilt, sondern aus zufälligem Ziehen entstehen sollen.
-            
+
             Das seit einiger Zeit bestehende Layervote-System muss direkten Einfluss auf die Rota haben um die Verteilung den Wünschen der Community anzupassen.
         \newpage
         \subsection{Ziel}
+
+        \todo[]{ nicht mehr alle teams etc muss dazu}
+
         \label{sub:Ziele}
             Zusammenfassend werden wir im folgenden die Qualität der Maprota an folgenden Eigenschaften messen:
             \begin{itemize}
                 \item Ähnlichkeit der gezogenen Maps in kurzem Zeitraum
                 \item Wiederholung der selben Map in kurzem Zeitraum
-                \item Keine Muster/Nicht-deterministische Verteilung 
-                \item Layervotes müssen direkten Einfluss haben 
+                \item Keine Muster/Nicht-deterministische Verteilung
+                \item Layervotes müssen direkten Einfluss haben
             \end{itemize}
 
             Der in diesem Dokument beschriebene Algorithmus soll alle vier genannten Eigenschaften so gut wie möglich Erfüllen.
@@ -45,6 +48,6 @@
             Anders ausgedrückt:\\
             Das System sollte global einer Verteilung folgen welche die Map/Layervotes wiederspiegeln und lokal eine gewisse Varianz unter den Mapcharakteristiken hervorruft.
 
-            Im weiteren Verlauf wird ein Algorithmus präsentiert, welcher alle oben genannten Aspekte so gut wie möglich abdeckt. 
+            Im weiteren Verlauf wird ein Algorithmus präsentiert, welcher alle oben genannten Aspekte so gut wie möglich abdeckt.
             Es sei aber darauf hingewiesen, dass nicht alle Punkte gleichzeitig perfekt umgesetzt werden können aufgrund kritischer Eigenschaften des Systems und der gesetzen Nebenbedingungen.
             Darauf wird im Folgenden noch näher eingegangen.

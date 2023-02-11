@@ -1,41 +1,44 @@
 \section{Optimizer}
+
+\todo{komplett neu}
+
 \label{sub:optimizer}
 Der Optimizer ist ein entstandenes U-Boot Projekt, welches gute Parameter für die Mapweightgleichungen \ref{eq:mapweight} findet.
 Die Bestimmung optimaler Parameter sind entscheidend für eine gute Annäherung der generierten Mapverteilung an die Erwartete.
-Wahrscheinlich wäre es möglich, die Parameter analytisch zu ermitteln. Da dieses aber sehr zeitintensiv sein würde, 
-haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machine Learning\grqq{} Algorithmus entschieden. 
+Wahrscheinlich wäre es möglich, die Parameter analytisch zu ermitteln. Da dieses aber sehr zeitintensiv sein würde,
+haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machine Learning\grqq{} Algorithmus entschieden.
 \subsection{Funktionsweise}
-Der Optimizer sucht nach der kleinste Abweichung zwischen der vorgegebenen und generierten Mapverteilung. 
+Der Optimizer sucht nach der kleinste Abweichung zwischen der vorgegebenen und generierten Mapverteilung.
 Es wird jeweils nur ein Modus betrachtet und optimiert.
 
-Der zu betrachtende Optimizer ist als Maß der Abweichung der \glqq{}Soll-Mapverteilung\grqq{} und der Mapverteilung des Generators gedacht. 
+Der zu betrachtende Optimizer ist als Maß der Abweichung der \glqq{}Soll-Mapverteilung\grqq{} und der Mapverteilung des Generators gedacht.
 Es seien $p_i^\text{fi}$ die Mapwahrscheinlichkeiten errechnet nach den Mapvotes und $p_i^\text{gen}$ die Mapwahrscheinlichkeiten nach dem Mapgenerator, sodass $\sum_i p_i^\text{fi/gen}=1$.
-Da die Generator-Wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(a_{ij})$ eine Funktion der Weight-Koeffizienten. 
-Es gilt nun diese so zu Optimieren, dass der Optimizer 
+Da die Generator-Wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(a_{ij})$ eine Funktion der Weight-Koeffizienten.
+Es gilt nun diese so zu Optimieren, dass der Optimizer
 \begin{equation}
     s_m(a_{ij}) = \sqrt{\sum_i \left(p_i^\text{fi}-p_i^\text{gen}(a_{ij})\right)^2}
 \end{equation}
-minimal wird. 
-Das heißt wir versuchen die Gleichung 
+minimal wird.
+Das heißt wir versuchen die Gleichung
 \begin{equation}
     \underset{a}{\min}\quad s_m(a_{ij}) = a^*
 \end{equation}
-zu lösen. 
-Hierbei ist aber im Allgemeinen $s_m(a^*_{ij}) \neq 0$, da nicht angenommen werden kann, dass ein globales Minimum existiert. 
+zu lösen.
+Hierbei ist aber im Allgemeinen $s_m(a^*_{ij}) \neq 0$, da nicht angenommen werden kann, dass ein globales Minimum existiert.
 
 Der erste Schritt des Optimizers ist die Variierung des ersten Parameters um ein $\varDelta p$.
 Dadurch erhält man einen neuen Parameter $a_{ij} \rightarrow a_{ij} + \delta a_{ij}$, welcher die generierten Mapwahrscheinlichkeiten ändert.
-Die neue Verteilung ersetzt damit die $p_i^\text{gen}$ von zuvor und ein neuer Optimizer Wert wird errechnet. 
-Anschließend wird der neue Optimizerwert mit dem alten verglichen. 
-Der Shift in $a_{ij}$ wird beibehalten, wenn 
+Die neue Verteilung ersetzt damit die $p_i^\text{gen}$ von zuvor und ein neuer Optimizer Wert wird errechnet.
+Anschließend wird der neue Optimizerwert mit dem alten verglichen.
+Der Shift in $a_{ij}$ wird beibehalten, wenn
 \begin{equation}
-    s_m(a_{ij}) - s_m(a_{ij}+\delta a_{ij}) > 0 
+    s_m(a_{ij}) - s_m(a_{ij}+\delta a_{ij}) > 0
 \end{equation}
-erfüllt ist. 
+erfüllt ist.
 Sollte jeder der 5 Parameter nicht mehr optimierbar sein, so wird das $\varDelta p$ verringert.
-Das Prozedere wird so lange durchgeführt, bis $\varDelta p < \varDelta p_\text{min}$ erfüllt ist. 
+Das Prozedere wird so lange durchgeführt, bis $\varDelta p < \varDelta p_\text{min}$ erfüllt ist.
 Die berechneten Koeffizienten $a_{ij}$ werden dann benutzt um die internen Mapweights zu berechnen.
 \subsection{Anwendung}
 Das Finden neuer Parameter durch den Optimizer wird nur bei veränderten Layervotes und veränderten Einstellungen benötigt.
-Daher wird der Optimizer auch nur bei solchen Veränderungen vor der Generierung automatisch aufgerufen. 
+Daher wird der Optimizer auch nur bei solchen Veränderungen vor der Generierung automatisch aufgerufen.
 Für eine geringere Laufzeit wird die Optimizer parallel für jedem Modus ausgeführt.
