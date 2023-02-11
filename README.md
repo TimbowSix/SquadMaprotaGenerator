@@ -10,7 +10,9 @@ Weitere Informationen ist unter [Dokumentation](doku/main.pdf) zu finden.
 
 Als Container ausführen:
 ```bash
-docker-compose up
+git submodule update --init --recursive
+
+docker-compose up --build
 ```
 
 ## Api Schnitelle
