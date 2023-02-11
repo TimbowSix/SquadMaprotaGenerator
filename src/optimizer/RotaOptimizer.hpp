@@ -79,6 +79,10 @@ class RotaOptimizer {
                       float T, std::vector<float> &grid_fitness,
                       boost::numeric::ublas::matrix<float> &agent);
 
+    boost::numeric::ublas::matrix<float> GenerateNeighbourAxis(boost::numeric::ublas::matrix<float> &state, float s,
+                      float T, std::vector<float> &grid_fitness,
+                      boost::numeric::ublas::matrix<float> &agent);
+
     /*
     Summary: Adds the given map-representative to the memory kernel and removes
     the most oldest one if the kernel length is full Params: matrix<float>

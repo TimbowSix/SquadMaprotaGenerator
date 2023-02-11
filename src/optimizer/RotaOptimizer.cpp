@@ -211,6 +211,32 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
     return MatrixToProbabilityMatrix(newstate);
 };
 
+boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbourAxis(boost::numeric::ublas::matrix<float> &state,
+                                 float s, float T,
+                                 std::vector<float> &grid_fitness,
+                                 boost::numeric::ublas::matrix<float> &agent) {
+    std::uniform_real_distribution<> distribute(-1, 1);
+    std::uniform_int_distribution<> distInt(0, state.size1());
+    int axis = distInt(this->generator);
+    // float exponent = 1.0/16.0;
+    float random;
+    float factor_const = 0.007; // 0.00003
+    boost::numeric::ublas::matrix<float> newstate(state);
+
+    random = newstate(axis, 0);
+    random = distribute(this->generator) * s * factor_const;
+    newstate(axis, 0) += random*grid_fitness[axis];
+
+    // All entries must be positive or zero to be a probability matrix
+    if (newstate(axis, 0) < 0.0) {
+        SetRow(newstate, axis, newstate(axis, 0) - 2 * random);
+    } else {
+        SetRow(newstate, axis, newstate(axis, 0));
+    }
+
+    return MatrixToProbabilityMatrix(newstate);
+};
+
 void RotaOptimizer::UpdateMemoryKernel(
     int index, std::vector<boost::numeric::ublas::vector<int>> &kernel) {
     // cycle kernel
@@ -341,7 +367,7 @@ std::vector<float> RotaOptimizer::Run(bool debug) {
         }
 
         this->T = this->UpdateTemperature(
-            this->T0, 0.001, i + 1); // 0.011, 0.001 destrc at 10^5 iterMax
+            this->T0, 0.0001, i + 1); // 0.011, 0.001 destrc at 10^5 iterMax
 #if DEBUG
         file << current_fit_val << std::endl;
         std::cout << "accepted_state_fit_value: " << current_fit_val
