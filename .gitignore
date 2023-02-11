@@ -103,8 +103,21 @@ dist
 # TernJS port file
 .tern-port
 
-*test*
+*__test*
 *workspace
 __pycache__
 *.cfg
 .vscode
+
+
+#build folder
+build
+
+#cmake folder
+CMakeFiles
+
+#cpp rotaconfig
+GlobalConfig.hpp
+
+#obsidian
+.obsidian
