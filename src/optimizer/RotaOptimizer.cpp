@@ -6,7 +6,7 @@
 
 #include "RotaOptimizer.hpp"
 
-#define DEBUG true
+#define DEBUG false
 
 namespace optimizer {
 /// ===== FOR DEBUGGING =====
