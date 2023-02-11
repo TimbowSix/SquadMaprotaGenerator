@@ -2,8 +2,8 @@
 
 namespace optimizer{
     OptimizerConfig::OptimizerConfig(int memoryKernelSize, std::map<int, std::vector<int>> neighbourDictionary, std::vector<float> mapProbabilities, std::string modename){
-        this->T0 = 0.003;
-        this->iterationMax = 60000;
+        this->T0 = 0.03;
+        this->iterationMax = 50000;
         this->maxEvolveSteps = 1000;
         if(mapProbabilities.size() - memoryKernelSize > 2){
             this->kernelsize = memoryKernelSize;
