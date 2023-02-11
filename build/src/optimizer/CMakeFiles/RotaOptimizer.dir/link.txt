@@ -1,1 +1,0 @@
-/usr/bin/g++ -O3 -DNDEBUG CMakeFiles/RotaOptimizer.dir/OptimizerMain.cpp.o CMakeFiles/RotaOptimizer.dir/RotaOptimizer.cpp.o CMakeFiles/RotaOptimizer.dir/OptimizerConfig.cpp.o -o RotaOptimizer 

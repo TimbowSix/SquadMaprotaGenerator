@@ -1,2 +1,0 @@
-/usr/bin/ar qc libSquadMaprotaLib.a CMakeFiles/SquadMaprotaLib.dir/RotaMap.cpp.o CMakeFiles/SquadMaprotaLib.dir/RotaMode.cpp.o CMakeFiles/SquadMaprotaLib.dir/RotaModePool.cpp.o CMakeFiles/SquadMaprotaLib.dir/RotaLayer.cpp.o CMakeFiles/SquadMaprotaLib.dir/RotaTeam.cpp.o CMakeFiles/SquadMaprotaLib.dir/utils.cpp.o CMakeFiles/SquadMaprotaLib.dir/dataParsing.cpp.o CMakeFiles/SquadMaprotaLib.dir/Generator.cpp.o CMakeFiles/SquadMaprotaLib.dir/RotaConfig.cpp.o
-/usr/bin/ranlib libSquadMaprotaLib.a
