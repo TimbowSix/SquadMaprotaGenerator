@@ -1,6 +1,7 @@
 version: "3"
 services:
   squad-maprota-generator:
+    build: .
     container_name: squad-maprota-generator
     image: ghcr.io/welovesquad/squadmaprotagenerator:latest
     ports:
