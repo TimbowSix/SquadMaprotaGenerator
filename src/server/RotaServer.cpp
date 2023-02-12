@@ -66,7 +66,7 @@ int main(int ac, char **av) {
                  gen_mutex.unlock();
              });
 
-    svr.listen("172.22.250.204", port); // ip der linux sub machine
+    svr.listen(host, port); // ip der linux sub machine
     return 0;
 }
 
