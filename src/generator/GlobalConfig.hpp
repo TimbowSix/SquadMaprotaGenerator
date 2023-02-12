@@ -3,6 +3,7 @@
 #include <random>
 #define ROTA_VERSION_MAJOR 3
 #define ROTA_VERSION_MINOR 0
+#define ROTA_VERSION_PATCH 0
 #define CONFIG_PATH "/etc/maprota/"
 
 #define WEIGHT_PARAMS_COUNT 6

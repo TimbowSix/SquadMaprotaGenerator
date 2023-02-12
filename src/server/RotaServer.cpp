@@ -32,7 +32,7 @@ rota::Generator *gen;
 std::mutex gen_mutex;
 
 int main(int ac, char **av) {
-    std::string host = "localhost";
+    std::string host = "0.0.0.0";
     int port = 1330;
     if (ac == 3) {
         try {
@@ -45,7 +45,7 @@ int main(int ac, char **av) {
     }
     std::cout << "Start Server on " << host << ":" << port << std::endl;
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
-              << ROTA_VERSION_MINOR << std::endl;
+              << ROTA_VERSION_MINOR << "." << ROTA_VERSION_PATCH << std::endl;
 
     std::cout << "Init generator and run optimizer" << std::endl;
     gen = initialize();
@@ -95,7 +95,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     res.status = 418;
 
                     retObj["status"] = 404;
-                    retObj["msg"] = "cannot find " + json::serialize(s);
+                    retObj["data"] = "cannot find " + json::serialize(s);
                     break;
                 }
             }
@@ -110,7 +110,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                 }
 
                 retObj["status"] = 200;
-                retObj["msg"] = ret;
+                retObj["data"] = ret;
             }
 
             pastRota.clear();
@@ -138,27 +138,27 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     }
 
                     retObj["status"] = 200;
-                    retObj["msg"] = ret;
+                    retObj["data"] = ret;
 
                 } else {
                     retObj["status"] = 400;
-                    retObj["msg"] = "invalide arguments";
+                    retObj["error"] = "invalide arguments";
                     res.status = 418;
                 }
             } catch (std::exception &e) {
                 retObj["status"] = 400;
-                retObj["msg"] = e.what();
+                retObj["error"] = e.what();
                 res.status = 418;
             }
         } else {
             retObj["status"] = 400;
-            retObj["msg"] = "unknow parameter or too many";
+            retObj["error"] = "unknow parameter or too many";
             res.status = 418;
         }
 
     } catch (std::exception &e) {
         retObj["status"] = 400;
-        retObj["msg"] = e.what();
+        retObj["error"] = e.what();
         res.status = 418;
     }
 
@@ -190,7 +190,7 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                         error = true;
                         res.status = 418;
                         retObj["status"] = 404;
-                        retObj["msg"] = "cannot find " + json::serialize(s);
+                        retObj["error"] = "cannot find " + json::serialize(s);
                         break;
                     }
                 }
@@ -206,24 +206,24 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                     }
 
                     retObj["status"] = 200;
-                    retObj["msg"] = r;
+                    retObj["data"] = r;
                 }
 
             } else {
                 retObj["status"] = 400;
-                retObj["msg"] = "invalide arguments";
+                retObj["error"] = "invalide arguments";
                 res.status = 418;
             }
 
         } else {
             retObj["status"] = 400;
-            retObj["msg"] = "unknow parameter";
+            retObj["error"] = "unknow parameter";
             res.status = 418;
         }
 
     } catch (std::exception &e) {
         retObj["status"] = 400;
-        retObj["msg"] = e.what();
+        retObj["error"] = e.what();
         res.status = 418;
     }
     res.set_content(json::serialize(retObj), "text/json");

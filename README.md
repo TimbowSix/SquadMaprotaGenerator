@@ -45,9 +45,10 @@ docker-compose up --build
 
 ``` json
 {
-    "status": "state number",
+    "status" : "state number",
     "currSeed" : "seed value",
-    "msg": "value"
+    "data" : "value",
+    "error" : "error msg"
 }
 ```
 
