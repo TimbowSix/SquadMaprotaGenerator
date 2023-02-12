@@ -16,13 +16,28 @@ docker-compose up
 ## Api Schnitelle
 
 **Request Format** <br>
-Alle param values im Json-Format
+- `POST /rota`
+    - Body:
+      ```
+      {
+          rotaCount?: number;
+          pastRota?: string[];
+      }
+      ```
+    - Wenn rotaCount angegeben:
+        - Gibt rotaCount generierte Rotas zurück (Optimizer: true)
+    - Sonst wenn pastRota angegeben:
+ 	   - Generiert eine Fortsetzung von pastRota (Optimizer: false)
 
-| Endpoint    | Method | Params                        | Description                                                  | Optimizer running |
-| ----------- | ------ | ----------------------------- | ------------------------------------------------------------ | --------------- |
-| getRota     | GET    | rotaCount [int]               | gibt `rotaCount` generierte Rotas zurück                     | true            |
-| getRota     | GET    | pastRota  [array]             | generiert eine Fortsetzung von `pastRota`                    | false           |
-| getProposal | GET    | pastRota [array], count [int] | generiert `count` Layers als Vorschlag anhand der `pastRota` | false           |
+- `POST /rota/proposal`
+    - Body:
+      ```
+      {
+          pastRota: string[];
+          count: number;
+      }
+      ```
+   - Generiert count Layers als Vorschlag anhand der pastRota (Optimizer: false)
 
 **Return Format**
 

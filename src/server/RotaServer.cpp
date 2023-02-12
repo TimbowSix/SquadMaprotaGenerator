@@ -3,6 +3,7 @@
 //#define CPPHTTPLIB_OPENSSL_SUPPORT
 #include <boost/json.hpp>
 #include <boost/json/object.hpp>
+#include <boost/json/parse.hpp>
 #include <boost/json/serialize.hpp>
 #include <exception>
 #include <httplib.h>
@@ -48,26 +49,24 @@ int main(int ac, char **av) {
 
     std::cout << "Init generator and run optimizer" << std::endl;
     gen = initialize();
-    gen->generateRota();
     std::cout << "Ready" << std::endl;
     // basic Server
     // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
     httplib::Server svr;
-    svr.Get("/getRota",
-            [](const httplib::Request &req, httplib::Response &res) {
-                gen_mutex.lock();
-                handleGetRota(req, res);
-                gen_mutex.unlock();
-            });
+    svr.Post("/rota", [](const httplib::Request &req, httplib::Response &res) {
+        gen_mutex.lock();
+        handleGetRota(req, res);
+        gen_mutex.unlock();
+    });
 
-    svr.Get("/getProposal",
-            [](const httplib::Request &req, httplib::Response &res) {
-                gen_mutex.lock();
-                handleGetProposal(req, res);
-                gen_mutex.unlock();
-            });
+    svr.Post("/rota/proposal",
+             [](const httplib::Request &req, httplib::Response &res) {
+                 gen_mutex.lock();
+                 handleGetProposal(req, res);
+                 gen_mutex.unlock();
+             });
 
-    svr.listen(host, port); // ip der linux sub machine
+    svr.listen("172.22.250.204", port); // ip der linux sub machine
     return 0;
 }
 
@@ -76,13 +75,16 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
     json::object retObj;
     retObj["currSeed"] = gen->getSeed();
 
-    if (req.has_param("pastRota")) {
-        bool error = false;
+    bool error = false;
 
-        std::vector<std::string> pastRota;
-        try {
-            json::array pastLayers =
-                json::parse(req.get_param_value("pastRota")).as_array();
+    try {
+        json::object reqObj = json::parse(req.body).as_object();
+
+        if (reqObj.contains("pastRota") && !reqObj.contains("rotaCount")) {
+
+            std::vector<std::string> pastRota;
+
+            json::array pastLayers = reqObj.at("pastRota").as_array();
 
             // check if all layer are available in generator
             for (auto s : pastLayers) {
@@ -92,7 +94,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     error = true;
                     res.status = 418;
 
-                    retObj["status"] = 418;
+                    retObj["status"] = 404;
                     retObj["msg"] = "cannot find " + json::serialize(s);
                     break;
                 }
@@ -111,51 +113,52 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                 retObj["msg"] = ret;
             }
 
-        } catch (std::exception &e) {
-            error = true;
+            pastRota.clear();
 
-            retObj["status"] = 418;
-            retObj["msg"] = e.what();
-            res.status = 418;
-        }
-        pastRota.clear();
+        } else if (reqObj.contains("rotaCount") &&
+                   !reqObj.contains("pastRota")) {
+            try {
 
-    } else if (req.has_param("rotaCount")) {
-        try {
-            int count = std::stoi(req.get_param_value("rotaCount"));
-            if (count > 0) {
-                // init new generator
-                gen = initialize();
+                int count = reqObj.at("rotaCount").as_int64();
+                if (count > 0) {
+                    // init new generator
+                    gen = initialize();
 
-                retObj["currSeed"] = gen->getSeed();
+                    retObj["currSeed"] = gen->getSeed();
 
-                json::array ret;
+                    json::array ret;
 
-                for (int i = 0; i < count; i++) {
-                    json::array rota;
-                    gen->generateRota();
-                    for (rota::RotaLayer *layer : *gen->getRota()) {
-                        rota.push_back(json::value(layer->getName()));
+                    for (int i = 0; i < count; i++) {
+                        json::array rota;
+                        gen->generateRota();
+                        for (rota::RotaLayer *layer : *gen->getRota()) {
+                            rota.push_back(json::value(layer->getName()));
+                        }
+                        ret.push_back(rota);
                     }
-                    ret.push_back(rota);
+
+                    retObj["status"] = 200;
+                    retObj["msg"] = ret;
+
+                } else {
+                    retObj["status"] = 400;
+                    retObj["msg"] = "invalide arguments";
+                    res.status = 418;
                 }
-
-                retObj["status"] = 200;
-                retObj["msg"] = ret;
-
-            } else {
-                retObj["status"] = 418;
-                retObj["msg"] = "invalide arguments";
+            } catch (std::exception &e) {
+                retObj["status"] = 400;
+                retObj["msg"] = e.what();
                 res.status = 418;
             }
-        } catch (std::exception &e) {
-            retObj["status"] = 418;
-            retObj["msg"] = e.what();
+        } else {
+            retObj["status"] = 400;
+            retObj["msg"] = "unknow parameter or too many";
             res.status = 418;
         }
-    } else {
-        retObj["status"] = 418;
-        retObj["msg"] = "unknow parameter";
+
+    } catch (std::exception &e) {
+        retObj["status"] = 400;
+        retObj["msg"] = e.what();
         res.status = 418;
     }
 
@@ -167,16 +170,17 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
     json::object retObj;
     retObj["currSeed"] = gen->getSeed();
 
-    if (req.has_param("pastRota") && req.has_param("count")) {
+    try {
+        json::object reqObj = json::parse(req.body).as_object();
 
-        std::vector<std::string> pastRota;
-        bool error = false;
+        if (reqObj.contains("pastRota") && reqObj.contains("count")) {
 
-        try {
-            int count = std::stoi(req.get_param_value("count"));
+            std::vector<std::string> pastRota;
+            bool error = false;
+
+            int count = reqObj.at("count").as_int64();
             if (count > 0) {
-                json::array pastLayers =
-                    json::parse(req.get_param_value("pastRota")).as_array();
+                json::array pastLayers = reqObj.at("pastRota").as_array();
 
                 // check if all layer are available in generator
                 for (auto s : pastLayers) {
@@ -185,7 +189,7 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                     } else {
                         error = true;
                         res.status = 418;
-                        retObj["status"] = 418;
+                        retObj["status"] = 404;
                         retObj["msg"] = "cannot find " + json::serialize(s);
                         break;
                     }
@@ -206,18 +210,20 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                 }
 
             } else {
-                retObj["status"] = 418;
+                retObj["status"] = 400;
                 retObj["msg"] = "invalide arguments";
                 res.status = 418;
             }
-        } catch (std::exception &e) {
-            retObj["status"] = 418;
-            retObj["msg"] = e.what();
+
+        } else {
+            retObj["status"] = 400;
+            retObj["msg"] = "unknow parameter";
             res.status = 418;
         }
-    } else {
-        retObj["status"] = 418;
-        retObj["msg"] = "unknow parameter";
+
+    } catch (std::exception &e) {
+        retObj["status"] = 400;
+        retObj["msg"] = e.what();
         res.status = 418;
     }
     res.set_content(json::serialize(retObj), "text/json");
