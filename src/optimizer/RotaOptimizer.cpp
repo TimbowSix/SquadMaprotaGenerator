@@ -199,7 +199,7 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
     for (unsigned i = 0; i < newstate.size1(); i++) {
         random = newstate(i, 0);
         random = distribute(this->generator) * s * factor_const;
-        newstate(i, 0) += random*grid_fitness[i];
+        newstate(i, 0) += random * grid_fitness[i];
 
         // All entries must be positive or zero to be a probability matrix
         if (newstate(i, 0) < 0.0) {
@@ -211,12 +211,12 @@ RotaOptimizer::GenerateNeighbour(boost::numeric::ublas::matrix<float> &state,
     return MatrixToProbabilityMatrix(newstate);
 };
 
-boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbourAxis(boost::numeric::ublas::matrix<float> &state,
-                                 float s, float T,
-                                 std::vector<float> &grid_fitness,
-                                 boost::numeric::ublas::matrix<float> &agent) {
+boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbourAxis(
+    boost::numeric::ublas::matrix<float> &state, float s, float T,
+    std::vector<float> &grid_fitness,
+    boost::numeric::ublas::matrix<float> &agent) {
     std::uniform_real_distribution<> distribute(-1, 1);
-    std::uniform_int_distribution<> distInt(0, state.size1());
+    std::uniform_int_distribution<> distInt(0, state.size1() - 1);
     int axis = distInt(this->generator);
     // float exponent = 1.0/16.0;
     float random;
@@ -225,7 +225,7 @@ boost::numeric::ublas::matrix<float> RotaOptimizer::GenerateNeighbourAxis(boost:
 
     random = newstate(axis, 0);
     random = distribute(this->generator) * s * factor_const;
-    newstate(axis, 0) += random*grid_fitness[axis];
+    newstate(axis, 0) += random * grid_fitness[axis];
 
     // All entries must be positive or zero to be a probability matrix
     if (newstate(axis, 0) < 0.0) {
@@ -326,14 +326,14 @@ std::vector<float> MatrixWeights(boost::numeric::ublas::matrix<float> v_in) {
 }
 
 std::vector<float> RotaOptimizer::Run(bool debug) {
-    #if DEBUG
-        if (debug) {
-            time_t start, end;
-            time(&start);
-        }
-        std::ofstream file;
-        file.open("data.dat");
-    #endif
+#if DEBUG
+    if (debug) {
+        time_t start, end;
+        time(&start);
+    }
+    std::ofstream file;
+    file.open("data.dat");
+#endif
 
     boost::numeric::ublas::matrix<float> state(
         this->GenerateSeed(this->stateBaseSize));
