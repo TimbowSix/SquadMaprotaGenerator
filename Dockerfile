@@ -19,7 +19,7 @@ RUN ./install_boost.sh
 
 ## make/install rota
 WORKDIR /home/maprota/build
-RUN cmake ..
+RUN cmake -DCMAKE_BUILD_TYPE=Release ..
 RUN make -j$(nproc)
 RUN make install
 USER rota
