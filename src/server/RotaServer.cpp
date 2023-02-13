@@ -135,6 +135,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                             rota.push_back(json::value(layer->getName()));
                         }
                         ret.push_back(rota);
+                        gen->reset();
                     }
 
                     retObj["status"] = 200;
