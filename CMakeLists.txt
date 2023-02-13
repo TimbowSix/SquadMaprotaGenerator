@@ -16,7 +16,13 @@ install(
   FILES config.json data/bioms.json
   PERMISSIONS WORLD_READ WORLD_WRITE
   DESTINATION /etc/maprota
-  )
+)
+
+# copy boost_json into package
+foreach(lib_target ${Boost_LIBRARIES})
+    get_target_property(lib_location ${lib_target} LOCATION)
+    install(FILES ${lib_location} DESTINATION lib)
+endforeach()
 
 include(InstallRequiredSystemLibraries)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)

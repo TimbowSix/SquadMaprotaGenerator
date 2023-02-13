@@ -6,6 +6,6 @@ services:
     image: ghcr.io/welovesquad/squadmaprotagenerator:latest
     ports:
       - "1330:1330"
-    restart: always
+    restart: unless-stopped
     volumes:
       - "./config.json:/etc/maprota/config.json:ro"
