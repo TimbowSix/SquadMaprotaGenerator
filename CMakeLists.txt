@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(SquadMaprota VERSION 3.1.2 LANGUAGES C CXX)
+project(SquadMaprota VERSION 3.1.4 LANGUAGES C CXX)
 
 enable_testing()
 
