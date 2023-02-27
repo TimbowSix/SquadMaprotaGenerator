@@ -43,31 +43,38 @@ int main(int ac, char **av) {
             return 1;
         }
     }
+
     std::cout << "Start Server on " << host << ":" << port << std::endl;
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << "." << ROTA_VERSION_PATCH << std::endl;
 
     std::cout << "Init generator and run optimizer" << std::endl;
-    gen = initialize();
-    std::cout << "Ready" << std::endl;
-    // basic Server
-    // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
-    httplib::Server svr;
-    svr.Post("/rota", [](const httplib::Request &req, httplib::Response &res) {
-        gen_mutex.lock();
-        handleGetRota(req, res);
-        gen_mutex.unlock();
-    });
+    try {
+        gen = initialize();
+        std::cout << "Ready" << std::endl;
+        // basic Server
+        // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
+        httplib::Server svr;
+        svr.Post("/rota",
+                 [](const httplib::Request &req, httplib::Response &res) {
+                     gen_mutex.lock();
+                     handleGetRota(req, res);
+                     gen_mutex.unlock();
+                 });
 
-    svr.Post("/rota/proposal",
-             [](const httplib::Request &req, httplib::Response &res) {
-                 gen_mutex.lock();
-                 handleGetProposal(req, res);
-                 gen_mutex.unlock();
-             });
+        svr.Post("/rota/proposal",
+                 [](const httplib::Request &req, httplib::Response &res) {
+                     gen_mutex.lock();
+                     handleGetProposal(req, res);
+                     gen_mutex.unlock();
+                 });
 
-    svr.listen(host, port); // ip der linux sub machine
-    return 0;
+        svr.listen(host, port); // ip der linux sub machine
+        return 0;
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
 }
 
 void handleGetRota(const httplib::Request &req, httplib::Response &res) {
