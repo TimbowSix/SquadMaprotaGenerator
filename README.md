@@ -60,13 +60,13 @@ docker-compose up --build
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install build-essential cmake gcc-multilib libssl-dev wget
-# Boost 1.81.0 bauen/installieren
-sudo ./install_boost.sh
 # submodules updaten
 git submodule update --init --recursive
 # build Ordner erstellen
 mkdir build
 cd build
+# Boost 1.81.0 bauen/installieren
+sudo ../install_boost.sh
 # bauen
 cmake ..
 make
