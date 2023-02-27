@@ -92,10 +92,9 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     pastRota.push_back((std::string)s.as_string());
                 } else {
                     error = true;
-                    res.status = 418;
+                    res.status = 400;
 
-                    retObj["status"] = 404;
-                    retObj["data"] = "cannot find " + json::serialize(s);
+                    retObj["error"] = "cannot find " + json::serialize(s);
                     break;
                 }
             }
@@ -109,7 +108,6 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                     ret.push_back(json::string(layer->getName()));
                 }
 
-                retObj["status"] = 200;
                 retObj["data"] = ret;
             }
 
@@ -138,29 +136,24 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
                         gen->reset();
                     }
 
-                    retObj["status"] = 200;
                     retObj["data"] = ret;
 
                 } else {
-                    retObj["status"] = 400;
                     retObj["error"] = "invalide arguments";
-                    res.status = 418;
+                    res.status = 400;
                 }
             } catch (std::exception &e) {
-                retObj["status"] = 400;
                 retObj["error"] = e.what();
-                res.status = 418;
+                res.status = 400;
             }
         } else {
-            retObj["status"] = 400;
             retObj["error"] = "unknow parameter or too many";
-            res.status = 418;
+            res.status = 400;
         }
 
     } catch (std::exception &e) {
-        retObj["status"] = 400;
         retObj["error"] = e.what();
-        res.status = 418;
+        res.status = 400;
     }
 
     res.set_content(json::serialize(retObj), "text/json");
@@ -189,8 +182,7 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                         pastRota.push_back((std::string)s.as_string());
                     } else {
                         error = true;
-                        res.status = 418;
-                        retObj["status"] = 404;
+                        res.status = 400;
                         retObj["error"] = "cannot find " + json::serialize(s);
                         break;
                     }
@@ -206,26 +198,22 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                         r.push_back(json::string(layer->getName()));
                     }
 
-                    retObj["status"] = 200;
                     retObj["data"] = r;
                 }
 
             } else {
-                retObj["status"] = 400;
                 retObj["error"] = "invalide arguments";
-                res.status = 418;
+                res.status = 400;
             }
 
         } else {
-            retObj["status"] = 400;
             retObj["error"] = "unknow parameter";
-            res.status = 418;
+            res.status = 400;
         }
 
     } catch (std::exception &e) {
-        retObj["status"] = 400;
         retObj["error"] = e.what();
-        res.status = 418;
+        res.status = 400;
     }
     res.set_content(json::serialize(retObj), "text/json");
 }

@@ -200,7 +200,7 @@ void injectLayerInfo(std::string url,
 }
 
 std::tuple<std::string, std::string> parseUrl(std::string url) {
-    std::regex pattern("^(https?://[a-zA-z]+.[a-zA-z]+.[a-zA-z]+)(.*)$");
+    std::regex pattern("^(https?:\\/\\/\\S+?)(\\/.*)$");
     std::smatch match;
     std::regex_match(url, match, pattern);
 
