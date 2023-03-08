@@ -31,8 +31,6 @@
         \newpage
         \subsection{Ziel}
 
-        \todo[]{ nicht mehr alle teams etc muss dazu}
-
         \label{sub:Ziele}
             Zusammenfassend werden wir im folgenden die Qualität der Maprota an folgenden Eigenschaften messen:
             \begin{itemize}
@@ -40,9 +38,10 @@
                 \item Wiederholung der selben Map in kurzem Zeitraum
                 \item Keine Muster/Nicht-deterministische Verteilung
                 \item Layervotes müssen direkten Einfluss haben
+                \item hintereinander gespielte Maps sollen so gewählt sein dass ein Spieler nicht mehrmals hintereinander die selbe Fraktion spielt
             \end{itemize}
 
-            Der in diesem Dokument beschriebene Algorithmus soll alle vier genannten Eigenschaften so gut wie möglich Erfüllen.
+            Der in diesem Dokument beschriebene Algorithmus soll alle fünf genannten Eigenschaften so gut wie möglich Erfüllen.
             Kurz gesagt ist das Ziel des Maprota Generators:\\\
             \glqq{}Ein probabilistisches System dessen globale Verteilung durch Mapvotes gegeben ist und lokal Wiederholung ähnlicher Maps vermeidet.\grqq{}
             Anders ausgedrückt:\\
@@ -50,4 +49,5 @@
 
             Im weiteren Verlauf wird ein Algorithmus präsentiert, welcher alle oben genannten Aspekte so gut wie möglich abdeckt.
             Es sei aber darauf hingewiesen, dass nicht alle Punkte gleichzeitig perfekt umgesetzt werden können aufgrund kritischer Eigenschaften des Systems und der gesetzen Nebenbedingungen.
-            Darauf wird im Folgenden noch näher eingegangen.
+            Darauf wird im Folgenden noch näher eingegangen. 
+            Insbesondere das Hinzufügen weiterer Nebenbedingung machen eine weitere Abbildung des Systems zunehmend schwieriger.
