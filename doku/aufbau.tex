@@ -224,9 +224,8 @@
     Sobald eine Map ausgewählt wurde, wird das Layer gewichtet nach dem Layerweights $w_l$ gezogen.
     Diese hängen nur von den Layervotes ab, welche mit der vorher genannten Sigmoidfunktion moduliert werden.
     Damit ist dann für $N_l$ Layer einer Map
-    \todo{fix mathe}
     \begin{equation}
-        w_l(j) = \frac{1}{\sum_{m=0}^{N_l}\frac{1}{\sum_{m=0}^{N_l}\left[1+\exp\left(-a(v_m+b)\right)\right]}}\frac{1}{1+\exp\left(-a(v_j+b)\right)}
+        w_l(j) = \frac{1}{\sum_{m=0}^{N_l}\frac{1}{\left[1+\exp\left(-a(v_m+b)\right)\right]}}\frac{1}{1+\exp\left(-a(v_j+b)\right)}
     \end{equation}
     mit $v_j$ die Mapvote-Zahl des Layers $j$ der gegebenen Map.
     % \begin{figure}[htbp]
