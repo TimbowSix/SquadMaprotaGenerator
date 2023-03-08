@@ -1,44 +1,64 @@
 \section{Optimizer}
 
-\todo{komplett neu}
-
 \label{sub:optimizer}
-Der Optimizer ist ein entstandenes U-Boot Projekt, welches gute Parameter für die Mapweightgleichungen \ref{eq:mapweight} findet.
-Die Bestimmung optimaler Parameter sind entscheidend für eine gute Annäherung der generierten Mapverteilung an die Erwartete.
-Wahrscheinlich wäre es möglich, die Parameter analytisch zu ermitteln. Da dieses aber sehr zeitintensiv sein würde,
-haben wir uns vorübergehend für eine Lösung mit einem einfachen \glqq{}Machine Learning\grqq{} Algorithmus entschieden.
-\subsection{Funktionsweise}
-Der Optimizer sucht nach der kleinste Abweichung zwischen der vorgegebenen und generierten Mapverteilung.
-Es wird jeweils nur ein Modus betrachtet und optimiert.
+Wie zuvor erwähnt werden zum ziehen der einzelnen Maps interne Weights, definiert nach Gleichung \ref{eq:mapweight}, verwendet.
+Diese Weights sollen so gewählt sein dass beliebte Maps häufig genug gezogen werden, allerdings auch ein "overfitting" durch zu starken Unterschieden in den vorhandenen Layer der Maps ausschließen.
+Dies soll alles unter Einhaltung der Map-Sperrzeiten erfolgen mittels statischer Weights.
+Um dieses nicht-triviale Optimierungsproblem unter Einhaltung der Nebenbedingungen zu lösen wird ein numerisches Verfahren verwendet welches den Namen \glqq Simulated Annealing \grqq trägt \footnote[1]{Press, W. H.; Teukolsky, S. A.; Vetterling, W. T. \& Flannery, B. P. \(2007\), Numerical Recipes 3rd Edition: The Art of Scientific Computing, Cambridge University Press.}
+Es wurde sich hier bewusst für ein stochastisches Optimierungsverfahren entschieden da erste Heuristik der Optimierung gezeigt hat dass es sich hier um ein hochgradid nicht-konvexes Optimierungsproblem handelt.
 
+\subsection{Funktionsweise}
+Zunächst wird ein optimizer benötigt. 
+Dieser ist eine Funktion der internen Mapweights $w_i$ und der Mapwahrscheinlichkeiten und definiert durch 
+\begin{equation}
+    s(w_j)=\sqrt{\sum_i \left(p^\text{fi}_i - p^\text{gen}_i(w_j)\right)^2}.
+\end{equation}
 Der zu betrachtende Optimizer ist als Maß der Abweichung der \glqq{}Soll-Mapverteilung\grqq{} und der Mapverteilung des Generators gedacht.
 Es seien $p_i^\text{fi}$ die Mapwahrscheinlichkeiten errechnet nach den Mapvotes und $p_i^\text{gen}$ die Mapwahrscheinlichkeiten nach dem Mapgenerator, sodass $\sum_i p_i^\text{fi/gen}=1$.
-Da die Generator-Wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(a_{ij})$ eine Funktion der Weight-Koeffizienten.
+Da die Generator-Wahrscheinlichkeiten von den internen Mapweights abhängen ist $p_i^\text{gen}=p_i^\text{gen}(w_j)$ eine Funktion der Weight-Koeffizienten.
 Es gilt nun diese so zu Optimieren, dass der Optimizer
 \begin{equation}
-    s_m(a_{ij}) = \sqrt{\sum_i \left(p_i^\text{fi}-p_i^\text{gen}(a_{ij})\right)^2}
+    s(w_j) = \sqrt{\sum_i \left(p_i^\text{fi}-p_i^\text{gen}(w_j)\right)^2}
 \end{equation}
 minimal wird.
 Das heißt wir versuchen die Gleichung
 \begin{equation}
-    \underset{a}{\min}\quad s_m(a_{ij}) = a^*
+    \underset{w_j}{\min}\quad s(w_j) = w^*_j
 \end{equation}
 zu lösen.
-Hierbei ist aber im Allgemeinen $s_m(a^*_{ij}) \neq 0$, da nicht angenommen werden kann, dass ein globales Minimum existiert.
+Hierbei ist aber im Allgemeinen $s_m(w^*_j) \neq 0$, da nicht angenommen werden kann, dass ein globales Minimum existiert.
 
-Der erste Schritt des Optimizers ist die Variierung des ersten Parameters um ein $\varDelta p$.
-Dadurch erhält man einen neuen Parameter $a_{ij} \rightarrow a_{ij} + \delta a_{ij}$, welcher die generierten Mapwahrscheinlichkeiten ändert.
+Es wird nun ein Startwert $w_0=(w_1,w_2,...,w_N)$ an Weights ausgewählt, weitere Informationen dazu s.u.. 
+Desweiteren wird dem System eine \glqq Temperatur \grqq $T>0$ zugeordnet. 
+Diese wird später sukzessiv reduziert.
+Der erste Schritt des Optimizers ist die Variierung des ersten Parameters um ein $\delta x>0$.
+Dadurch erhält man einen neuen Parameter $w_j' \rightarrow w_j + \delta x$, welcher die generierten Mapwahrscheinlichkeiten ändert.
 Die neue Verteilung ersetzt damit die $p_i^\text{gen}$ von zuvor und ein neuer Optimizer Wert wird errechnet.
 Anschließend wird der neue Optimizerwert mit dem alten verglichen.
-Der Shift in $a_{ij}$ wird beibehalten, wenn
+Es folgt nun eine Entscheidung ob der neue s.g. State beibehalten wird oder doch wieder zum Originalen zurück gegangen wird.
+Der Shift in $w_j$ wird nun mit der Wahrscheinlichkeit 
 \begin{equation}
-    s_m(a_{ij}) - s_m(a_{ij}+\delta a_{ij}) > 0
+    P(T) = \exp -s(w_j)/T 
 \end{equation}
-erfüllt ist.
-Sollte jeder der 5 Parameter nicht mehr optimierbar sein, so wird das $\varDelta p$ verringert.
-Das Prozedere wird so lange durchgeführt, bis $\varDelta p < \varDelta p_\text{min}$ erfüllt ist.
-Die berechneten Koeffizienten $a_{ij}$ werden dann benutzt um die internen Mapweights zu berechnen.
+beibehalten wenn $\Delta s = s(w_j')-s(w_j)$ negativ ist, andernfalls wird der State immer aktzeptiert. 
+Die Treshhold Wahrscheinlichkeit $P(T)$ reduziert sich für kleiner werdendes $T$ auf 0, was bedeutet dass jeder \glqq schlechte \grqq vorgeschlagene State wieder verworfen wird. 
+Das heißt für $T\rightarrow 0$ wird der stochastische Algorithmus zu einem klassischen Hill-Climb Algorithmus.
+Diese Prozedur wird nun für jede Map sequenziell ausgeführt und nach durchlaufen aller Weights wird die Temperatur um einen schritt $\delta T>0$ reduziert. 
+Dieser Prozess wird solange wiederholt bis entweder eine Maximale Anzahl an Iterationen oder eine Minimaltemperatur $T_\text{min}>0$ erreicht wurde.
+Die berechneten Koeffizienten $w_j$ werden dann benutzt um die internen Mapweights zu berechnen.
 \subsection{Anwendung}
 Das Finden neuer Parameter durch den Optimizer wird nur bei veränderten Layervotes und veränderten Einstellungen benötigt.
 Daher wird der Optimizer auch nur bei solchen Veränderungen vor der Generierung automatisch aufgerufen.
 Für eine geringere Laufzeit wird die Optimizer parallel für jedem Modus ausgeführt.
+\subsection{Temperaturprofil}
+Prinzipiell gibt es mehrere Möglichkeiten wie die Temperatur reduziert werden soll, z.b. linear. 
+Bei diesem Projekt wurde sich für ein exponentielles Profil entschieden mit $T(t) = T_0 \exp\left(-t*a\right)$ wobei $T_0$ die initial Temperatur ist, $t$ eine Zeitdifferenz zum ersten Optimierungsschritt und $a$ eine positive reele Zahl welche die Steigung beeinflusst. 
+\subsection{Startwerte}
+Der Startwert $w_0$ ist hochgradig wichtig für ein Erfolgreiches Optimieren.
+Um einen guten Start zu finden wurden zunächst für jeden Modi einzeln Rotas mit zufälligen internen Weights $w_j$ generiert und die Mapverteilung gesammelt. 
+Anschließend wurde das interne Weight als Funktion der Sollwahrscheinlichkeit $p^\text{fi}$ und $M$ der Anzahl an Maps im selben Cluster\footnote[2]{Mit Cluster ist die Menge aller Maps gemeint welche eine Map Sperren können wenn diese gezogen werden sollten.} mittels einem Polynom dritten Grades gefitted. 
+Das heißt das Startweight jeder Map bestimmt sich als Funktion 
+\begin{equation}
+    (w_0)_j = \sum_{k=0}^3\sum_{i=0}^3 \alpha_{ij}N^i(p^\text{fi})^j
+\end{equation}
+wobei die Koeffizienten $\alpha_{ij}$ Numerisch durch einen Fit-Algorithmus bestimmt wurden wie er z.b. in Software wie \textit{Mathematica} oder \textit{Matlab} zu finden ist.
