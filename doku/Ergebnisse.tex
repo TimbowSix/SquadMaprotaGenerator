@@ -97,20 +97,39 @@
 
 
         \subsubsection{Patternbildung}
-        \todo{kann hier ausgetauscht werden mit dem anderen dokument}
-            Die Patternbildung der Maps in der Maprota sollte möglichst klein sein. Um diese Metrik bewerten zu können,
-            werden für vier verschiedene Patternlängen eine Maprota generiert. Dabei wurde eine Maprotalänge $l$ in Abhängigkeit
-            der möglichen Pattern $m$ gewählt, sodass $l/m$ konstant ist. Das ein daraus erstelltes Histogramm (Abbildung \ref{fig:pattern})
-            zeigt die Wahrscheinlichkeit für mögliche Pattern-Häufigkeiten. Wenn Patternbildung vorhanden wäre, wurde es eine Abhängigkeit zwischen
-            der Wahrscheinlichkeit und der Patternlänge geben.
-            Aus der Abbildung \ref{fig:pattern} ist zu erkennen, dass die Wahrscheinlichkeit nahezu nicht von der Patternlänge abhangt. Das ist ein Indiz dafür,
-            dass keine Patternbildung stattfindet.
-            \begin{figure}[htbp]
-                \centering
-                \includegraphics[width=0.9\textwidth]{pattern.pdf}
-                \caption{Wahrscheinlichkeiten der Patternhäufigkeiten}
-                \label{fig:pattern}
-            \end{figure}
+        Um das Auftreten von Patterns in der Rota zu untersuchen wird eine hinreichend große Rota-Historie generiert und anschließend die Häufigkeit aller Patterns betrachtet.
+        Hierbei unterscheidet man die Länge $d$ eines Patterns welche durch die Anzahl an Maps innerhalb einer Mapabfolge definiert ist. 
+        Das heißt im allgemeinen wird es in jeder Rota $23^d$ verschiedene Patterns geben können bei 23 Maps. 
+        Der Ablauf der Patternbildungs-Prüfung ist wiefolg:
+        \begin{itemize}
+            \item generiere hinreichend viele Tagesrotas mit 30 Maps, ca. 250000 Rotas sind hier ausreichend
+            \item für eine feste Länge $d$ suche alle auftretenden Patterns in den Rotas und summiere die Häufigkeiten
+            \item Teile die Häufigkeiten für festes $d$ durch die Anzahl an gefunden Patterns 
+            \item wiederhole für jedes $d$
+        \end{itemize}
+        Es sei hier angemerkt dass die Pattern-Auftrittswahrscheinlichkeit $p_\text{pat}\overset{d\rightarrow \infty}{\longrightarrow}0$ und im Regelfall $d\leq5$ ausreichend ist.
+        
+        \textbf{Definition Patternbildende Rota:}
+        Ein Rota Generator wird als \glqq Patternbildend \grqq klassifiziert wenn mindestens ein Pattern innerhalb eines Zeitraums 
+        von $T = 30$ Tagen mit einer Wahrscheinlichkeit von $p_0 \geq 5$\% mindestens zweimal auftreten wird. 
+        Die Wahrscheinlichkeit für das Auftreten dieses Events $ X_0 $ ist gegeben durch
+        \begin{equation}
+            \mathbb{P}(X_0) = 1-N p_\text{pat}(1-p_\text{pat})^{N-1}-(1-p_\text{pat})^N
+        \end{equation}
+        wobei $p_\text{pat}$ die Auftrittswahrscheinlichkeit eines Patterns ist und $N$ die Anzahl an
+        gespielten Tagesrotas. Das bedeutet dass eine Maprota als \glqq patternbildend\grqq klassifiziert
+        ist wenn mit mehr als $5$\% Wahrscheinlichkeit mindestens ein Pattern doppelt vorkommen
+        kann innerhalb eines Monats.
+        Zusammengefasst wird folgendes betrachtet 
+        \begin{itemize}
+            \item berechne für festes $d$ die Auftrittswahrscheinlichkeiten $p_\text{pat}$ aller Patterns
+            \item berechne $\mathbb{P}(X_0)$ das Maximale $p_\text{pat}$ 
+            \item wenn $\mathbb{P}(X_0)$ unter dem Schwellwert von $5$\% liegt gibt es keine kritische Bildung
+            \item wenn $\mathbb{P}(X_0)$ über dem Schwellwert liegt gibt es mindestens ein Pattern was häufiger auftritt
+        \end{itemize}
+        Im letzten Fall muss anschließend genauer untersucht werden wo die Patternbildung herkommt, wieviele Patterns betroffen sind und ob es Problematisch ist für die Rota. 
+        Die Abschätzung setzt ein Idealisiertes System vorraus und ist damit nur als obere Schranke zu verstehen. 
+        Das heißt selbst wenn die Auswertung Patterns aufweist kann es trotzdem sein dass diese nicht im Live-System auffällt da Täglich weitaus weniger Layer gespielt werden als in der Theorie angenommen.
 
         \subsubsection{Map Wiederholung}
             Das nächste und hier letzte benutzte Mittel, um eine Maprota zu bewerten ist, nach wie vielen Runden sich eine Map
