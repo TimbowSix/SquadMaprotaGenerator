@@ -50,14 +50,14 @@
             \begin{figure}[htbp]
                 \centering
                 \includegraphics[width=0.8\textwidth]{RAAS_expected.pdf}
-                \caption{Erwartete Mapverteilung im Modus RAAS nach Layervotes vom 19.09.2022}
+                \caption{Erwartete Mapverteilung im Modus RAAS nach Layervotes vom 12.03.2023}
                 \label{fig:expected_mapverteilung_raas}
             \end{figure}
 
             \begin{figure}[htbp]
                 \centering
                 \includegraphics[width=0.8\textwidth]{RAAS_generated.pdf}
-                \caption{Generierte Mapverteilung im Modus RAAS nach Layervotes vom 19.09.2022 (1.Mio. Layer Rota)}
+                \caption{Generierte Mapverteilung im Modus RAAS nach Layervotes vom 12.03.2023 (1.Mio. Layer Rota)}
                 \label{fig:generated_mapverteilung_raas}
             \end{figure}
 
@@ -130,9 +130,18 @@
         Die Abschätzung setzt ein Idealisiertes System vorraus und ist damit nur als obere Schranke zu verstehen. 
         Das heißt selbst wenn die Auswertung Patterns aufweist kann es trotzdem sein dass diese nicht im Live-System auffällt da Täglich weitaus weniger Layer gespielt werden als in der Theorie angenommen.
         Für die jetzige Implementierung sieht man die Wahrscheinlichkeit zur Auffindung von Patterns in Abbildung \ref{fig:pattern}. 
-        Die maximale Wahrscheinlichkeit ist bei Patternlänge drei gegeben durch $p_\text{pat}=0.00105$. 
-        Damit ist die Threshold Wahrscheinlichkeit gegeben mit $\mathbb{P}(X_0) = 0.00047=0.047$\% was deutlich unter der kritischen Wahrscheinlichkeit von $5$\% liegt.
-
+        Die maximale Wahrscheinlichkeit ist bei Patternlänge drei gegeben durch $p_\text{pat}=0.00118$. 
+        Damit ist die Threshold Wahrscheinlichkeit gegeben mit $\mathbb{P}(X_0) = 0.000592=0.059$\% was deutlich unter der kritischen Wahrscheinlichkeit von $5$\% liegt.
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.7\textwidth]{pattern3.pdf}
+            \caption{Pattern Auftrittswahrscheinlichkeiten $(1=100\%)$ für die Länge $d=3$. 
+            Es wurde die Häufigkeit für alle Patterns geplottet. 
+            Da es hier prinzipiell $22^3=10648$ verschiedene Patterns gibt wurde hier auf eine Achsenbeschriftung verzichtet. 
+            Jeder Wert entspricht einem spezifischen Pattern wie z.b. \glqq Mutaha - Gorodok - Tallil\grqq.
+            Das Maximum wurde zu $p_\text{mat}=0.0012$ bestimmt.}
+            \label{fig:pattern}
+        \end{figure}
         \subsubsection{Map Wiederholung}
             Das nächste und hier letzte benutzte Mittel, um eine Maprota zu bewerten ist, nach wie vielen Runden sich eine Map
             wiederholt. Hierfür wurde eine Histogramm aus einer 100000 Layer Rota erstellt.
