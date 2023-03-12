@@ -14,7 +14,6 @@
         Es folgt die Auswertung der Maprota anhand vorgegebenen Einstellungswerten.\\
 
         \subsubsection{Mapverteilung}
-        \todo{Stimmt nicht mehr}
             Die Mapverteilung wird von den Layervotes beeinflusst, dieses ist in Kapitel \ref{sub:AufbauImDetail-Map} nachzulesen.
             Diese Verteilung ist die Vorgabe für das System und es wird eine optimale Annäherung angestrebt. Da durch die
             Zielvorgaben die Verteilungsvorgabe nicht immer erreicht werden kann, tritt eine Abweichung in der Verteilung auf.
@@ -29,15 +28,15 @@
                     Modus & MSD \\
                     \hline
                     \hline
-                    RAAS & 0.00192 \\
+                    RAAS & 0.00442 \\ %0.00192
                     \hline
-                    AAS & 0.00090 \\
+                    AAS & 0.00863 \\ %00090
                     \hline
-                    Invasion & 0.00336 \\
+                    Invasion & 0.00867 \\ %0.00336
                     \hline
-                    Insurgency & 0.00836 \\
+                    Insurgency & 0.00924 \\ %0.00836
                     \hline
-                    Destruction & 0.04831 \\
+                    Destruction & 0.01906 \\ %0.04831
                     \hline
                 \end{tabular}
                 \caption{mittlere quadratische Abweichung Mapverteilung}
@@ -130,6 +129,9 @@
         Im letzten Fall muss anschließend genauer untersucht werden wo die Patternbildung herkommt, wieviele Patterns betroffen sind und ob es Problematisch ist für die Rota. 
         Die Abschätzung setzt ein Idealisiertes System vorraus und ist damit nur als obere Schranke zu verstehen. 
         Das heißt selbst wenn die Auswertung Patterns aufweist kann es trotzdem sein dass diese nicht im Live-System auffällt da Täglich weitaus weniger Layer gespielt werden als in der Theorie angenommen.
+        Für die jetzige Implementierung sieht man die Wahrscheinlichkeit zur Auffindung von Patterns in Abbildung \ref{fig:pattern}. 
+        Die maximale Wahrscheinlichkeit ist bei Patternlänge drei gegeben durch $p_\text{pat}=0.00105$. 
+        Damit ist die Threshold Wahrscheinlichkeit gegeben mit $\mathbb{P}(X_0) = 0.00047=0.047$\% was deutlich unter der kritischen Wahrscheinlichkeit von $5$\% liegt.
 
         \subsubsection{Map Wiederholung}
             Das nächste und hier letzte benutzte Mittel, um eine Maprota zu bewerten ist, nach wie vielen Runden sich eine Map

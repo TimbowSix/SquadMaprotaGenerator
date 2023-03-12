@@ -42,18 +42,19 @@
             \item \textbf{reste}: Beinhaltet \textit{Destruction} und \textit{Insurgency}
         \end{itemize}
 
-        Das \textbf{Modespacing} $\Delta_g\in{0,...,N}$ ist eine Zahl größer $0$ und maximal die Anzahl der Layer in einer Rota.
+        Das \textbf{Modespacing} $\Delta_g\in{0,...,N}$ und maximal die Anzahl der Layer in einer Rota.
         Es sorgt nun dafür, dass für eine gegebene Anzahl an Runden nur der Main-Pool gezogen werden darf, wodurch eine \glqq{}Mindestzeit\grqq{} zwischen z.b. zwei Invasion Layern garantiert wird.
         Sollte die Zeitspanne seit dem letzten nicht-main Modus größer sein als das Modespacing, so wird mit den Pool und Mode-weights gewichtet ein Gamemode gewählt.
         Hierbei wird erst der Pool ausgewählt und anschließend im Pool der Modus.
         Es ist zu beachten, dass dies dazu führen kann und wird, dass nicht direkt nach Ablauf des Modespacings ein andere Pool drankommen muss.
         Das Design wurde mit Absicht so gewählt, um repetitive Modes zu verhindern.
 
-        Das Modeweight $w_g$ setzt sich damit zusammen aus der Wahrscheinlichkeit den enthaltenen Pool zu ziehen und den Modus
+        Das Modeweight $w_g$ setzt sich (für $\Delta_g=0$) damit zusammen aus der Wahrscheinlichkeit den enthaltenen Pool zu ziehen und den Modus
         \begin{equation}
             w_g = \mathbb{P}(G=g|P=p) = \mathbb{P}(G=g)\mathbb{P}(P=p)
         \end{equation}
         wobei hier $G$ und $P$ die Zufallsvariablen \glqq{}Gamemode\grqq{} und \glqq{}Pool\grqq{} darstellen sollen.
+        Wenn $\Delta_g\geq0$ ist muss der Memory Effekt in obiger Formel noch inkludiert werden, allerdings gibt diese eine gute erste Näherung.
         Durch das Modespacing ist die Wahrscheinlichkeit einen Modus zu ziehen ungleich größer als $w_g$.
         Dies muss bei der Wahl der Mode und Pool Wahrscheinlichkeiten beachtet werden.
         % \begin{equation}
@@ -67,7 +68,8 @@
         Der Buffer wird bei der nächsten Gelgenheit abgearbeitet.
     \subsection{Aufbau im Detail - Map}
     \label{sub:AufbauImDetail-Map}
-        Für das ziehen der Maps werden Mapweights verwendet welche im wesentlichen von den Layervotes und der \glqq{}Ähnlichkeit\grqq{} der gespielten Maps abhängen.
+        Nachdem ein Mode gewählt wurde folgt das Auswählen einer Map.
+        Für das Ziehen der Maps werden Mapweights verwendet welche im wesentlichen von den Layervotes und der \glqq{}Ähnlichkeit\grqq{} der gespielten Maps abhängen.
         Zudem wird noch ein Memory Kernel verwendet der sich die letzten $k\geq 0$ gespielten Maps merkt um damit ungewollte Mapwiederholungen zu vermeiden.
 
         Das Weight errechnet sich als Produkt aus einem \glqq{}Distanz-Weight\grqq{} und einem \glqq{}Mapvote-Weight\grqq{}.
@@ -76,6 +78,8 @@
         \end{equation}
         mit $d$ der Distanz zur zuletzt gezogenen Map, $m$ der gewählten Map und $v$ die Summe aller Layervotes der Map im entsprechnden zuvor gewählten Modus.
         $\mathcal{N}$ ist die Norm des weights sodass $\sum_m w_m = 1$.
+        $w_d(d,m)$ ist das sogenannte \glqq Distanzweight \grqq und
+        $w_v(v,m)$ das interne Mapweight, welches von den Layervotes abhängt.
         \subsubsection{Map Charakteristiken}
             Um die verschiedenen Maps voneinander zu unterscheiden wird versucht bestimmende Charakteristiken der einzelnen Maps.
             Das heißt es werden bestimmte Eigenschaften der Map bewertet um diese untereinander zu vergleichen.
@@ -139,7 +143,7 @@
             \begin{equation}
                 w_d(d) = 1_{[0,d_\text{min}]}(d)
             \end{equation}
-            mit $d_\text{min}\geq 0$ als Mindestdistanz.
+            mit $d_\text{min}\geq 0$ als Mindestdistanz und $1_{[a,b]}(x)$ der Indikatorfunktion auf dem Intervall $[a,b]$.
             Sollte eine Map näher als $d_\text{min}$ an einer zuvor gezogenen Map liegen, ist das Distanzweight und damit das Mapweight $0$ und wird damit nicht gezogen.
         \subsubsection{Mapvoteweight}
             Das Mapvoteweight soll die Beliebtheit der Map repräsentieren.
@@ -148,8 +152,7 @@
             Die internen Weights müssen so gewählt sein, dass die Mapwahrscheinlichkeit zu der vorhergesagten Mapwahrscheinlichkeit passt.
             Leider ist dieses Problem nichtmehr geschlossen analytisch lösbar und benötigt numerische Lösungsmethoden.
             Näheres dazu im \nameref{sub:optimizer} Kapitel.
-            Durch die Cutoff-Funktionen, die als Distanzweight verwendet werden kann,
-            kann das Mapvoteweight als Funktion der gewollten Mapwahrscheinlichkeiten und der Anzahl an \glqq{}Nachbarn\grqq{} einer Map definiert werden.
+            Im allgemeinen ist bekannt dass das interne Weight von der Anzahl an \glqq Nachbarn \grqq von welchen diese gesperrt werden kann abhängt und von der gewollten Map-Auftrittswahrscheinlichkeit.
             Mit Nachbar einer Map, ist jede Map gemeint, die näher als $d_{min}$ an der Map liegt.
             \begin{equation}
                 \label{eq:mapweight}
@@ -157,6 +160,7 @@
             \end{equation}
             wobei $x$ die Anzahl an verbundenen Maps ist und $y$ die Mapwahrscheinlichkeit errechnet aus den Layervotes.
             Die Koeffizienten $a_{ij}\in\mathbb{R}$ müssen vorerst numerisch bestimmt werden.
+            Die obige Definition für $w_v(v)$ ist nur eine Näherung und wird als Startwert für den Numerischen optimierer verwendet. 
         \subsubsection{Berechnung der Mapwahrscheinlichkeit}
             Um die internen Mapweights zu bestimmen, muss die Beliebtheit einer Map anhand der Layervotes errechnet werden.
             Dies erfolgt in zwei Schritten, getrennt für jeden einzelnen Modus.

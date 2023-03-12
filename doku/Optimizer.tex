@@ -38,7 +38,7 @@ Anschließend wird der neue Optimizerwert mit dem alten verglichen.
 Es folgt nun eine Entscheidung ob der neue s.g. State beibehalten wird oder doch wieder zum Originalen zurück gegangen wird.
 Der Shift in $w_j$ wird nun mit der Wahrscheinlichkeit 
 \begin{equation}
-    P(T) = \exp -s(w_j)/T 
+    P(T) = \exp\left(-\Delta s(w_j)/T\right) 
 \end{equation}
 beibehalten wenn $\Delta s = s(w_j')-s(w_j)$ negativ ist, andernfalls wird der State immer aktzeptiert. 
 Die Treshhold Wahrscheinlichkeit $P(T)$ reduziert sich für kleiner werdendes $T$ auf 0, was bedeutet dass jeder \glqq schlechte \grqq vorgeschlagene State wieder verworfen wird. 
