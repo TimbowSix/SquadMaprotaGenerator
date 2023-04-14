@@ -43,7 +43,7 @@ docker-compose up --build
 
 **Return Format**
 
-``` json
+```json
 {
     "status": "state number",
     "currSeed": "seed value",
