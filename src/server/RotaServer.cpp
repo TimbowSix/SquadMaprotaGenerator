@@ -5,6 +5,7 @@
 #include <boost/json/object.hpp>
 #include <boost/json/parse.hpp>
 #include <boost/json/serialize.hpp>
+#include <chrono>
 #include <exception>
 #include <httplib.h>
 #include <iostream>
@@ -12,6 +13,7 @@
 #include <GlobalConfig.hpp>
 #include <fstream>
 #include <map>
+#include <thread>
 #include <vector>
 
 #include "Generator.hpp"
@@ -30,6 +32,8 @@ std::string path = std::string(CONFIG_PATH) + "config.json";
 rota::RotaConfig *conf;
 rota::Generator *gen;
 std::mutex gen_mutex;
+std::thread *serverThread;
+bool running = true;
 
 int main(int ac, char **av) {
     std::string host = "0.0.0.0";
@@ -48,32 +52,65 @@ int main(int ac, char **av) {
     std::cout << "Rota Version " << ROTA_VERSION_MAJOR << "."
               << ROTA_VERSION_MINOR << "." << ROTA_VERSION_PATCH << std::endl;
 
-    std::cout << "Init generator and run optimizer" << std::endl;
     try {
+        std::cout << "Start Interface" << std::endl;
+        serverThread = new std::thread(&handleInterface, &host, port);
+
+        gen_mutex.lock();
+        std::cout << "Init generator and run optimizer" << std::endl;
         gen = initialize();
         std::cout << "Ready" << std::endl;
-        // basic Server
-        // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
-        httplib::Server svr;
-        svr.Post("/rota",
-                 [](const httplib::Request &req, httplib::Response &res) {
-                     gen_mutex.lock();
-                     handleGetRota(req, res);
-                     gen_mutex.unlock();
-                 });
+        gen_mutex.unlock();
 
-        svr.Post("/rota/proposal",
-                 [](const httplib::Request &req, httplib::Response &res) {
-                     gen_mutex.lock();
-                     handleGetProposal(req, res);
-                     gen_mutex.unlock();
-                 });
-
-        svr.listen(host, port); // ip der linux sub machine
+        while (running) {
+            {
+                using namespace std::chrono_literals;
+                std::this_thread::sleep_for(60s);
+            }
+        }
         return 0;
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         return 1;
+    }
+}
+
+void handleInterface(std::string *host, int port) {
+    // basic Server
+    // httplib::SSLServer svr(CERT_PATH, PRIVATE_KEY_PATH);
+    try {
+        httplib::Server svr;
+        svr.Post("/rota",
+                 [](const httplib::Request &req, httplib::Response &res) {
+                     if (gen_mutex.try_lock()) {
+                         handleGetRota(req, res);
+                         gen_mutex.unlock();
+                     } else {
+                         // resource occupied
+                         json::object retObj;
+                         retObj["error"] = "locked";
+                         res.status = 423;
+                         res.set_content(json::serialize(retObj), "text/json");
+                     }
+                 });
+
+        svr.Post("/rota/proposal",
+                 [](const httplib::Request &req, httplib::Response &res) {
+                     if (gen_mutex.try_lock()) {
+                         handleGetProposal(req, res);
+                         gen_mutex.unlock();
+                     } else {
+                         // resource occupied
+                         json::object retObj;
+                         retObj["error"] = "locked";
+                         res.status = 423;
+                         res.set_content(json::serialize(retObj), "text/json");
+                     }
+                 });
+
+        svr.listen(*host, port); // ip der linux sub machine
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
