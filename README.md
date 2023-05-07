@@ -15,7 +15,7 @@ git submodule update --init --recursive
 docker-compose up --build
 ```
 
-## Api Schnitelle
+## Schnitelle
 
 **Request Format** <br>
 - `POST /rota`
