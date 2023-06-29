@@ -122,33 +122,39 @@ void parseMaps(RotaConfig *config, std::map<std::string, RotaMap *> *maps,
     float tempSum = 0.0;
 
     for (std::string map : (*usedMaps)) {
-        boost::json::array bv = biomValues.at(map).as_array();
-        mapSizes.push_back(bv[0].as_double());
-        tempSum += bv[0].as_double();
+        if(biomValues.contains(map)){
+            boost::json::array bv = biomValues.at(map).as_array();
+            mapSizes.push_back(bv[0].as_double());
+            tempSum += bv[0].as_double();
+        }else{
+            std::cerr << "WARNING: " << map << " has no biom values" << "\n ";
+        }
     }
     normalize(&mapSizes, &tempSum);
 
     int j = 0;
     for (std::string map : (*usedMaps)) {
-        // std::string map = usedMapsRaw[i];
-        if (biomValues.find(map) == biomValues.end()) {
-            // no biom values for map, skip map
-            std::cout << "WARNING: No Biom values saved for map '" << map
-                      << "'. Skipping map.\n";
-            continue;
+        if(biomValues.contains(map)){
+            // std::string map = usedMapsRaw[i];
+            if (biomValues.find(map) == biomValues.end()) {
+                // no biom values for map, skip map
+                std::cout << "WARNING: No Biom values saved for map '" << map
+                        << "'. Skipping map.\n";
+                continue;
+            }
+            std::vector<float> biomVals;
+            boost::json::array bv = biomValues.at(map).as_array();
+            biomVals.push_back(mapSizes[j]);
+            for (int i = 1; i < bv.size(); i++) {
+                biomVals.push_back(bv[i].as_double());
+            }
+            RotaMap *newMap =
+                new RotaMap(map, biomVals, locktime, availableLayerMaps);
+            newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope,
+                                    layerVoteShift);
+            (*maps)[map] = newMap;
+            j++;
         }
-        std::vector<float> biomVals;
-        boost::json::array bv = biomValues.at(map).as_array();
-        biomVals.push_back(mapSizes[j]);
-        for (int i = 1; i < bv.size(); i++) {
-            biomVals.push_back(bv[i].as_double());
-        }
-        RotaMap *newMap =
-            new RotaMap(map, biomVals, locktime, availableLayerMaps);
-        newMap->setSigmoidValues(mapVoteSlope, mapVoteShift, layerVoteSlope,
-                                 layerVoteShift);
-        (*maps)[map] = newMap;
-        j++;
     }
 }
 

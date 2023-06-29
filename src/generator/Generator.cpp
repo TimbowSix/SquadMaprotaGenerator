@@ -304,22 +304,25 @@ void Generator::generateRota(bool withSeed, int length) {
     // add seedlayer
     if (config->get_seed_layer() > 0 && withSeed) {
         std::vector<RotaMap *> seedMaps(this->modeToMapList["Seed"]);
+        if(seedMaps.size() > 0){
+            for (int i = 0; i < this->config->get_seed_layer(); i++) {
+                int choosenMap = choice(seedMaps.size(), this->rng);
+                RotaMap *seedMap = seedMaps[choosenMap];
+                seedMaps.erase(
+                    seedMaps.begin() +
+                    choosenMap); // remove choosen seed map to prevent doubles
+                seedMap->lock(2);
 
-        for (int i = 0; i < this->config->get_seed_layer(); i++) {
-            int choosenMap = choice(seedMaps.size(), this->rng);
-            RotaMap *seedMap = seedMaps[choosenMap];
-            seedMaps.erase(
-                seedMaps.begin() +
-                choosenMap); // remove choosen seed map to prevent doubles
-            seedMap->lock(2);
-
-            std::vector<RotaLayer *> seedLayers =
-                seedMap->getModeToLayers()->at(this->modes->at("Seed"));
-            RotaLayer *chosenLayer =
-                seedLayers[choice(seedLayers.size(), this->rng)];
-            rotation.push_back(chosenLayer);
+                std::vector<RotaLayer *> seedLayers =
+                    seedMap->getModeToLayers()->at(this->modes->at("Seed"));
+                RotaLayer *chosenLayer =
+                    seedLayers[choice(seedLayers.size(), this->rng)];
+                rotation.push_back(chosenLayer);
+            }
+            this->ModesHistory.push_back(this->modes->at("Seed"));
+        }else{
+            std::cout << "WARNING: No seed layers available" << "\n";
         }
-        this->ModesHistory.push_back(this->modes->at("Seed"));
     }
 
     this->modeBuffer.clear();
