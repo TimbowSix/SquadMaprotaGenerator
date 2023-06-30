@@ -206,7 +206,7 @@ void handleGetRota(const httplib::Request &req, httplib::Response &res) {
 void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
 
     json::object retObj;
-    retObj["currSeed"] = gen->getSeed();
+    // retObj["lastSeed"] = gen->getSeed();
 
     try {
         json::object reqObj = json::parse(req.body).as_object();
@@ -235,6 +235,9 @@ void handleGetProposal(const httplib::Request &req, httplib::Response &res) {
                 if (!error) {
                     std::vector<rota::RotaLayer *> offer;
                     gen->reset(&pastRota);
+
+                    retObj["currSeed"] = gen->getSeed();
+
                     gen->generateOffer(&offer, count);
 
                     json::array r;

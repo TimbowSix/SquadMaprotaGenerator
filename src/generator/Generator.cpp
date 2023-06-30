@@ -374,6 +374,8 @@ void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
     }
     bool mapLock = availableMaps > count;
 
+    int tempLastNonMainMode = this->lastNonMainMode;
+
     for (int i = 0; i < count; i++) {
         RotaMode *mode = chooseMode(nullptr, true);
         RotaMap *map = chooseMap(mode);
@@ -383,6 +385,8 @@ void Generator::generateOffer(std::vector<RotaLayer *> *out, int count) {
             map->lock();
         }
         layer->lock();
+
+        this->lastNonMainMode = tempLastNonMainMode;
     }
 }
 
@@ -417,9 +421,8 @@ void Generator::reset(std::vector<RotaLayer *> *pastLayers) {
         return;
     for (int i = 0; i < pastLen; i++) {
         // lock maps
-        if (pastLen - i <=
-            this->config->get_biom_spacing()) { // lock maps within biom spacing
-                                                // and their neighbors
+        if (pastLen - i <= this->config->get_biom_spacing()) { // lock maps within biom spacing
+                                                               // and their neighbors
             pastLayers->at(i)->getMap()->lock(
                 this->config->get_biom_spacing() - (pastLen - i) + 1, true);
         }
