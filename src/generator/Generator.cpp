@@ -66,7 +66,7 @@ Generator::Generator(RotaConfig *config) {
         }
     }
 
-    // inti ids
+    // init ids
     for (auto const &x : this->modeToMapList) {
         int i = 0;
         for (RotaMap *map : x.second) {
@@ -106,12 +106,18 @@ Generator::Generator(RotaConfig *config) {
         normalize(&this->modeWeights[it->second], &tempSum);
     }
     this->lastNonMainMode = 0;
-    this->nextMainModeIndex = 0;
     this->sameTeamCounter[0] = 0;
     this->sameTeamCounter[1] = 0;
 
     this->generateSeed();
     this->generateLayerHash();
+
+    for(auto const &x: *this->modes){
+        if(x.second->isMainMode){
+            this->currMainPool.push_back(x.second);
+        }
+    }
+    this->currLockedMainMode = nullptr;
 }
 
 Generator::~Generator() {
@@ -160,8 +166,7 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
                 }
             }
         }
-        pool = this->defaultModePools[weightedChoice(&this->defaultPoolWeights,
-                                                     this->rng)];
+        pool = this->defaultModePools[weightedChoice(&this->defaultPoolWeights,this->rng)];
     }
 
     if (pool != this->modePools->at("main")) {
@@ -187,17 +192,28 @@ RotaMode *Generator::chooseMode(RotaModePool *customPool = nullptr,
 
     if (this->config->get_space_main() && pool == this->modePools->at("main")) {
         // TODO Überarbeitung gleichverteilung
-        ret = this->poolToModeList[pool][this->nextMainModeIndex];
+        std::vector<float> w;
+        float sum = 0;
+        for(RotaMode* mode : this->currMainPool){
+            w.push_back(mode->probability);
+            sum += mode->probability;
+        }
+        normalize(&w,&sum);
+        ret = this->currMainPool[weightedChoice(&w, this->rng)];
     } else {
-        ret = this->poolToModeList[pool][weightedChoice(
-            &this->modeWeights[pool], this->rng)];
+        ret = this->poolToModeList[pool][weightedChoice(&this->modeWeights[pool], this->rng)];
     }
     // check if mode has available maps
     if (this->mapsAvailable(ret)) {
-        if (this->config->get_space_main() &&
-            pool == this->modePools->at("main")) {
-            this->nextMainModeIndex = (this->nextMainModeIndex + 1) %
-                                      this->modePools->at("main")->modes.size();
+        if (this->config->get_space_main() && pool == this->modePools->at("main")) {
+
+            //unlock last mode
+            if(this->currLockedMainMode != nullptr){
+                this->currMainPool.push_back(this->currLockedMainMode);
+            }
+            //lock current choosen mode
+            this->currLockedMainMode = ret;
+            this->currMainPool.erase(std::remove(this->currMainPool.begin(), this->currMainPool.end(),ret), this->currMainPool.end());
         }
         return ret;
     }

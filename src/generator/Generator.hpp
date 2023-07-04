@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/json.hpp>
+#include <list>
 #include <map>
 #include <random>
 #include <sys/types.h>
@@ -126,10 +127,6 @@ class Generator {
     std::map<RotaModePool *, std::vector<RotaMode *>> poolToModeList;
 
     /**
-     * @brief index of the next main mode if space_main is active
-     */
-    int nextMainModeIndex;
-    /**
      * @brief seed of rota
      */
     u_int32_t seed;
@@ -147,6 +144,16 @@ class Generator {
      * @brief generates a seed and sets the object variable
      */
     void generateSeed();
+
+    /**
+    * @brief main mode pool, used for main_spacing
+    */
+    std::vector<RotaMode*> currMainPool;
+
+    /**
+    * @brief current locked main mode
+    */
+    RotaMode* currLockedMainMode;
 
   public:
     Generator(RotaConfig *config);
